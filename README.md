@@ -5,8 +5,8 @@ Brain Train
 
 ## Members
 - [mrtaz77](https://github.com/mrtaz77) (Team Leader)
-- [amimulamim](https://github.com/3m09)
-- [Abrar Jahin Sarker](https://github.com/amimulamim)
+- [amimulamim](https://github.com/amimulamim)
+- [Abrar Jahin Sarker](https://github.com/3m09)
 
 ## Mentor
 - [anik587](https://github.com/anik587)
