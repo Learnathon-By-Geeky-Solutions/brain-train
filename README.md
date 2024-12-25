@@ -1,12 +1,15 @@
-# brain-train
+# Project: Geeky Chef
 
-## Team Members
-- mrtaz77 (Team Leader)
-- amimulamim
-- Abrar Jahin Sarker
+## Team
+Brain Train
+
+## Members
+- [mrtaz77](https://github.com/mrtaz77) (Team Leader)
+- [amimulamim](https://github.com/3m09)
+- [Abrar Jahin Sarker](https://github.com/amimulamim)
 
 ## Mentor
-- anik587
+- [anik587](https://github.com/anik587)
 
 ## Project Description
 Add your project description here.
