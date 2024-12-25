@@ -12,7 +12,7 @@ Brain Train
 - [anik587](https://github.com/anik587)
 
 ## Project Description
-Add your project description here.
+Geeky Chef is a web app that helps users to find recipes based on their preferences and dietary restrictions. The app will also provide nutrition insights, meal plans, and image-based calorie estimation. The app will have a user-friendly interface and will be easy to use for all scenarios.
 
 ## Getting Started
 1. Clone the repository
