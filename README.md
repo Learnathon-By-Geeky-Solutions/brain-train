@@ -1,15 +1,24 @@
-# brain-train
+# Project: Geeky Chef
 
-## Team Members
-- mrtaz77 (Team Leader)
-- amimulamim
-- Abrar Jahin Sarker
+## Team
+Brain Train
+
+## Members
+- [mrtaz77](https://github.com/mrtaz77) (Team Leader)
+- [amimulamim](https://github.com/amimulamim)
+- [Abrar Jahin Sarker](https://github.com/3m09)
 
 ## Mentor
-- anik587
+- [anik587](https://github.com/anik587)
 
 ## Project Description
-Add your project description here.
+Geeky Chef is a web application that helps users discover recipes based on customizable preferences and dietary restrictions. Key features include:
+- AI-powered recipe recommendation engine
+- Detailed nutrition analysis and insights
+- Personalized meal planning system
+- Computer vision-based calorie estimation from food images
+
+The application features an intuitive user interface optimized for both desktop and mobile devices, ensuring accessibility across different user expertise levels.
 
 ## Getting Started
 1. Clone the repository
