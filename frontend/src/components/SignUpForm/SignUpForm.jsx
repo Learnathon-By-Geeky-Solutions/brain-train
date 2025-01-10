@@ -17,9 +17,9 @@ export default function SignUpForm() {
 
     // Implement the signup function
     const signup = () => { 
-        console.log(name);
-        console.log(email);
-        console.log(password);
+        // console.log(name);
+        // console.log(email);
+        // console.log(password);
         navigate("/Dashboard") 
     };
 
