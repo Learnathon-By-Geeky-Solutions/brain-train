@@ -1,0 +1,36 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  --brown-variant: #cd853f;
+  --title-color: rgb(48, 92, 48);
+  --title-second-part-color: rgb(130, 198, 130);
+  --faded-text-color: rgb(107, 105, 105);
+  --darkest-green: #485b12;
+  --lightest-green: #959500;
+
+  /* color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424; */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+@font-face {
+  font-family: "Mustard Medium";
+  src: url('/src/assets/fonts/Mustard Medium.otf') format('opentype');
+}
+
+@font-face {
+  font-family: "Mustard Strong";
+  src: url('/src/assets/fonts/Mustard Bold.otf') format('opentype');
+}

@@ -1,0 +1,120 @@
+.app {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    place-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.nav-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 15vh;
+    padding: 10px;
+    place-content: center;
+}
+
+.logo , .title {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    place-content: center;
+}
+
+.logo {
+    width: 60px;
+}
+
+.title {
+    padding-top: 15px;
+}
+
+.logo img {
+    height: 100%;
+    width: 100%;
+}
+
+.title {
+    margin-right: 1rem;
+    font-family: "Mustard Medium", sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--title-color);
+}
+
+.title-second-part {
+    color: var(--title-second-part-color);
+}
+
+.bg-video {
+    width: 100%;
+    height: 85vh;
+    display: flex;
+    align-items: center;
+    place-content: center;
+    overflow: hidden;
+}
+
+.bg-cover {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    place-content: center;
+    justify-content: center;
+}
+
+.main-motto {
+    font-family: "Mustard Medium", sans-serif;
+    font-size: 3rem;
+    color: white;
+    margin-bottom: 1rem;
+    max-width: 80%;
+    text-align: center;
+}
+
+.sub-motto {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    max-width: 80%;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.menu-button {
+    width: 50px;
+    height: 50px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    place-content: center;
+    justify-content: center;
+}
+
+.menu-button button {
+    background-color: var(--brown-variant);
+    border-radius: 5% 33% 5% 33%;
+}
+
+.login-button {
+    width: 150px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    place-content: center;
+    justify-content: center;
+}
+
+.menu-button button:hover , .login-button button:hover {
+    background-color: var(--darkest-green);
+    color: white;
+}
+
+.login-button button {
+    background-color: white;
+    border-radius: 5px 33px 5px 33px;
+    color: var(--faded-text-color);
+}

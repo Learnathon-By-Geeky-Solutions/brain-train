@@ -1,0 +1,7 @@
+.video-player {
+    width: 100%;
+    height: auto; 
+    display: block;
+    filter: brightness(0.8);
+}
+  
