@@ -30,6 +30,7 @@ The application features an intuitive user interface optimized for both desktop 
 2. Make small, focused commits
 3. Write descriptive commit messages
 4. Create pull requests for review
+5. Write and update necessary documentations
 
 ## Resources
 - [Project Documentation](docs/)
