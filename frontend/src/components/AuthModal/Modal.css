@@ -8,7 +8,8 @@
   background: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
-  /* z-index: 1000; */
+  place-content: center;
+  z-index: 1000;
 }
 
 .modal-content * {
@@ -17,12 +18,14 @@
 
 .modal-content {
 	display: flex;
+	min-height: 100%;
+	min-width: 100%;
 	justify-content: center;
 	align-items: center;
+	place-content: center;
 	flex-direction: column;
 	font-family: 'Montserrat', sans-serif;
-	height: 100vh;
-	margin: -20px 0 50px;
+	z-index: 1001;
 }
 
 
@@ -103,12 +106,13 @@ input {
 	width: 100%;
 }
 
-.container {
+.container { 
+	position: relative;
+	display: flex;
 	background-color: #fff;
 	border-radius: 10px;
   	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
 			0 10px 10px rgba(0,0,0,0.22);
-	position: relative;
 	overflow: hidden;
 	width: 768px;
 	max-width: 100%;
