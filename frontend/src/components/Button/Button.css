@@ -1,9 +1,14 @@
 .button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    place-content: center;
     width: 100%;
     height: 100%;
     border: none;
-    padding: 2%;
     font-family: sans-serif;
+    background: none;
 }
 
 .button-icon{

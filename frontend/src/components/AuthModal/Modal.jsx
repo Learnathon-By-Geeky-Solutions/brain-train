@@ -15,9 +15,9 @@ export default function Modal ({ isOpen, onClose }) {
   const swipeLeft = () => { setPanel("right-panel-active") };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className={`container ${panel}`} id="container">
+    <div className="modal-overlay" >
+        <div className="modal-content" onClick={onClose}>
+            <div className={`container ${panel}`} id="container" onClick={(e) => e.stopPropagation()}>
                 <SignUpForm />
                 <SignInForm />
                 <div className="overlay-container">
