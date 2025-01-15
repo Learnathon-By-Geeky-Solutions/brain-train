@@ -22,14 +22,19 @@ app.use(cors(
   }
 ));
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch(err => console.error("Failed to connect to MongoDB:", err));
+// // Database connection
+// mongoose.connect(process.env.MONGODB_URI)
+//   .then(() => console.log("Connected to MongoDB"))
+//   .catch(err => console.error("Failed to connect to MongoDB:", err));
 
-// Routes
-import signinRoutes from './apps/signin/api/routes.js';
-app.use("/signin", signinRoutes);
+// // Routes
+// import signinRoutes from './apps/signin/api/routes.js';
+// app.use("/signin", signinRoutes);
+
+import spoonacularRoutes from './apps/spoonacular/api/routes.js';
+
+app.use('/search', spoonacularRoutes);
+
 
 // Catch-all route for unmatched requests
 app.use((req, res) => {
