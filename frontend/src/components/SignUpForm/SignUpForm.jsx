@@ -1,5 +1,6 @@
 import './SignUpForm.css';
 import SocialContainer from '../SocialContainer/SocialContainer';
+import { Heading } from '@chakra-ui/react';
 
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -26,7 +27,7 @@ export default function SignUpForm() {
     return (
         <div className="form-container sign-up-container">
             <form action="#">
-                <h1>Create Account</h1>
+            <Heading size="3xl" color="black">Create Account</Heading>
                 <SocialContainer />
                 <span>or use your email for registration</span>
                 <input type="text" placeholder="Name" onChange={handleNameChange} />

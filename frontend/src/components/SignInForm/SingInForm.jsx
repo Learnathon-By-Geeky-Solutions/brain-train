@@ -1,5 +1,6 @@
 import './SignInForm.css';
 import SocialContainer from '../SocialContainer/SocialContainer';
+import { Heading } from '@chakra-ui/react';
 
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -22,10 +23,10 @@ export default function SignInForm() {
 
     return (
         <div className="form-container sign-in-container">
-            <form action="#">
-                <h1>Sign in</h1>
+            <form>
+                <Heading size="3xl" color="black">Sign in</Heading>
                 <SocialContainer />
-                <span>or use your account</span>
+                <span >or use your account</span>
                 <input type="email" placeholder="Email" onChange={handleEmailChange}/>
                 <input type="password" placeholder="Password" onChange={handlePasswordChange}/>
                 <a href="#">Forgot your password?</a>

@@ -1,4 +1,5 @@
 import "./Modal.css";
+import { Heading } from "@chakra-ui/react";
 
 import { useState } from "react";
 
@@ -23,12 +24,12 @@ export default function Modal ({ isOpen, onClose }) {
                 <div className="overlay-container">
                     <div className="overlay">
                         <div className="overlay-panel overlay-left">
-                            <h1>Welcome Back!</h1>
+                            <Heading size="3xl">Welcome Back!</Heading>
                             <p>To keep connected with us please login with your personal info</p>
                             <button className="ghost" id="signIn" onClick={swipeRight}>Sign In</button>
                         </div>
                         <div className="overlay-panel overlay-right">
-                            <h1>Hello, Friend!</h1>
+                        <Heading size="3xl">Hello, Friend!</Heading>
                             <p>Enter your personal details and start journey with us</p>
                             <button className="ghost" id="signUp" onClick={swipeLeft}>Sign Up</button>
                         </div>
