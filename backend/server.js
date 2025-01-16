@@ -22,10 +22,10 @@ app.use(cors(
   }
 ));
 
-// // Database connection
-// mongoose.connect(process.env.MONGODB_URI)
-//   .then(() => console.log("Connected to MongoDB"))
-//   .catch(err => console.error("Failed to connect to MongoDB:", err));
+// Database connection
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch(err => console.error("Failed to connect to MongoDB:", err));
 
 // // Routes
 // import signinRoutes from './apps/signin/api/routes.js';
