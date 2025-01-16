@@ -48,6 +48,24 @@ export default function SignInForm() {
         }
     };
 
+    const handleForgotPassword = async (e) => {
+        e.preventDefault();
+        if (!email) {
+            setError(true);
+            setErrorMessage('Please enter your email to reset your password.');
+            return;
+        }
+        try {
+            await sendPasswordResetEmail(auth, email);
+            setSuccessMessage('Password reset email sent! Check your inbox.');
+            setError(false);
+        } catch (err) {
+            setError(true);
+            setErrorMessage('Failed to send password reset email. Please try again.');
+        }
+    };
+    
+
     return (
         <div className="form-container sign-in-container">
             <form onSubmit={handleSubmit}>
@@ -66,9 +84,11 @@ export default function SignInForm() {
                     value={password}
                     onChange={handlePasswordChange}
                 />
-                {/* <a href="#">Forgot your password?</a> */}
+                <button type="button" onClick={handleForgotPassword}>Forgot your password?</button>
                 <button type="submit">Sign In</button>
                 {error && <p className="error-message">{errorMessage}</p>}
+                {successMessage && <p className="success-message">{successMessage}</p>}
+            
             </form>
         </div>
     )
