@@ -8,8 +8,6 @@ import logo from "./assets/logo.png";
 import VideoPlayer from "./components/VideoPlayer/VideoPlayer";
 import AuthModal from "./components/AuthModal/Modal";
 import { LuMenu } from "react-icons/lu";
-import { Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard/Dashboard";
 import { auth } from "./services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 

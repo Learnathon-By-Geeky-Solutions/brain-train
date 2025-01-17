@@ -1,15 +1,16 @@
-import { Box, Flex, Icon, IconButton, Span, Image, Input, Heading } from '@chakra-ui/react';
+import { Flex, Input, Button } from '@chakra-ui/react';
 import DynamicForm from '@/components/DynamicFormInput/DynamicFormInput';
 import { useEffect, useState } from 'react';
-import { LuSearch, LuActivity, LuAlarmClockCheck } from 'react-icons/lu';
 import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
 import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
 
 import './Dashboard.css';
 import CentralSearchFrame from '@/components/CentralSearchFrame/CentralSearchFrame';
 import Toolbar from '@/components/Toolbar/Toolbar';
-import { text } from '@fortawesome/fontawesome-svg-core';
+// import { text } from '@fortawesome/fontawesome-svg-core';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/services/firebase';
 
 
 const generateDummyRecipes = () => {
@@ -51,7 +52,37 @@ export default function Dashboard() {
     const [pageLocation, setPageLocation] = useState('dashboard');
     const [pageState, setPageState] = useState('init');
     const recipes = generateDummyRecipes();
+
+    // Auth part
+
+    const [ user, setUser ] = useState(undefined);
     const navigate = useNavigate();
+
+    onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+            setUser(currentUser);
+        } else {
+            /**
+             * TODO: 
+             *  - Redirect to the home page with the auth modal open for sign in
+             *  - Remove comment on completion
+             */
+            // If the user is authenticated, render the children (protected route), 
+            // else redirect to home page.
+            navigate("/");
+        }
+    })
+
+    const handleLogout = async () => { 
+        try {
+			await signOut(auth);
+            navigate("/") 
+		} catch (error) {
+			console.error("Error logging out:", error);
+		}
+    };
+
+    // Auth part ends
 
     const navigateToRecipes = () => {
       navigate('/dashboard/recipes');
@@ -89,7 +120,7 @@ export default function Dashboard() {
     <Flex direction="column" width="100%" height="100vh" alignItems="center" className="dashboard">
         {pageState === 'init' && pageLocation === 'dashboard' && (
           <>
-          <div className="main-motto dashboard-header">Lorem Ipsum</div>
+          <div className="main-motto dashboard-header">Welcome {user?.displayName}</div>
             <Flex direction="column" width="100%" height="100vh" alignItems="center" className="dashboard">
             <CentralSearchFrame feature={mainSearchBar} currentBadges={badges} changeBadges={(text,color) => {modifyBadges(text,color)}} searchFunction={navigateToRecipes}/>
             <Toolbar click={[()=>{changePageState('ingSearch')}]}/>
@@ -102,15 +133,13 @@ export default function Dashboard() {
               <div className="main-motto dashboard-header">Lorem Ipsum</div>
               <CentralSearchFrame feature={DynamicForm} featureProps={{ prevState: ()=>{changePageState('init')} }} currentBadges={badges} changeBadges={(text,color) => {modifyBadges(text,color)}}/>
               </>
-              // <CentralSearchFrame feature={DynamicForm} featureProps={{ prevState: ()=>{changePageState('dashboard')} }} currentBadges={badges} changeBadges={(text,color) => {modifyBadges(text,color)}}/>
             )
         }
       <Routes>
-
         <Route path="recipes" element={<RecipeCardContainer recipes={recipes}/>} />
         <Route path="recipe" element={<RecipeDetails recipe={recipe}/>} />
-
       </Routes>
+      <Button onClick={handleLogout}>Logout</Button>
     </Flex>
   );
 };
