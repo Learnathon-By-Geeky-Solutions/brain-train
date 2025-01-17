@@ -4,7 +4,7 @@ import SocialContainer from '../SocialContainer/SocialContainer';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { auth } from '../../services/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 export default function SignInForm() {
     const navigate = useNavigate();
@@ -13,6 +13,7 @@ export default function SignInForm() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleEmailChange = (e) => setEmail(e.target.value);
     const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -30,12 +31,20 @@ export default function SignInForm() {
                     Authorization: `Bearer ${idToken}`,
                 },
             });
-            if (!response.ok) {
+
+            const data = await response.json();
+            if (response.ok) {
+                const username = await data.username;
+                if (!auth.currentUser.displayName) {
+                    await updateProfile(auth.currentUser, {
+                        displayName: username,
+                    });
+                }
+                navigate('/dashboard');
+            } else {
                 setError(true);
                 setErrorMessage('Failed to log in');
-                return;
             }
-            navigate('/dashboard');
         } catch (err) {
             const errorMessage = err.message;
             const errorCode = err.code;
@@ -64,7 +73,6 @@ export default function SignInForm() {
             setErrorMessage('Failed to send password reset email. Please try again.');
         }
     };
-    
 
     return (
         <div className="form-container sign-in-container">
@@ -88,7 +96,6 @@ export default function SignInForm() {
                 <button type="submit">Sign In</button>
                 {error && <p className="error-message">{errorMessage}</p>}
                 {successMessage && <p className="success-message">{successMessage}</p>}
-            
             </form>
         </div>
     )

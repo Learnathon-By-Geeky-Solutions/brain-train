@@ -21,12 +21,16 @@ export default function SocialContainer() {
                 },
             });
 
-            if (!response.ok) {
-                console.error("Failed to log in");
-                return;
+            const data = await response.json();
+            if (response.ok) {
+                const username = await data.username;
+                if (!auth.currentUser.displayName) {
+                    await updateProfile(auth.currentUser, {
+                        displayName: username,
+                    });
+                }
+                navigate('/dashboard');
             }
-
-            navigate('/dashboard');
         } catch (error) {
             console.error("Error during Google sign-in", error.message);
         }
