@@ -45,13 +45,21 @@ export default function SignUpForm() {
                     }),
                 });
 
-                if (!response.ok) {
+                const data = await response.json();
+                if (response.ok) {
+                    const username = await data.username;
+                    if (!auth.currentUser.displayName) {
+                        await updateProfile(auth.currentUser, {
+                            displayName: username,
+                        });
+                    }
+                    navigate('/dashboard');
+                } else {
                     const err = await response.json();
                     setError(true);
                     setErrorMessage(err.error);
+                    setErrorMessage('Failed to sign up');
                 }
-
-                navigate('/Dashboard');
             } catch (err) {
                 const errorMessage = err.message;
 				const errorCode = err.code;
