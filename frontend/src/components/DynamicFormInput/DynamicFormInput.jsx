@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { Button, Input, Flex, IconButton, NativeSelectField, NativeSelectRoot } from '@chakra-ui/react';
+import { Button, Input, Flex, IconButton, NativeSelectField, NativeSelectRoot, HStack, VStack } from '@chakra-ui/react';
 import { MdScale } from 'react-icons/md';
 import { Field } from '../ui/field';
 import { LuDelete } from 'react-icons/lu';
@@ -46,9 +46,9 @@ export default function DynamicFormInput({prevState}) {
   return (
     <Flex direction="column">
       <form onSubmit={handleSubmit(onSubmit)} style={{"padding":"5px"}}>
-        <Flex direction="column" alignItems="center" margin="none">
+        <VStack alignItems="center" margin="none" maxWidth="450px">
           {fields.map((field, index) => (
-            <Flex key={field.id} h="16" direction="row" alignItems="center" backgroundColor="gray.100" padding="5px" w="100%">
+            <Flex key={field.id} minHeight="16" minWidth="70%" direction="row" alignItems="center" backgroundColor="gray.100" padding="5px" >
                 <Flex direction="row" alignItems="center">
                     <Field w="100" invalid={errors.fields?.[index]?.name} errorText={(errors.fields?.[index]?.name) ? errors.fields?.[index]?.name.message : "An error occured"} >
                         <Input
@@ -104,7 +104,7 @@ export default function DynamicFormInput({prevState}) {
            </IconButton>
             </Flex>
           ))}
-        </Flex>
+        </VStack>
         <Button colorScheme="teal" onClick={() => append({ name: '', amount: '', unit: ''})}>
             Add Ingredient
           </Button>
@@ -112,7 +112,7 @@ export default function DynamicFormInput({prevState}) {
           Search
         </Button>
         <Button type="reset" colorScheme="red" mt={4} onClick={()=>{
-          console.log('resetting');
+          // console.log('resetting');
           prevState();
         }}>
             Reset

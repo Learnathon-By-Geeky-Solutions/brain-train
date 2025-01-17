@@ -18,7 +18,7 @@ export default function SignInForm() {
     const login = () => { 
         // console.log(email);
         // console.log(password);
-        navigate("/Dashboard");
+        navigate("/dashboard");
     };
 
     return (
