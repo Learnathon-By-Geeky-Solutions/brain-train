@@ -1,11 +1,13 @@
 import './SignUpForm.css';
 import SocialContainer from '../SocialContainer/SocialContainer';
-import { Heading } from '@chakra-ui/react';
 
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { auth } from '../../services/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { Alert } from '../ui/alert';
+import { Heading, Theme } from '@chakra-ui/react';
+
 
 export default function SignUpForm() {
     const navigate = useNavigate();
@@ -91,18 +93,18 @@ export default function SignUpForm() {
     return (
         <div className="form-container sign-up-container">
             <form onSubmit={handleSubmit}>
-                <h1>Create Account</h1>
+                <Heading size="3xl">Create Account</Heading>
                 <SocialContainer />
                 <span>or use your email for registration</span>
                 <input type="text" placeholder="Name" onChange={handleNameChange} />
                 <input type="email" placeholder="Email" onChange={handleEmailChange} />
                 <input type="password" placeholder="Password" onChange={handlePasswordChange} />
                 {error && (
-                    <div className="error-container">
-                        <p className="error-message">{errorMessage}</p>
-                    </div>
+                    
+                    <Alert status="error" >{errorMessage}</Alert>
+                    
                 )}
-                <button type="submit">Sign Up</button>
+                <button type="submit" style={{"marginTop":"10px"}}>Sign Up</button>
             </form>
         </div>
     )

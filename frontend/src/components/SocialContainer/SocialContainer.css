@@ -1,5 +1,9 @@
 .social-container {
 	margin: 20px 0;
+	border-radius: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .social-container a {

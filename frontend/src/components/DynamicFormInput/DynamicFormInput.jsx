@@ -76,7 +76,7 @@ export default function DynamicFormInput({prevState}) {
                         />
                         <NativeSelectRoot w="80px">
                             <Field invalid={errors.fields?.[index]?.unit} errorText={(errors.fields?.[index]?.unit) ? errors.fields?.[index]?.unit.message : "An error occured"} >
-                                <NativeSelectField textAlign="center" placeholder="Unit" color="black"
+                                <NativeSelectField textAlign="center" placeholder="Unit"
                                 {...register(`fields.${index}.unit`, { required: 'Unit is not specified' })}>
                                     <option value="kg">Kg</option>
                                     <option value="g">gram</option>
@@ -100,18 +100,18 @@ export default function DynamicFormInput({prevState}) {
                     newStates.splice(index, 1);
                     setStates(newStates);
                 }}>
-                <LuDelete color='black' />
+                <LuDelete />
            </IconButton>
             </Flex>
           ))}
         </VStack>
-        <Button colorScheme="teal" onClick={() => append({ name: '', amount: '', unit: ''})}>
+        <Button onClick={() => append({ name: '', amount: '', unit: ''})}>
             Add Ingredient
           </Button>
-        <Button type="submit" colorScheme="blue" mt={4}>
+        <Button type="submit" mt={4}>
           Search
         </Button>
-        <Button type="reset" colorScheme="red" mt={4} onClick={()=>{
+        <Button type="reset" mt={4} onClick={()=>{
           // console.log('resetting');
           prevState();
         }}>

@@ -1,15 +1,21 @@
 import "./App.css";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
-import { Button, IconButton } from "@chakra-ui/react";
+import { Button, IconButton, Theme } from "@chakra-ui/react";
 import logo from "./assets/logo.png";
 import VideoPlayer from "./components/VideoPlayer/VideoPlayer";
 import AuthModal from "./components/AuthModal/Modal";
 import { LuMenu } from "react-icons/lu";
 import { auth } from "./services/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+
+// Lazy-load Firebase methods
+const lazyLoadFirebaseAuth = async (method) => {
+  const authModule = await import('firebase/auth');
+  return authModule[method];
+};
+
 
 export default function App() {
   const navigate = useNavigate();
@@ -18,11 +24,27 @@ export default function App() {
   const openModal = () => setIsAuthModalOpen(true);
   const closeModal = () => setIsAuthModalOpen(false);
 
-  onAuthStateChanged(auth, (currentUser) => {
-    if (currentUser) navigate('/dashboard');
-  });
+  // onAuthStateChanged(auth, (currentUser) => {
+  //   if (currentUser) navigate('/dashboard');
+  // });
+  useEffect(() => {
+    const setupAuthListener = async () => {
+      const onAuthStateChanged = await lazyLoadFirebaseAuth('onAuthStateChanged');
+      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+          navigate('/dashboard');
+        } 
+      });
+
+      // Cleanup the listener when the component unmounts
+      return () => unsubscribe();
+    };
+
+    setupAuthListener();
+  }, [navigate]);
 
   return (
+    <Theme appearance="light">
     <div className="app">
       <nav className="nav-bar">
         <div className="logo">
@@ -45,5 +67,6 @@ export default function App() {
       </div>
       <AuthModal isOpen={isAuthModalOpen} onClose={closeModal} />
     </div>
+    </Theme>
   )
 }

@@ -9,8 +9,12 @@ import CentralSearchFrame from '@/components/CentralSearchFrame/CentralSearchFra
 import Toolbar from '@/components/Toolbar/Toolbar';
 // import { text } from '@fortawesome/fontawesome-svg-core';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/services/firebase';
+
+const lazyLoadFirebaseAuth = async (method) => {
+  const authModule = await import('firebase/auth');
+  return authModule[method];
+};
 
 
 const generateDummyRecipes = () => {
@@ -58,28 +62,33 @@ export default function Dashboard() {
     const [ user, setUser ] = useState(undefined);
     const navigate = useNavigate();
 
-    onAuthStateChanged(auth, (currentUser) => {
-        if (currentUser) {
+    useEffect(() => {
+      const setupAuthStateListener = async () => {
+        const onAuthStateChanged = await lazyLoadFirebaseAuth('onAuthStateChanged');
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+          if (currentUser) {
             setUser(currentUser);
-        } else {
-            /**
-             * TODO: 
-             *  - Redirect to the home page with the auth modal open for sign in
-             *  - Remove comment on completion
-             */
-            // If the user is authenticated, render the children (protected route), 
-            // else redirect to home page.
-            navigate("/");
-        }
-    })
+          } else {
+            // Redirect to the home page if not authenticated
+            navigate('/');
+          }
+        });
+  
+        // Cleanup the listener when the component unmounts
+        return () => unsubscribe();
+      };
+  
+      setupAuthStateListener();
+    }, [navigate]);
 
     const handleLogout = async () => { 
-        try {
-			await signOut(auth);
-            navigate("/") 
-		} catch (error) {
-			console.error("Error logging out:", error);
-		}
+      try {
+        const signOut = await lazyLoadFirebaseAuth('signOut');
+        await signOut(auth);
+        navigate('/'); // Redirect to the home page after logging out
+      } catch (error) {
+        console.error('Error logging out:', error);
+      }
     };
 
     // Auth part ends
@@ -100,8 +109,23 @@ export default function Dashboard() {
       else{
         setPageLocation('newValue');
       }
-      console.log(location.pathname);
-    }, [location]);
+      const setupAuthStateListener = async () => {
+        const onAuthStateChanged = await lazyLoadFirebaseAuth('onAuthStateChanged');
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+          if (currentUser) {
+            setUser(currentUser);
+          } else {
+            // Redirect to the home page if not authenticated
+            navigate('/');
+          }
+        });
+  
+        // Cleanup the listener when the component unmounts
+        return () => unsubscribe();
+      };
+  
+      setupAuthStateListener();
+    }, [navigate,location]);
 
     const mainSearchBar = () => { return ( <Input width="80vw" placeholder="Search..." background="none" border="none" _focus={{border: "none", boxShadow: "none"}} variant="flushed" /> ) };
     const [ badges, setBadges ] = useState([]);
@@ -117,7 +141,7 @@ export default function Dashboard() {
     }
     
   return (
-    <Flex direction="column" width="100%" height="100vh" alignItems="center" className="dashboard">
+    <Flex direction="column" width="100%" height="100%" alignItems="center" className="dashboard">
         {pageState === 'init' && pageLocation === 'dashboard' && (
           <>
           <div className="main-motto dashboard-header">Welcome {user?.displayName}</div>

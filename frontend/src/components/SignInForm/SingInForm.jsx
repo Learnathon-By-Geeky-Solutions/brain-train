@@ -1,11 +1,13 @@
 import './SignInForm.css';
 import SocialContainer from '../SocialContainer/SocialContainer';
-import { Heading } from '@chakra-ui/react';
+import { Heading, Theme } from '@chakra-ui/react';
 
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { auth } from '../../services/firebase';
 import { signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { Alert } from '../ui/alert';
+
 
 export default function SignInForm() {
     const navigate = useNavigate();
@@ -15,6 +17,7 @@ export default function SignInForm() {
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [info, setInfo] = useState('');
 
     const handleEmailChange = (e) => setEmail(e.target.value);
     const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -61,8 +64,8 @@ export default function SignInForm() {
     const handleForgotPassword = async (e) => {
         e.preventDefault();
         if (!email) {
-            setError(true);
-            setErrorMessage('Please enter your email to reset your password.');
+            setInfo('Please enter your email address.');
+            setError(false);
             return;
         }
         try {
@@ -78,7 +81,7 @@ export default function SignInForm() {
     return (
         <div className="form-container sign-in-container">
             <form onSubmit={handleSubmit}>
-                <h1>Sign in</h1>
+                <Heading size="3xl">Sign in</Heading>
                 <SocialContainer />
                 <span>or use your account</span>
                 <input
@@ -93,10 +96,11 @@ export default function SignInForm() {
                     value={password}
                     onChange={handlePasswordChange}
                 />
-                <button type="button" onClick={handleForgotPassword}>Forgot your password?</button>
-                <button type="submit">Sign In</button>
-                {error && <p className="error-message">{errorMessage}</p>}
-                {successMessage && <p className="success-message">{successMessage}</p>}
+                { error && <Alert status="error">{errorMessage}</Alert>}
+                { successMessage && (<Alert status="success">{successMessage}</Alert>)}
+                { info && <Alert status="info">{info}</Alert>}
+                <button type="button" style={{"marginTop":"10px"}} onClick={handleForgotPassword}>Forgot your password?</button>
+                <button type="submit" style={{"marginTop":"10px"}}>Sign In</button>
             </form>
         </div>
     )
