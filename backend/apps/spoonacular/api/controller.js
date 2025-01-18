@@ -4,9 +4,12 @@ import { stripHtml } from 'string-strip-html';
 // Controller: Search Recipes by Query
 export const searchRecipes = async (req, res) => {
     try {
-        const { query, cuisine, diet, number = 10 } = req.query;
-        console.log("query", query);
-        const data = await spoonacularRequest('/recipes/complexSearch', { query, cuisine, diet, number });
+        const {  number = 10 , ...params} = req.query;
+        // console.log("Raw req.query:", req.query); // Debugging step
+        // console.log("Params Object:", params);
+        // console.log("Diet Field from params:", params.diet || "No diet parameter provided");
+
+        const data = await spoonacularRequest('/recipes/complexSearch', {  number , ...params });
         res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -16,9 +19,9 @@ export const searchRecipes = async (req, res) => {
 // Controller: Search Recipes by Ingredients
 export const searchRecipesByIngredients = async (req, res) => {
     try {
-        const { ingredients, number = 10 } = req.query;
-        console.log("ingredients", ingredients);
-        const data = await spoonacularRequest('/recipes/findByIngredients', { ingredients, number });
+        const {  number = 10 , ...params} = req.query;
+        console.log("ingredients", params.ingredients);
+        const data = await spoonacularRequest('/recipes/findByIngredients', { number, ...params });
         res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
