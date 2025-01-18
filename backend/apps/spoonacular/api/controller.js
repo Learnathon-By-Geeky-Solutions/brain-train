@@ -1,4 +1,5 @@
 import { spoonacularRequest } from './spoonacularService.js';
+import { stripHtml } from 'string-strip-html'; 
 
 // Controller: Search Recipes by Query
 export const searchRecipes = async (req, res) => {
@@ -31,6 +32,26 @@ export const getRecipeInformation = async (req, res) => {
         console.log("id", id);
         const data = await spoonacularRequest(`/recipes/${id}/information`);
         res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Controller: Get Recipe Summary
+export const getRecipeSummary = async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log("id", id);
+        const data = await spoonacularRequest(`/recipes/${id}/summary`);
+        // console.log("data", data);
+        const plainTextSummary= stripHtml(data.summary).result;//strip html tags from summary
+        res.status(200).json(
+            {
+                id: data.id,
+                title: data.title,
+                summary: plainTextSummary // Send plain text instead of HTML
+            }
+        );
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
