@@ -9,13 +9,7 @@ import VideoPlayer from "./components/VideoPlayer/VideoPlayer";
 import AuthModal from "./components/AuthModal/Modal";
 import { LuMenu } from "react-icons/lu";
 import { auth } from "./services/firebase";
-
-// Lazy-load Firebase methods
-const lazyLoadFirebaseAuth = async (method) => {
-  const authModule = await import('firebase/auth');
-  return authModule[method];
-};
-
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function App() {
   const navigate = useNavigate();
@@ -24,12 +18,8 @@ export default function App() {
   const openModal = () => setIsAuthModalOpen(true);
   const closeModal = () => setIsAuthModalOpen(false);
 
-  // onAuthStateChanged(auth, (currentUser) => {
-  //   if (currentUser) navigate('/dashboard');
-  // });
   useEffect(() => {
     const setupAuthListener = async () => {
-      const onAuthStateChanged = await lazyLoadFirebaseAuth('onAuthStateChanged');
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
           navigate('/dashboard');
