@@ -93,8 +93,8 @@ export default function Dashboard() {
         )
       }
       <Routes>
-        <Route path="recipes" element={<RecipeCardContainer />} />
-        <Route path="recipe" element={<RecipeDetails />} />
+        <Route path="recipes" element={<RecipeCardContainer />}/>
+        <Route path="recipe" element={<RecipeDetails />}/>
       </Routes>
       <Button onClick={handleLogout}>Logout</Button>
     </Flex>

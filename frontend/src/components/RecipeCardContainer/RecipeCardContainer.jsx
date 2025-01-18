@@ -7,7 +7,7 @@ const RecipeCardContainer = () => {
   const recipes = location.state?.recipes;
 
   if (!recipes || recipes.length === 0) {
-    return <div>No recipes found or still loading...</div>;
+    return (<div>No recipes found or still loading...</div>);
   }
   // Maximum number of cards per row and rows to display
   const cardsPerRow = 5;

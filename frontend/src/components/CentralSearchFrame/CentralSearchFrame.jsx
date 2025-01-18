@@ -2,7 +2,33 @@ import { Input, IconButton, Flex, Stack, Badge } from '@chakra-ui/react';
 import { LuActivity, LuAirVent, LuAlarmClockCheck, LuSearch } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
 
-const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges, searchFunction }) => {
+const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges, searchData }) => {
+
+  const handleSearch = async (e) => {
+    // e.preventDefault();
+        try {
+          // const API_KEY = process.env.REACT_APP_SPOONACULAR_API_KEY;
+          const response = await fetch('http://localhost:3000/api/dummy-recipes', {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${2+2}`,
+              },
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+              console.log('Fetched recipes:', data);
+              navigate('/dashboard/recipes', { state: { recipes: data } });
+              console.log('after navigation');
+          } else {
+              console.error('Failed to fetch recipes. Error code:', response.status);
+          }
+        } catch (err) {
+            console.error("Error from central search frame", err.message);
+        }
+    };
+
     const navigate = useNavigate();
     const Feature = feature;
     if(!currentBadges) currentBadges = [];  
@@ -30,7 +56,7 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
             <LuAirVent />
           </IconButton>
           <IconButton aria-label="Alarm" variant="ghost" borderRadius="full" size="sm" marginLeft="auto" onClick={()=>{
-            searchFunction();
+            handleSearch();
           }}>
             <LuSearch />
           </IconButton>
