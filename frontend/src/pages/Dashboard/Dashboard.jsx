@@ -142,9 +142,13 @@ export default function Dashboard() {
     
   return (
     <Flex direction="column" width="100%" height="100%" alignItems="center" className="dashboard">
+         {
+           pageLocation === 'dashboard' && (
+             <div className="main-motto dashboard-header">Welcome {user?.displayName}</div>
+           )
+         }
         {pageState === 'init' && pageLocation === 'dashboard' && (
           <>
-          <div className="main-motto dashboard-header">Welcome {user?.displayName}</div>
             <Flex direction="column" width="100%" height="100vh" alignItems="center" className="dashboard">
             <CentralSearchFrame feature={mainSearchBar} currentBadges={badges} changeBadges={(text,color) => {modifyBadges(text,color)}} searchFunction={navigateToRecipes}/>
             <Toolbar click={[()=>{changePageState('ingSearch')}]}/>
@@ -153,10 +157,7 @@ export default function Dashboard() {
         ) }
         {
             pageState === 'ingSearch' && pageLocation === 'dashboard' && (
-              <>
-              <div className="main-motto dashboard-header">Lorem Ipsum</div>
               <CentralSearchFrame feature={DynamicForm} featureProps={{ prevState: ()=>{changePageState('init')} }} currentBadges={badges} changeBadges={(text,color) => {modifyBadges(text,color)}}/>
-              </>
             )
         }
       <Routes>
