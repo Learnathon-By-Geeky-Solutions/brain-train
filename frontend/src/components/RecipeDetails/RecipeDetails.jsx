@@ -12,8 +12,11 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { LuClock, LuHeart, LuUtensils } from 'react-icons/lu';
+import { useLocation } from 'react-router-dom';
 
-const RecipeDetails = ({ recipe }) => {
+const RecipeDetails = () => {
+  const location = useLocation();
+  const recipe = location.state?.recipe;
   return (
     <Box maxWidth="900px" mx="auto" p={6} borderWidth="1px" borderRadius="lg">
       <Image
