@@ -1,28 +1,47 @@
 import { spoonacularRequest } from './spoonacularService.js';
+import { enrichRecipesWithFields } from './fetchExtraFields.js';
 import { stripHtml } from 'string-strip-html'; 
 
-// Controller: Search Recipes by Query
+
+
+
+
 export const searchRecipes = async (req, res) => {
     try {
-        const {  number = 10 , ...params} = req.query;
-        // console.log("Raw req.query:", req.query); // Debugging step
-        // console.log("Params Object:", params);
-        // console.log("Diet Field from params:", params.diet || "No diet parameter provided");
+        const { number = 10, fields = "" , ...params } = req.query;
+        console.log("Query Params:", params);
 
-        const data = await spoonacularRequest('/recipes/complexSearch', {  number , ...params });
-        res.status(200).json(data);
+        // Convert "fields" query string into an array (e.g., "summary,likes,nutrition")
+        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
+
+        // Fetch recipes
+        const recipesData = await spoonacularRequest('/recipes/complexSearch', { number, ...params });
+
+        // Enrich recipes with requested fields
+        const enrichedRecipes = await enrichRecipesWithFields(recipesData.results, fieldsArray);
+
+        res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
+
+
+
+
 // Controller: Search Recipes by Ingredients
 export const searchRecipesByIngredients = async (req, res) => {
     try {
-        const {  number = 10 , ...params} = req.query;
+        const {  number = 10 ,fields = "", ...params} = req.query;
         console.log("ingredients", params.ingredients);
-        const data = await spoonacularRequest('/recipes/findByIngredients', { number, ...params });
-        res.status(200).json(data);
+        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
+
+        const recipesData = await spoonacularRequest('/recipes/findByIngredients', { number, ...params });
+        const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
+
+        res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
