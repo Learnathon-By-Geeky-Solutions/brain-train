@@ -93,7 +93,7 @@ export default function SignUpForm() {
     return (
         <div className="form-container sign-up-container">
             <form onSubmit={handleSubmit}>
-                <Heading size="3xl">Create Account</Heading>
+                <Heading size="2xl">Create Account</Heading>
                 <SocialContainer />
                 <span>or use your email for registration</span>
                 <input type="text" placeholder="Name" onChange={handleNameChange} />

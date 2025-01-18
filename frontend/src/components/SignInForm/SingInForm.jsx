@@ -81,7 +81,7 @@ export default function SignInForm() {
     return (
         <div className="form-container sign-in-container">
             <form onSubmit={handleSubmit}>
-                <Heading size="3xl">Sign in</Heading>
+                <Heading size="2xl">Sign in</Heading>
                 <SocialContainer />
                 <span>or use your account</span>
                 <input
