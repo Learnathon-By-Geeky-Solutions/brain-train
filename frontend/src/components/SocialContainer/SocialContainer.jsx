@@ -1,9 +1,8 @@
 import './SocialContainer.css';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleAuth } from '../../services/firebase';
 import { useNavigate } from 'react-router-dom';
+import GoogleButton from 'react-google-button';
 
 export default function SocialContainer() {
     const navigate = useNavigate();
@@ -21,12 +20,16 @@ export default function SocialContainer() {
                 },
             });
 
-            if (!response.ok) {
-                console.error("Failed to log in");
-                return;
+            const data = await response.json();
+            if (response.ok) {
+                const username = await data.username;
+                if (!auth.currentUser.displayName) {
+                    await updateProfile(auth.currentUser, {
+                        displayName: username,
+                    });
+                }
+                navigate('/dashboard');
             }
-
-            navigate('/dashboard');
         } catch (error) {
             console.error("Error during Google sign-in", error.message);
         }
@@ -34,9 +37,11 @@ export default function SocialContainer() {
 
     return (
         <div className="social-container">
-            <button className="social" onClick={handleGoogleSignIn}>
-                <FontAwesomeIcon icon={faGoogle} /> Sign in with Google
-            </button>
+            <GoogleButton
+            type="light"
+            style={{ fontSize: "20px" }}
+            onClick={() => { handleGoogleSignIn() }}
+            />
         </div>
     )
 }

@@ -7,12 +7,11 @@ if (!admin.apps.length) {
   });
 }
 
-export const verifyFirebaseToken = async (idToken) => {
+export const decodeFirebaseIdToken = async (idToken) => {
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-    const { uid, email, name } = decodedToken;
-
-    return { uid, email, name };
+    const { email, name, picture } = decodedToken;
+    return { email, name, picture };
   } catch (error) {
     console.error("Error verifying Firebase token:", error.message);
     throw new Error("Invalid authentication token");

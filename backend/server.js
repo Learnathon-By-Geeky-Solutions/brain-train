@@ -5,6 +5,11 @@ import cors from "cors"; // Middleware for enabling CORS (Cross-Origin Resource 
 import dotenv from 'dotenv';
 import mongoose from 'mongoose'; // Database driver for MongoDB
 
+// Routes
+import signinRoute from './apps/signin/api/routes.js';
+import signupRoute from './apps/signup/api/routes.js';
+import spoonacularRoutes from './apps/spoonacular/api/routes.js';
+
 dotenv.config();
 
 const app = express();
@@ -27,11 +32,11 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch(err => console.error("Failed to connect to MongoDB:", err));
 
-// // Routes
-// import signinRoutes from './apps/signin/api/routes.js';
-// app.use("/signin", signinRoutes);
+app.use("/signin", signinRoute);
+app.use("/signup", signupRoute);
 
-import spoonacularRoutes from './apps/spoonacular/api/routes.js';
+
+
 
 app.use('/search', spoonacularRoutes);
 

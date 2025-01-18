@@ -1,19 +1,40 @@
 import "./App.css";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
-import Button from "./components/Button/Button";
+import { Button, IconButton, Theme } from "@chakra-ui/react";
 import logo from "./assets/logo.png";
 import VideoPlayer from "./components/VideoPlayer/VideoPlayer";
 import AuthModal from "./components/AuthModal/Modal";
+import { LuMenu } from "react-icons/lu";
+import { auth } from "./services/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function App() {
+  const navigate = useNavigate();
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const openModal = () => setIsAuthModalOpen(true);
   const closeModal = () => setIsAuthModalOpen(false);
 
+  useEffect(() => {
+    const setupAuthListener = async () => {
+      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+          navigate('/dashboard');
+        } 
+      });
+
+      // Cleanup the listener when the component unmounts
+      return () => unsubscribe();
+    };
+
+    setupAuthListener();
+  }, [navigate]);
+
   return (
+    <Theme appearance="light">
     <div className="app">
       <nav className="nav-bar">
         <div className="logo">
@@ -22,21 +43,20 @@ export default function App() {
         <div className="title">
           Geeky <span className="title-second-part">Chef</span>
         </div>
-        <div className="menu-button">
-          <Button icon="menuIcon" />
-        </div>
+        <IconButton aria-label="menu" color="white" className="menu-button">
+          <LuMenu />
+        </IconButton> 
       </nav>
       <div className="bg-video">
         <VideoPlayer />
         <div className="bg-cover">
           <div className="main-motto">Lorem Ipsum Lorem Ipsum</div>
           <div className="sub-motto">Dolor simit dlor simit</div>
-          <div className="login-button">
-            <Button text="Get Started Now" click={openModal}/>
-          </div>
+          <Button onClick={openModal} className="login-button">Login</Button>
         </div>
       </div>
       <AuthModal isOpen={isAuthModalOpen} onClose={closeModal} />
     </div>
+    </Theme>
   )
 }
