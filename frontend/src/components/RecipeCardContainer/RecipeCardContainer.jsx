@@ -1,39 +1,14 @@
-import { Box, Image, Flex, Text, VStack, Button, Span } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { Box, Image, Flex, Text, VStack, Button, Span, Heading } from '@chakra-ui/react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import RecipeCard from '../RecipeCard/RecipeCard';
 
-const RecipeCard = ({ recipe, navigate }) => (
-  <Box
-    bg="white"
-    borderRadius="md"
-    boxShadow="lg"
-    overflow="hidden"
-    maxW="220px"
-    _hover={{ transform: 'scale(1.05)', transition: 'all 0.3s ease-in-out' }}
-    cursor="pointer"
-  >
-    <Image src={recipe.image} alt={recipe.name} h="150px" w="100%" objectFit="cover" />
-    <VStack p={4} align="start" spacing={2}>
-      <Text fontSize="lg" fontWeight="bold" noOfLines={1}>
-        {recipe.name}
-      </Text>
-      <Text fontSize="sm" color="gray.600" noOfLines={2}>
-        {recipe.description || 'No description available.'}
-      </Text>
-      <Button
-        size="sm"
-        colorScheme="teal"
-        w="100%"
-        onClick={() => {
-          navigate('/dashboard/recipe');
-        }}
-      >
-        View Recipe
-      </Button>
-    </VStack>
-  </Box>
-);
+const RecipeCardContainer = () => {
+  const location = useLocation();
+  const recipes = location.state?.recipes;
 
-const RecipeCardContainer = ({ recipes }) => {
+  if (!recipes || recipes.length === 0) {
+    return <div>No recipes found or still loading...</div>;
+  }
   // Maximum number of cards per row and rows to display
   const cardsPerRow = 5;
   const maxRows = 4; // Adjust based on your design preference
