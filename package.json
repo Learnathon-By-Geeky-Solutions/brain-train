@@ -1,0 +1,10 @@
+{
+  "name": "geeky-chef",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"cd backend && nodemon\" \"cd frontend && npm start\""
+  },
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
