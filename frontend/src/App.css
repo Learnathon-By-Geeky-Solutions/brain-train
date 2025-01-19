@@ -51,12 +51,11 @@
 }
 
 .bg-video {
-    height: fit-content;
-    max-height: 85vh;
+    height: 100%;
     display: flex;
     align-items: center;
     place-content: center;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .bg-cover {

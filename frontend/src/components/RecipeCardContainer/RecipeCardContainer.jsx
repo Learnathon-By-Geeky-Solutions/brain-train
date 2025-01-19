@@ -22,10 +22,10 @@ const RecipeCardContainer = () => {
       maxH="600px"
       overflowY="auto"
       p={4}
-      border="1px solid"
-      borderColor="gray.300"
-      borderRadius="lg"
-      bg="gray.50"
+      // border="1px solid"
+      // borderColor="gray.300"
+      // borderRadius="lg"
+      bg="none"
     >
       <Flex flexWrap="wrap" justify="center" gap={4}>
         {visibleRecipes.map((recipe, index) => (

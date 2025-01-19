@@ -18,7 +18,7 @@ const RecipeDetails = () => {
   const location = useLocation();
   const recipe = location.state?.recipe;
   return (
-    <Box maxWidth="900px" mx="auto" p={6} borderWidth="1px" borderRadius="lg">
+    <Box maxWidth="900px" mx="auto" p={6} borderWidth="2px" borderRadius="lg" borderColor="gray.400">
       <Image
         src={recipe.image}
         alt={recipe.title}
@@ -32,7 +32,7 @@ const RecipeDetails = () => {
       <Heading as="h1" size="xl" mb={2}>
         {recipe.title}
       </Heading>
-      <HStack spacing={4} color="gray.600" mb={4}>
+      <HStack spacing={4} color="gray.300" mb={4}>
         <HStack>
           <LuClock />
           <Text>{recipe.readyInMinutes} mins</Text>
@@ -46,14 +46,14 @@ const RecipeDetails = () => {
           <Text>{recipe.aggregateLikes} likes</Text>
         </HStack>
       </HStack>
-      <Separator mb={4} />
+      <Separator size="lg" mb={4} />
 
       {/* Recipe Description */}
       {/* <Text fontSize="lg" mb={4} lineHeight="tall">
         {recipe.summary}
       </Text> */}
       <div dangerouslySetInnerHTML={{__html:recipe.summary}}></div>
-      <Separator mb={4} />
+      <Separator size="lg" mb={4} />
 
       {/* Ingredients Section */}
       <Heading as="h2" size="md" mb={2}>
@@ -64,7 +64,7 @@ const RecipeDetails = () => {
           <Text key={index}>• {ingredient.name}</Text>
         ))}
       </VStack>
-      <Separator mb={4} />
+      <Separator size="lg" mb={4} />
 
       {/* Steps Section */}
       <Heading as="h2" size="md" mb={2}>
@@ -80,14 +80,14 @@ const RecipeDetails = () => {
             <strong>{recipe.instructions}</strong> 
         </Text>
       </VStack>
-      <Separator mb="4" /> 
+      <Separator size="lg" mb="4" /> 
 
       {/* Footer */}
       <HStack justify="space-between" mt={4}>
         <Button colorScheme="teal" size="lg">
           Save Recipe
         </Button>
-        <Button variant="outline" size="lg">
+        <Button variant="outline" size="lg" borderColor="gray.400">
           Share
         </Button>
       </HStack>
