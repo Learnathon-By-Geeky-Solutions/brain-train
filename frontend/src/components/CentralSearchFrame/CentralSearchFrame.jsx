@@ -3,8 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 import { LuActivity, LuAirVent, LuAlarmClockCheck, LuSearch } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+
+
 function handleSearchByTitle (searchData) {
-     return `http://localhost:8000/search/recipes?query=${searchData.data}&fields=summary,likes`;
+  return `${API_BASE_URL}/search/recipes?query=${searchData.data}&fields=summary,likes`;
 }
 
 const handleSearchByIngredients = (searchData) => {
@@ -15,8 +18,9 @@ const handleSearchByIngredients = (searchData) => {
         ingredients += field.name + ',';
     });
     ingredients = ingredients.slice(0, -1);
-    console.log('url from function '+`http://localhost:8000/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes`);
-    return `http://localhost:8000/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes`;
+    console.log('url from function '+`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes`);
+    return `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary`;
+
 }
 
 const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges }) => {

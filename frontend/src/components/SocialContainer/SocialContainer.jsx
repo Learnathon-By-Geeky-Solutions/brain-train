@@ -4,6 +4,8 @@ import { auth, googleAuth } from '../../services/firebase';
 import { useNavigate } from 'react-router-dom';
 import GoogleButton from 'react-google-button';
 
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+
 export default function SocialContainer() {
     const navigate = useNavigate();
 
@@ -12,7 +14,7 @@ export default function SocialContainer() {
             const credential = await signInWithPopup(auth, googleAuth);
             const idToken = await credential.user.getIdToken();
             
-            const response = await fetch("http://localhost:8000/signin", {
+            const response = await fetch("${API_BASE_URL}/signin", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

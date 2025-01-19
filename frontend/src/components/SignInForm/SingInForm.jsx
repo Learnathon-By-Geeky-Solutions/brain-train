@@ -8,6 +8,7 @@ import { auth } from '../../services/firebase';
 import { signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { Alert } from '../ui/alert';
 
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 export default function SignInForm() {
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function SignInForm() {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const idToken = await userCredential.user.getIdToken();
 
-            const response = await fetch('http://localhost:8000/signin', {
+            const response = await fetch('${API_BASE_URL}/signin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

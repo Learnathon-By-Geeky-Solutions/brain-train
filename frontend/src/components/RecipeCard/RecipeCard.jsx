@@ -3,7 +3,7 @@ import { HiHeart } from 'react-icons/hi';
 import { LuHeart } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
   
-
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 const RecipeCard = ({ recipe }) => {
 
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const RecipeCard = ({ recipe }) => {
     const handleRecipeDetail = async (e) => {
       // e.preventDefault();
       try {
-        const response = await fetch(`http://localhost:8000/search/recipes/${recipe.id}`, {
+        const response = await fetch(`${API_BASE_URL}/search/recipes/${recipe.id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

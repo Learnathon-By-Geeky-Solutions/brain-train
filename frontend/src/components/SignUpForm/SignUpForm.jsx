@@ -8,6 +8,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Alert } from '../ui/alert';
 import { Heading, Theme } from '@chakra-ui/react';
 
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 export default function SignUpForm() {
     const navigate = useNavigate();
@@ -37,7 +38,7 @@ export default function SignUpForm() {
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
                 
-                const response = await fetch('http://localhost:8000/signup', {
+                const response = await fetch('${API_BASE_URL}/signup', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
