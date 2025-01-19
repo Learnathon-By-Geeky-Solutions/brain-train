@@ -1,6 +1,6 @@
-import { Flex, Input, Button } from '@chakra-ui/react';
-import DynamicForm from '@/components/DynamicFormInput/DynamicFormInput';
-import { useEffect, useState } from 'react';
+import { Flex, Input, Button, IconButton } from '@chakra-ui/react';
+import IngredientSearchForm from '@/components/IngredientSearchFormInput/IngredientSearchFormInput';
+import { useEffect, useRef, useState } from 'react';
 import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
 import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
 
@@ -10,6 +10,8 @@ import Toolbar from '@/components/Toolbar/Toolbar';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { auth } from '@/services/firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { MdLogout } from 'react-icons/md';
+import TitleSearchInput from '@/components/TitleSearchInput/TitleSearchInput';
 
 
 export default function Dashboard() {
@@ -61,14 +63,6 @@ export default function Dashboard() {
     setupAuthStateListener();
   }, [navigate, location]);
 
-  const mainSearchBar = ({controller}) => { 
-    return (<Input width="80vw" placeholder="Search..." background="none" border="none" _focus={{ border: "none", boxShadow: "none" }} variant="flushed" 
-      onChange={(e)=>{
-        const data = {type: 'title', data: e.target.value};
-        controller(data);
-    }}/>) 
-  };
-
   const [badges, setBadges] = useState([]);
   function modifyBadges(text, colorPalette) {
     const newBadges = [...badges];
@@ -82,28 +76,30 @@ export default function Dashboard() {
   }
 
   return (
-    <Flex direction="column" width="100%" height="100%" alignItems="center" className="dashboard">
+    <Flex direction="column" width="100%" height="100%" minHeight="100vh" alignItems="center" className="dashboard">
+      <IconButton marginLeft="auto" marginRight="20px" marginTop="20px">
+        <MdLogout onClick={handleLogout} />
+      </IconButton>
       {
         pageLocation === 'dashboard' && (
-          <div className="main-motto dashboard-header">Welcome {user?.displayName}</div>
+          <div className="dashboard-header welcome-message">Welcome {user?.displayName}</div>
         )
       }
       {pageState === 'init' && pageLocation === 'dashboard' && (
         <Flex direction="column" width="100%" height="100vh" alignItems="center" className="dashboard">
-          <CentralSearchFrame feature={mainSearchBar} currentBadges={badges} changeBadges={(text, color) => { modifyBadges(text, color) }} />
+          <CentralSearchFrame feature={TitleSearchInput} currentBadges={badges} changeBadges={(text, color) => { modifyBadges(text, color) }} />
           <Toolbar click={[() => { changePageState('ingSearch') }]} />
         </Flex>
       )}
       {
         pageState === 'ingSearch' && pageLocation === 'dashboard' && (
-          <CentralSearchFrame feature={DynamicForm} featureProps={{ prevState: () => { changePageState('init') } }} currentBadges={badges} changeBadges={(text, color) => { modifyBadges(text, color) }} />
+          <CentralSearchFrame feature={IngredientSearchForm} featureProps={{ prevState: () => { changePageState('init') }, ref:null } } currentBadges={badges} changeBadges={(text, color) => { modifyBadges(text, color) }} />
         )
       }
       <Routes>
         <Route path="recipes" element={<RecipeCardContainer />}/>
         <Route path="recipe" element={<RecipeDetails />}/>
       </Routes>
-      <Button onClick={handleLogout}>Logout</Button>
     </Flex>
   );
 };

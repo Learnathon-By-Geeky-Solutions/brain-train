@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { Button, Input, Flex, IconButton, NativeSelectField, NativeSelectRoot, HStack, VStack } from '@chakra-ui/react';
-import { MdScale } from 'react-icons/md';
+import { MdAdd, MdArrowBack, MdScale } from 'react-icons/md';
 import { Field } from '../ui/field';
 import { LuDelete } from 'react-icons/lu';
 
 
-export default function DynamicFormInput({prevState, controller}) {
+const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
   const { register, setValue, handleSubmit, formState: {errors}, control } = useForm({
     defaultValues: {
       fields: [{ name: '', amount: '', unit: '' }],
@@ -47,21 +47,22 @@ export default function DynamicFormInput({prevState, controller}) {
 
   return (
     <Flex direction="column">
-      <form onSubmit={handleSubmit(onSubmit)} style={{"padding":"5px"}}>
+      <form ref={ref} onSubmit={handleSubmit(onSubmit)} style={{"padding":"5px","border-radius":"15px", "background-color":"var(--text-input)"}}>
         <VStack alignItems="center" margin="none" maxWidth="450px">
           {fields.map((field, index) => (
-            <Flex key={field.id} minHeight="16" minWidth="70%" direction="row" alignItems="center" backgroundColor="gray.100" padding="5px" >
+            <Flex key={field.id} minHeight="16" minWidth="70%" direction="row" alignItems="center" backgroundColor="var(--dark-light-text-input1)" padding="5px" borderRadius="2xl">
                 <Flex direction="row" alignItems="center">
                     <Field w="100" invalid={errors.fields?.[index]?.name} errorText={(errors.fields?.[index]?.name) ? errors.fields?.[index]?.name.message : "An error occured"} >
                         <Input
                             placeholder="Ingredient name"
                             background="none"
                             variant="flushed"
+                            color="white"
                             _focus={{border: "none", boxShadow: "none"}}
                             {...register(`fields.${index}.name`, { required: "Ingredient name is required" }) }
                         />
                     </Field>
-                    <IconButton aria-label="Add amount" variant="solid" borderRadius="full" size="sm" onClick={ () => {
+                    <IconButton aria-label="Add amount" variant="solid" borderRadius="lg" marginRight="5px" size="sm" onClick={ () => {
                         updateStates(index, 'amount');
                     }}>
                         <MdScale />
@@ -74,9 +75,13 @@ export default function DynamicFormInput({prevState, controller}) {
                             placeholder="Amount"
                             w="100px"
                             marginRight="2"
+                            variant="flushed"
+                            color="white"
+                            _focus={{border: "none", boxShadow: "none"}}
+                            backgroundColor="var(--dark-light-text-input1)"
                             {...register(`fields.${index}.amount`)}
                         />
-                        <NativeSelectRoot w="80px">
+                        <NativeSelectRoot w="80px" marginRight="5px">
                             <Field invalid={errors.fields?.[index]?.unit} errorText={(errors.fields?.[index]?.unit) ? errors.fields?.[index]?.unit.message : "An error occured"} >
                                 <NativeSelectField textAlign="center" placeholder="Unit"
                                 {...register(`fields.${index}.unit`, { required: 'Unit is not specified' })}>
@@ -94,7 +99,7 @@ export default function DynamicFormInput({prevState, controller}) {
              <IconButton marginLeft="auto" 
                 aria-label="Delete field"
                 variant="solid"
-                borderRadius="full"
+                borderRadius="lg"
                 size="sm"
                 onClick={() => {
                     remove(index);
@@ -107,19 +112,19 @@ export default function DynamicFormInput({prevState, controller}) {
             </Flex>
           ))}
         </VStack>
-        <Button onClick={() => append({ name: '', amount: '', unit: ''})}>
-            Add Ingredient
-          </Button>
-        <Button type="submit" mt={4}>
-          Search
-        </Button>
-        <Button type="reset" mt={4} onClick={()=>{
-          // console.log('resetting');
-          prevState();
-        }}>
-            Reset
-        </Button>
+        <Flex direction="row" alignItems="center" width="100%" marginTop="10px">
+          <IconButton size="sm" borderRadius="lg" onClick={()=>{
+            prevState();
+          }}>
+              <MdArrowBack />
+          </IconButton>
+          <IconButton size="sm" borderRadius="lg" marginLeft="auto" onClick={() => append({ name: '', amount: '', unit: ''})}>
+              <MdAdd />
+          </IconButton>
+        </Flex>
       </form>
     </Flex>
   );
-};
+});
+
+export default IngredientSearchFormInput;

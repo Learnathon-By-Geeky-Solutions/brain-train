@@ -1,25 +1,7 @@
 import { Box, Image, Flex, Text, VStack, Button } from '@chakra-ui/react';
+import { HiHeart } from 'react-icons/hi';
+import { LuHeart } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
-
-// const fetchRecipeDetails = async () => {
-//     const recipeId = 642303; // Example recipe ID
-//     const includeNutrition = true; // Query parameter
-  
-//     try {
-//       const response = await fetch(
-//         `http://localhost:8000/search/recipes/${recipeId}?includeNutrition=${includeNutrition}`
-//       );
-  
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! Status: ${response.status}`);
-//       }
-  
-//       const data = await response.json(); // Assuming the API returns JSON
-//       console.log(data); // Handle the response data
-//     } catch (error) {
-//       console.error('Error fetching recipe details:', error);
-//     }
-//   };
   
 
 const RecipeCard = ({ recipe }) => {
@@ -59,34 +41,34 @@ const RecipeCard = ({ recipe }) => {
     _hover={{ transform: 'scale(1.05)', transition: 'all 0.3s ease-in-out' }}
     cursor="pointer"
   >
+    <Flex direction="column" alignItems="center">
     <Image src={recipe.image} alt={recipe.title} h="150px" w="100%" objectFit="cover" />
-    <Flex direction="column" maxHeight="50%" overflow="hidden" p={4} alignItems="center" spacing={2} >
-      <Text fontSize="lg" fontWeight="bold" color="black" noOfLines={1}>
+    <Flex direction="column" p={4} alignItems="center" spacing={2} >
+      <Text fontSize="lg" fontWeight="bold" color="black" noOfLines={1} alignSelf="flex-start">
         {recipe.title}
       </Text>
-      <Text fontSize="sm" color="gray.600" noOfLines={2}>
-        {recipe.summary || 'No description available.'}
-      </Text>
-      {/* <Button
-        size="sm"
-        w="100%"
-        marginTop="auto"
-        onClick={() => {
-          handleRecipeDetail();
-        }}
-      >
-        View Recipe
-      </Button> */}
+      <Flex alignSelf="flex-start" alignItems="center">
+        <LuHeart color="black"/>
+        <Text fontSize="sm" color="gray.600">
+          {recipe.likes}
+        </Text>
+      </Flex>
+      {/* <Flex direction="column" overflow="hidden" alignItems="center" spacing={2} paddingLeft={4} paddingRight={4} paddingTop={0}>
+        <Text fontSize="sm" color="gray.600" noOfLines={2}>
+          {recipe.summary || 'No description available.'}
+        </Text>
+      </Flex> */}
     </Flex>
-    <Button
-        size="sm"
-        w="100%"
-        onClick={() => {
-          handleRecipeDetail();
-        }}
-      >
-        View Recipe
-      </Button>
+      <Button
+          size="sm"
+          w="100%"
+          onClick={() => {
+            handleRecipeDetail();
+          }}
+        >
+          View Recipe
+        </Button>
+    </Flex>
   </Box>
 )};
 

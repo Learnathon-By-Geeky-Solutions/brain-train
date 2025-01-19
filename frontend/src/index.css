@@ -8,6 +8,13 @@
   --faded-text-color: rgb(107, 105, 105);
   --darkest-green: #485b12;
   --lightest-green: #959500;
+  --text-input: #424242;
+  --dark-bg: #202020;
+  --dark-light-text-input1: #716f6f;
+  --dark-light-text-input2: #828080;
+  --neon-green: rgba(57, 255, 20, 1);
+  --neon-orange: rgba(255, 165, 0, 1);
+  --neon-pink: rgba(255, 20, 147, 1);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
