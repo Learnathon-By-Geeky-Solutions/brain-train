@@ -4,8 +4,7 @@
   "scripts": {
     "start": "concurrently \"cd backend && nodemon\" \"cd frontend && npm start\""
   },
-  "dependencies": {
-    "concurrently": "^9.1.2",
-    "express": "^4.21.2"
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }
