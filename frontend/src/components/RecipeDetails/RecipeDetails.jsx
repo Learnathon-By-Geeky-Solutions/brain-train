@@ -21,7 +21,7 @@ const RecipeDetails = () => {
     <Box maxWidth="900px" mx="auto" p={6} borderWidth="1px" borderRadius="lg">
       <Image
         src={recipe.image}
-        alt={recipe.name}
+        alt={recipe.title}
         borderRadius="lg"
         objectFit="cover"
         width="100%"
@@ -30,12 +30,12 @@ const RecipeDetails = () => {
       />
 
       <Heading as="h1" size="xl" mb={2}>
-        {recipe.name}
+        {recipe.title}
       </Heading>
       <HStack spacing={4} color="gray.600" mb={4}>
         <HStack>
           <LuClock />
-          <Text>{recipe.cookTime} mins</Text>
+          <Text>{recipe.readyInMinutes} mins</Text>
         </HStack>
         <HStack>
           <LuUtensils />
@@ -43,15 +43,16 @@ const RecipeDetails = () => {
         </HStack>
         <HStack>
           <LuHeart />
-          <Text>{recipe.likes} likes</Text>
+          <Text>{recipe.aggregateLikes} likes</Text>
         </HStack>
       </HStack>
       <Separator mb={4} />
 
       {/* Recipe Description */}
-      <Text fontSize="lg" mb={4} lineHeight="tall">
-        {recipe.description}
-      </Text>
+      {/* <Text fontSize="lg" mb={4} lineHeight="tall">
+        {recipe.summary}
+      </Text> */}
+      <div dangerouslySetInnerHTML={{__html:recipe.summary}}></div>
       <Separator mb={4} />
 
       {/* Ingredients Section */}
@@ -59,8 +60,8 @@ const RecipeDetails = () => {
         Ingredients
       </Heading>
       <VStack align="start" spacing={1} mb={4}>
-        {recipe.ingredients.map((ingredient, index) => (
-          <Text key={index}>• {ingredient}</Text>
+        {recipe.extendedIngredients.map((ingredient, index) => (
+          <Text key={index}>• {ingredient.name}</Text>
         ))}
       </VStack>
       <Separator mb={4} />
@@ -70,11 +71,14 @@ const RecipeDetails = () => {
         Preparation Steps
       </Heading>
       <VStack align="start" spacing={3} mb={4}>
-        {recipe.steps.map((step, index) => (
+        {/* {recipe.steps.map((step, index) => (
           <Text key={index}>
             <strong>Step {index + 1}:</strong> {step}
           </Text>
-        ))}
+        ))} */}
+        <Text>
+            <strong>{recipe.instructions}</strong> 
+        </Text>
       </VStack>
       <Separator mb="4" /> 
 

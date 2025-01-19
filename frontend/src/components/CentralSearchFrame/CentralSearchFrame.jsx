@@ -1,14 +1,35 @@
 import { Input, IconButton, Flex, Stack, Badge } from '@chakra-ui/react';
+import { useState } from 'react';
 import { LuActivity, LuAirVent, LuAlarmClockCheck, LuSearch } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
 
-const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges, searchData }) => {
+function handleSearchByTitle (searchData) {
+     return `http://localhost:8000/search/recipes?query=${searchData.data}&fields=summary,likes`;
+}
+
+const handleSearchByIngredients = (searchData) => {
+    var ingredients = '';
+    var data = searchData.data;
+    data.fields.forEach((field) => {
+        ingredients += field.name + ',';
+    });
+    ingredients = ingredients.slice(0, -1);
+    return `http://localhost:8000/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes`;
+}
+
+const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges }) => {
 
   const handleSearch = async (e) => {
-    // e.preventDefault();
+        console.log(searchData);
+        let url = '';
+        if(searchData.type === 'title'){
+            url = handleSearchByTitle(searchData);
+        }
+        else if(searchData.type === 'ingredients'){
+            url = handleSearchByIngredients(searchData);
+        }
         try {
-          // const API_KEY = process.env.REACT_APP_SPOONACULAR_API_KEY;
-          const response = await fetch('http://localhost:3000/api/dummy-recipes', {
+          const response = await fetch(url, {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
@@ -19,7 +40,8 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
           const data = await response.json();
           if (response.ok) {
               console.log('Fetched recipes:', data);
-              navigate('/dashboard/recipes', { state: { recipes: data } });
+              if(searchData.type === 'title') navigate('/dashboard/recipes', { state: { recipes: data.results } });
+              else if(searchData.type === 'ingredients') navigate('/dashboard/recipes', { state: { recipes: data } });
               console.log('after navigation');
           } else {
               console.error('Failed to fetch recipes. Error code:', response.status);
@@ -31,6 +53,9 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
 
     const navigate = useNavigate();
     const Feature = feature;
+
+    const [searchData, setSearchData] = useState({type:'', data:{}});
+
     if(!currentBadges) currentBadges = [];  
     const BadgesJsx = currentBadges.map((badge) => <Badge colorPalette={badge.colorPalette}>{badge.text}</Badge>);
     return (
@@ -38,7 +63,7 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
             <Flex direction="row" width="inherit">
             {  BadgesJsx }
             </Flex>
-        <Feature {...featureProps} />
+        <Feature {...featureProps} controller={setSearchData}/>
         <Flex direction="row">
           <IconButton aria-label="Activity" variant="ghost" borderRadius="full" size="sm" onClick={()=>{
             changeBadges('Activity', 'pink');

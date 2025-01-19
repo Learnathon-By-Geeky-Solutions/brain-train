@@ -1,6 +1,27 @@
 import { Box, Image, Flex, Text, VStack, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
+// const fetchRecipeDetails = async () => {
+//     const recipeId = 642303; // Example recipe ID
+//     const includeNutrition = true; // Query parameter
+  
+//     try {
+//       const response = await fetch(
+//         `http://localhost:8000/search/recipes/${recipeId}?includeNutrition=${includeNutrition}`
+//       );
+  
+//       if (!response.ok) {
+//         throw new Error(`HTTP error! Status: ${response.status}`);
+//       }
+  
+//       const data = await response.json(); // Assuming the API returns JSON
+//       console.log(data); // Handle the response data
+//     } catch (error) {
+//       console.error('Error fetching recipe details:', error);
+//     }
+//   };
+  
+
 const RecipeCard = ({ recipe }) => {
 
     const navigate = useNavigate();
@@ -8,8 +29,7 @@ const RecipeCard = ({ recipe }) => {
     const handleRecipeDetail = async (e) => {
       // e.preventDefault();
       try {
-        // const API_KEY = process.env.REACT_APP_SPOONACULAR_API_KEY;
-        const response = await fetch('http://localhost:3000/api/recipe', {
+        const response = await fetch(`http://localhost:8000/search/recipes/${recipe.id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,17 +59,27 @@ const RecipeCard = ({ recipe }) => {
     _hover={{ transform: 'scale(1.05)', transition: 'all 0.3s ease-in-out' }}
     cursor="pointer"
   >
-    <Image src={recipe.image} alt={recipe.name} h="150px" w="100%" objectFit="cover" />
-    <VStack p={4} align="start" spacing={2}>
-      <Text fontSize="lg" fontWeight="bold" noOfLines={1}>
-        {recipe.name}
+    <Image src={recipe.image} alt={recipe.title} h="150px" w="100%" objectFit="cover" />
+    <Flex direction="column" maxHeight="50%" overflow="hidden" p={4} alignItems="center" spacing={2} >
+      <Text fontSize="lg" fontWeight="bold" color="black" noOfLines={1}>
+        {recipe.title}
       </Text>
       <Text fontSize="sm" color="gray.600" noOfLines={2}>
-        {recipe.description || 'No description available.'}
+        {recipe.summary || 'No description available.'}
       </Text>
-      <Button
+      {/* <Button
         size="sm"
-        colorScheme="teal"
+        w="100%"
+        marginTop="auto"
+        onClick={() => {
+          handleRecipeDetail();
+        }}
+      >
+        View Recipe
+      </Button> */}
+    </Flex>
+    <Button
+        size="sm"
         w="100%"
         onClick={() => {
           handleRecipeDetail();
@@ -57,7 +87,6 @@ const RecipeCard = ({ recipe }) => {
       >
         View Recipe
       </Button>
-    </VStack>
   </Box>
 )};
 

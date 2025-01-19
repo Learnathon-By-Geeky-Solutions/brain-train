@@ -1,5 +1,5 @@
 import admin from "firebase-admin";
-import { serverConfig } from "../config/serverConfig.js";
+import { serverConfig } from "../config/ServerConfig.js";
 
 if (!admin.apps.length) {
   admin.initializeApp({

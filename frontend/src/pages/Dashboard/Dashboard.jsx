@@ -61,7 +61,14 @@ export default function Dashboard() {
     setupAuthStateListener();
   }, [navigate, location]);
 
-  const mainSearchBar = () => { return (<Input width="80vw" placeholder="Search..." background="none" border="none" _focus={{ border: "none", boxShadow: "none" }} variant="flushed" />) };
+  const mainSearchBar = ({controller}) => { 
+    return (<Input width="80vw" placeholder="Search..." background="none" border="none" _focus={{ border: "none", boxShadow: "none" }} variant="flushed" 
+      onChange={(e)=>{
+        const data = {type: 'title', data: e.target.value};
+        controller(data);
+    }}/>) 
+  };
+
   const [badges, setBadges] = useState([]);
   function modifyBadges(text, colorPalette) {
     const newBadges = [...badges];

@@ -1,5 +1,5 @@
 import { Box, Image, Flex, Text, VStack, Button, Span, Heading } from '@chakra-ui/react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import RecipeCard from '../RecipeCard/RecipeCard';
 
 const RecipeCardContainer = () => {
@@ -17,8 +17,6 @@ const RecipeCardContainer = () => {
   // Slice the recipes array to show only the maximum number of cards
   const visibleRecipes = recipes.slice(0, maxCards);
 
-  const navigate = useNavigate();
-
   return (
     <Box
       maxH="600px"
@@ -31,7 +29,7 @@ const RecipeCardContainer = () => {
     >
       <Flex flexWrap="wrap" justify="center" gap={4}>
         {visibleRecipes.map((recipe, index) => (
-            <RecipeCard recipe={recipe} navigate={navigate} />
+            <RecipeCard key={index} recipe={recipe} />
         ))}
       </Flex>
     </Box>

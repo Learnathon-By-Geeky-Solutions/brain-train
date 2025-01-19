@@ -6,7 +6,7 @@ import { Field } from '../ui/field';
 import { LuDelete } from 'react-icons/lu';
 
 
-export default function DynamicFormInput({prevState}) {
+export default function DynamicFormInput({prevState, controller}) {
   const { register, setValue, handleSubmit, formState: {errors}, control } = useForm({
     defaultValues: {
       fields: [{ name: '', amount: '', unit: '' }],
@@ -20,6 +20,8 @@ export default function DynamicFormInput({prevState}) {
 
   const onSubmit = (data) => {
     console.log(data);
+    const submitData = {type: 'ingredients', data: data};
+    controller(submitData);
   };
 
   const [amountStates, setStates] = useState([{amount: 0}]);
