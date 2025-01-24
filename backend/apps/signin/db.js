@@ -14,10 +14,10 @@ export const findUserByEmail = async (email) => {
  * @param {Object} userInfo - Contains user information: email, name, and picture.
  */
 export const createUser = async (userInfo) => {
-  const { email, username, picture } = userInfo;
+  const { email, name, picture } = userInfo;
   const user = new Users({
     email: email,
-    username: username,
+    username: name,
     picture,
   });
   await user.save();
