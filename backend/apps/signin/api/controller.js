@@ -18,9 +18,7 @@ export const signinController = async (req, res) => {
       await createUser(userInfo);
       user = await findUserByEmail(userInfo.email);  
     }
-    console.log("🚀 ~ signinController ~ username:", user.username)
     return res.status(200).json({ message: 'Login successful', username: user.username });
-    
   } catch (error) {
     console.error('Login error:', error.message);
     return res.status(500).json({ error: 'Internal server error' });

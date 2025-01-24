@@ -1,6 +1,6 @@
-import { Flex, Input, Button, IconButton } from '@chakra-ui/react';
+import { Flex, IconButton } from '@chakra-ui/react';
 import IngredientSearchForm from '@/components/IngredientSearchFormInput/IngredientSearchFormInput';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
 import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
 
@@ -93,12 +93,12 @@ export default function Dashboard() {
       )}
       {
         pageState === 'ingSearch' && pageLocation === 'dashboard' && (
-          <CentralSearchFrame feature={IngredientSearchForm} featureProps={{ prevState: () => { changePageState('init') }, ref:null } } currentBadges={badges} changeBadges={(text, color) => { modifyBadges(text, color) }} />
+          <CentralSearchFrame feature={IngredientSearchForm} featureProps={{ prevState: () => { changePageState('init') }, ref: null }} currentBadges={badges} changeBadges={(text, color) => { modifyBadges(text, color) }} />
         )
       }
       <Routes>
-        <Route path="recipes" element={<RecipeCardContainer />}/>
-        <Route path="recipe" element={<RecipeDetails />}/>
+        <Route path="recipes" element={<RecipeCardContainer />} />
+        <Route path="recipe" element={<RecipeDetails />} />
       </Routes>
     </Flex>
   );
