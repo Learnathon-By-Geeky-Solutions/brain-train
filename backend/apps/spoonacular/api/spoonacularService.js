@@ -5,7 +5,7 @@ const SPOONACULAR_API_KEY = process.env.SPOONACULAR_API_KEY;
 
 export const spoonacularRequest = async (endpoint, params = {}) => {
     try {
-        console.log(`[DEBUG] Using API Key: ${process.env.SPOONACULAR_API_KEY}`);
+
         const response = await axios.get(`${SPOONACULAR_API_BASE_URL}${endpoint}`, {
             params: { apiKey: process.env.SPOONACULAR_API_KEY, ...params },
         });
