@@ -14,7 +14,7 @@ export default function SocialContainer() {
             const credential = await signInWithPopup(auth, googleAuth);
             const idToken = await credential.user.getIdToken();
             
-            const response = await fetch("${API_BASE_URL}/signin", {
+            const response = await fetch(`${API_BASE_URL}/signin`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

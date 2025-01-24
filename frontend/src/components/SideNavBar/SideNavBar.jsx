@@ -27,7 +27,7 @@ export default function SideNavBar() {
             _hover={{ bg: "gray.700" }}
           >
             <LuMenu />
-            </IconButton>
+          </IconButton>
         </Tooltip>
         <Tooltip label="Settings" fontSize="sm">
           <IconButton

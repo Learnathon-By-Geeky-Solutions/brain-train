@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { auth } from '../../services/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Alert } from '../ui/alert';
-import { Heading, Theme } from '@chakra-ui/react';
+import { Heading } from '@chakra-ui/react';
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
@@ -37,15 +37,15 @@ export default function SignUpForm() {
         } else {
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
-                
-                const response = await fetch('${API_BASE_URL}/signup', {
+
+                const response = await fetch(`${API_BASE_URL}/signup`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ 
-                        username: name, 
-                        email: email 
+                    body: JSON.stringify({
+                        username: name,
+                        email: email
                     }),
                 });
 
@@ -66,27 +66,27 @@ export default function SignUpForm() {
                 }
             } catch (err) {
                 const errorMessage = err.message;
-				const errorCode = err.code;
-				setError(true);
-				switch (errorCode) {
-					case "auth/weak-password":
-						setErrorMessage("The password is too weak.");
-						break;
-					case "auth/email-already-in-use":
-						setErrorMessage(
-							"This email address is already in use by another account."
-						);
-						break;
-					case "auth/invalid-email":
-						setErrorMessage("This email address is invalid.");
-						break;
-					case "auth/operation-not-allowed":
-						setErrorMessage("Email/password accounts are not enabled.");
-						break;
-					default:
-						setErrorMessage(errorMessage);
-						break;
-				}
+                const errorCode = err.code;
+                setError(true);
+                switch (errorCode) {
+                    case "auth/weak-password":
+                        setErrorMessage("The password is too weak.");
+                        break;
+                    case "auth/email-already-in-use":
+                        setErrorMessage(
+                            "This email address is already in use by another account."
+                        );
+                        break;
+                    case "auth/invalid-email":
+                        setErrorMessage("This email address is invalid.");
+                        break;
+                    case "auth/operation-not-allowed":
+                        setErrorMessage("Email/password accounts are not enabled.");
+                        break;
+                    default:
+                        setErrorMessage(errorMessage);
+                        break;
+                }
             }
         }
     };
@@ -101,11 +101,11 @@ export default function SignUpForm() {
                 <input type="email" placeholder="Email" onChange={handleEmailChange} />
                 <input type="password" placeholder="Password" onChange={handlePasswordChange} />
                 {error && (
-                    
+
                     <Alert status="error" >{errorMessage}</Alert>
-                    
+
                 )}
-                <button type="submit" style={{"marginTop":"10px"}}>Sign Up</button>
+                <button type="submit" style={{ "marginTop": "10px" }}>Sign Up</button>
             </form>
         </div>
     )
