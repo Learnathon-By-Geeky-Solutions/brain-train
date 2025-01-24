@@ -4,7 +4,7 @@ import SocialContainer from '../SocialContainer/SocialContainer';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { auth } from '../../services/firebase'
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { Alert } from '../ui/alert';
 import { Heading } from '@chakra-ui/react';
 
@@ -37,6 +37,11 @@ export default function SignUpForm() {
         } else {
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
+                
+                const user = auth.currentUser;
+                await updateProfile(user, {
+                    displayName: name,
+                });
 
                 const response = await fetch(`${API_BASE_URL}/signup`, {
                     method: 'POST',
@@ -49,14 +54,7 @@ export default function SignUpForm() {
                     }),
                 });
 
-                const data = await response.json();
                 if (response.ok) {
-                    const username = await data.username;
-                    if (!auth.currentUser.displayName) {
-                        await updateProfile(auth.currentUser, {
-                            displayName: username,
-                        });
-                    }
                     navigate('/dashboard');
                 } else {
                     const err = await response.json();

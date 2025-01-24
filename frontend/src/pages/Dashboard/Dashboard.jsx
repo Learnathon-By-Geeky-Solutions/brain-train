@@ -93,12 +93,12 @@ export default function Dashboard() {
       )}
       {
         pageState === 'ingSearch' && pageLocation === 'dashboard' && (
-          <CentralSearchFrame feature={IngredientSearchForm} featureProps={{ prevState: () => { changePageState('init') }, ref:null } } currentBadges={badges} changeBadges={(text, color) => { modifyBadges(text, color) }} />
+          <CentralSearchFrame feature={IngredientSearchForm} featureProps={{ prevState: () => { changePageState('init') }, ref: null }} currentBadges={badges} changeBadges={(text, color) => { modifyBadges(text, color) }} />
         )
       }
       <Routes>
-        <Route path="recipes" element={<RecipeCardContainer />}/>
-        <Route path="recipe" element={<RecipeDetails />}/>
+        <Route path="recipes" element={<RecipeCardContainer />} />
+        <Route path="recipe" element={<RecipeDetails />} />
       </Routes>
     </Flex>
   );

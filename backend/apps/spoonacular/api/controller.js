@@ -65,7 +65,7 @@ export const getRecipeSummary = async (req, res) => {
         const { id } = req.params;
         console.log("id", id);
         const data = await spoonacularRequest(`/recipes/${id}/summary`);
-        // console.log("data", data);
+        
         const plainTextSummary= stripHtml(data.summary).result;//strip html tags from summary
         res.status(200).json(
             {
@@ -74,6 +74,48 @@ export const getRecipeSummary = async (req, res) => {
                 summary: plainTextSummary // Send plain text instead of HTML
             }
         );
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// 🔍 Autocomplete Recipes
+
+export const autoCompleteRecipes = async (req, res) => {
+
+    try {
+
+
+        const { query, number = 5 } = req.query;
+
+        if (!query) {
+            return res.status(400).json({ error: "Query parameter is required." });
+        }
+
+        const data = await spoonacularRequest('/recipes/autocomplete', { query, number });
+
+        return res.status(200).json(data);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+
+// 🍏 Autocomplete Ingredients
+export const autoCompleteIngredients = async (req, res) => {
+    try {
+        const { query, number = 5 } = req.query;
+
+        if (!query) {
+            return res.status(400).json({ error: "Query parameter is required." });
+        }
+
+        console.log("🔍 Autocomplete Ingredient Query:", query);
+
+        // Request Spoonacular API
+        const data = await spoonacularRequest('/food/ingredients/autocomplete', { query, number });
+
+        res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

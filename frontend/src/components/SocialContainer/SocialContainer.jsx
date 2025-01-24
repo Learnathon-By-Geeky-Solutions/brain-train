@@ -1,5 +1,5 @@
 import './SocialContainer.css';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, updateProfile } from 'firebase/auth';
 import { auth, googleAuth } from '../../services/firebase';
 import { useNavigate } from 'react-router-dom';
 import GoogleButton from 'react-google-button';
