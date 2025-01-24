@@ -5,10 +5,7 @@ import {
   Text,
   VStack,
   HStack,
-  Tag,
   Separator,
-  Stack,
-  Icon,
   Button,
 } from '@chakra-ui/react';
 import { LuClock, LuHeart, LuUtensils } from 'react-icons/lu';
@@ -60,8 +57,8 @@ const RecipeDetails = () => {
         Ingredients
       </Heading>
       <VStack align="start" spacing={1} mb={4}>
-        {recipe.extendedIngredients.map((ingredient, index) => (
-          <Text key={index}>• {ingredient.name}</Text>
+        {recipe.extendedIngredients.map((ingredient) => (
+          <Text key={ingredient.id}>• {ingredient.name}</Text>
         ))}
       </VStack>
       <Separator size="lg" mb={4} />
@@ -71,11 +68,6 @@ const RecipeDetails = () => {
         Preparation Steps
       </Heading>
       <VStack align="start" spacing={3} mb={4}>
-        {/* {recipe.steps.map((step, index) => (
-          <Text key={index}>
-            <strong>Step {index + 1}:</strong> {step}
-          </Text>
-        ))} */}
         <Text>
             <strong>{recipe.instructions}</strong> 
         </Text>

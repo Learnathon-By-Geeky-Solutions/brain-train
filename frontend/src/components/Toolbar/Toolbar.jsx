@@ -1,12 +1,12 @@
 import { Flex, IconButton } from '@chakra-ui/react';
 import { MdHealthAndSafety, MdShoppingCart } from 'react-icons/md';
 import './Toolbar.css';
+import PropTypes from 'prop-types';
 
-export default function Toolbar({click}) {
+function Toolbar({click}) {
     return (
         <Flex direction="row" alignItems="center" bg="none" placeContent="center">
             <IconButton aria-label="ingredient" sz="sm" className="toolbar tool" onClick={click[0]} >
-            {/* onClick={click[0]} */}
                 <Flex direction="row" alignItems="center" padding="5px">
                     <MdShoppingCart color="var(--neon-green)"/>
                     Search by ingredient
@@ -27,3 +27,8 @@ export default function Toolbar({click}) {
         </Flex>
     )
 }
+Toolbar.propTypes = {
+    click: PropTypes.arrayOf(PropTypes.func).isRequired,
+};
+
+export default Toolbar;

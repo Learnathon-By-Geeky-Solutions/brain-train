@@ -1,7 +1,7 @@
-import { Box, Image, Flex, Text, VStack, Button } from '@chakra-ui/react';
-import { HiHeart } from 'react-icons/hi';
+import { Box, Image, Flex, Text, Button } from '@chakra-ui/react';
 import { LuHeart } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
   
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 const RecipeCard = ({ recipe }) => {
@@ -9,7 +9,6 @@ const RecipeCard = ({ recipe }) => {
     const navigate = useNavigate();
 
     const handleRecipeDetail = async (e) => {
-      // e.preventDefault();
       try {
         const response = await fetch(`${API_BASE_URL}/search/recipes/${recipe.id}`, {
             method: 'GET',
@@ -71,5 +70,14 @@ const RecipeCard = ({ recipe }) => {
     </Flex>
   </Box>
 )};
+
+RecipeCard.propTypes = {
+  recipe: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    image: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    likes: PropTypes.number.isRequired,
+  }).isRequired,
+};
 
 export default RecipeCard;

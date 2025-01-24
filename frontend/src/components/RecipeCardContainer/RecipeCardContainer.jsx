@@ -1,4 +1,4 @@
-import { Box, Image, Flex, Text, VStack, Button, Span, Heading } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 import RecipeCard from '../RecipeCard/RecipeCard';
 
@@ -29,7 +29,7 @@ const RecipeCardContainer = () => {
     >
       <Flex flexWrap="wrap" justify="center" gap={4}>
         {visibleRecipes.map((recipe, index) => (
-            <RecipeCard key={index} recipe={recipe} />
+            <RecipeCard key={recipe.id} recipe={recipe} />
         ))}
       </Flex>
     </Box>

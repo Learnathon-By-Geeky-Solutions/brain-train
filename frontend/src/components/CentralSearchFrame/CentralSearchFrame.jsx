@@ -1,7 +1,8 @@
-import { Input, IconButton, Flex, Stack, Badge } from '@chakra-ui/react';
+import { IconButton, Flex, Badge } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { LuActivity, LuAirVent, LuAlarmClockCheck, LuSearch } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
@@ -12,8 +13,8 @@ function handleSearchByTitle (searchData) {
 
 const handleSearchByIngredients = (searchData) => {
     console.log('searchData from function by ing'+searchData);
-    var ingredients = '';
-    var data = searchData.data;
+    let ingredients = '';
+    let data = searchData.data;
     data.fields.forEach((field) => {
         ingredients += field.name + ',';
     });
@@ -81,7 +82,7 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
     if(featureProps) featureProps.ref = ref;
 
     if(!currentBadges) currentBadges = [];  
-    const BadgesJsx = currentBadges.map((badge) => <Badge colorPalette={badge.colorPalette}>{badge.text}</Badge>);
+    const BadgesJsx = currentBadges.map((badge) => <Badge key={badge.id} colorPalette={badge.colorPalette}>{badge.text}</Badge>);
     return (
         <Flex direction="column" maxWidth="80%" background="var(--text-input)" borderRadius="3xl" padding="2">
             <Flex direction="row" width="inherit">
@@ -113,5 +114,17 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
       </Flex>
     )
 }
+
+CentralSearchFrame.defaultProps = {
+  featureProps: {},
+  currentBadges: [],
+};
+
+CentralSearchFrame.propTypes = {
+  feature: PropTypes.elementType.isRequired,
+  featureProps: PropTypes.object,
+  currentBadges: PropTypes.array,
+  changeBadges: PropTypes.func.isRequired,
+};
 
 export default CentralSearchFrame;

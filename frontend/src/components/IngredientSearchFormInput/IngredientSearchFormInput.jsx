@@ -1,6 +1,7 @@
 import React, { forwardRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { Button, Input, Flex, IconButton, NativeSelectField, NativeSelectRoot, HStack, VStack, Theme } from '@chakra-ui/react';
+import { Input, Flex, IconButton, NativeSelectField, NativeSelectRoot, VStack } from '@chakra-ui/react';
 import { MdAdd, MdArrowBack, MdScale } from 'react-icons/md';
 import { Field } from '../ui/field';
 import { LuDelete } from 'react-icons/lu';
@@ -24,7 +25,7 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
     controller(submitData);
   };
 
-  const [amountStates, setStates] = useState([{amount: 0}]);
+  const [amountStates, setAmountStates] = useState([{amount: 0}]);
 
   function updateStates(index){
 
@@ -36,7 +37,7 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
     }else{
         newStates[index].amount = 1 - newStates[index].amount;
     } 
-    setStates(newStates);
+    setAmountStates(newStates);
 
     if( newStates[index].amount == 0 ){
         setValue(`fields.${index}.amount`, '');
@@ -63,7 +64,7 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
                         />
                     </Field>
                     <IconButton aria-label="Add amount" variant="solid" borderRadius="lg" marginRight="5px" size="sm" onClick={ () => {
-                        updateStates(index, 'amount');
+                        updateStates(index);
                     }}>
                         <MdScale />
                     </IconButton>
@@ -105,7 +106,7 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
                     remove(index);
                     const newStates = [...amountStates];
                     newStates.splice(index, 1);
-                    setStates(newStates);
+                    setAmountStates(newStates);
                 }}>
                 <LuDelete />
            </IconButton>
@@ -126,5 +127,9 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
     </Flex>
   );
 });
+IngredientSearchFormInput.propTypes = {
+  prevState: PropTypes.func.isRequired,
+  controller: PropTypes.func.isRequired,
+};
 
 export default IngredientSearchFormInput;

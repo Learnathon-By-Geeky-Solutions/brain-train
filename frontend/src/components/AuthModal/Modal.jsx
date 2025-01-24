@@ -1,24 +1,26 @@
 import "./Modal.css";
-import { Heading } from "@chakra-ui/react";
+import { Heading, IconButton } from "@chakra-ui/react";
 
 import { useState } from "react";
 
 import SignInForm from "../SignInForm/SingInForm";
 import SignUpForm from "../SignUpForm/SignUpForm";
+import PropTypes from 'prop-types';
+import { LuX } from "react-icons/lu";
 
 
-export default function Modal ({ isOpen, onClose }) {
-  if (!isOpen) return null;
+function Modal ({ isOpen, onClose }) {
  
   const [ panel, setPanel ] = useState(null);
-
   const swipeRight = () => { setPanel(null) };
   const swipeLeft = () => { setPanel("right-panel-active") };
 
+  if (!isOpen) return null;
+
   return (
     <div className="modal-overlay" >
-        <div className="modal-content" onClick={onClose}>
-            <div className={`container ${panel}`} id="container" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content">
+            <div className={`container ${panel}`} id="container">
                 <SignUpForm />
                 <SignInForm />
                 <div className="overlay-container">
@@ -37,6 +39,17 @@ export default function Modal ({ isOpen, onClose }) {
                 </div>
             </div>
         </div>
+        <IconButton borderRadius="full" variant="outline" position="relative" zIndex="1002" right="8" top="8" marginBottom="auto">
+            <LuX onClick={onClose} />
+        </IconButton>
     </div>
   );
 };
+
+Modal.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+};
+  
+  
+export default Modal;

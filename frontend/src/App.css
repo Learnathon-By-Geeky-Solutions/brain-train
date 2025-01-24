@@ -13,7 +13,6 @@
     justify-content: space-between;
     height: 15vh;
     padding: 10px;
-    place-content: center;
     z-index: 1;
     background-color: white;
 }
@@ -29,16 +28,13 @@
     width: 60px;
 }
 
-.title {
-    padding-top: 15px;
-}
-
 .logo img {
     height: 100%;
     width: 100%;
 }
 
 .title {
+    padding-top: 15px;
     margin-right: 1rem;
     font-family: "Mustard Medium", sans-serif;
     font-size: 2rem;
@@ -55,7 +51,6 @@
     display: flex;
     align-items: center;
     place-content: center;
-    /* overflow: hidden; */
 }
 
 .bg-cover {

@@ -8,7 +8,6 @@
   background: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
-  place-content: center;
   z-index: 1000;
 }
 
@@ -22,7 +21,6 @@
 	min-width: 100%;
 	justify-content: center;
 	align-items: center;
-	place-content: center;
 	flex-direction: column;
 	font-family: 'Montserrat', sans-serif;
 	z-index: 1001;
@@ -81,6 +79,8 @@
 
 .modal-content button:hover {
     background-color: var(--darkest-green);
+	border-color: var(--darkest-green);
+
 }
 
 .modal-content button.ghost {
@@ -160,8 +160,7 @@ input {
 }
 
 .overlay {
-	background: var(--darkest-green);
-	background: -webkit-linear-gradient(to right, var(--darkest-green), var(--lightest-green));
+	background: var(--darkest-green);	
 	background: linear-gradient(to right, var(--darkest-green), var(--lightest-green));
 	background-repeat: no-repeat;
 	background-size: cover;
