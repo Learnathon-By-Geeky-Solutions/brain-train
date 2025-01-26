@@ -32,14 +32,12 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
   const handleSearch = () => {
     console.log("Triggering form submission...");
     if(ref.current)
-    ref.current.requestSubmit(); // Trigger form submission
+      ref.current.requestSubmit(); // Trigger form submission
     setShouldFetch(true); // Indicate that we should proceed once state updates
   };
 
   useEffect(() => {
     if (!shouldFetch) return;
-
-    console.log("Updated searchData:", searchData);
 
     let url = "";
     if (searchData.type === "title") {
@@ -59,10 +57,7 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
         });
         const data = await response.json();
         if (response.ok) {
-          console.log("Fetched data:", data);
-          console.log('Fetched recipes:', data);
           navigate('/dashboard/recipes', { state: { recipes: data.results } });
-          console.log('after navigation');
         } else {
           console.error("Failed to fetch recipes. Error code:", response.status);
         }

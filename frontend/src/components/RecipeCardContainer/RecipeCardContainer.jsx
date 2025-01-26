@@ -11,7 +11,7 @@ const RecipeCardContainer = () => {
   }
   // Maximum number of cards per row and rows to display
   const cardsPerRow = 5;
-  const maxRows = 4; // Adjust based on your design preference
+  const maxRows = 4;
   const maxCards = cardsPerRow * maxRows;
 
   // Slice the recipes array to show only the maximum number of cards

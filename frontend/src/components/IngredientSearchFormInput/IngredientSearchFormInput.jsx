@@ -1,10 +1,11 @@
 import React, { forwardRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { Input, Flex, IconButton, NativeSelectField, NativeSelectRoot, VStack } from '@chakra-ui/react';
 import { MdAdd, MdArrowBack, MdScale } from 'react-icons/md';
 import { Field } from '../ui/field';
 import { LuDelete } from 'react-icons/lu';
+import SuggestionContainer from '../SuggestionContainer/SuggestionContainer';
 
 
 const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
@@ -26,6 +27,19 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
   };
 
   const [amountStates, setAmountStates] = useState([{amount: 0}]);
+  const [ingredients, setIngredients] = useState([""]);
+
+  const handleIngredientChange = (index, value) => {
+    if ((value === "default") && (index === "default")) {
+      setIngredients((prev) => [...prev, ""]);
+      return;
+    }
+    setIngredients((prev) => {
+      const newIngredients = [...prev];
+      newIngredients[index] = value; // Update specific ingredient
+      return newIngredients;
+    });
+  };
 
   function updateStates(index){
 
@@ -54,14 +68,35 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
             <Flex key={field.id} minHeight="16" minWidth="70%" direction="row" alignItems="center" backgroundColor="var(--dark-light-text-input1)" padding="5px" borderRadius="2xl">
                 <Flex direction="row" alignItems="center">
                     <Field w="100" invalid={errors.fields?.[index]?.name} errorText={(errors.fields?.[index]?.name) ? errors.fields?.[index]?.name.message : "An error occured"} >
-                        <Input
-                            placeholder="Ingredient name"
-                            background="none"
-                            variant="flushed"
-                            color="white"
-                            _focus={{border: "none", boxShadow: "none"}}
-                            {...register(`fields.${index}.name`, { required: "Ingredient name is required" }) }
+                          <Controller
+                          name={`fields.${index}.name`}
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              {...field}
+                              placeholder="Ingredient name"
+                              background="none"
+                              variant="flushed"
+                              color="white"
+                              fontSize="md"
+                              fontWeight="medium"
+                              defaultValue={ingredients[index]}
+                              _focus={{ border: "none", boxShadow: "none" }}
+                              onChange={(e) => {
+                                handleIngredientChange(index, e.target.value);
+                                setValue(`fields.${index}.name`, e.target.value); // update form value
+                              }}
+                            />
+                          )}
                         />
+                        <SuggestionContainer type="ingredients" 
+                          query={ingredients[index]} 
+                          handleClick={(name) => { 
+                            handleIngredientChange(index, name);
+                            setValue(`fields.${index}.name`, name);
+                          }} 
+                        />
+
                     </Field>
                     <IconButton aria-label="Add amount" variant="solid" borderRadius="lg" marginRight="5px" size="sm" onClick={ () => {
                         updateStates(index);
@@ -119,8 +154,12 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
           }}>
               <MdArrowBack />
           </IconButton>
-          <IconButton size="sm" borderRadius="lg" marginLeft="auto" onClick={() => append({ name: '', amount: '', unit: ''})}>
-              <MdAdd />
+          <IconButton size="sm" borderRadius="lg" marginLeft="auto" 
+            onClick={() => {
+              append({ name: '', amount: '', unit: ''});
+              handleIngredientChange("default", "default");
+            }}>
+            <MdAdd />
           </IconButton>
         </Flex>
       </form>
