@@ -53,7 +53,7 @@ export const createUser = async (userInfo) => {
   const user = new User({
     email: email,
     username: name,
-    picture,
+    picture: picture,
     firebaseUid: uid
   });
   await user.save();
