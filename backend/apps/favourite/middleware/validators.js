@@ -13,7 +13,7 @@ export const validateAddRecipe = [
     .withMessage('recipeId is required'),
   body('spoonacularId')
     .if(body('source').equals('spoonacular'))
-    .isString()
+    .isNumeric()
     .notEmpty()  
     .withMessage('spoonacularId is required for spoonacular recipes'),
 
