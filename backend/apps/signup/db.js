@@ -10,3 +10,4 @@ export const createUser = async (userInfo) => {
   await user.save();
   return user;
 }
+

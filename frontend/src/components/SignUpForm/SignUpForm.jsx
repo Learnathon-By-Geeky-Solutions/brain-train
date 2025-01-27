@@ -36,8 +36,16 @@ export default function SignUpForm() {
             setErrorMessage('Password is required');
         } else {
             try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                
+                const usernameAvailable = await checkUsernameAvailability();
+                if (!usernameAvailable) {
+                    setError(true);
+                    setErrorMessage('Username is already taken.');
+                    return;
+                }
+
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const idToken = await userCredential.user.getIdToken();
+
                 const user = auth.currentUser;
                 await updateProfile(user, {
                     displayName: name,
@@ -47,9 +55,10 @@ export default function SignUpForm() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${idToken}`,
                     },
                     body: JSON.stringify({
-                        username: name,
+                        name: name,
                         email: email
                     }),
                 });
@@ -86,6 +95,26 @@ export default function SignUpForm() {
                         break;
                 }
             }
+        }
+    };
+
+    const checkUsernameAvailability = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/user/checkUsername`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: name }),
+            });
+
+            const data = await response.json();
+            return data.available;
+        } catch (error) {
+            console.error('Error checking username availability:', error.message);
+            setError(true);
+            setErrorMessage('Unable to check username availability');
+            return false;
         }
     };
 
