@@ -1,4 +1,4 @@
-import Users from "../../libraries/models/users.js";
+import User from "../../libraries/models/users.js";
 
 /**
  * Finds a user by email.
@@ -6,7 +6,7 @@ import Users from "../../libraries/models/users.js";
  * @returns {Object} The user object.
  */
 export const findUserByEmail = async (email) => {
-  return await Users.findOne({ email });
+  return await User.findOne({ email });
 };
 
 /**
@@ -15,7 +15,7 @@ export const findUserByEmail = async (email) => {
  */
 export const createUser = async (userInfo) => {
   const { email, name, picture } = userInfo;
-  const user = new Users({
+  const user = new User({
     email: email,
     username: name,
     picture,
