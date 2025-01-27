@@ -47,6 +47,24 @@ export const searchRecipesByIngredients = async (req, res) => {
     }
 };
 
+
+// Controller: Search Recipes by Ingredients
+export const searchRecipesByNutrients = async (req, res) => {
+    try {
+        const {  number = 10 ,fields = "", ...params} = req.query;
+        
+        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
+
+        const recipesData = await spoonacularRequest('/recipes/findByNutrients', { number, ...params });
+        const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
+
+        res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // Controller: Get Recipe Information
 export const getRecipeInformation = async (req, res) => {
     try {
