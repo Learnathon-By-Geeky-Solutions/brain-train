@@ -10,6 +10,7 @@ import signinRoute from './apps/signin/api/routes.js';
 import signupRoute from './apps/signup/api/routes.js';
 import spoonacularRoutes from './apps/spoonacular/api/routes.js';
 import userRoutes from './apps/user/api/routes.js';
+import favouritesRoutes from './apps/favourite/api/routes.js';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use("/signin", signinRoute);
 app.use("/signup", signupRoute);
 app.use('/search', spoonacularRoutes);
 app.use('/user', userRoutes);
+app.use('/favourites', favouritesRoutes);
 
 // Catch-all route for unmatched requests
 app.use((req, res) => {

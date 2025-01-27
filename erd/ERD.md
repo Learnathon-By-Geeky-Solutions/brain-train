@@ -24,7 +24,7 @@ FavouriteRecipes
 	string image
 	int likes
 
-UserUploadedRecipes
+UploadedRecipes
 	string recipeId PK
 	string userId FK
 	string title
@@ -63,15 +63,15 @@ Instructions
 
 Users {1}--{0..n} UserFavourites
 UserFavourites {1..n}--{1} FavouriteRecipes
-Users {1}--{0..n} UserUploadedRecipes
-UserFavourites {1..n}--{01} UserUploadedRecipes
-UserUploadedRecipes {1}--{1..n} RecipeIngredients
+Users {1}--{0..n} UploadedRecipes
+UserFavourites {1..n}--{01} UploadedRecipes
+UploadedRecipes {1}--{1..n} RecipeIngredients
 RecipeIngredients {1}--{1} Ingredients
-UserUploadedRecipes {1}--{1..n} Instructions
+UploadedRecipes {1}--{1..n} Instructions
 ```
 
 ## Diagram
 
 <a href="https://app.gleek.io/diagrams/1hurlKdEwlu_A8UrxRwwKg" target="_blank">
-    <img src="https://sketchertest.blob.core.windows.net/previewimages/1hurlKdEwlu_A8UrxRwwKg.png" alt="Geeky Chef" title="Geeky Chef" />
+  <img src="https://sketchertest.blob.core.windows.net/previewimages/1hurlKdEwlu_A8UrxRwwKg.png" alt="Geeky Chef" title="Geeky Chef" />
 </a>

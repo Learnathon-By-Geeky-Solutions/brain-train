@@ -72,3 +72,7 @@ export const createUser = async (userInfo) => {
   });
   await user.save();
 };
+
+export const findUserByFirebaseUid = async (uid) => {
+  return await User.findOne({ firebaseUid: uid });
+};
