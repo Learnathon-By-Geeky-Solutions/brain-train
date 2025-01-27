@@ -1,5 +1,5 @@
-import { FavouriteRecipe } from '../../libraries/models/favouriteRecipes.js';
-import { UploadedRecipe } from '../../libraries/models/uploadedRecipes.js';
+import FavouriteRecipe from '../../libraries/models/favouriteRecipes.js';
+import UploadedRecipe from '../../libraries/models/uploadedRecipes.js';
 
 /**
  * Find recipes by their ids.

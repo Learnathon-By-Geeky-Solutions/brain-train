@@ -42,11 +42,7 @@ export const favouriteRecipesAdder = async (req, res) => {
     if (isRecipeAlreadyInFavourites(user.favouriteRecipes, recipeId, source)) {
       return res.status(400).json({ error: 'Recipe is already in favourites' });
     }
-
-    if (isRecipeAlreadyInFavourites) {
-      return res.status(400).json({ error: 'Recipe is already in favourites' });
-    }
-
+    
     if (source === 'upload') {
       const uploadedRecipe = await addUploadedRecipe(recipeId, source);
       user.favouriteRecipes.push({ recipeId: uploadedRecipe._id, source });
