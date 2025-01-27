@@ -21,6 +21,19 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true
     },
+    favouriteRecipes: {
+      type: [
+        {
+          recipeId: { type: String, required: true },
+          source: { 
+            type: String, 
+            required: true, 
+            enum: ['spoonacular', 'upload'] // Either spoonacular or user uploaded recipes
+          }
+        }
+      ],
+      default: []
+    }
   }
 );
 
@@ -54,9 +67,8 @@ export const createUser = async (userInfo) => {
     email: email,
     username: name,
     picture: picture,
-    firebaseUid: uid
+    firebaseUid: uid,
+    favouriteRecipes: []
   });
   await user.save();
 };
-
-export default User;
