@@ -51,14 +51,15 @@ export const findFavouriteRecipeBySpoonacularId = async (spoonacularId) => {
  * @param {Object} recipe - The recipe object to add.
  * @returns {Object} The saved recipe object.
  */
-export const addFavouriteRecipe = async (recipe) => {
+export const addFavouriteSpoonacularRecipe = async (recipe) => {
   const newRecipe = new FavouriteRecipe({
     spoonacularId: recipe.spoonacularId,
     title: recipe.title,
     image: recipe.image,
     likes: recipe.likes,
   });
-  return await newRecipe.save();
+  await newRecipe.save();
+  return newRecipe;
 };
 
 /**
@@ -68,4 +69,19 @@ export const addFavouriteRecipe = async (recipe) => {
  */
 export const findUploadedRecipeById = async (recipeId) => {
   return await UploadedRecipe.findById(recipeId);
+};
+
+/**
+ * Updates the properties of an existing Spoonacular recipe.
+ * @param {Object} existingRecipe - The existing recipe object to be updated.
+ * @param {string} [title] - The new title for the recipe. If not provided, the existing title will be retained.
+ * @param {string} [image] - The new image URL for the recipe. If not provided, the existing image URL will be retained.
+ * @param {number} [likes] - The new number of likes for the recipe. If not provided, the existing number of likes will be retained.
+ * @returns {Promise<void>} A promise that resolves when the recipe has been successfully updated and saved.
+ */
+export const updateSpoonacularRecipe = async (existingRecipe, title, image, likes) => {
+  existingRecipe.likes = likes || existingRecipe.likes;
+  existingRecipe.title = title || existingRecipe.title;
+  existingRecipe.image = image || existingRecipe.image;
+  await existingRecipe.save();
 };

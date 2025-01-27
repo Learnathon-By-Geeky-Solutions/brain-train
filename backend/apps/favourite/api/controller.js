@@ -2,9 +2,10 @@ import { decodeFirebaseIdToken } from '../../../libraries/firebase.js';
 import { findUserByFirebaseUid } from '../../../libraries/models/users.js';
 import { 
   findRecipesByIds,
+  addFavouriteSpoonacularRecipe,
+  findUploadedRecipeById,
   findFavouriteRecipeBySpoonacularId,
-  addFavouriteRecipe,
-  findUploadedRecipeById
+  updateSpoonacularRecipe
 } from '../db.js';
 
 export const favouriteRecipesFinder = async (req, res) => {
@@ -27,7 +28,8 @@ export const favouriteRecipesFinder = async (req, res) => {
     console.error('Get favourite recipes error:', error.message);
     return res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
+
 
 export const favouriteRecipesAdder = async (req, res) => {
   try {
@@ -38,28 +40,42 @@ export const favouriteRecipesAdder = async (req, res) => {
     }
 
     const { source, recipeId, spoonacularId, title, image, likes } = req.body;
+    let recipeToAdd;
 
-    if (isRecipeAlreadyInFavourites(user.favouriteRecipes, recipeId, source)) {
-      return res.status(400).json({ error: 'Recipe is already in favourites' });
-    }
-    
     if (source === 'upload') {
-      const uploadedRecipe = await addUploadedRecipe(recipeId, source);
-      user.favouriteRecipes.push({ recipeId: uploadedRecipe._id, source });
+      recipeToAdd = await findUploadedRecipeById(recipeId);
+      if (!recipeToAdd) {
+        return res.status(404).json({ error: 'Uploaded recipe not found' });
+      }
+      recipeToAdd = { recipeId: recipeToAdd._id, source };
     } else if (source === 'spoonacular') {
-      const existingRecipe = await addOrUpdateSpoonacularRecipe(spoonacularId, title, image, likes);
-      user.favouriteRecipes.push({ recipeId: existingRecipe._id, source });
+      let existingRecipe = await findFavouriteRecipeBySpoonacularId(spoonacularId);
+
+      if (existingRecipe) {
+        await updateSpoonacularRecipe(existingRecipe, title, image, likes);
+        recipeToAdd = { recipeId: existingRecipe._id.toString(), source };
+      } else {
+        const newRecipe = await addFavouriteSpoonacularRecipe({ spoonacularId, title, image, likes });
+        recipeToAdd = { recipeId: newRecipe._id.toString(), source };
+      }
     } else {
       return res.status(400).json({ error: 'Invalid source type' });
     }
 
+    if (isRecipeAlreadyInUserFavourites(user.favouriteRecipes, recipeToAdd.recipeId)) {
+      return res.status(400).json({ error: 'Recipe is already in favourites' });
+    }
+    
+    user.favouriteRecipes.push(recipeToAdd);
     await user.save();
+
     return res.status(200).json({ message: 'Recipe added to favourites' });
   } catch (error) {
     console.error('Add favourite recipe error:', error.message);
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 /**
  * Filter the recipe IDs by source.
@@ -74,49 +90,14 @@ const filterRecipeIdsBySource = (sourceName, recipes) => {
 };
 
 /**
- * Check if the recipe is already in the user's favourites.
+ * Check if the recipe is already in the user object's favouriteRecipes field
+ * Applicable for uploaded recipes only
  * @param {Array} favouriteRecipes - User's current list of favourite recipes.
  * @param {string} recipeId - ID of the recipe.
- * @param {string} source - Source of the recipe.
  * @returns {boolean} - Whether the recipe is already in favourites.
  */
-const isRecipeAlreadyInFavourites = (favouriteRecipes, recipeId, source) => {
+const isRecipeAlreadyInUserFavourites = (favouriteRecipes, recipeId) => {
   return favouriteRecipes.some(
-    (recipe) => recipe.recipeId === recipeId && recipe.source === source
+    (recipe) => recipe.recipeId === recipeId
   );
-};
-
-/**
- * Add or update a spoonacular recipe in the FavouriteRecipe collection.
- * @param {string} spoonacularId - The Spoonacular ID of the recipe.
- * @param {string} title - The title of the recipe.
- * @param {string} image - The image URL of the recipe.
- * @param {number} likes - The number of likes for the recipe.
- * @returns {Object} - The updated or newly created FavouriteRecipe.
- */
-const addOrUpdateSpoonacularRecipe = async (spoonacularId, title, image, likes) => {
-  let existingRecipe = await findFavouriteRecipeBySpoonacularId(spoonacularId);
-  if (existingRecipe) {
-    existingRecipe.likes = likes || existingRecipe.likes;
-    existingRecipe.title = title || existingRecipe.title;
-    existingRecipe.image = image || existingRecipe.image;
-    await existingRecipe.save();
-    return existingRecipe;
-  } else {
-    return await addFavouriteRecipe({ spoonacularId, title, image, likes });
-  }
-};
-
-/**
- * Add an uploaded recipe to the user's favourites.
- * @param {string} recipeId - The ID of the uploaded recipe.
- * @param {string} source - The source of the recipe.
- * @returns {Object} - The uploaded recipe or an error message.
- */
-const addUploadedRecipe = async (recipeId, source) => {
-  const uploadedRecipe = await findUploadedRecipeById(recipeId);
-  if (!uploadedRecipe) {
-    throw new Error('Uploaded recipe not found');
-  }
-  return uploadedRecipe;
 };
