@@ -48,7 +48,7 @@ export const searchRecipesByIngredients = async (req, res) => {
 };
 
 
-// Controller: Search Recipes by Ingredients
+// Controller: Search Recipes by Nutrients
 export const searchRecipesByNutrients = async (req, res) => {
     try {
         const {  number = 10 ,fields = "", ...params} = req.query;
@@ -96,6 +96,26 @@ export const getRecipeSummary = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+// Controller: Get Similar Recipes
+export const getSimilarRecipes = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { number = 5,fields="" } = req.query;
+        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
+
+        
+        const recipesData = await spoonacularRequest(`/recipes/${id}/similar`, { number });
+        const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
+
+        res.status(200).json({ results: enrichedRecipes });
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
 
 // 🔍 Autocomplete Recipes
 

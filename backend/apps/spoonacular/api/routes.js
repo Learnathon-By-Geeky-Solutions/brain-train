@@ -5,6 +5,7 @@ import {
     searchRecipesByNutrients,
     getRecipeInformation,
     getRecipeSummary,
+    getSimilarRecipes,
     
     autoCompleteIngredients,
     autoCompleteRecipes
@@ -17,6 +18,8 @@ router.get('/recipes/ingredients', searchRecipesByIngredients);
 router.get('/recipes/nutrients', searchRecipesByNutrients);
 router.get('/recipes/:id', getRecipeInformation);
 router.get('/recipes/:id/summary', getRecipeSummary);
+router.get('/recipes/:id/similar', getSimilarRecipes);
+
 
 // Autocomplete endpoints
 router.get('/title/autocomplete', autoCompleteRecipes);

@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 const SPOONACULAR_API_BASE_URL = 'https://api.spoonacular.com';
-const SPOONACULAR_API_KEY = process.env.SPOONACULAR_API_KEY;
+const API_KEY = process.env.SPOONACULAR_API_KEY;
 
 export const spoonacularRequest = async (endpoint, params = {}) => {
     try {
 
         const response = await axios.get(`${SPOONACULAR_API_BASE_URL}${endpoint}`, {
-            params: { apiKey: process.env.SPOONACULAR_API_KEY, ...params },
+            params: { apiKey: API_KEY, ...params },
         });
         return response.data;
     } catch (error) {
