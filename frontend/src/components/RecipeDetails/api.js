@@ -14,6 +14,7 @@ async function addToFavourites(recipe) {
       const response = await fetch(url, {
         method: "POST",
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${idToken}`, // Send the token in the Authorization header
         },
         body: JSON.stringify(
