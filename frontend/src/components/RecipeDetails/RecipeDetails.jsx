@@ -10,6 +10,8 @@ import {
 } from '@chakra-ui/react';
 import { LuClock, LuHeart, LuUtensils } from 'react-icons/lu';
 import { useLocation } from 'react-router-dom';
+import addToFavourites from './api';
+import { Toaster, toaster } from '../ui/toaster';
 
 const RecipeDetails = () => {
   const location = useLocation();
@@ -76,13 +78,31 @@ const RecipeDetails = () => {
 
       {/* Footer */}
       <HStack justify="space-between" mt={4}>
-        <Button colorScheme="teal" size="lg">
+        <Button colorScheme="teal" size="lg"
+          onClick={() => {
+            let toasterText = "Could not add recipe to favourites";
+            let toasterType = "error"; 
+            addToFavourites(recipe).then((result) => {
+              if(result.status === 'success'){
+                toasterText = "Recipe added to favourites";
+                toasterType = "success";
+              }
+              toaster.create(
+                {
+                  title: toasterText,
+                  type: toasterType,
+                }
+              );
+            });
+          }}
+        >
           Save Recipe
         </Button>
         <Button variant="outline" size="lg" borderColor="gray.400">
           Share
         </Button>
       </HStack>
+      <Toaster />
     </Box>
   );
 };
