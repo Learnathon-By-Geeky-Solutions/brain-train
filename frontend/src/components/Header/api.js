@@ -20,7 +20,7 @@ async function getFavoriteRecipes() {
 
       if (response.ok) {
         const rawData = await response.json();
-        data.recipes = rawData.results;
+        data.recipes = rawData.recipes;
         data.status = "success";
       } else {
         data.msg = "Failed to fetch favorite recipes";
