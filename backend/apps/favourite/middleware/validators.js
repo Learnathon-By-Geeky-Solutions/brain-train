@@ -1,4 +1,5 @@
-import { body, validationResult } from 'express-validator';
+import { body } from 'express-validator';
+import { handleValidationErrors } from '../../../libraries/errorHandler.js';
 
 export const validateAddRecipe = [
   body('source')
@@ -33,11 +34,14 @@ export const validateAddRecipe = [
     .isNumeric()
     .withMessage('The likes field must be a number.'),
 
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  }
-]
+  handleValidationErrors
+];
+
+export const validateRemoveRecipe = [
+  body('recipeId')
+    .isString()
+    .notEmpty()
+    .withMessage('recipeId is required'),
+
+  handleValidationErrors
+];

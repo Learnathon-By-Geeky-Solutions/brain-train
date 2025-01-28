@@ -76,6 +76,33 @@ export const favouriteRecipesAdder = async (req, res) => {
   }
 };
 
+export const favouriteRecipesRemover = async (req, res) => {
+  try {
+    const { uid } = await decodeFirebaseIdToken(req.headers.authorization);
+    const user = await findUserByFirebaseUid(uid);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const { recipeId } = req.body;
+
+    const recipeIndex = user.favouriteRecipes.findIndex(
+      (recipe) => recipe.recipeId === recipeId
+    );
+
+    if (recipeIndex === -1) {
+      return res.status(404).json({ error: 'Recipe not found in favourites' });
+    }
+
+    user.favouriteRecipes.splice(recipeIndex, 1);
+    await user.save();
+
+    return res.status(200).json({ message: 'Recipe removed from favourites' });
+  } catch (error) {
+    console.error('Remove favourite recipe error:', error.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 /**
  * Filter the recipe IDs by source.
