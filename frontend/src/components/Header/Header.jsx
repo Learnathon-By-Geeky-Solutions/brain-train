@@ -25,6 +25,7 @@ const StickyHeader = ({photoUrl,userName,handleLogout}) => {
   const showFavouriteRecipes= () => {
     getFavoriteRecipes().then((data) => {
       if (data.status === "success") {
+        console.log(data.recipes);
         navigate('/dashboard/recipes', { state: { recipes: data.recipes , type: "favourites"} });
       } else {
         console.error(data.msg);

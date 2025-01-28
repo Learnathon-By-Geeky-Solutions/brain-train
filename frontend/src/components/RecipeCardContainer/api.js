@@ -14,15 +14,12 @@ async function removeFavoriteRecipe(recipe) {
       const response = await fetch(url, {
         method: "DELETE",
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${idToken}`, // Send the token in the Authorization header
         },
         body: JSON.stringify(
             {
-                "spoonacularId": recipe?.id,
-                "title": recipe?.title,
-                "image": recipe?.image,
-                "source": "spoonacular",
-                "likes": recipe?.likes
+                "recipeId": recipe?._id
             }
         )
       });

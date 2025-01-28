@@ -5,12 +5,13 @@ import { getAuth } from "firebase/auth";
 async function getFavoriteRecipes() {
     const auth = getAuth();
     const user = auth.currentUser;
+    // console.log(user.getIdToken());
 
     let data = {recipes: [], status: "error", msg: ""};
     const url = `${API_BASE_URL}/favourites/list`;
   
     if (user) {
-      const idToken = await user.getIdToken(); // Get the ID token
+      const idToken = await user.getIdToken(true); // Forces a refresh of the token
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -20,7 +21,7 @@ async function getFavoriteRecipes() {
 
       if (response.ok) {
         const rawData = await response.json();
-        data.recipes = rawData.results;
+        data.recipes = rawData.recipes;
         data.status = "success";
       } else {
         data.msg = "Failed to fetch favorite recipes";

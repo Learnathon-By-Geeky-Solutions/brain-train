@@ -15,6 +15,10 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows}) => {
   if(recipe_prop && !recipes){
     recipes = recipe_prop;
   }
+  // console.log(recipes);
+  if (!recipes || recipes.length === 0) {
+    return (<div>No recipes found</div>);
+  }
 
   const [ isVisibile, setIsVisible ] = useState(Array(recipes.length).fill(true));
 
@@ -35,11 +39,8 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows}) => {
           type: toasterType,
         }
       );
+      recipes.splice(index, 1);
     });
-  }
-
-  if (!recipes || recipes.length === 0) {
-    return (<div>No recipes found or still loading...</div>);
   }
   // Maximum number of cards per row and rows to display
   const cardsPerRow = perRow || 5;
