@@ -5,21 +5,21 @@ import PropTypes from 'prop-types';
 
 function Toolbar({click}) {
     return (
-        <Flex direction="row" alignItems="center" bg="none" placeContent="center">
+        <Flex direction="row" alignItems="center" bg="none" marginLeft={4}>
             <IconButton aria-label="ingredient" sz="sm" className="toolbar tool" onClick={click[0]} >
-                <Flex direction="row" alignItems="center" padding="5px">
+                <Flex direction="row" alignItems="center" padding="2">
                     <MdShoppingCart color="var(--neon-green)"/>
                     Search by ingredient
                 </Flex>
             </IconButton>
             <IconButton aria-label="ingredient" className="toolbar tool" sz="sm">
-            <Flex direction="row" alignItems="center" padding="5px">
+            <Flex direction="row" alignItems="center" padding="2">
                 <MdHealthAndSafety color="var(--neon-orange)"/>
                 Search by nutritions
             </Flex>
             </IconButton>
             <IconButton aria-label="ingredient" sz="sm" className="toolbar tool">
-                <Flex direction="row" alignItems="center" padding="5px">
+                <Flex direction="row" alignItems="center" padding="2">
                     <MdShoppingCart color="var(--neon-pink)"/>
                     Search by ingredient
                 </Flex>

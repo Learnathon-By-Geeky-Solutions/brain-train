@@ -79,7 +79,7 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
     if(!currentBadges) currentBadges = [];  
     const BadgesJsx = currentBadges.map((badge) => <Badge key={badge.id} colorPalette={badge.colorPalette}>{badge.text}</Badge>);
     return (
-        <Flex direction="column" maxWidth="80%" background="var(--text-input)" borderRadius="3xl" padding="2">
+        <Flex direction="column" maxWidth="80%" background="var(--text-input)" borderRadius="3xl" padding="2" m={6} marginBottom={0}>
             <Flex direction="row" width="inherit">
             {  BadgesJsx }
             </Flex>
