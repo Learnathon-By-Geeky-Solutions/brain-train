@@ -1,8 +1,9 @@
-import { Box, Image, Flex, Text, Button, Card } from '@chakra-ui/react';
+import { HStack, Image, Flex, Text, Button, Card } from '@chakra-ui/react';
 import { LuHeart } from 'react-icons/lu';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import recipe_default from '../../assets/recipe_default.jpg';
+import { FaHeart } from 'react-icons/fa';
   
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 const RecipeCard = ({ recipe, changeVisibility, type }) => {
@@ -85,31 +86,34 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
   //   </Flex>
   //   </Flex>
   // </Box>
-  <Card.Root maxW="xs" overflow="hidden"
+  <Card.Root w="72" h="72" overflow="hidden"
   _hover={{ transform: 'scale(1.05)', transition: 'all 0.3s ease-in-out' }}
   >
-      <Image
+      <Image w="100%" h="40" overflow="hidden"
         src={recipe.image || recipe_default}
         alt={recipe.title}
         onError={(e) => {
           e.target.src = recipe_default;
         }}
       />
-      <Card.Body gap="2">
-        <Card.Title>{recipe.title}</Card.Title>
-        <Flex alignSelf="flex-start" alignItems="center">
-        <LuHeart/>
-          <Text fontSize="sm" ml={1}>
+      <Card.Body gap="1">
+      <Flex alignItems="center" justifyContent="space-between" W="100%">
+        <Card.Title W="85%" whiteSpace="nowrap" textOverflow="ellipsis" overflow="hidden">{recipe.title}</Card.Title>
+        <Flex alignItems="center" w="15%">
+        <FaHeart color='orange'/>
+          <Text fontSize="sm" ml="1">
             {recipe.likes}
           </Text>
         </Flex>
-        <Card.Description>
+        </Flex>
+        {/* <Card.Description>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </Card.Description>
+        </Card.Description> */}
       </Card.Body>
-      <Card.Footer gap="2">
+      <Card.Footer gap="1">
         <Button 
         variant="solid"
+        size="sm"
         onClick={() => {
           handleRecipeDetail();
         }}
