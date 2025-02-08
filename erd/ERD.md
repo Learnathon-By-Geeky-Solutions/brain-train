@@ -32,7 +32,6 @@ Recipes
 	int readyInMinutes
 	int aggregateLikes
 	int servings
-	string instructions
 	ArrayOfString cuisines
 	ArrayOfString dishTypes
 	ArrayOfString diets
