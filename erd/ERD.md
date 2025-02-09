@@ -36,6 +36,7 @@ Recipes
 	ArrayOfString dishTypes
 	ArrayOfString diets
 	ArrayOfIngredient ingredients
+	ArrayOfString instructions
 
 Ingredients
 	string ingredientId PK
@@ -44,16 +45,9 @@ Ingredients
 	float amount
 	string unit
 
-Instructions
-	string instructionId PK
-	string recipeId FK
-	string name
-	ArrayOfString steps
-
 Users {1}--{0..n} UserFavourites
 UserFavourites {1..n}--{1} Recipes
 Users {1}--{0..n} Recipes
-Recipes {1}--{1..n} Instructions
 ```
 
 ## Diagram
