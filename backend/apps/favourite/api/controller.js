@@ -1,27 +1,25 @@
 import { decodeFirebaseIdToken } from '../../../libraries/firebase.js';
 import { findUserByFirebaseUid } from '../../../libraries/models/users.js';
 import { 
-  findRecipesByIds,
+  findFavouriteRecipesByIds,
   addFavouriteSpoonacularRecipe,
   findUploadedRecipeById,
   findFavouriteRecipeBySpoonacularId,
-  updateSpoonacularRecipe
+  updateSpoonacularRecipe,
+  findFavouriteRecipeIdsByUid
 } from '../db.js';
 
 export const favouriteRecipesFinder = async (req, res) => {
   try {
     const { uid } = await decodeFirebaseIdToken(req.headers.authorization);
-    const user = await findUserByFirebaseUid(uid);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+
+    const userFavourites = await findFavouriteRecipeIdsByUid(uid);
+
+    if (!userFavourites || userFavourites.recipeIds.length === 0) {
+      return res.status(404).json({ error: 'No favourite recipes found' });
     }
 
-    const favouriteRecipes = user.favouriteRecipes;
-
-    const spoonacularIds = filterRecipeIdsBySource('spoonacular', favouriteRecipes);
-    const uploadedIds = filterRecipeIdsBySource('upload', favouriteRecipes);
-
-    const recipes = await findRecipesByIds(spoonacularIds, uploadedIds);
+    const recipes = await findFavouriteRecipesByIds(userFavourites.recipeIds);
 
     return res.status(200).json({ recipes });
   } catch (error) {

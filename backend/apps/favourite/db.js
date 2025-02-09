@@ -1,36 +1,24 @@
-import FavouriteRecipe from '../../libraries/models/favouriteRecipes.js';
-import UploadedRecipe from '../../libraries/models/uploadedRecipes.js';
+import UserFavourites from '../../libraries/models/userFavourites.js';
+import Recipe from '../../libraries/models/recipes.js';
 
 /**
  * Find recipes by their ids.
- * @param {Array} spoonacularIds - The spoonacular ids of the recipes.
- * @param {Array} uploadedIds - The uploaded ids of the recipes.
+ * @param {Array} recipeIds - Ids of favourite recipes.
  * @returns {Array} The recipes.
  */
-export const findRecipesByIds = async (spoonacularIds, uploadedIds) => {
+export const findFavouriteRecipesByIds = async (recipeIds) => {
   try {
-    const [spoonacularRecipes, uploadedRecipes] = await Promise.all([
-      FavouriteRecipe.find({ _id: { $in: spoonacularIds } }, '_id spoonacularId likes title image'),
-      UploadedRecipe.find({ _id: { $in: uploadedIds } }, '_id likes title image')
-    ]);
-    const recipes = [
-      ...spoonacularRecipes.map(recipe => ({
-        _id: recipe._id,
-        source: 'spoonacular',
-        spoonacularId: recipe.spoonacularId,
-        likes: recipe.likes,
-        title: recipe.title,
-        image: recipe.image
-      })),
-      ...uploadedRecipes.map(recipe => ({
-        _id: recipe._id,
-        source: 'upload',
-        likes: recipe.likes,
-        title: recipe.title,
-        image: recipe.image
-      }))
-    ];
-    return recipes;
+    const recipes = await Recipe.find(
+      { _id: { $in: recipeIds } },
+      "_id title image likes"
+    );
+    const formattedRecipes = recipes.map(recipe => ({
+      recipeId: recipe._id.toString(), // Change _id to recipeId
+      title: recipe.title,
+      image: recipe.image,
+      likes: recipe.likes
+    }));
+    return formattedRecipes;
   } catch (error) {
     console.error('Find recipes by ids error:', error.message);
     return [];
@@ -85,3 +73,12 @@ export const updateSpoonacularRecipe = async (existingRecipe, title, image, like
   existingRecipe.image = image || existingRecipe.image;
   await existingRecipe.save();
 };
+
+/**
+ * Find favourite recipe ids by user firebaseUid.
+ * @param {string} uid - The user firebaseUid.
+ * @returns {Object} The user's favourite recipe ids.
+ */
+export const findFavouriteRecipeIdsByUid = async (uid) => {
+  return await UserFavourites.findOne({ userId: uid });
+}
