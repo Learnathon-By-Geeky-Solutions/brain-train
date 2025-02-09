@@ -13,7 +13,7 @@ Users
 	string picture
 
 UserFavourites
-	string userId FK
+	string firebaseUid FK
 	ArrayOfString recipeIds FK
 
 Recipes
