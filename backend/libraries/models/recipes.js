@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import ingredientSchema from "./ingredients";
+import ingredientSchema from "./ingredients.js";
 
 const recipeSchema = new mongoose.Schema({
   /**
