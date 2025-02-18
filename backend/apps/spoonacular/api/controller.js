@@ -1,18 +1,24 @@
 import { spoonacularRequest } from './spoonacularService.js';
 import { enrichRecipesWithFields } from './fetchExtraFields.js';
 import { stripHtml } from 'string-strip-html'; 
-
-
-
-
+import { 
+    getRecipeFieldsByParams,
+    saveRecipeDetails
+} from '../db.js';
 
 export const searchRecipes = async (req, res) => {
     try {
         const { number = 10, fields = "" , ...params } = req.query;
-        console.log("Query Params:", params);
 
         // Convert "fields" query string into an array (e.g., "summary,likes,nutrition")
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
+        const conditions = { ...params };
+
+        // Query db with params, fields and limit
+        const dbResults = await  getRecipeFieldsByParams(conditions, fieldsArray, number);
+        if (dbResults.length > 0) {
+            return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
+        }
 
         // Fetch recipes
         const recipesData = await spoonacularRequest('/recipes/complexSearch', { number, ...params });
@@ -20,15 +26,24 @@ export const searchRecipes = async (req, res) => {
         // Enrich recipes with requested fields
         const enrichedRecipes = await enrichRecipesWithFields(recipesData.results, fieldsArray);
 
-        res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+        // Save recipe details to the database
+        await Promise.all(
+            enrichedRecipes.map(async (recipe) => {
+                const details = await spoonacularRequest(`/recipes/${recipe.id}/information`);
+                const savedRecipe = await saveRecipeDetails(details);
+        
+                // Update the enrichedRecipes array with the new id from the saved recipe
+                recipe.id = savedRecipe._id.toString();
+        
+                return recipe;
+            })
+        );
+
+        return res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
-
-
-
-
 
 // Controller: Search Recipes by Ingredients
 export const searchRecipesByIngredients = async (req, res) => {

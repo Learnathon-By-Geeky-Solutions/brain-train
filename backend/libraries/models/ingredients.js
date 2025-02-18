@@ -15,7 +15,7 @@ const ingredientSchema = new mongoose.Schema({
   },
   unit: {
     type: String,
-    required: true
+    default: ""
   }
 });
 

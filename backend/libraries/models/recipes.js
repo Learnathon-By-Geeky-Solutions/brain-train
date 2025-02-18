@@ -54,7 +54,7 @@ const recipeSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  aggregateLikes: {
+  likes: {
     type: Number,
     default: 0
   },
