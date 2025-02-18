@@ -19,11 +19,7 @@ async function addToFavourites(recipe) {
         },
         body: JSON.stringify(
             {
-                "spoonacularId": recipe?.id,
-                "title": recipe?.title,
-                "image": recipe?.image,
-                "source": "spoonacular",
-                "likes": recipe?.likes
+                "recipeId": recipe?.id,
             }
         )
       });
