@@ -30,7 +30,7 @@ Recipes
 	int preparationMinutes
 	int cookingMinutes
 	int readyInMinutes
-	int aggregateLikes
+	int likes
 	int servings
 	ArrayOfString cuisines
 	ArrayOfString dishTypes
