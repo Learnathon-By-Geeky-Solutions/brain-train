@@ -1,4 +1,4 @@
-import { decodeFirebaseIdToken } from '../../../libraries/firebase.js';
+import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { findRecipeById } from '../../../libraries/models/recipes.js';
 import { 
   findFavouriteRecipesByIds,

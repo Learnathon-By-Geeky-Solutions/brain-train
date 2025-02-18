@@ -1,4 +1,4 @@
-import { decodeFirebaseIdToken } from '../../../libraries/firebase.js';
+import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { findUserByEmail, createUser } from '../../../libraries/models/users.js';
 
 export const signinController = async (req, res) => {
