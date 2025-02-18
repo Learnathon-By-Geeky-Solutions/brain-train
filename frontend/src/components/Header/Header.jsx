@@ -2,6 +2,7 @@ import { Box, Flex, IconButton, Image, Text, Button } from "@chakra-ui/react";
 import { FaBell, FaCog, FaHeart } from "react-icons/fa";
 import logo from "../../assets/logo.png";
 import { MdLogout } from "react-icons/md";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import {
   DrawerActionTrigger,
@@ -16,21 +17,49 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import getFavoriteRecipes from "./api";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-const StickyHeader = ({photoUrl,userName,handleLogout}) => {
-
+const StickyHeader = ({photoUrl,userName,handleLogout,loadCards}) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (searchParams.get("type") === "favourites") {
+      showFavouriteRecipes();
+    }
+  },[]);
+  // const navigate = useNavigate();
+  console.log("photoUrl",photoUrl);
+
   const showFavouriteRecipes= () => {
-    getFavoriteRecipes().then((data) => {
-      if (data.status === "success") {
-        console.log(data.recipes);
-        navigate('/dashboard/recipes', { state: { recipes: data.recipes , type: "favourites"} });
-      } else {
-        console.error(data.msg);
-      }
-    });
+    console.log("Fetching favourite recipes...");
+    if( location.pathname !== "/dashboard" && location.pathname !== "/dashboard/") {
+      console.log("Navigating to dashboard");
+      navigate({
+        pathname: '/dashboard',
+        search: `?type=favourites`,
+      });
+    }
+    else{
+      console.log("Just loading the cards");
+      setSearchParams({ type: "favourites" });
+      loadCards();
+    }
+    // getFavoriteRecipes().then((data) => {
+    //   if (data.status === "success") {
+    //     console.log(data.recipes);
+    //     setSearchParams({ type: "favourites" });
+    //     loadCards(data.recipes);
+    //   } else {
+    //     console.error(data.msg);
+    //   }
+    //   if( location.pathname !== "/dashboard" && location.pathname !== "/dashboard/") {
+    //     console.log("Navigating to dashboard");
+    //     navigate('/dashboard?type=favourites');
+    //   }
+    // });
   }; 
 
   return (

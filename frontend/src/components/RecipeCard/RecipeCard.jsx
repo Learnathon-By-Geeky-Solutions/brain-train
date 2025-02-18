@@ -89,15 +89,19 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
   <Card.Root w="72" h="72" overflow="hidden"
   _hover={{ transform: 'scale(1.05)', transition: 'all 0.3s ease-in-out' }}
   >
-      <Image w="100%" h="40" overflow="hidden"
+      <Image w="100%" h="65%" overflow="hidden"
         src={recipe.image || recipe_default}
         alt={recipe.title}
         onError={(e) => {
           e.target.src = recipe_default;
         }}
       />
-      <Card.Body gap="1">
-      <Flex alignItems="center" justifyContent="space-between" W="100%">
+      <Card.Body gap="1" h="35%"
+      onClick={() => {
+          handleRecipeDetail();
+      }}
+      >
+      <Flex alignItems="center" justifyContent="space-between" W="100%" h="20%">
         <Card.Title W="85%" whiteSpace="nowrap" textOverflow="ellipsis" overflow="hidden">{recipe.title}</Card.Title>
         <Flex alignItems="center" w="15%">
         <FaHeart color='orange'/>
@@ -105,13 +109,13 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
             {recipe.likes}
           </Text>
         </Flex>
-        </Flex>
-        {/* <Card.Description>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </Card.Description> */}
+      </Flex>
+        <Card.Description h="80%" mt={1}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.
+        </Card.Description>
       </Card.Body>
       <Card.Footer gap="1">
-        <Button 
+        {/* <Button 
         variant="solid"
         size="sm"
         onClick={() => {
@@ -119,10 +123,11 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
         }}
         >
           View
-        </Button>
+        </Button> */}
         { type === "favourites" && 
         (
           <Button
+            size="sm"
             variant="ghost"
             onClick={() => {
               changeVisibility();
@@ -132,7 +137,6 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
           </Button>
         )
       }
-      {/* <Button variant="ghost">Add to cart</Button> */}
       </Card.Footer>
     </Card.Root>
 )};

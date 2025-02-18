@@ -24,7 +24,7 @@ const handleSearchByIngredients = (searchData) => {
 
 }
 
-const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges }) => {
+const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges, showResults}) => {
 
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({type:'', data:{}});
@@ -39,34 +39,35 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
   useEffect(() => {
     if (!shouldFetch) return;
 
-    let url = "";
-    if (searchData.type === "title") {
-      url = handleSearchByTitle(searchData);
-    } else if (searchData.type === "ingredients") {
-      url = handleSearchByIngredients(searchData);
-    }
+    // let url = "";
+    // if (searchData.type === "title") {
+    //   url = handleSearchByTitle(searchData);
+    // } else if (searchData.type === "ingredients") {
+    //   url = handleSearchByIngredients(searchData);
+    // }
 
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${2 + 2}`,
-          },
-        });
-        const data = await response.json();
-        if (response.ok) {
-          navigate('/dashboard/recipes', { state: { recipes: data.results } });
-        } else {
-          console.error("Failed to fetch recipes. Error code:", response.status);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error.message);
-      }
-    };
+    // const fetchData = async () => {
+    //   try {
+    //     const response = await fetch(url, {
+    //       method: "GET",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: `Bearer ${2 + 2}`,
+    //       },
+    //     });
+    //     const data = await response.json();
+    //     if (response.ok) {
+    //       // navigate('/dashboard/recipes', { state: { recipes: data.results } });
+    //       showResults(data.results);
+    //     } else {
+    //       console.error("Failed to fetch recipes. Error code:", response.status);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching data:", error.message);
+    //   }
+    // };
 
-    fetchData();
+    showResults(searchData);
     setShouldFetch(false); // Reset fetch trigger
   }, [searchData, shouldFetch]); // Watch for changes in searchData
 

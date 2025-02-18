@@ -1,34 +1,34 @@
 import { Box, Flex } from '@chakra-ui/react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import RecipeCard from '../RecipeCard/RecipeCard';
 import PropTypes, { func } from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Toaster, toaster } from '../ui/toaster';
 import removeFavoriteRecipe from './api';
 
 
-const RecipeCardContainer = ({recipe_prop,perRow,numRows}) => {
+const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
   const location = useLocation();
-  let recipes = location.state?.recipes;
-  let type = location.state?.type;
+  const [ searchParams, setSearchParams ] = useSearchParams();
+  // const [ isVisibile, setIsVisible ] = useState([]);
 
-  if(recipe_prop && !recipes){
-    recipes = recipe_prop;
-  }
-  // console.log(recipes);
-  if (!recipes || recipes.length === 0) {
+  // useEffect(() => {
+  //   setIsVisible(Array(recipe_prop.length).fill(true));
+  // }, [recipe_prop]);
+
+  if (!recipe_prop || recipe_prop.length === 0) {
     return (<div>No recipes found</div>);
   }
 
-  const [ isVisibile, setIsVisible ] = useState(Array(recipes.length).fill(true));
+  let type = location.state?.type || searchParams.get("type");
 
   function toggleVisibility(index) {
-    const newVisibility = [...isVisibile];
-    newVisibility[index] = !newVisibility[index];
-    setIsVisible(newVisibility);
+    // const newVisibility = [...isVisibile];
+    // newVisibility[index] = !newVisibility[index];
+    // setIsVisible(newVisibility);
     let toasterText = "Could not remove recipe from favourites";
     let toasterType = "error"; 
-    removeFavoriteRecipe(recipes[index]).then((result) => {
+    removeFavoriteRecipe(recipe_prop[index]).then((result) => {
       if(result.status === 'success'){
         toasterText = "Recipe removed from favourites";
         toasterType = "success";
@@ -39,7 +39,7 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows}) => {
           type: toasterType,
         }
       );
-      recipes.splice(index, 1);
+      removeCard(index);
     });
   }
   // Maximum number of cards per row and rows to display
@@ -48,7 +48,9 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows}) => {
   const maxCards = cardsPerRow * maxRows;
 
   // Slice the recipes array to show only the maximum number of cards
-  const visibleRecipes = recipes.slice(0, maxCards);
+  const visibleRecipes = recipe_prop.slice(0, maxCards);
+  // console.log(visibleRecipes);
+  // console.log(isVisibile);
 
   return (
     <Box
@@ -70,7 +72,7 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows}) => {
       width={ numRows === 1 ? "max-content" : "auto" }
       gap={4}>
         {visibleRecipes.map((recipe, index) => (
-            isVisibile[index] && <RecipeCard key={recipe.id} recipe={recipe} changeVisibility={()=>toggleVisibility(index)} type={type}/>
+            <RecipeCard key={recipe.id} recipe={recipe} changeVisibility={()=>toggleVisibility(index)} type={type}/>
         ))}
       </Flex>
       <Toaster />
