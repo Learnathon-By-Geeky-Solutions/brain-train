@@ -1,4 +1,4 @@
-import { spoonacularRequest } from './spoonacularService.js';
+import { spoonacularRequest } from '../../../libraries/services/spoonacular.js';
 import { stripHtml } from 'string-strip-html';
 
 /**

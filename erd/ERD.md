@@ -13,20 +13,13 @@ Users
 	string picture
 
 UserFavourites
-	string userId FK
-	string recipeId FK
+	string firebaseUid FK
+	ArrayOfString recipeIds FK
+
+Recipes
+	string recipeId PK
+	string sourceId FK
 	string source
-
-FavouriteRecipes
-	string recipeId PK
-	int spoonacularId UK
-	string title
-	string image
-	int likes
-
-UploadedRecipes
-	string recipeId PK
-	string userId FK
 	string title
 	string image
 	string summary
@@ -37,37 +30,24 @@ UploadedRecipes
 	int preparationMinutes
 	int cookingMinutes
 	int readyInMinutes
-	int aggregateLikes
+	int likes
 	int servings
-	string instructions
-	ArrayOfStrings cuisines
-	ArrayOfStrings dishTypes
-	ArrayOfStrings diets
+	ArrayOfString cuisines
+	ArrayOfString dishTypes
+	ArrayOfString diets
+	ArrayOfIngredient ingredients
+	ArrayOfString instructions
 
-RecipeIngredients
-	string recipeId FK
-	string ingredientId FK
-
-Ingredients 
+Ingredients
 	string ingredientId PK
 	string title
 	string image
 	float amount
 	string unit
 
-Instructions
-	string instructionId PK
-	string recipeId FK
-	string name
-	ArrayOfStrings steps
-
 Users {1}--{0..n} UserFavourites
-UserFavourites {1..n}--{1} FavouriteRecipes
-Users {1}--{0..n} UploadedRecipes
-UserFavourites {1..n}--{01} UploadedRecipes
-UploadedRecipes {1}--{1..n} RecipeIngredients
-RecipeIngredients {1}--{1} Ingredients
-UploadedRecipes {1}--{1..n} Instructions
+UserFavourites {1..n}--{1} Recipes
+Users {1}--{0..n} Recipes
 ```
 
 ## Diagram

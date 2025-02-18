@@ -1,27 +1,22 @@
-import { decodeFirebaseIdToken } from '../../../libraries/firebase.js';
-import { findUserByFirebaseUid } from '../../../libraries/models/users.js';
+import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
+import { findRecipeById } from '../../../libraries/models/recipes.js';
 import { 
-  findRecipesByIds,
-  addFavouriteSpoonacularRecipe,
-  findUploadedRecipeById,
-  findFavouriteRecipeBySpoonacularId,
-  updateSpoonacularRecipe
+  findFavouriteRecipesByIds,
+  findFavouriteRecipeIdsByUid,
+  createUserEntryInUserFavourites
 } from '../db.js';
 
 export const favouriteRecipesFinder = async (req, res) => {
   try {
     const { uid } = await decodeFirebaseIdToken(req.headers.authorization);
-    const user = await findUserByFirebaseUid(uid);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+
+    const userFavourites = await findFavouriteRecipeIdsByUid(uid);
+
+    if (!userFavourites || userFavourites.recipeIds.length === 0) {
+      return res.status(404).json({ error: 'No favourite recipes found' });
     }
 
-    const favouriteRecipes = user.favouriteRecipes;
-
-    const spoonacularIds = filterRecipeIdsBySource('spoonacular', favouriteRecipes);
-    const uploadedIds = filterRecipeIdsBySource('upload', favouriteRecipes);
-
-    const recipes = await findRecipesByIds(spoonacularIds, uploadedIds);
+    const recipes = await findFavouriteRecipesByIds(userFavourites.recipeIds);
 
     return res.status(200).json({ recipes });
   } catch (error) {
@@ -34,42 +29,27 @@ export const favouriteRecipesFinder = async (req, res) => {
 export const favouriteRecipesAdder = async (req, res) => {
   try {
     const { uid } = await decodeFirebaseIdToken(req.headers.authorization);
-    const user = await findUserByFirebaseUid(uid);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+    const { recipeId } = req.body;
+
+    const recipe = await findRecipeById(recipeId);
+    if (!recipe) {
+      return res.status(400).json({ error: 'Recipe not found' });
     }
 
-    const { source, recipeId, spoonacularId, title, image, likes } = req.body;
-    let recipeToAdd;
+    let userFavourites = await findFavouriteRecipeIdsByUid(uid);
 
-    if (source === 'upload') {
-      recipeToAdd = await findUploadedRecipeById(recipeId);
-      if (!recipeToAdd) {
-        return res.status(404).json({ error: 'Uploaded recipe not found' });
-      }
-      recipeToAdd = { recipeId: recipeToAdd._id, source };
-    } else if (source === 'spoonacular') {
-      let existingRecipe = await findFavouriteRecipeBySpoonacularId(spoonacularId);
+    if (!userFavourites) {
+      await createUserEntryInUserFavourites(uid, recipeId);
+      return res.status(201).json({ message: 'Recipe added to favourites' });
+    }
 
-      if (existingRecipe) {
-        await updateSpoonacularRecipe(existingRecipe, title, image, likes);
-        recipeToAdd = { recipeId: existingRecipe._id.toString(), source };
-      } else {
-        const newRecipe = await addFavouriteSpoonacularRecipe({ spoonacularId, title, image, likes });
-        recipeToAdd = { recipeId: newRecipe._id.toString(), source };
-      }
+    if (!userFavourites.recipeIds.includes(recipeId)) {
+      userFavourites.recipeIds.push(recipeId);
+      await userFavourites.save();
+      return res.status(200).json({ message: 'Recipe added to favourites' });
     } else {
-      return res.status(400).json({ error: 'Invalid source type' });
+      return res.status(400).json({ error: 'Recipe already in favourites' });
     }
-
-    if (isRecipeAlreadyInUserFavourites(user.favouriteRecipes, recipeToAdd.recipeId)) {
-      return res.status(400).json({ error: 'Recipe is already in favourites' });
-    }
-    
-    user.favouriteRecipes.push(recipeToAdd);
-    await user.save();
-
-    return res.status(200).json({ message: 'Recipe added to favourites' });
   } catch (error) {
     console.error('Add favourite recipe error:', error.message);
     return res.status(500).json({ error: 'Internal server error' });
@@ -79,52 +59,26 @@ export const favouriteRecipesAdder = async (req, res) => {
 export const favouriteRecipesRemover = async (req, res) => {
   try {
     const { uid } = await decodeFirebaseIdToken(req.headers.authorization);
-    const user = await findUserByFirebaseUid(uid);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
     const { recipeId } = req.body;
 
-    const recipeIndex = user.favouriteRecipes.findIndex(
-      (recipe) => recipe.recipeId === recipeId
-    );
+    let userFavourites = await findFavouriteRecipeIdsByUid(uid);
+    let recipeIndex = -1;
 
-    if (recipeIndex === -1) {
-      return res.status(404).json({ error: 'Recipe not found in favourites' });
+    if (!userFavourites) {
+      return res.status(400).json({ error: 'Recipe not in favourites' });
+    } else {
+      recipeIndex = userFavourites.recipeIds.indexOf(recipeId);
+      if (recipeIndex === -1) {
+        return res.status(400).json({ error: 'Recipe not in favourites' });
+      }
     }
 
-    user.favouriteRecipes.splice(recipeIndex, 1);
-    await user.save();
+    userFavourites.recipeIds.splice(recipeIndex, 1);
+    await userFavourites.save();
 
     return res.status(200).json({ message: 'Recipe removed from favourites' });
   } catch (error) {
     console.error('Remove favourite recipe error:', error.message);
     return res.status(500).json({ error: 'Internal server error' });
   }
-};
-
-/**
- * Filter the recipe IDs by source.
- * @param {string} sourceName - The source name to filter by.
- * @param {Array} recipes - The list of recipes.
- * @returns {Array} - The list of recipe IDs.
- */
-const filterRecipeIdsBySource = (sourceName, recipes) => {
-  return recipes
-  .filter(recipe => recipe.source === sourceName)
-  .map(recipe => recipe.recipeId);
-};
-
-/**
- * Check if the recipe is already in the user object's favouriteRecipes field
- * Applicable for uploaded recipes only
- * @param {Array} favouriteRecipes - User's current list of favourite recipes.
- * @param {string} recipeId - ID of the recipe.
- * @returns {boolean} - Whether the recipe is already in favourites.
- */
-const isRecipeAlreadyInUserFavourites = (favouriteRecipes, recipeId) => {
-  return favouriteRecipes.some(
-    (recipe) => recipe.recipeId === recipeId
-  );
 };

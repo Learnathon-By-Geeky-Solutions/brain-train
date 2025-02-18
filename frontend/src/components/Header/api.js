@@ -5,8 +5,6 @@ import { getAuth } from "firebase/auth";
 async function getFavoriteRecipes() {
     const auth = getAuth();
     const user = auth.currentUser;
-    // console.log(user.getIdToken());
-
     let data = {recipes: [], status: "error", msg: ""};
     const url = `${API_BASE_URL}/favourites/list`;
   
