@@ -56,9 +56,14 @@ export default function Dashboard() {
   function loadCards( data ) {
 
     const type = searchParams.get("type");
-    console.log("Type: ", type);
+    // console.log("Type: ", type);
     if(!data && !type)
     return;
+
+    if(data){
+      setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)) });
+      return;
+    }
 
     if(type === "favourites"){
       console.log("Fetching favourite recipes from loop");
@@ -70,11 +75,8 @@ export default function Dashboard() {
       });
       return;
     }
-
-    if(data)
-      setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)) });
-    else
-      data = JSON.parse(decodeURIComponent(searchParams.get("q"))); 
+    
+    data = JSON.parse(decodeURIComponent(searchParams.get("q"))); 
     fetchData(data).then((result) => {
       setCardData(result);
     });
