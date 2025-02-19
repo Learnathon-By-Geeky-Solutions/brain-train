@@ -31,7 +31,7 @@ export const findFavouriteRecipesByIds = async (recipeIds) => {
  * @returns {Object} The user's favourite recipe ids.
  */
 export const findFavouriteRecipeIdsByUid = async (uid) => {
-  return await UserFavourites.findOne({ userId: uid });
+  return await UserFavourites.findOne({ firebaseUid: uid });
 }
 
 export const createUserEntryInUserFavourites = async (uid, recipeId) => {

@@ -19,7 +19,7 @@ async function addToFavourites(recipe) {
         },
         body: JSON.stringify(
             {
-                "recipeId": recipe?.id,
+                "recipeId": recipe?._id,
             }
         )
       });

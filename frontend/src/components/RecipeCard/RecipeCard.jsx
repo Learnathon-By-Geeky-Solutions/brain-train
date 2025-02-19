@@ -11,7 +11,7 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
 
     const handleRecipeDetail = async (e) => {
       try {
-        const response = await fetch(`${API_BASE_URL}/search/recipes/${recipe.id}`, {
+        const response = await fetch(`${API_BASE_URL}/search/recipes/${recipe.recipeId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -21,7 +21,6 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
 
         const data = await response.json();
         if (response.ok) {
-            console.log('Fetched recipeDetail:', data);
             navigate('/dashboard/recipe', { state: { recipe: data } });
         } else {
             console.error('Failed to fetch recipes. Error code:', response.status);
@@ -135,7 +134,7 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
 
 RecipeCard.propTypes = {
   recipe: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    recipeId: PropTypes.number.isRequired,
     image: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     likes: PropTypes.number.isRequired,
