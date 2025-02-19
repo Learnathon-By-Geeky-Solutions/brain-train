@@ -11,7 +11,7 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
 
     const handleRecipeDetail = async (e) => {
       try {
-        const response = await fetch(`${API_BASE_URL}/search/recipes/${recipe.recipeId}`, {
+        const response = await fetch(`${API_BASE_URL}/search/recipes/${recipe.id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
