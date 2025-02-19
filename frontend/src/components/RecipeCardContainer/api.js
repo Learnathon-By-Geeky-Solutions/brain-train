@@ -19,7 +19,7 @@ async function removeFavoriteRecipe(recipe) {
         },
         body: JSON.stringify(
             {
-                "recipeId": recipe?._id
+                "recipeId": recipe?.id
             }
         )
       });

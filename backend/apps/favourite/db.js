@@ -13,7 +13,7 @@ export const findFavouriteRecipesByIds = async (recipeIds) => {
       "_id title image likes"
     );
     const formattedRecipes = recipes.map(recipe => ({
-      recipeId: recipe._id.toString(), // Change _id to recipeId
+      id: recipe._id.toString(), // id
       title: recipe.title,
       image: recipe.image,
       likes: recipe.likes
