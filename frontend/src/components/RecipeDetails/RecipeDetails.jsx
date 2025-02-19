@@ -42,7 +42,7 @@ const RecipeDetails = () => {
         </HStack>
         <HStack>
           <LuHeart />
-          <Text>{recipe.aggregateLikes} likes</Text>
+          <Text>{recipe.likes} likes</Text>
         </HStack>
       </HStack>
       <Separator size="lg" mb={4} />
@@ -59,8 +59,8 @@ const RecipeDetails = () => {
         Ingredients
       </Heading>
       <VStack align="start" spacing={1} mb={4}>
-        {recipe.extendedIngredients.map((ingredient) => (
-          <Text key={ingredient.id}>• {ingredient.name}</Text>
+        {recipe.ingredients.map((ingredient) => (
+          <Text key={ingredient._id}>• {ingredient.title}</Text>
         ))}
       </VStack>
       <Separator size="lg" mb={4} />
