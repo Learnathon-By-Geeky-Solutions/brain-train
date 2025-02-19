@@ -50,3 +50,7 @@ export const saveRecipeDetails = async (details) => {
   const savedRecipe = await newRecipe.save();
   return savedRecipe;
 };
+
+export const getRecipeInfoById = async (id, fields = "") => {
+  return await Recipe.findById(id).select(fields || "").lean();
+};

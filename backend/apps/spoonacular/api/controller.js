@@ -3,7 +3,8 @@ import { enrichRecipesWithFields } from './fetchExtraFields.js';
 import { stripHtml } from 'string-strip-html'; 
 import { 
     getRecipeFieldsByParams,
-    saveRecipeDetails
+    saveRecipeDetails,
+    getRecipeInfoById
 } from '../db.js';
 
 export const searchRecipes = async (req, res) => {
@@ -84,11 +85,15 @@ export const searchRecipesByNutrients = async (req, res) => {
 export const getRecipeInformation = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log("id", id);
-        const data = await spoonacularRequest(`/recipes/${id}/information`);
-        res.status(200).json(data);
+        const data = await getRecipeInfoById(id);
+
+        if (!data) {
+            return res.status(404).json({ error: "Recipe not found." });
+        }
+
+        return res.status(200).json(data);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 
@@ -96,11 +101,10 @@ export const getRecipeInformation = async (req, res) => {
 export const getRecipeSummary = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log("id", id);
-        const data = await spoonacularRequest(`/recipes/${id}/summary`);
+        const data = await getRecipeInfoById(id, "_id title summary");
         
-        const plainTextSummary= stripHtml(data.summary).result;//strip html tags from summary
-        res.status(200).json(
+        const plainTextSummary= stripHtml(data.summary).result;
+        return res.status(200).json(
             {
                 id: data.id,
                 title: data.title,
@@ -108,7 +112,7 @@ export const getRecipeSummary = async (req, res) => {
             }
         );
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 
