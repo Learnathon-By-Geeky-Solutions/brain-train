@@ -1,7 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 function handleSearchByTitle (searchData) {
-    return `${API_BASE_URL}/search/recipes?query=${searchData.data}&fields=summary,likes`;
+    return `${API_BASE_URL}/search/recipes?query=${searchData.data}&fields=summary,likes,title,image`;
 }
 
 const handleSearchByIngredients = (searchData) => {
@@ -12,7 +12,7 @@ const handleSearchByIngredients = (searchData) => {
         ingredients += field.name + ',';
     });
     ingredients = ingredients.slice(0, -1);
-    console.log('url from function '+`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes`);
+    console.log('url from function '+`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`);
     return `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary`;
 }
 
