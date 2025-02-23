@@ -1,5 +1,4 @@
 import { spoonacularRequest } from '../../../libraries/services/spoonacular.js';
-import { enrichRecipesWithFields } from './fetchExtraFields.js';
 import { stripHtml } from 'string-strip-html'; 
 import { 
     getRecipeFieldsByParams,
@@ -7,6 +6,12 @@ import {
     getRecipeInfoById
 } from '../db.js';
 
+/**
+ * Search recipes by title
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 export const searchRecipes = async (req, res) => {
     try {
         const { number = 10, fields = "" , ...params } = req.query;
@@ -56,10 +61,10 @@ export const searchRecipesByIngredients = async (req, res) => {
         const recipesData = await spoonacularRequest('/recipes/findByIngredients', { number, ...params });
         const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
 
-        res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+        return  res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return  res.status(500).json({ error: error.message });
     }
 };
 
@@ -74,10 +79,10 @@ export const searchRecipesByNutrients = async (req, res) => {
         const recipesData = await spoonacularRequest('/recipes/findByNutrients', { number, ...params });
         const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
 
-        res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+        return  res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return  res.status(500).json({ error: error.message });
     }
 };
 
@@ -127,22 +132,16 @@ export const getSimilarRecipes = async (req, res) => {
         const recipesData = await spoonacularRequest(`/recipes/${id}/similar`, { number });
         const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
 
-        res.status(200).json({ results: enrichedRecipes });
+        return  res.status(200).json({ results: enrichedRecipes });
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return  res.status(500).json({ error: error.message });
     }
 };
 
-
-
 // 🔍 Autocomplete Recipes
-
 export const autoCompleteRecipes = async (req, res) => {
-
     try {
-
-
         const { query, number = 5 } = req.query;
 
         if (!query) {
@@ -157,7 +156,6 @@ export const autoCompleteRecipes = async (req, res) => {
     }
 };
 
-
 // 🍏 Autocomplete Ingredients
 export const autoCompleteIngredients = async (req, res) => {
     try {
@@ -167,13 +165,62 @@ export const autoCompleteIngredients = async (req, res) => {
             return res.status(400).json({ error: "Query parameter is required." });
         }
 
-        console.log("🔍 Autocomplete Ingredient Query:", query);
-
         // Request Spoonacular API
         const data = await spoonacularRequest('/food/ingredients/autocomplete', { query, number });
 
-        res.status(200).json(data);
+        return  res.status(200).json(data);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return  res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Fetches additional fields for each recipe dynamically.
+ * @param {Array} recipes - List of recipe objects with IDs.
+ * @param {Array} fields - List of fields to fetch (e.g., ["summary", "nutrition", "likes"]).
+ * @returns {Array} - Recipes enriched with the requested fields.
+ */
+const enrichRecipesWithFields = async (recipes, fields = []) => {
+
+    if (!recipes || recipes.length === 0 || fields.length === 0) return recipes;
+
+    // Define which endpoint to use for each requested field
+    const fieldEndpoints = {
+        summary: (id) => `/recipes/${id}/summary`,
+        likes: (id) => `/recipes/${id}/information`, // Likes come from "aggregateLikes" in this response
+    };
+
+    try {
+        // Fetch all requested fields for each recipe
+        const detailsFetchers = recipes.map(async (recipe) => {
+
+            let enrichedRecipe = { ...recipe };
+
+            for (const field of fields) {
+                if (!fieldEndpoints[field]) continue; // Skip if field is not recognized
+
+                try {
+                    const fieldData = await spoonacularRequest(fieldEndpoints[field](recipe.id));
+
+                    // Process data differently based on field type
+                    if (field === "summary") {
+                        enrichedRecipe.summary = stripHtml(fieldData.summary).result || "No summary available";
+                    } else if (field === "likes") {
+                        enrichedRecipe.likes = fieldData.aggregateLikes || 0;
+                    } 
+                } catch (error) {
+                    console.error(`Error fetching ${field} for recipe ${recipe.id}:`, error);
+                }
+            }
+
+            return enrichedRecipe;
+        });
+
+        // Resolve all fetchers in parallel
+        return await Promise.all(detailsFetchers);
+
+    } catch (error) {
+        console.error("Error enriching recipes with additional fields:", error);
+        return recipes.map(recipe => ({ ...recipe, error: "Failed to fetch additional details" }));
     }
 };
