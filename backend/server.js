@@ -8,7 +8,7 @@ import mongoose from 'mongoose'; // Database driver for MongoDB
 // Routes
 import signinRoute from './apps/signin/api/routes.js';
 import signupRoute from './apps/signup/api/routes.js';
-import spoonacularRoutes from './apps/spoonacular/api/routes.js';
+import searchRoutes from './apps/search/api/routes.js';
 import userRoutes from './apps/user/api/routes.js';
 import favouritesRoutes from './apps/favourite/api/routes.js';
 
@@ -36,7 +36,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 app.use("/signin", signinRoute);
 app.use("/signup", signupRoute);
-app.use('/search', spoonacularRoutes);
+app.use('/search', searchRoutes);
 app.use('/user', userRoutes);
 app.use('/favourites', favouritesRoutes);
 
