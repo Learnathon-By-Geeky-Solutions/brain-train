@@ -1,20 +1,15 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import RecipeCard from '../RecipeCard/RecipeCard';
-import PropTypes, { func } from 'prop-types';
-import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Toaster, toaster } from '../ui/toaster';
 import removeFavoriteRecipe from './api';
 
 
 const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
   const location = useLocation();
-  const [ searchParams, setSearchParams ] = useSearchParams();
-  // const [ isVisibile, setIsVisible ] = useState([]);
-
-  // useEffect(() => {
-  //   setIsVisible(Array(recipe_prop.length).fill(true));
-  // }, [recipe_prop]);
+  const searchParams = useSearchParams()[0];
+  
 
   if (!recipe_prop || recipe_prop.length === 0) {
     return (<div>No recipes found</div>);
@@ -23,9 +18,6 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
   let type = location.state?.type || searchParams.get("type");
 
   function toggleVisibility(index) {
-    // const newVisibility = [...isVisibile];
-    // newVisibility[index] = !newVisibility[index];
-    // setIsVisible(newVisibility);
     let toasterText = "Could not remove recipe from favourites";
     let toasterType = "error"; 
     removeFavoriteRecipe(recipe_prop[index]).then((result) => {
@@ -39,7 +31,9 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
           type: toasterType,
         }
       );
-      removeCard(index);
+      setTimeout(() => {
+        removeCard(index);
+      }, 1000);
     });
   }
   // Maximum number of cards per row and rows to display
@@ -49,8 +43,6 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
 
   // Slice the recipes array to show only the maximum number of cards
   const visibleRecipes = recipe_prop.slice(0, maxCards);
-  // console.log(visibleRecipes);
-  // console.log(isVisibile);
 
   return (
     <Box
@@ -83,6 +75,7 @@ RecipeCardContainer.propTypes = {
   recipe_prop: PropTypes.array,
   perRow: PropTypes.number,
   numRows: PropTypes.number,
+  removeCard: PropTypes.func,
 };
 
 export default RecipeCardContainer;

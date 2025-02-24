@@ -9,8 +9,7 @@ import DashboardFeatures from '@/components/DasboardFeatures/DashboardFeatures';
 import recipes from './recipe';
 import PreloadedCards from '@/components/DasboardFeatures/PreloadedCards';
 import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
-import fetchData from './api';
-import getFavoriteRecipes from '@/components/Header/api';
+import fetchData, { getFavoriteRecipes } from './api';
 
 
 export default function Dashboard() {
@@ -24,6 +23,7 @@ export default function Dashboard() {
   const [user, setUser] = useState(undefined);
   const [photoURL, setPhotoURL] = useState(undefined);
   const navigate = useNavigate();
+  let unsubscribe;
 
   useEffect(() => {
     if (location.pathname === '/dashboard' || location.pathname === '/dashboard/') {
@@ -32,31 +32,39 @@ export default function Dashboard() {
     else {
       setPageLocation('newValue');
     }
-    const setupAuthStateListener = async () => {
-      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+
+    setupAuthStateListener().then((currentUser) => {
+      console.log('Auth state listener setup');
+      if(currentUser){
+        setUser(currentUser);
+        setPhotoURL(currentUser.photoURL);
+        loadCards("");
+      }
+    });
+    return () => {
+      if (unsubscribe)
+        unsubscribe();
+    };
+  }, [navigate,searchParams]);
+
+  const setupAuthStateListener = () => {
+    return new Promise((resolve) => {
+      unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
-          setUser(currentUser);
-          setPhotoURL(currentUser.photoURL);
+          resolve(currentUser);  // Resolve with the user
         } else {
-          // Redirect to the home page if not authenticated
           navigate('/');
+          resolve(null);
         }
       });
-
-      // Cleanup the listener when the component unmounts
-      return () => unsubscribe();
-    };
-
-    setupAuthStateListener();
-    // setCardData([]);
-    loadCards("");
-  }, [navigate,searchParams]);
+    });
+  };
 
 
   function loadCards( data ) {
 
     const type = searchParams.get("type");
-    // console.log("Type: ", type);
+    console.log("Type: ", type);
     if(!data && !type)
     return;
 
@@ -97,6 +105,7 @@ export default function Dashboard() {
     }
   };
 
+
   return (
     <Flex direction="column" width="100%" height="100%" minHeight="100vh" 
     className="dashboard"
@@ -106,6 +115,7 @@ export default function Dashboard() {
         userName={user?.displayName}
         handleLogout={handleLogout}
         loadCards={loadCards}
+        setSearchParams={setSearchParams}
       />
       <DashboardFeatures 
         pageState={pageState}

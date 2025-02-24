@@ -1,5 +1,6 @@
 import { Tabs } from "@chakra-ui/react"
-import { LuClipboard, LuFolder, LuHandHeart, LuSquareCheck, LuUser, LuUtensils } from "react-icons/lu"
+import PropTypes from 'prop-types';
+import { LuClipboard, LuHandHeart, LuUtensils } from "react-icons/lu"
 import RecipeSearchUtility from "../RecipeSearchUtility/RecipeSearchUtility"
 
 const DashboardFeatures = ({ pageState, pageLocation, setPageState, showResults }) => {
@@ -36,5 +37,11 @@ const DashboardFeatures = ({ pageState, pageLocation, setPageState, showResults 
     </Tabs.Root>
   )
 }
+DashboardFeatures.propTypes = {
+  pageState: PropTypes.object.isRequired,
+  pageLocation: PropTypes.string.isRequired,
+  setPageState: PropTypes.func.isRequired,
+  showResults: PropTypes.bool.isRequired,
+};
 
 export default DashboardFeatures

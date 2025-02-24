@@ -1,35 +1,24 @@
 import { Flex, IconButton, Icon } from '@chakra-ui/react';
+import PropTypes from 'prop-types';
 import IngredientSearchForm from '@/components/IngredientSearchFormInput/IngredientSearchFormInput';
-import { useEffect, useState } from 'react';
-import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
+import { useState } from 'react';
 import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
 
 import './RecipeSearchUtility.css';
 import CentralSearchFrame from '@/components/CentralSearchFrame/CentralSearchFrame';
 import Toolbar from '@/components/Toolbar/Toolbar';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import TitleSearchInput from '@/components/TitleSearchInput/TitleSearchInput';
 import { FaSliders } from 'react-icons/fa6';
 
+
 export default function RecipeSearchUtility({ pageState, setPageState, pageLocation, showResults }) {
-  // const [pageLocation, setPageLocation] = useState('dashboard');
-  // const [pageState, setPageState] = useState('init');
+  const [badges, setBadges] = useState([]);
 
   function changePageState(newState) {
     setPageState(newState);
   }
-  // const location = useLocation();
 
-  // useEffect(() => {
-  //   if (location.pathname === '/dashboard' || location.pathname === '/dashboard/') {
-  //     setPageLocation('dashboard');
-  //   }
-  //   else {
-  //     setPageLocation('newValue');
-  //   }
-  // }, [location]);
-
-  const [badges, setBadges] = useState([]);
   function modifyBadges(text, colorPalette) {
     const newBadges = [...badges];
     if (newBadges.find((badge) => badge.text === text)) {
@@ -78,6 +67,7 @@ export default function RecipeSearchUtility({ pageState, setPageState, pageLocat
             featureProps={{ prevState: () => { changePageState('init') }, ref: null }} 
             currentBadges={badges} 
             changeBadges={(text, color) => { modifyBadges(text, color) }}
+            showResults={showResults}
           />
         )
       }
@@ -87,4 +77,12 @@ export default function RecipeSearchUtility({ pageState, setPageState, pageLocat
       </Routes>
     </Flex>
   );
+};
+
+
+RecipeSearchUtility.propTypes = {
+  pageState: PropTypes.string.isRequired,
+  setPageState: PropTypes.func.isRequired,
+  pageLocation: PropTypes.string.isRequired,
+  showResults: PropTypes.func.isRequired,
 };
