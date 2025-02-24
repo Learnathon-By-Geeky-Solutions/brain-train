@@ -13,7 +13,7 @@ export const favouriteRecipesFinder = async (req, res) => {
     const userFavourites = await findFavouriteRecipeIdsByUid(uid);
 
     if (!userFavourites || userFavourites.recipeIds.length === 0) {
-      return res.status(404).json({ error: 'No favourite recipes found' });
+      return res.status(200).json({ recipes: []});
     }
 
     const recipes = await findFavouriteRecipesByIds(userFavourites.recipeIds);
