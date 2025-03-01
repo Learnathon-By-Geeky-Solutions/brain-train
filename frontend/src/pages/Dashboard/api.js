@@ -57,11 +57,14 @@ const fetchData = async (searchData) => {
     }
 
     try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      const idToken = await user.getIdToken(true);
       const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${2 + 2}`,
+          Authorization: `Bearer ${idToken}`,
         },
       });
       const data = await response.json();
