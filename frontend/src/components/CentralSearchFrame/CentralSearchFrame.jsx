@@ -25,7 +25,11 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
 
     const Feature = feature;
     const ref = useRef(null);
-    if(featureProps) featureProps.ref = ref;
+
+    if(featureProps?.ref == null) featureProps.ref = ref;
+    if(featureProps?.handleSuggestionClick == null) featureProps.handleSuggestionClick = () => {
+      handleSearch();
+    }
 
     if(!currentBadges) currentBadges = [];  
     const BadgesJsx = currentBadges.map((badge) => <Badge key={badge.id} colorPalette={badge.colorPalette}>{badge.text}</Badge>);

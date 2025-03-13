@@ -28,6 +28,7 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
 
   const [amountStates, setAmountStates] = useState([{amount: 0}]);
   const [ingredients, setIngredients] = useState([""]);
+  const [keyHandlerForSuggestion, setKeyHandlerForSuggestion] = useState(null);
 
   const handleIngredientChange = (index, value) => {
     if ((value === "default") && (index === "default")) {
@@ -40,6 +41,7 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
       return newIngredients;
     });
   };
+
 
   function updateStates(index){
 
@@ -86,6 +88,7 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
                                 handleIngredientChange(index, e.target.value);
                                 setValue(`fields.${index}.name`, e.target.value); // update form value
                               }}
+                              onKeyDown={(e) => setKeyHandlerForSuggestion(e) }
                             />
                           )}
                         />
@@ -95,6 +98,7 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller}, ref)=> {
                             handleIngredientChange(index, name);
                             setValue(`fields.${index}.name`, name);
                           }} 
+                          keyHandler={keyHandlerForSuggestion}
                         />
 
                     </Field>

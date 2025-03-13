@@ -7,15 +7,17 @@ import {
   } from "@chakra-ui/react";
   
 import PropTypes from 'prop-types';
+import { use } from "react";
 import { useState, useEffect } from "react";
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
-const SuggestionContainer = ({ type, query, handleClick }) => {
+const SuggestionContainer = ({ type, query, handleClick, keyHandler }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [containerClosed, setContainerClosed] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
     useEffect(() => {
         if (query.trim() === "") {
@@ -23,7 +25,7 @@ const SuggestionContainer = ({ type, query, handleClick }) => {
             setContainerClosed(false);
             return;
         }
-
+        
         const fetchSuggestions = async () => {
         setLoading(true);
         setError(null);
@@ -55,7 +57,27 @@ const SuggestionContainer = ({ type, query, handleClick }) => {
         return () => clearTimeout(debounceFetch);
     }, [query]);
 
+    useEffect(() => {
+      if (keyHandler === null) return;
+      if (suggestions.length === 0) return;
+      if (keyHandler.key === "ArrowDown") {
+        setSelectedIndex((prev) =>
+          prev < suggestions.length - 1 ? prev + 1 : prev
+        );
+      } else if (keyHandler.key === "ArrowUp") {
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+      } else if (keyHandler.key === "Enter" && selectedIndex !== -1) {
+        handleClick(suggestions[selectedIndex][`${property}`]);
+        setSelectedIndex(-1);
+        setContainerClosed(true);
+      } else if (keyHandler.key === "Escape") {
+        setContainerClosed(true);
+      }
+
+    }, [keyHandler]);
+
     const property = type === "title" ? "title" : "name";
+    
 
     return (
         <Box width="full" mx="auto">
@@ -78,15 +100,17 @@ const SuggestionContainer = ({ type, query, handleClick }) => {
           >
             {suggestions.length > 0 && query.trim() && !containerClosed ? (
               <List.Root spacing={1} p={2} variant="plain">
-                {suggestions.map((suggestion) => (
+                {suggestions.map((suggestion,index) => (
                   <List.Item
                     key={suggestion.id}
                     p={2}
                     borderRadius="md"
+                    bg={selectedIndex === index ? "gray.400" : "none"}
                     _hover={{ bg: "gray.400", cursor: "pointer" }}
                     onClick={() => {
                         handleClick(suggestion[`${property}`]);
                         setContainerClosed(true);
+                        setSelectedIndex(-1);
                       }
                     }
                   >

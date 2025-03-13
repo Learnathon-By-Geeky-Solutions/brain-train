@@ -47,6 +47,19 @@ export default function Dashboard() {
     };
   }, [navigate,searchParams]);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      // Clear search params when back button is pressed
+      setSearchParams({});
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
   const setupAuthStateListener = () => {
     return new Promise((resolve) => {
       unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -122,6 +135,7 @@ export default function Dashboard() {
         pageLocation={pageLocation}
         setPageState={setPageState}
         showResults={loadCards}
+        setSearchParams={setSearchParams}
       />
       {
         !searchParams.get("type") && pageLocation === 'dashboard' &&

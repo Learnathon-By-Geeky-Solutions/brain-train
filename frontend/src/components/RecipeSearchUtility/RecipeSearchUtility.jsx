@@ -12,10 +12,11 @@ import TitleSearchInput from '@/components/TitleSearchInput/TitleSearchInput';
 import { FaSliders } from 'react-icons/fa6';
 
 
-export default function RecipeSearchUtility({ pageState, setPageState, pageLocation, showResults }) {
+export default function RecipeSearchUtility({ pageState, setPageState, pageLocation, showResults, setSearchParams }) {
   const [badges, setBadges] = useState([]);
 
   function changePageState(newState) {
+    setSearchParams({});
     setPageState(newState);
   }
 
@@ -38,6 +39,7 @@ export default function RecipeSearchUtility({ pageState, setPageState, pageLocat
               <Flex direction="row" h="max-content">
               <CentralSearchFrame 
                 feature={TitleSearchInput} 
+                featureProps={{ handleSuggestionClick: null }}
                 currentBadges={badges} 
                 changeBadges={
                   (text, color) => { modifyBadges(text, color) }

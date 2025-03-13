@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { LuClipboard, LuHandHeart, LuUtensils } from "react-icons/lu"
 import RecipeSearchUtility from "../RecipeSearchUtility/RecipeSearchUtility"
 
-const DashboardFeatures = ({ pageState, pageLocation, setPageState, showResults }) => {
+const DashboardFeatures = ({ pageState, pageLocation, setPageState, showResults, setSearchParams }) => {
   return (
     <Tabs.Root defaultValue="searchUtility" padding="2" size="lg">
       <Tabs.List>
@@ -27,6 +27,7 @@ const DashboardFeatures = ({ pageState, pageLocation, setPageState, showResults 
             setPageState={setPageState}
             pageLocation={pageLocation}
             showResults={showResults}
+            setSearchParams={setSearchParams}
           />
         }
       </Tabs.Content>
