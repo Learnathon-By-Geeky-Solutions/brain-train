@@ -46,6 +46,7 @@ const TitleSearchInput = ({controller,handleSuggestionClick}) => {
 
 TitleSearchInput.propTypes = {
   controller: PropTypes.func.isRequired,
+  handleSuggestionClick: PropTypes.func.isRequired,
 };
 
 

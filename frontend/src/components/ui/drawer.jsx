@@ -1,6 +1,7 @@
 import { Drawer as ChakraDrawer, Portal } from '@chakra-ui/react'
 import { CloseButton } from './close-button'
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 export const DrawerContent = React.forwardRef(
   function DrawerContent(props, ref) {
@@ -16,6 +17,19 @@ export const DrawerContent = React.forwardRef(
     )
   },
 )
+DrawerContent.propTypes = {
+  children: PropTypes.node,
+  portalled: PropTypes.bool,
+  portalRef: PropTypes.oneOfType([
+    PropTypes.func, 
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+  ]),
+  offset: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number]))
+  ]),
+}
 
 export const DrawerCloseTrigger = React.forwardRef(
   function DrawerCloseTrigger(props, ref) {

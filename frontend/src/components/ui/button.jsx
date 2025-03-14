@@ -5,6 +5,7 @@ import {
   Spinner,
 } from '@chakra-ui/react'
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 export const Button = React.forwardRef(function Button(props, ref) {
   const { loading, disabled, loadingText, children, ...rest } = props
@@ -27,4 +28,12 @@ export const Button = React.forwardRef(function Button(props, ref) {
       )}
     </ChakraButton>
   )
-})
+});
+
+Button.propTypes = {
+  loading: PropTypes.bool,
+  disabled: PropTypes.bool,
+  loadingText: PropTypes.string,
+  children: PropTypes.node.isRequired,
+}
+

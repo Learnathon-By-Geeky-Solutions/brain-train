@@ -7,7 +7,6 @@ import {
   } from "@chakra-ui/react";
   
 import PropTypes from 'prop-types';
-import { use } from "react";
 import { useState, useEffect } from "react";
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
@@ -135,6 +134,7 @@ SuggestionContainer.propTypes = {
   type: PropTypes.string.isRequired,
   query: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
+  keyHandler: PropTypes.object
 };
 
 export default SuggestionContainer;

@@ -1,5 +1,6 @@
 import { Group, InputElement } from '@chakra-ui/react'
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 export const InputGroup = React.forwardRef(function InputGroup(props, ref) {
   const {
@@ -36,4 +37,14 @@ export const InputGroup = React.forwardRef(function InputGroup(props, ref) {
       )}
     </Group>
   )
-})
+});
+
+InputGroup.propTypes = {
+  startElement: PropTypes.node,
+  startElementProps: PropTypes.object,
+  endElement: PropTypes.node,
+  endElementProps: PropTypes.object,
+  children: PropTypes.node.isRequired,
+  startOffset: PropTypes.string,
+  endOffset: PropTypes.string,
+}

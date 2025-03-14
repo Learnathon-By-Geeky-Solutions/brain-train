@@ -1,6 +1,7 @@
 import { Alert as ChakraAlert } from '@chakra-ui/react'
 import { CloseButton } from './close-button'
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 export const Alert = React.forwardRef(function Alert(props, ref) {
   const {
@@ -37,4 +38,14 @@ export const Alert = React.forwardRef(function Alert(props, ref) {
       )}
     </ChakraAlert.Root>
   )
-})
+});
+
+Alert.propTypes = {
+  title: PropTypes.string,
+  children: PropTypes.node,
+  icon: PropTypes.node,
+  closable: PropTypes.bool,
+  onClose: PropTypes.func,
+  startElement: PropTypes.node,
+  endElement: PropTypes.node,
+};

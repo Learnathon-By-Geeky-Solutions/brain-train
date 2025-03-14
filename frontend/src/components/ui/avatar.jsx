@@ -2,6 +2,7 @@
 
 import { Avatar as ChakraAvatar, Group } from '@chakra-ui/react'
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 export const Avatar = React.forwardRef(function Avatar(props, ref) {
   const { name, src, srcSet, loading, icon, fallback, children, ...rest } =
@@ -15,7 +16,17 @@ export const Avatar = React.forwardRef(function Avatar(props, ref) {
       {children}
     </ChakraAvatar.Root>
   )
-})
+});
+
+Avatar.propTypes = {
+  name: PropTypes.string,
+  src: PropTypes.string,
+  srcSet: PropTypes.string,
+  loading: PropTypes.string,
+  icon: PropTypes.node,
+  fallback: PropTypes.node,
+  children: PropTypes.node,
+}
 
 const AvatarFallback = React.forwardRef(function AvatarFallback(props, ref) {
   const { name, icon, children, ...rest } = props
@@ -29,6 +40,12 @@ const AvatarFallback = React.forwardRef(function AvatarFallback(props, ref) {
     </ChakraAvatar.Fallback>
   )
 })
+
+AvatarFallback.propTypes = {
+  name: PropTypes.string,
+  icon: PropTypes.node,
+  children: PropTypes.node,
+}
 
 function getInitials(name) {
   const names = name.trim().split(' ')
@@ -47,3 +64,9 @@ export const AvatarGroup = React.forwardRef(function AvatarGroup(props, ref) {
     </ChakraAvatar.PropsProvider>
   )
 })
+
+AvatarGroup.propTypes = {
+  size: PropTypes.string,
+  variant: PropTypes.string,
+  borderless: PropTypes.bool,
+}

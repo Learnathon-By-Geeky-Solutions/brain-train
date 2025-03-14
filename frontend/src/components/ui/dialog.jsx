@@ -1,6 +1,7 @@
 import { Dialog as ChakraDialog, Portal } from '@chakra-ui/react'
 import { CloseButton } from './close-button'
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 export const DialogContent = React.forwardRef(
   function DialogContent(props, ref) {
@@ -24,6 +25,12 @@ export const DialogContent = React.forwardRef(
     )
   },
 )
+DialogContent.propTypes = {
+  children: PropTypes.node,
+  portalled: PropTypes.bool,
+  portalRef: PropTypes.object,
+  backdrop: PropTypes.bool,
+}
 
 export const DialogCloseTrigger = React.forwardRef(
   function DialogCloseTrigger(props, ref) {
@@ -42,6 +49,10 @@ export const DialogCloseTrigger = React.forwardRef(
     )
   },
 )
+
+DialogCloseTrigger.propTypes = {
+  children: PropTypes.node,
+}
 
 export const DialogRoot = ChakraDialog.Root
 export const DialogFooter = ChakraDialog.Footer

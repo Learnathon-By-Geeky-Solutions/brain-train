@@ -43,6 +43,7 @@ DashboardFeatures.propTypes = {
   pageLocation: PropTypes.string.isRequired,
   setPageState: PropTypes.func.isRequired,
   showResults: PropTypes.bool.isRequired,
+  setSearchParams: PropTypes.func.isRequired,
 };
 
 export default DashboardFeatures

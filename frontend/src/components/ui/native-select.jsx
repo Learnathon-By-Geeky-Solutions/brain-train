@@ -1,5 +1,5 @@
 function _optionalChain(ops) {
-  let lastAccessLHS = undefined
+  let lastAccessLHS
   let value = ops[0]
   let i = 1
   while (i < ops.length) {
@@ -24,6 +24,8 @@ function _optionalChain(ops) {
 import { NativeSelect as Select } from '@chakra-ui/react'
 import * as React from 'react'
 
+import PropTypes from 'prop-types'
+
 export const NativeSelectRoot = React.forwardRef(
   function NativeSelect(props, ref) {
     const { icon, children, ...rest } = props
@@ -36,10 +38,14 @@ export const NativeSelectRoot = React.forwardRef(
   },
 )
 
+NativeSelectRoot.propTypes = {
+  icon: PropTypes.node,
+  children: PropTypes.node,
+}
+
 export const NativeSelectField = React.forwardRef(
   function NativeSelectField(props, ref) {
     const { items: itemsProp, children, ...rest } = props
-
     const items = React.useMemo(
       () =>
         _optionalChain([
@@ -78,3 +84,9 @@ export const NativeSelectField = React.forwardRef(
     )
   },
 )
+
+NativeSelectField.propTypes = {
+  items: PropTypes.array,
+  children: PropTypes.node,
+}
+

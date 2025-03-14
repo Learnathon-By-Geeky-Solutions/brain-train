@@ -1,5 +1,5 @@
 function _optionalChain(ops) {
-  let lastAccessLHS = undefined
+  let lastAccessLHS
   let value = ops[0]
   let i = 1
   while (i < ops.length) {
