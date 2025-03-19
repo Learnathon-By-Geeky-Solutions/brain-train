@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import recipe_default from '../../assets/recipe_default.jpg';
 import { FaHeart } from 'react-icons/fa';
+import { getAuth } from "firebase/auth";
   
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 const RecipeCard = ({ recipe, changeVisibility, type }) => {
@@ -11,11 +12,12 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
 
     const handleRecipeDetail = async (e) => {
       try {
+        const idToken = await getAuth().currentUser.getIdToken(true);
         const response = await fetch(`${API_BASE_URL}/search/recipes/${recipe.id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${2+2}`,
+                Authorization: `Bearer ${idToken}`,
             },
         });
 

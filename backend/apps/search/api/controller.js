@@ -15,7 +15,7 @@ import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
  */
 export const searchRecipes = async (req, res) => {
     try {
-        // await decodeFirebaseIdToken(req.params.authorization);
+        await decodeFirebaseIdToken(req.headers.authorization);
         const { number = 10, fields = "" , ...params } = req.query;
 
         // Convert "fields" query string into an array (e.g., "summary,likes,nutrition")
@@ -56,7 +56,7 @@ export const searchRecipes = async (req, res) => {
 // Controller: Search Recipes by Ingredients
 export const searchRecipesByIngredients = async (req, res) => {
     try {
-        // await decodeFirebaseIdToken(req.params.authorization);
+        await decodeFirebaseIdToken(req.headers.authorization);
         const {  number = 10 ,fields = "", ...params} = req.query;
         console.log("ingredients", params.ingredients);
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
