@@ -20,6 +20,9 @@ Geeky Chef is a web application that helps users discover recipes based on custo
 
 The application features an intuitive user interface optimized for both desktop and mobile devices, ensuring accessibility across different user expertise levels.
 
+## ERD
+- Project [ERD](/erd/ERD.md)
+
 ## Getting Started
 1. Clone the repository
 2. Install dependencies
