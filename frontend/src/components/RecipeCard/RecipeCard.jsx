@@ -66,7 +66,8 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               changeVisibility();
             }}
           >
