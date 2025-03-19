@@ -1,66 +1,81 @@
-import { Box, Image, Flex, Text, VStack, Button, Span } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { Box, Flex } from '@chakra-ui/react';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import RecipeCard from '../RecipeCard/RecipeCard';
+import PropTypes from 'prop-types';
+import { Toaster, toaster } from '../ui/toaster';
+import removeFavoriteRecipe from './api';
 
-const RecipeCard = ({ recipe, navigate }) => (
-  <Box
-    bg="white"
-    borderRadius="md"
-    boxShadow="lg"
-    overflow="hidden"
-    maxW="220px"
-    _hover={{ transform: 'scale(1.05)', transition: 'all 0.3s ease-in-out' }}
-    cursor="pointer"
-  >
-    <Image src={recipe.image} alt={recipe.name} h="150px" w="100%" objectFit="cover" />
-    <VStack p={4} align="start" spacing={2}>
-      <Text fontSize="lg" fontWeight="bold" noOfLines={1}>
-        {recipe.name}
-      </Text>
-      <Text fontSize="sm" color="gray.600" noOfLines={2}>
-        {recipe.description || 'No description available.'}
-      </Text>
-      <Button
-        size="sm"
-        colorScheme="teal"
-        w="100%"
-        onClick={() => {
-          navigate('/dashboard/recipe');
-        }}
-      >
-        View Recipe
-      </Button>
-    </VStack>
-  </Box>
-);
 
-const RecipeCardContainer = ({ recipes }) => {
+const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
+  const location = useLocation();
+  const searchParams = useSearchParams()[0];
+  
+
+  if (!recipe_prop || recipe_prop.length === 0) {
+    return (<div>No recipes found</div>);
+  }
+
+  let type = location.state?.type || searchParams.get("type");
+
+  function toggleVisibility(index) {
+    let toasterText = "Could not remove recipe from favourites";
+    let toasterType = "error"; 
+    removeFavoriteRecipe(recipe_prop[index]).then((result) => {
+      if(result.status === 'success'){
+        toasterText = "Recipe removed from favourites";
+        toasterType = "success";
+      }
+      toaster.create(
+        {
+          title: toasterText,
+          type: toasterType,
+        }
+      );
+      setTimeout(() => {
+        removeCard(index);
+      }, 1000);
+    });
+  }
   // Maximum number of cards per row and rows to display
-  const cardsPerRow = 5;
-  const maxRows = 4; // Adjust based on your design preference
+  const cardsPerRow = perRow || 5;
+  const maxRows = numRows || 5;
   const maxCards = cardsPerRow * maxRows;
 
   // Slice the recipes array to show only the maximum number of cards
-  const visibleRecipes = recipes.slice(0, maxCards);
-
-  const navigate = useNavigate();
+  const visibleRecipes = recipe_prop.slice(0, maxCards);
 
   return (
     <Box
-      maxH="600px"
+      maxH="100%"
       overflowY="auto"
-      p={4}
-      border="1px solid"
-      borderColor="gray.300"
-      borderRadius="lg"
-      bg="gray.50"
+      maxW="100%"
+      p={2}
+      bg="none"
+      css={{
+        "&::-webkit-scrollbar": {
+          display: "none", 
+        },
+        "-ms-overflow-style": "none",
+        "scrollbar-width": "none", 
+      }}
     >
-      <Flex flexWrap="wrap" justify="center" gap={4}>
+      <Flex flexWrap={ numRows === 1 ? "nowrap" : "wrap" }
+      justify={ numRows === 1 ? "start" : "center" }
+      width={ numRows === 1 ? "max-content" : "auto" }
+      gap={4}>
         {visibleRecipes.map((recipe, index) => (
-            <RecipeCard recipe={recipe} navigate={navigate} />
+            <RecipeCard key={recipe.id} recipe={recipe} changeVisibility={()=>toggleVisibility(index)} type={type}/>
         ))}
       </Flex>
+      <Toaster />
     </Box>
   );
+};
+RecipeCardContainer.propTypes = {
+  recipe_prop: PropTypes.array,
+  perRow: PropTypes.number,
+  numRows: PropTypes.number,
+  removeCard: PropTypes.func,
 };
 
 export default RecipeCardContainer;

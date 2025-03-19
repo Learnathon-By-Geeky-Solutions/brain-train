@@ -5,20 +5,22 @@ import {
   Text,
   VStack,
   HStack,
-  Tag,
   Separator,
-  Stack,
-  Icon,
   Button,
 } from '@chakra-ui/react';
 import { LuClock, LuHeart, LuUtensils } from 'react-icons/lu';
+import { useLocation } from 'react-router-dom';
+import addToFavourites from './api';
+import { Toaster, toaster } from '../ui/toaster';
 
-const RecipeDetails = ({ recipe }) => {
+const RecipeDetails = () => {
+  const location = useLocation();
+  const recipe = location.state?.recipe;
   return (
-    <Box maxWidth="900px" mx="auto" p={6} borderWidth="1px" borderRadius="lg">
+    <Box maxWidth="900px" mx="auto" p={6} borderWidth="2px" borderRadius="lg" borderColor="gray.400">
       <Image
         src={recipe.image}
-        alt={recipe.name}
+        alt={recipe.title}
         borderRadius="lg"
         objectFit="cover"
         width="100%"
@@ -27,12 +29,12 @@ const RecipeDetails = ({ recipe }) => {
       />
 
       <Heading as="h1" size="xl" mb={2}>
-        {recipe.name}
+        {recipe.title}
       </Heading>
-      <HStack spacing={4} color="gray.600" mb={4}>
+      <HStack spacing={4} color="gray.300" mb={4}>
         <HStack>
           <LuClock />
-          <Text>{recipe.cookTime} mins</Text>
+          <Text>{recipe.readyInMinutes} mins</Text>
         </HStack>
         <HStack>
           <LuUtensils />
@@ -43,47 +45,64 @@ const RecipeDetails = ({ recipe }) => {
           <Text>{recipe.likes} likes</Text>
         </HStack>
       </HStack>
-      <Separator mb={4} />
+      <Separator size="lg" mb={4} />
 
       {/* Recipe Description */}
-      <Text fontSize="lg" mb={4} lineHeight="tall">
-        {recipe.description}
-      </Text>
-      <Separator mb={4} />
+      {/* <Text fontSize="lg" mb={4} lineHeight="tall">
+        {recipe.summary}
+      </Text> */}
+      <div dangerouslySetInnerHTML={{__html:recipe.summary}}></div>
+      <Separator size="lg" mb={4} />
 
       {/* Ingredients Section */}
       <Heading as="h2" size="md" mb={2}>
         Ingredients
       </Heading>
       <VStack align="start" spacing={1} mb={4}>
-        {recipe.ingredients.map((ingredient, index) => (
-          <Text key={index}>• {ingredient}</Text>
+        {recipe.ingredients.map((ingredient) => (
+          <Text key={ingredient._id}>• {ingredient.title}</Text>
         ))}
       </VStack>
-      <Separator mb={4} />
+      <Separator size="lg" mb={4} />
 
       {/* Steps Section */}
       <Heading as="h2" size="md" mb={2}>
         Preparation Steps
       </Heading>
       <VStack align="start" spacing={3} mb={4}>
-        {recipe.steps.map((step, index) => (
-          <Text key={index}>
-            <strong>Step {index + 1}:</strong> {step}
-          </Text>
-        ))}
+        <Text>
+            <strong>{recipe.instructions}</strong> 
+        </Text>
       </VStack>
-      <Separator mb="4" /> 
+      <Separator size="lg" mb="4" /> 
 
       {/* Footer */}
       <HStack justify="space-between" mt={4}>
-        <Button colorScheme="teal" size="lg">
+        <Button colorScheme="teal" size="lg"
+          onClick={() => {
+            let toasterText = "Could not add recipe to favourites";
+            let toasterType = "error"; 
+            addToFavourites(recipe).then((result) => {
+              if(result.status === 'success'){
+                toasterText = "Recipe added to favourites";
+                toasterType = "success";
+              }
+              toaster.create(
+                {
+                  title: toasterText,
+                  type: toasterType,
+                }
+              );
+            });
+          }}
+        >
           Save Recipe
         </Button>
-        <Button variant="outline" size="lg">
+        <Button variant="outline" size="lg" borderColor="gray.400">
           Share
         </Button>
       </HStack>
+      <Toaster />
     </Box>
   );
 };

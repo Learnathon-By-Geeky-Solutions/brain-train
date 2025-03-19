@@ -1,6 +1,7 @@
 import { Popover as ChakraPopover, Portal } from '@chakra-ui/react'
 import { CloseButton } from './close-button'
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 export const PopoverContent = React.forwardRef(
   function PopoverContent(props, ref) {
@@ -14,6 +15,13 @@ export const PopoverContent = React.forwardRef(
     )
   },
 )
+PopoverContent.propTypes = {
+  portalled: PropTypes.bool,
+  portalRef: PropTypes.oneOfType([
+    PropTypes.func, 
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+  ]),
+}
 
 export const PopoverArrow = React.forwardRef(function PopoverArrow(props, ref) {
   return (

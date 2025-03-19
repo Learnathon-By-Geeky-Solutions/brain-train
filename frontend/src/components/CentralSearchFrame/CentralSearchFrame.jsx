@@ -1,18 +1,44 @@
-import { Input, IconButton, Flex, Stack, Badge } from '@chakra-ui/react';
+import { IconButton, Flex, Badge } from '@chakra-ui/react';
+import { useEffect, useRef, useState } from 'react';
 import { LuActivity, LuAirVent, LuAlarmClockCheck, LuSearch } from 'react-icons/lu';
-import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges, searchFunction }) => {
-    const navigate = useNavigate();
+
+const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges, showResults}) => {
+
+  const [shouldFetch, setShouldFetch] = useState(false);
+  const [searchData, setSearchData] = useState({type:'', data:{}});
+
+  const handleSearch = () => {
+    console.log("Triggering form submission...");
+    if(ref.current)
+      ref.current.requestSubmit(); // Trigger form submission
+    setShouldFetch(true); // Indicate that we should proceed once state updates
+  };
+
+  useEffect(() => {
+    if (!shouldFetch) return;
+
+    showResults(searchData);
+    setShouldFetch(false); // Reset fetch trigger
+  }, [searchData, shouldFetch]); // Watch for changes in searchData
+
     const Feature = feature;
+    const ref = useRef(null);
+
+    if(featureProps?.ref == null) featureProps.ref = ref;
+    if(featureProps?.handleSuggestionClick == null) featureProps.handleSuggestionClick = () => {
+      handleSearch();
+    }
+
     if(!currentBadges) currentBadges = [];  
-    const BadgesJsx = currentBadges.map((badge) => <Badge colorPalette={badge.colorPalette}>{badge.text}</Badge>);
+    const BadgesJsx = currentBadges.map((badge) => <Badge key={badge.id} colorPalette={badge.colorPalette}>{badge.text}</Badge>);
     return (
-        <Flex direction="column" maxWidth="80%" background="white" borderRadius="3xl" padding="2">
+        <Flex direction="column" maxWidth="80%" background="var(--text-input)" borderRadius="3xl" padding="2" m={6} marginBottom={0}>
             <Flex direction="row" width="inherit">
             {  BadgesJsx }
             </Flex>
-        <Feature {...featureProps} />
+        <Feature {...featureProps} controller={setSearchData}/>
         <Flex direction="row">
           <IconButton aria-label="Activity" variant="ghost" borderRadius="full" size="sm" onClick={()=>{
             changeBadges('Activity', 'pink');
@@ -30,7 +56,7 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
             <LuAirVent />
           </IconButton>
           <IconButton aria-label="Alarm" variant="ghost" borderRadius="full" size="sm" marginLeft="auto" onClick={()=>{
-            searchFunction();
+            handleSearch();
           }}>
             <LuSearch />
           </IconButton>
@@ -38,5 +64,18 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
       </Flex>
     )
 }
+
+CentralSearchFrame.defaultProps = {
+  featureProps: {},
+  currentBadges: [],
+};
+
+CentralSearchFrame.propTypes = {
+  feature: PropTypes.elementType.isRequired,
+  featureProps: PropTypes.object,
+  currentBadges: PropTypes.array,
+  changeBadges: PropTypes.func.isRequired,
+  showResults: PropTypes.func.isRequired,
+};
 
 export default CentralSearchFrame;

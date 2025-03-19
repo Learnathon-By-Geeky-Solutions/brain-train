@@ -6,7 +6,7 @@ function _nullishCoalesce(lhs, rhsFn) {
   }
 }
 function _optionalChain(ops) {
-  let lastAccessLHS = undefined
+  let lastAccessLHS
   let value = ops[0]
   let i = 1
   while (i < ops.length) {
@@ -28,6 +28,7 @@ function _optionalChain(ops) {
 }
 import { Slider as ChakraSlider, For, HStack } from '@chakra-ui/react'
 import * as React from 'react'
+import PropTypes from 'prop-types'
 
 export const Slider = React.forwardRef(function Slider(props, ref) {
   const { marks: marksProp, label, showValue, ...rest } = props
@@ -70,10 +71,21 @@ export const Slider = React.forwardRef(function Slider(props, ref) {
         <SliderMarks marks={marks} />
       </ChakraSlider.Control>
     </ChakraSlider.Root>
-  )
+)
 })
 
+Slider.propTypes = {
+  marks: PropTypes.array,
+  label: PropTypes.string,
+  showValue: PropTypes.bool,
+  defaultValue: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.array]),
+}
+
 function SliderThumbs(props) {
+  SliderThumbs.propTypes = {
+    value: PropTypes.oneOfType([PropTypes.number, PropTypes.array]).isRequired,
+  }
   const { value } = props
   return (
     <For each={value}>
@@ -105,3 +117,7 @@ const SliderMarks = React.forwardRef(function SliderMarks(props, ref) {
     </ChakraSlider.MarkerGroup>
   )
 })
+
+SliderMarks.propTypes = {
+  marks: PropTypes.array.isRequired,
+}

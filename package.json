@@ -4,7 +4,10 @@
   "scripts": {
     "start": "concurrently \"cd backend && nodemon\" \"cd frontend && npm start\""
   },
-  "dependencies": {
+  "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "react-icons": "^5.4.0"
   }
 }
