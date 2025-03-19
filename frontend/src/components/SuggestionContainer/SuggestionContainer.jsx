@@ -59,6 +59,7 @@ const SuggestionContainer = ({ type, query, handleClick, keyHandler }) => {
     useEffect(() => {
       if (keyHandler === null) return;
       if (suggestions.length === 0) return;
+      if (selectedIndex === -2) return;
       if (keyHandler.key === "ArrowDown") {
         setSelectedIndex((prev) =>
           prev < suggestions.length - 1 ? prev + 1 : prev
@@ -67,7 +68,7 @@ const SuggestionContainer = ({ type, query, handleClick, keyHandler }) => {
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
       } else if (keyHandler.key === "Enter" && selectedIndex !== -1) {
         handleClick(suggestions[selectedIndex][`${property}`]);
-        setSelectedIndex(-1);
+        setSelectedIndex(-2);
         setContainerClosed(true);
       } else if (keyHandler.key === "Escape") {
         setContainerClosed(true);
@@ -109,7 +110,7 @@ const SuggestionContainer = ({ type, query, handleClick, keyHandler }) => {
                     onClick={() => {
                         handleClick(suggestion[`${property}`]);
                         setContainerClosed(true);
-                        setSelectedIndex(-1);
+                        setSelectedIndex(-2);
                       }
                     }
                   >
