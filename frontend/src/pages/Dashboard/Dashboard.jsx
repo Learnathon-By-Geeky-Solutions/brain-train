@@ -53,7 +53,6 @@ export default function Dashboard() {
       if (location.pathname === '/dashboard' || location.pathname === '/dashboard/'){
         setSearchParams({});
       }
-      // setSearchParams({});
     };
 
     window.addEventListener("popstate", handlePopState);
