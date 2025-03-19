@@ -50,7 +50,9 @@ export default function Dashboard() {
   useEffect(() => {
     const handlePopState = () => {
       // Clear search params when back button is pressed
-      setSearchParams({});
+      if (location.pathname === '/dashboard' || location.pathname === '/dashboard/'){
+        setSearchParams({});
+      }
     };
 
     window.addEventListener("popstate", handlePopState);
