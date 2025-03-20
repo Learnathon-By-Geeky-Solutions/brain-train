@@ -58,7 +58,6 @@ export const searchRecipesByIngredients = async (req, res) => {
     try {
         await decodeFirebaseIdToken(req.headers.authorization);
         const {  number = 10 ,fields = "", ...params} = req.query;
-        console.log("ingredients", params.ingredients);
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
 
         const recipesData = await spoonacularRequest('/recipes/findByIngredients', { number, ...params });
