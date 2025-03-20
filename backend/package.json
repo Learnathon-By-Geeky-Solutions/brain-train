@@ -20,6 +20,7 @@
     "express-validator": "^7.2.1",
     "firebase": "^11.1.0",
     "firebase-admin": "^13.0.2",
+    "helmet": "^8.1.0",
     "mongoose": "^8.9.4",
     "string-strip-html": "^13.4.8"
   },

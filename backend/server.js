@@ -1,6 +1,7 @@
 import express from "express"; // Core framework for Node.js
 import cookieParser from "cookie-parser"; // Middleware for parsing cookies
 import cors from "cors"; // Middleware for enabling CORS (Cross-Origin Resource Sharing)
+import helmet from 'helmet';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose'; // Database driver for MongoDB
 
@@ -16,6 +17,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
+app.use(helmet());
 app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies in incoming requests
 app.use(cors(
