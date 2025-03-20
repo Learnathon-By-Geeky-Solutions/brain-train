@@ -1,5 +1,4 @@
 import express from "express"; // Core framework for Node.js
-import bodyParser from "body-parser"; // Middleware for parsing request bodies
 import cookieParser from "cookie-parser"; // Middleware for parsing cookies
 import cors from "cors"; // Middleware for enabling CORS (Cross-Origin Resource Sharing)
 import dotenv from 'dotenv';
@@ -19,7 +18,6 @@ const app = express();
 // Middleware
 app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies in incoming requests
-app.use(bodyParser.json()); // Parse JSON request bodies
 app.use(cors(
   {
       origin: '*',
