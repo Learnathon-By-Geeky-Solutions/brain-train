@@ -181,12 +181,13 @@ import { MdClose } from "react-icons/md";
                           </Slider.Control>
                          <Flex direction="row" justifyContent="space-between" mt="2">
                             {["Minimum", "Maximum"].map((label,index) => (
-                                <VStack w="1/6" gap="0">
+                                <VStack w="1/6" gap="0" p="0">
                                   <Text fontSize="sm">
                                     {label}
                                   </Text>
+                                  <HStack p="0" gap="0">
                                   <Input
-                                    value={`${getRangeFilter(type)[index]}${(type === "Calories") ? " cal" : " g"}`}
+                                    value={(type === "Calories") ? (getRangeFilter(type)[index]*100) : getRangeFilter(type)[index]}
                                     onChange={(e)=>{
                                       const value = getRangeFilter(type);
                                       value[index] = e.target.value;
@@ -195,8 +196,12 @@ import { MdClose } from "react-icons/md";
                                     bgColor={"var(--text-input)"}
                                     borderRadius="3xl"
                                     color="var(--text)"
-                                    textAlign="center"
+                                    w="90%"
                                   />
+                                  <Text fontSize="sm">
+                                    {type === "Calories" ? "cal" : "g"}
+                                  </Text>
+                                </HStack>
                                 </VStack>
                               ))
                             }
@@ -227,7 +232,11 @@ import { MdClose } from "react-icons/md";
                       let activeRangeFilters = [];
                       for (let i = 0; i < isRangeFiltersActive.length; i++) {
                         if(isRangeFiltersActive[i]){
-                          activeRangeFilters.push(rangeFilters[i]);
+                          if(rangeFilters[i].type === "Calories"){
+                            activeRangeFilters.push({type: rangeFilters[i].type, min: rangeFilters[i].min*100, max: rangeFilters[i].max*100});
+                          }else{
+                            activeRangeFilters.push(rangeFilters[i]);
+                          }
                         }
                       }
                       addFilter(
