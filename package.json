@@ -1,0 +1,13 @@
+{
+  "name": "geeky-chef",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"cd backend && nodemon\" \"cd frontend && npm start\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "react-icons": "^5.4.0"
+  }
+}
