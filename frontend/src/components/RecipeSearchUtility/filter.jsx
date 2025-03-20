@@ -167,6 +167,7 @@ import { MdClose } from "react-icons/md";
                             onValueChange={(e)=>{
                               addRangeFilter(type,e.value[0],e.value[1]);
                             }}
+                            w="100%"
                           >
                           <Slider.Control>
                             <Slider.Track>
