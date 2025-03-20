@@ -16,18 +16,28 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:5173'
+]
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow if in the list
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  credentials: true, // Allow authentication (JWT, cookies, etc.)
+  maxAge: 3600,
+};
+
 // Middleware
 app.use(helmet());
 app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies in incoming requests
-app.use(cors(
-  {
-      origin: '*',
-      methods: "GET,POST,PUT,DELETE,PATCH",
-      credentials: true,
-      maxAge: 36000,
-  }
-));
+app.use(cors(corsOptions));
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI)
