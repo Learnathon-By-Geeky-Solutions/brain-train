@@ -1,7 +1,10 @@
 import axios from 'axios';
 
 const SPOONACULAR_API_BASE_URL = 'https://api.spoonacular.com';
-const API_KEY = process.env.SPOONACULAR_API_KEY;
+const API_KEY = process.env.SPOONACULAR_API_KEY || (() => {
+    console.error('[ERROR] SPOONACULAR_API_KEY IS NOT DEFINED IN ENVIRONMENT VARIABLES');
+    throw new Error('SPOONACULAR_API_KEY IS REQUIRED');
+})();
 
 export const spoonacularRequest = async (endpoint, params = {}) => {
     try {
@@ -16,4 +19,3 @@ export const spoonacularRequest = async (endpoint, params = {}) => {
         throw new Error(error.response?.data?.message || 'Spoonacular API request failed');
     }
 };
-
