@@ -211,7 +211,7 @@ const enrichRecipesWithFields = async (recipes, fields = []) => {
                         enrichedRecipe.likes = fieldData.aggregateLikes || 0;
                     } 
                 } catch (error) {
-                    console.error(`Error fetching ${field} for recipe ${recipe.id}:`, error);
+                    console.error("Error fetching %s for recipe %s: %s", field, recipe?.id, error.message);
                 }
             }
 
