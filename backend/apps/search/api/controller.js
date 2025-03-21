@@ -7,7 +7,7 @@ import {
     getRecipesByIngredients
 } from '../db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
-import { enrichRecipesWithFields,fetchRecipeDetailsBulk } from '../helper.js';
+import { enrichRecipesWithFields,fetchRecipeDetailsBulk,filterRecipes } from '../helper.js';
 
 
 /**
@@ -40,7 +40,8 @@ export const searchRecipes = async (req, res) => {
         // Save recipe details to the database
         await Promise.all(
             enrichedRecipes.map(async (recipe) => {
-                const details = await spoonacularRequest(`/recipes/${recipe.id}/information`);
+                const details = await spoonacularRequest(`/recipes/${recipe.id}/information?includeNutrition=true`);
+                console.log('checking nutrition details',details);
                 const savedRecipe = await saveRecipeDetails(details);
         
                 // Update the enrichedRecipes array with the new id from the saved recipe
@@ -60,43 +61,74 @@ export const searchRecipes = async (req, res) => {
 export const searchRecipesByIngredients = async (req, res) => {
     try {
         await decodeFirebaseIdToken(req.headers.authorization);
-        const {  number = 20 ,fields = "", ...params} = req.query;
-        console.log("ingredients", params.ingredients);
-        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
-
-        // Query db with params, fields and limit
-        const dbResults = await  getRecipesByIngredients(params.ingredients, fieldsArray, number, params);
         
+        //  Extract required and optional parameters
+        const { number = 20, ingredients, fields = "", ...filters } = req.query;
+        
+        if (!ingredients) {
+            return res.status(400).json({ error: "'ingredients' parameter is required." });
+        }
+
+        console.log("🛠️ Required Ingredients:", ingredients);
+        console.log("🛠️ Optional Filters:", filters);
+
+        //  Fetch recipes from DB
+        let dbResults = await getRecipesByIngredients(ingredients, [], number, filters);
+
+        console.log("🔍 DB Results Before Filtering:", dbResults.length);
+
+        //  Apply Filters to DB Results
+        dbResults = filterRecipes(dbResults, filters);
+
+        console.log(" DB Results After Filtering:", dbResults.length);
+
         if (dbResults.length > 0) {
             return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
         }
 
+        // ✅ No results from DB? Fetch from Spoonacular API
+        console.log("🔄 Fetching from Spoonacular API...");
+        const apiResults = await spoonacularRequest('/recipes/findByIngredients', { number, ingredients });
 
+        if (!apiResults || apiResults.length === 0) {
+            console.log("❌ No results found in Spoonacular API either.");
+            return res.status(404).json({ results: [], totalResults: 0 });
+        }
 
-        const recipesData = await spoonacularRequest('/recipes/findByIngredients', { number, ...params });
-        console.log("fieldsArray", fieldsArray);
+        console.log("🌍 API Results Before Enrichment:", apiResults.length);
 
-        const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
+        // ✅ Fetch additional fields in bulk using Spoonacular API
+        const recipeIds = apiResults.map(recipe => recipe.id);
+        const detailedRecipes = await fetchRecipeDetailsBulk(recipeIds);
 
-                // Save recipe details to the database
+        console.log("📊 API Recipes with Details:", detailedRecipes.length);
+
+        // ✅ Apply Filters to API Fetched Recipes
+        const filteredApiResults = filterRecipes(detailedRecipes, filters);
+
+        console.log("✅ API Results After Filtering:", filteredApiResults.length);
+
+        // ✅ Save API results to DB for future use
         await Promise.all(
-            enrichedRecipes.map(async (recipe) => {
-                const details = await spoonacularRequest(`/recipes/${recipe.id}/information`);
-                const savedRecipe = await saveRecipeDetails(details);
-        
-                // Update the enrichedRecipes array with the new id from the saved recipe
+            filteredApiResults.map(async (recipe) => {
+                const savedRecipe = await saveRecipeDetails(recipe);
                 recipe.id = savedRecipe._id.toString();
-        
                 return recipe;
             })
         );
 
-        return  res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+        return res.status(200).json({ results: filteredApiResults, totalResults: filteredApiResults.length });
 
     } catch (error) {
-        return  res.status(500).json({ error: error.message });
+        console.error("❌ Error in searchRecipesByIngredients:", error);
+        return res.status(500).json({ error: error.message });
     }
 };
+
+
+
+
+
 
 
 // Controller: Search Recipes by Nutrients

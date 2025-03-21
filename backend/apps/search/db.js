@@ -34,13 +34,13 @@ export const getRecipeFieldsByParams = async (conditions, fields, number) => {
 export const getRecipesByIngredients = async (ingredientTitles = [], fields = [], number = 10, filters = {}) => {
   try {
 
-    // ✅ Ensure ingredientTitles is ALWAYS an array
+    //  Ensure ingredientTitles is ALWAYS an array
     if (typeof ingredientTitles === "string") {
       ingredientTitles = ingredientTitles.split(",").map(i => i.trim());
     }
 
     if (!Array.isArray(ingredientTitles) || ingredientTitles.length === 0) {
-      console.error("❌ No valid ingredients provided. Exiting early...");
+      console.error(" No valid ingredients provided. Exiting early...");
       return [];
     }
 
@@ -52,15 +52,15 @@ export const getRecipesByIngredients = async (ingredientTitles = [], fields = []
 
 
     if (!ingredientConditions.length) {
-      console.error("❌ ingredientConditions is empty. Exiting...");
+      console.error(" ingredientConditions is empty. Exiting...");
       return [];
     }
 
     // ✅ Ensure fields include necessary details
     const selectedFields = fields.length ? fields.join(" ") : "title image summary cuisines diets vegetarian vegan glutenFree dairyFree";
-    console.log("🔍 Selected Fields:", selectedFields);
+    console.log(" Selected Fields:", selectedFields);
 
-    console.log("⏳ Executing MongoDB Query...");
+    console.log(" Executing MongoDB Query...");
     const rawRecipes = await Recipe.find({ $or: ingredientConditions })
       // .select(selectedFields)
       .limit(number * 3)
@@ -74,7 +74,7 @@ export const getRecipesByIngredients = async (ingredientTitles = [], fields = []
       return recipe;
     });
     } catch (error) {
-      console.error("❌ Error in getRecipesByIngredients:", error);
+      console.error(" Error in getRecipesByIngredients:", error);
       return [];
     }
 };
@@ -110,6 +110,19 @@ export const saveRecipeDetails = async (details) => {
     instructions: details.analyzedInstructions.flatMap((instr) =>
       instr.steps.map((step) => step.step)
     ),
+    nutrition: {
+      nutrients: details.nutrition?.nutrients?.map(n => ({
+        name: n.name,
+        amount: n.amount,
+        unit: n.unit,
+        percentOfDailyNeeds: n.percentOfDailyNeeds || 0
+      })) || [],
+      properties: details.nutrition?.properties?.map(p => ({
+        name: p.name,
+        amount: p.amount,
+        unit: p.unit
+      })) || []
+    }
   };
 
   // Insert recipe into DB
