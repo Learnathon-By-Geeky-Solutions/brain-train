@@ -126,10 +126,14 @@ export const getRecipeSummary = async (req, res) => {
 // Controller: Get Similar Recipes
 export const getSimilarRecipes = async (req, res) => {
     try {
-        const { id } = req.params;
+        let { id } = req.params;
         const { number = 5,fields="" } = req.query;
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
 
+        id = Number(id);
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({ error: "Invalid recipe ID." });
+        }
         
         const recipesData = await spoonacularRequest(`/recipes/${id}/similar`, { number });
         const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
