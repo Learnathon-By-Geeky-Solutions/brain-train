@@ -63,7 +63,7 @@ export const favouriteRecipesRemover = (req, res) => {
       return findFavouriteRecipeIdsByUid(uid).then(userFavourites => ({ uid, recipeId, userFavourites }));
     })
     .then(({ recipeId, userFavourites }) => {
-      if (!userFavourites || !userFavourites.recipeIds.includes(recipeId)) {
+      if (!userFavourites?.recipeIds?.includes(recipeId)) {
         return res.status(400).json({ error: 'Recipe not in favourites' });
       }
 
