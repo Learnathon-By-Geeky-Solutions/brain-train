@@ -29,111 +29,10 @@ export const getRecipeFieldsByParams = async (conditions, fields, number) => {
  */
 
 
-// export const getRecipesByIngredients = async (ingredientTitles = [],fields = [],number = 10,filters = {}) => {
-//   try {
 
-//     console.log("Function called with:", { ingredientTitles, fields, number, filters });
-
-//     // ✅ Ensure ingredientTitles is ALWAYS an array
-//     if (typeof ingredientTitles === "string") {
-//         ingredientTitles = ingredientTitles.split(",").map(i => i.trim());  // Convert string to array
-//     }
-
-//     if (!Array.isArray(ingredientTitles) || ingredientTitles.length === 0) {
-//         console.error("❌ No valid ingredients provided. Exiting early...");
-//         return [];
-//     }
-
-//     console.log("✅ Ready to match ingredients");
-
-//     // Case-insensitive regex match
-//     const ingredientConditions = ingredientTitles.map((title) => ({
-//       "ingredients.title": { $regex: new RegExp(title, "i") },
-//     }));
-
-//     // Print ingredientConditions before using in query
-//     console.log("🔍 Ingredient Conditions Generated:", ingredientConditions);
-
-//     // If ingredientConditions is empty, we should stop here
-//     if (!ingredientConditions.length) {
-//       console.error("❌ ingredientConditions is empty. Exiting...");
-//       return [];
-//     }
-
-//     console.log("⏳ Executing MongoDB Query...");
-//     const rawRecipes = await Recipe.find({ $or: ingredientConditions })
-//       .select(fields.length ? fields.join(" ") : "title image")
-//       .limit(number * 3)
-//       .lean();
-
-//     console.log(
-//       "✅ MongoDB Query Successful! Recipes Found:",
-//       rawRecipes.length
-//     );
-//     console.log("fetched recipes", rawRecipes);
-
-//     // const {
-//     //   dairyFree,
-//     //   glutenFree,
-//     //   vegetarian,
-//     //   vegan,
-//     //   veryHealthy,
-//     //   cheap,
-//     //   veryPopular,
-//     //   sustainable,
-//     //   lowFodmap,
-//     //   cuisine,
-//     //   diet,
-//     // } = filters;
-
-//     // const dietList = diet
-//     //   ? diet.split(",").map((d) => d.trim().toLowerCase())
-//     //   : [];
-
-//     // // 4️⃣ Filter recipes
-//     // const filtered = rawRecipes.filter((recipe) => {
-//     //   // Boolean filters
-//     //   const matchesBooleans =
-//     //     (!dairyFree || recipe.dairyFree) &&
-//     //     (!glutenFree || recipe.glutenFree) &&
-//     //     (!vegetarian || recipe.vegetarian) &&
-//     //     (!vegan || recipe.vegan) &&
-//     //     (!veryHealthy || recipe.veryHealthy) &&
-//     //     (!cheap || recipe.cheap) &&
-//     //     (!veryPopular || recipe.veryPopular) &&
-//     //     (!sustainable || recipe.sustainable) &&
-//     //     (!lowFodmap || recipe.lowFodmap);
-
-//     //   // Cuisine filter
-//     //   const matchesCuisine =
-//     //     !cuisine || (recipe.cuisines && recipe.cuisines.includes(cuisine));
-
-//     //   // Diet filter
-//     //   const matchesDiet =
-//     //     dietList.length === 0 ||
-//     //     (recipe.diets &&
-//     //       recipe.diets.some((d) => dietList.includes(d.toLowerCase())));
-
-//     //   return matchesBooleans && matchesCuisine && matchesDiet;
-//     // });
-
-//     // // 5️⃣ Limit final result
-//     // return filtered.slice(0, number).map((recipe) => {
-//     //   recipe.id = recipe._id?.toString?.() || recipe.id;
-//     //   delete recipe._id;
-//     //   return recipe;
-//     // });
-
-//     return rawRecipes;
-//   } catch (error) {
-//     console.error("❌ Error in getRecipesByIngredients:", error);
-//     return [];
-//   }
-// };
 
 export const getRecipesByIngredients = async (ingredientTitles = [], fields = [], number = 10, filters = {}) => {
   try {
-    console.log("Function called with:", { ingredientTitles, fields, number, filters });
 
     // ✅ Ensure ingredientTitles is ALWAYS an array
     if (typeof ingredientTitles === "string") {
@@ -145,14 +44,12 @@ export const getRecipesByIngredients = async (ingredientTitles = [], fields = []
       return [];
     }
 
-    console.log("✅ Ready to match ingredients");
 
-    // ✅ Case-insensitive regex match
+    //  Case-insensitive regex match
     const ingredientConditions = ingredientTitles.map((title) => ({
       "ingredients.title": { $regex: new RegExp(title, "i") },
     }));
 
-    console.log("🔍 Ingredient Conditions Generated:", ingredientConditions);
 
     if (!ingredientConditions.length) {
       console.error("❌ ingredientConditions is empty. Exiting...");
@@ -169,20 +66,17 @@ export const getRecipesByIngredients = async (ingredientTitles = [], fields = []
       .limit(number * 3)
       .lean();
 
-    console.log("✅ MongoDB Query Successful! Recipes Found:", rawRecipes.length);
-    console.log("📝 Raw Recipe Results:", rawRecipes);
-
-    // return rawRecipes;
-      // Rename _id to id in the result
-  return rawRecipes.map((recipe) => {
-    recipe.id = recipe._id.toString(); // Convert ObjectId to string if needed
-    delete recipe._id; // Remove the original _id field
-    return recipe;
-  });
-  } catch (error) {
-    console.error("❌ Error in getRecipesByIngredients:", error);
-    return [];
-  }
+    
+        // Rename _id to id in the result
+    return rawRecipes.map((recipe) => {
+      recipe.id = recipe._id.toString(); // Convert ObjectId to string if needed
+      delete recipe._id; // Remove the original _id field
+      return recipe;
+    });
+    } catch (error) {
+      console.error("❌ Error in getRecipesByIngredients:", error);
+      return [];
+    }
 };
 
 

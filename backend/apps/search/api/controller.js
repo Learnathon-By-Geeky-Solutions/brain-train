@@ -63,7 +63,6 @@ export const searchRecipesByIngredients = async (req, res) => {
         const {  number = 20 ,fields = "", ...params} = req.query;
         console.log("ingredients", params.ingredients);
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
-        const conditions = { ...params };
 
         // Query db with params, fields and limit
         const dbResults = await  getRecipesByIngredients(params.ingredients, fieldsArray, number, params);
