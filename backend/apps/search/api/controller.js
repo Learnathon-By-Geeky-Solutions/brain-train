@@ -3,9 +3,12 @@ import { stripHtml } from 'string-strip-html';
 import { 
     getRecipeFieldsByParams,
     saveRecipeDetails,
-    getRecipeInfoById
+    getRecipeInfoById,
+    getRecipesByIngredients
 } from '../db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
+import { enrichRecipesWithFields,fetchRecipeDetailsBulk } from '../helper.js';
+
 
 /**
  * Search recipes by title
@@ -57,12 +60,37 @@ export const searchRecipes = async (req, res) => {
 export const searchRecipesByIngredients = async (req, res) => {
     try {
         await decodeFirebaseIdToken(req.headers.authorization);
-        const {  number = 10 ,fields = "", ...params} = req.query;
+        const {  number = 20 ,fields = "", ...params} = req.query;
         console.log("ingredients", params.ingredients);
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
+        const conditions = { ...params };
+
+        // Query db with params, fields and limit
+        const dbResults = await  getRecipesByIngredients(params.ingredients, fieldsArray, number, params);
+        
+        if (dbResults.length > 0) {
+            return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
+        }
+
+
 
         const recipesData = await spoonacularRequest('/recipes/findByIngredients', { number, ...params });
+        console.log("fieldsArray", fieldsArray);
+
         const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
+
+                // Save recipe details to the database
+        await Promise.all(
+            enrichedRecipes.map(async (recipe) => {
+                const details = await spoonacularRequest(`/recipes/${recipe.id}/information`);
+                const savedRecipe = await saveRecipeDetails(details);
+        
+                // Update the enrichedRecipes array with the new id from the saved recipe
+                recipe.id = savedRecipe._id.toString();
+        
+                return recipe;
+            })
+        );
 
         return  res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
 
@@ -93,12 +121,14 @@ export const searchRecipesByNutrients = async (req, res) => {
 export const getRecipeInformation = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log("information", id);
         const data = await getRecipeInfoById(id);
 
         if (!data) {
+            console.log("Recipe not found");
             return res.status(404).json({ error: "Recipe not found." });
         }
-
+        // console.log("data", data);
         return res.status(200).json(data);
     } catch (error) {
         return res.status(500).json({ error: error.message });
@@ -177,53 +207,3 @@ export const autoCompleteIngredients = async (req, res) => {
     }
 };
 
-/**
- * Fetches additional fields for each recipe dynamically.
- * @param {Array} recipes - List of recipe objects with IDs.
- * @param {Array} fields - List of fields to fetch (e.g., ["summary", "nutrition", "likes"]).
- * @returns {Array} - Recipes enriched with the requested fields.
- */
-const enrichRecipesWithFields = async (recipes, fields = []) => {
-
-    if (!recipes || recipes.length === 0 || fields.length === 0) return recipes;
-
-    // Define which endpoint to use for each requested field
-    const fieldEndpoints = {
-        summary: (id) => `/recipes/${id}/summary`,
-        likes: (id) => `/recipes/${id}/information`, // Likes come from "aggregateLikes" in this response
-    };
-
-    try {
-        // Fetch all requested fields for each recipe
-        const detailsFetchers = recipes.map(async (recipe) => {
-
-            let enrichedRecipe = { ...recipe };
-
-            for (const field of fields) {
-                if (!fieldEndpoints[field]) continue; // Skip if field is not recognized
-
-                try {
-                    const fieldData = await spoonacularRequest(fieldEndpoints[field](recipe.id));
-
-                    // Process data differently based on field type
-                    if (field === "summary") {
-                        enrichedRecipe.summary = stripHtml(fieldData.summary).result || "No summary available";
-                    } else if (field === "likes") {
-                        enrichedRecipe.likes = fieldData.aggregateLikes || 0;
-                    } 
-                } catch (error) {
-                    console.error(`Error fetching ${field} for recipe ${recipe.id}:`, error);
-                }
-            }
-
-            return enrichedRecipe;
-        });
-
-        // Resolve all fetchers in parallel
-        return await Promise.all(detailsFetchers);
-
-    } catch (error) {
-        console.error("Error enriching recipes with additional fields:", error);
-        return recipes.map(recipe => ({ ...recipe, error: "Failed to fetch additional details" }));
-    }
-};
