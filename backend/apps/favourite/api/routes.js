@@ -13,6 +13,6 @@ const router = express.Router();
 
 router.get('/list', favouriteRecipesFinder);
 router.post('/addRecipe', validateAddRecipe, favouriteRecipesAdder);
-router.delete('/removeRecipe', validateRemoveRecipe ,favouriteRecipesRemover);
+router.delete('/removeRecipe', validateRemoveRecipe, favouriteRecipesRemover);
 
 export default router;

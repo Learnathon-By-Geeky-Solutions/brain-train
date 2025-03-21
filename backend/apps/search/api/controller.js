@@ -58,7 +58,6 @@ export const searchRecipesByIngredients = async (req, res) => {
     try {
         await decodeFirebaseIdToken(req.headers.authorization);
         const {  number = 10 ,fields = "", ...params} = req.query;
-        console.log("ingredients", params.ingredients);
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
 
         const recipesData = await spoonacularRequest('/recipes/findByIngredients', { number, ...params });
@@ -127,10 +126,14 @@ export const getRecipeSummary = async (req, res) => {
 // Controller: Get Similar Recipes
 export const getSimilarRecipes = async (req, res) => {
     try {
-        const { id } = req.params;
+        let { id } = req.params;
         const { number = 5,fields="" } = req.query;
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
 
+        id = Number(id);
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({ error: "Invalid recipe ID." });
+        }
         
         const recipesData = await spoonacularRequest(`/recipes/${id}/similar`, { number });
         const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
@@ -212,7 +215,7 @@ const enrichRecipesWithFields = async (recipes, fields = []) => {
                         enrichedRecipe.likes = fieldData.aggregateLikes || 0;
                     } 
                 } catch (error) {
-                    console.error(`Error fetching ${field} for recipe ${recipe.id}:`, error);
+                    console.error("Error fetching %s for recipe %s: %s", field, recipe?.id, error.message);
                 }
             }
 

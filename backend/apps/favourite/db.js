@@ -28,12 +28,25 @@ export const findFavouriteRecipesByIds = async (recipeIds) => {
 /**
  * Find favourite recipe ids by user firebaseUid.
  * @param {string} uid - The user firebaseUid.
- * @returns {Object} The user's favourite recipe ids.
+ * @returns {Object|null} The user document containing favourite recipe ids or null.
  */
 export const findFavouriteRecipeIdsByUid = async (uid) => {
-  return await UserFavourites.findOne({ firebaseUid: uid });
+  try {
+    return await UserFavourites.findOne({ firebaseUid: uid });
+  } catch (error) {
+    console.error('Find favourite recipe ids error:', error.message);
+    return null;
+  }
 }
 
+
+/**
+ * Creates a new entry in the user's favourites.
+ *
+ * @param {string} uid - The Firebase UID of the user.
+ * @param {string} recipeId - The ID of the recipe to add to the user's favourites.
+ * @returns {Promise<void>} A promise that resolves when the entry is created.
+ */
 export const createUserEntryInUserFavourites = async (uid, recipeId) => {
   const userFavourites = new UserFavourites({
     firebaseUid: uid,
