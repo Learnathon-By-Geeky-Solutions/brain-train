@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import ingredientSchema from "./ingredients.js";
+import { nutritionSchema } from "./nutrition.js";
 
 const recipeSchema = new mongoose.Schema({
   /**
@@ -78,7 +79,8 @@ const recipeSchema = new mongoose.Schema({
     type: [String],
     required: true
   },
-  ingredients: [ingredientSchema]
+  ingredients: [ingredientSchema],
+  nutrition: nutritionSchema
 });
 
 const Recipe = mongoose.model("Recipe", recipeSchema);
