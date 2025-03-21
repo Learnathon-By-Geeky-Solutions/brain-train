@@ -59,6 +59,11 @@ export const createUser = async (userInfo) => {
   await user.save();
 };
 
+/**
+ * Finds a user by Firebase UID.
+ * @param {string} uid - The Firebase UID of the user.
+ * @returns {Object} The user object.
+ */
 export const findUserByFirebaseUid = async (uid) => {
   return await User.findOne({ firebaseUid: uid });
 };

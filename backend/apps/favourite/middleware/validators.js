@@ -3,7 +3,6 @@ import { handleValidationErrors } from '../../../libraries/errorHandler.js';
 
 export const validateAddRecipe = [
   body('recipeId')
-    .if(body('source').equals('upload'))
     .isString()
     .notEmpty()
     .withMessage('recipeId is required'),
