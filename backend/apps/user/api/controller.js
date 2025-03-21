@@ -1,7 +1,12 @@
 import { findUserByUsername } from "../../../libraries/models/users.js";
 
 export const usernameValidator = (req, res) => {
-  const { username } = req.body;
+  let { username } = req.body;
+  username = username.toString().trim();
+  const isValidUsername = /^[a-zA-Z][a-zA-Z0-9 _-]{3,29}$/.test(username);
+  if (!isValidUsername) {
+    return res.status(400).json({ error: 'Invalid username format', available: false });
+  }
 
   findUserByUsername(username)
     .then(user => {
