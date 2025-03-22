@@ -281,32 +281,21 @@ const enrichRecipesWithFields = async (recipes, fields = []) => {
 const getUniqueRecentHistoryWithRecipeInfo = (history, n) => {
     const uniqueHistoryMap = new Map();
 
-    // Iterate from the end of the history (most recent first)
-    for (let i = history.length - 1; i >= 0; i--) {
-        const { recipeId, searchedAt } = history[i];
-        // If the recipeId is not in the map, add it with the current search timestamp
+    // Iterate from the beginning (most recent first due to unshift)
+    for (const { recipeId, searchedAt } of history) {
         if (!uniqueHistoryMap.has(recipeId)) {
             uniqueHistoryMap.set(recipeId, { recipeId, searchedAt });
-        } else {
-            // If the recipeId already exists, update it only if the current search is more recent
-            const currentSearch = uniqueHistoryMap.get(recipeId);
-            if (new Date(searchedAt) > new Date(currentSearch.searchedAt)) {
-                uniqueHistoryMap.set(recipeId, { recipeId, searchedAt });
-            }
         }
     }
 
     // Get the n most recent unique searches
-    const recentUniqueSearches = Array.from(uniqueHistoryMap.values())
-        .slice(0, n)
-        .sort((a, b) => new Date(b.searchedAt) - new Date(a.searchedAt));
+    const recentUniqueSearches = Array.from(uniqueHistoryMap.values()).slice(0, n);
 
     // Retrieve recipe details for the selected recipeIds
     const recipeIds = recentUniqueSearches.map(entry => entry.recipeId);
     return findRecipesByIds(recipeIds).then(recipes => {
         const recipeMap = new Map(recipes.map(recipe => [recipe.id, recipe]));
         
-        // Return the final history with recipe details included
         return recentUniqueSearches.map(({ recipeId, searchedAt }) => ({
             searchedAt,
             ...(recipeMap.get(recipeId) || { id: recipeId, title: null, image: null, likes: 0 })
