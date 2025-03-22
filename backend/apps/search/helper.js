@@ -125,7 +125,7 @@ export const filterRecipes = (recipes, filters) => {
 
         const nutrients = recipe.nutrition?.nutrients || [];
 
-        console.debug("Nutrients Data:", JSON.stringify(recipe.nutrition?.nutrients, null, 2));
+        // console.debug("Nutrients Data:", JSON.stringify(recipe.nutrition?.nutrients, null, 2));
 
 
         const calories = nutrients.find(n => typeof n.name === "string" && n.name.toLowerCase() === "calories")?.amount || 0;

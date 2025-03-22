@@ -1,9 +1,10 @@
 import Recipe from "../../libraries/models/recipes.js";
 
-export const getRecipeFieldsByParams = async (conditions, fields, number) => {
-  if (conditions.query) {
-    conditions.title = { $regex: conditions.query, $options: "i" }; // Case-insensitive search
-    delete conditions.query; // Remove the 'query' key from conditions to avoid conflict
+export const getRecipeFieldsByTitle = async (title, fields, number) => {
+  const conditions = {};
+
+  if (title) {
+    conditions.title = { $regex: title, $options: "i" }; // Case-insensitive partial match
   }
 
   const recipes = await Recipe.find(conditions)
@@ -129,10 +130,19 @@ export const saveRecipeDetails = async (details) => {
     }
   };
 
-  // Insert recipe into DB
-  const newRecipe = new Recipe(recipeData);
-  const savedRecipe = await newRecipe.save();
+  // // Insert recipe into DB
+  // const newRecipe = new Recipe(recipeData);
+  // const savedRecipe = await newRecipe.save();
+  // return savedRecipe;
+  await Recipe.updateOne(
+    { sourceId: recipeData.sourceId },   // Match by sourceId
+    { $set: recipeData },                // Set the entire new data
+    { upsert: true }                     // Insert if not exists
+  );
+  
+  const savedRecipe = await Recipe.findOne({ sourceId: recipeData.sourceId }).lean();
   return savedRecipe;
+  
 };
 
 export const getRecipeInfoById = async (id, fields = "") => {
