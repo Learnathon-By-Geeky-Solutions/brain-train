@@ -86,29 +86,29 @@ export const searchRecipesByIngredients = async (req, res) => {
             return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
         }
 
-        // ✅ No results from DB? Fetch from Spoonacular API
+        //  No results from DB? Fetch from Spoonacular API
         console.log("🔄 Fetching from Spoonacular API...");
         const apiResults = await spoonacularRequest('/recipes/findByIngredients', { number, ingredients });
 
         if (!apiResults || apiResults.length === 0) {
-            console.log("❌ No results found in Spoonacular API either.");
+            console.log(" No results found in Spoonacular API either.");
             return res.status(404).json({ results: [], totalResults: 0 });
         }
 
-        console.log("🌍 API Results Before Enrichment:", apiResults.length);
+        console.log(" API Results Before Enrichment:", apiResults.length);
 
-        // ✅ Fetch additional fields in bulk using Spoonacular API
+        //  Fetch additional fields in bulk using Spoonacular API
         const recipeIds = apiResults.map(recipe => recipe.id);
         const detailedRecipes = await fetchRecipeDetailsBulk(recipeIds);
 
         console.log("📊 API Recipes with Details:", detailedRecipes.length);
 
-        // ✅ Apply Filters to API Fetched Recipes
+        //  Apply Filters to API Fetched Recipes
         const filteredApiResults = filterRecipes(detailedRecipes, filters);
 
-        console.log("✅ API Results After Filtering:", filteredApiResults.length);
+        console.log(" API Results After Filtering:", filteredApiResults.length);
 
-        // ✅ Save API results to DB for future use
+        //  Save API results to DB for future use
         await Promise.all(
             filteredApiResults.map(async (recipe) => {
                 const savedRecipe = await saveRecipeDetails(recipe);
@@ -120,7 +120,7 @@ export const searchRecipesByIngredients = async (req, res) => {
         return res.status(200).json({ results: filteredApiResults, totalResults: filteredApiResults.length });
 
     } catch (error) {
-        console.error("❌ Error in searchRecipesByIngredients:", error);
+        console.error(" Error in searchRecipesByIngredients:", error);
         return res.status(500).json({ error: error.message });
     }
 };
@@ -159,7 +159,7 @@ export const getRecipeInformation = async (req, res) => {
             console.log("Recipe not found");
             return res.status(404).json({ error: "Recipe not found." });
         }
-        // console.log("data", data);
+        
         return res.status(200).json(data);
     } catch (error) {
         return res.status(500).json({ error: error.message });
