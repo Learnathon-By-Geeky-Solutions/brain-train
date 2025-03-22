@@ -1,5 +1,6 @@
 import { spoonacularRequest } from '../../libraries/services/spoonacular.js';
 import { stripHtml } from 'string-strip-html'; 
+import{ saveRecipeDetails } from './db.js';
 
 
 /**
@@ -232,4 +233,30 @@ export const generateShoppingList = (recipe, requestedServings) => {
     return Object.values(merged);
   };
   
+  
+
+  
+/**
+ * Fetch recipes by IDs from Spoonacular, enrich them, save to DB, and filter.
+ * @param {Array} recipeIds - Array of recipe IDs from Spoonacular
+ * @param {Object} filters - Optional filters to apply
+ * @returns {Array} - Filtered enriched recipes
+ */
+export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
+    const detailedRecipes = await fetchRecipeDetailsBulk(recipeIds);
+    console.log("📊 Enriched Recipe Count:", detailedRecipes.length);
+  
+    await Promise.all(
+      detailedRecipes.map(async (recipe) => {
+        const savedRecipe = await saveRecipeDetails(recipe);
+        recipe.id = savedRecipe._id.toString();
+        return recipe;
+      })
+    );
+  
+    const filtered = filterRecipes(detailedRecipes, filters);
+    console.log("✅ Filtered Results:", filtered.length);
+  
+    return filtered;
+  };
   
