@@ -84,18 +84,11 @@ export const getRecipesByIngredients = async (ingredientTitles = [], fields = []
 
 export const saveRecipeDetails = async (details) => {
 
-  const sourceId = details.id.toString();
 
-  //  Check for existing recipe by sourceId
-  const existing = await Recipe.findOne({ sourceId });
-  if (existing) {
-    console.debug(` Recipe with sourceId ${sourceId} already exists. Skipping save.`);
-    return existing; 
-  }
   // Prepare recipe data
   const recipeData = {
-    // sourceId: details.id.toString(),
-    sourceId,
+    sourceId: details.id.toString(),
+    
     source: "spoonacular",
     title: details.title,
     image: details.image,

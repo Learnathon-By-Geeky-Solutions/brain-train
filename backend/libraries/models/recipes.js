@@ -9,7 +9,8 @@ const recipeSchema = new mongoose.Schema({
    */
   sourceId: {
     type: String, 
-    required: true
+    required: true,
+    unique: true
   },
   isUploaded: {
     type: Boolean,
