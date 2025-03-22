@@ -1,7 +1,7 @@
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { findRecipeById } from '../../../libraries/models/recipes.js';
 import { 
-  findFavouriteRecipesByIds,
+  findRecipesByIds,
   findFavouriteRecipeIdsByUid,
   createUserEntryInUserFavourites
 } from '../db.js';
@@ -15,7 +15,7 @@ export const favouriteRecipesFinder = (req, res) => {
           return res.status(200).json({ recipes: [] });
         }
 
-        return findFavouriteRecipesByIds(userFavourites.recipeIds).then(recipes => {
+        return findRecipesByIds(userFavourites.recipeIds).then(recipes => {
           return res.status(200).json({ recipes });
         });
       });

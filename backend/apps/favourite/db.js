@@ -6,7 +6,7 @@ import Recipe from '../../libraries/models/recipes.js';
  * @param {Array} recipeIds - Ids of favourite recipes.
  * @returns {Array} The recipes.
  */
-export const findFavouriteRecipesByIds = async (recipeIds) => {
+export const findRecipesByIds = async (recipeIds) => {
   try {
     const recipes = await Recipe.find(
       { _id: { $in: recipeIds } },
