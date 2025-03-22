@@ -7,7 +7,7 @@ import {
     getRecipesByIngredients
 } from '../db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
-import { enrichRecipesWithFields,fetchRecipeDetailsBulk,filterRecipes } from '../helper.js';
+import { enrichRecipesWithFields,fetchRecipeDetailsBulk,filterRecipes,generateShoppingList } from '../helper.js';
 
 
 /**
@@ -69,11 +69,11 @@ export const searchRecipesByIngredients = async (req, res) => {
             return res.status(400).json({ error: "'ingredients' parameter is required." });
         }
 
-        console.log("🛠️ Required Ingredients:", ingredients);
-        console.log("🛠️ Optional Filters:", filters);
+        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
+
 
         //  Fetch recipes from DB
-        let dbResults = await getRecipesByIngredients(ingredients, [], number, filters);
+        let dbResults = await getRecipesByIngredients(ingredients, fieldsArray, number, filters);
 
         console.log("🔍 DB Results Before Filtering:", dbResults.length);
 
@@ -87,7 +87,7 @@ export const searchRecipesByIngredients = async (req, res) => {
         }
 
         //  No results from DB? Fetch from Spoonacular API
-        console.log("🔄 Fetching from Spoonacular API...");
+        console.log(" Fetching from Spoonacular API...");
         const apiResults = await spoonacularRequest('/recipes/findByIngredients', { number, ingredients });
 
         if (!apiResults || apiResults.length === 0) {
@@ -238,3 +238,28 @@ export const autoCompleteIngredients = async (req, res) => {
     }
 };
 
+export const getShoppingList = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { requestedServing } = req.query;
+  
+      if (!requestedServing || isNaN(requestedServing)) {
+        return res.status(400).json({ error: "Missing or invalid 'requestedServing' parameter." });
+      }
+  
+      
+      const data = await getRecipeInfoById(id);
+  
+      if (!data) {
+        console.log("Recipe not found");
+        return res.status(404).json({ error: "Recipe not found." });
+      }
+      
+      const shoppingList = generateShoppingList(data, Number(requestedServing) );
+      return res.status(200).json({ recipeId: id, servings: requestedServing, shoppingList });
+  
+    } catch (error) {
+      console.error("Error generating shopping list:", error);
+      return res.status(500).json({ error: error.message });
+    }
+  };

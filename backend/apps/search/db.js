@@ -56,13 +56,14 @@ export const getRecipesByIngredients = async (ingredientTitles = [], fields = []
       return [];
     }
 
-    // ✅ Ensure fields include necessary details
-    const selectedFields = fields.length ? fields.join(" ") : "title image summary cuisines diets vegetarian vegan glutenFree dairyFree";
+    console.log("fieldsarray",fields);
+    //  Ensure fields include necessary details
+    const selectedFields = fields.length ? fields.join(" ") : "title image summary likes";
     console.log(" Selected Fields:", selectedFields);
 
     console.log(" Executing MongoDB Query...");
     const rawRecipes = await Recipe.find({ $or: ingredientConditions })
-      // .select(selectedFields)
+      .select(selectedFields)
       .limit(number * 3)
       .lean();
 

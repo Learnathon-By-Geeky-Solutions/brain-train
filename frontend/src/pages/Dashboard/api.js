@@ -67,7 +67,7 @@ const handleSearchByIngredients = (searchData) => {
     });
     ingredients = ingredients.slice(0, -1);
     console.log('url from function '+`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`);
-    return `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary`;
+    return `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`;
 }
 
 const fetchData = async (searchData) => {
