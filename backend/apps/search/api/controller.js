@@ -236,27 +236,16 @@ export const autoCompleteRecipes = async (req, res) => {
                 const apiData = await spoonacularRequest('/recipes/autocomplete', { query, number });
                 const apiIds = apiData.map(recipe => recipe.id);
                 console.log("api ids",apiIds);
+                const seenTitles = new Set(suggestions.map(s => s.title.toLowerCase()));
+                const newApiRecipes = apiData.filter(recipe => !seenTitles.has(recipe.title.toLowerCase()));
 
-                //  Filter out already existing sourceIds
-                const existingRecipes = await getRecipeBySourceId(apiIds,"sourceId");
-                console.log("🔍 Existing Recipes:", existingRecipes);
-                // Coerce to string for consistent comparison
-
-
-                const existingIdsSet = new Set(existingRecipes.map(r => String(r.sourceId)));
-                const missingIds = apiIds.filter(id => !existingIdsSet.has(String(id)));        
-                console.log("💾 Enriching New IDs:", missingIds);
+      
+            
         
-                const completeApiResults = await fetchSaveFilterRecipes(missingIds, {});
-                
+                const savedApiResults = await fetchSaveFilterRecipes(apiIds, {});
+                console.log("api results saved",savedApiResults.length);
 
-                    // Return only selected fields
-                const filteredFields = completeApiResults.map(recipe => ({
-                    id: recipe.id,
-                    title: recipe.title
-                }));    
-                console.log("🔍 API Suggestions:", filteredFields);
-                suggestions = suggestions.concat(filteredFields).slice(0, number);
+                suggestions = suggestions.concat(newApiRecipes).slice(0, number);
             
 
                 return res.status(200).json(suggestions);

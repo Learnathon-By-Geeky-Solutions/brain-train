@@ -1,6 +1,6 @@
 import { spoonacularRequest } from '../../libraries/services/spoonacular.js';
 import { stripHtml } from 'string-strip-html'; 
-import{ saveRecipeDetails } from './db.js';
+import{ saveRecipeDetails,getRecipeBySourceId } from './db.js';
 
 
 /**
@@ -65,6 +65,7 @@ export const fetchRecipeDetailsBulk = async (recipeIds) => {
 
     try {
         const recipeIdsString = recipeIds.join(",");
+        console.log("Fetching full recipes for IDs:", recipeIdsString);
         const fullRecipes = await spoonacularRequest("/recipes/informationBulk", {
             ids: recipeIdsString,
             includeNutrition: true
@@ -243,8 +244,18 @@ export const generateShoppingList = (recipe, requestedServings) => {
  * @returns {Array} - Filtered enriched recipes
  */
 export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
-    const detailedRecipes = await fetchRecipeDetailsBulk(recipeIds);
-    console.log("📊 Enriched Recipe Count:", detailedRecipes.length);
+
+
+                    //  Filter out already existing sourceIds
+    const existingRecipes = await getRecipeBySourceId(recipeIds,"sourceId");
+    
+    // Coerce to string for consistent comparison
+    
+    
+    const existingIdsSet = new Set(existingRecipes.map(r => String(r.sourceId)));
+    const missingIds = recipeIds.filter(id => !existingIdsSet.has(String(id)));  
+    const detailedRecipes = await fetchRecipeDetailsBulk(missingIds);
+    console.log("📊 new Recipe Count:", detailedRecipes.length);
   
     await Promise.all(
       detailedRecipes.map(async (recipe) => {
@@ -254,6 +265,7 @@ export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
         return recipe;
       })
     );
+
   
     const filtered = filterRecipes(detailedRecipes, filters);
     console.log("✅ Filtered Results:", filtered.length);
