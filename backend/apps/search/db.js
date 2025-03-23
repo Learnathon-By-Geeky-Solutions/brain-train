@@ -147,6 +147,16 @@ export const saveRecipeDetails = async (details) => {
   
 };
 
+export const getExistingRecipeSourceIds = async (sourceIds = []) => {
+  const results = await Recipe.find(
+    { sourceId: { $in: sourceIds } },  // Find all documents where sourceId is in the given list
+    { sourceId: 1 }                    // Project only the sourceId field (no need to load entire doc)
+  ).lean();                            // Get plain JS objects, not Mongoose docs
+
+  return results.map(r => r.sourceId); // Extract just the sourceId values into a flat array
+};
+
+
 export const getRecipeInfoById = async (id, fields = "") => {
   return await Recipe.findById(id)
     .select(fields || "")

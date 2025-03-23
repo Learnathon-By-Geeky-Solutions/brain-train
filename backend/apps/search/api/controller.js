@@ -3,10 +3,11 @@ import { stripHtml } from 'string-strip-html';
 import { 
     getRecipeFieldsByTitle,
     getRecipeInfoById,
-    getRecipesByIngredients
+    getRecipesByIngredients,
+    getExistingRecipeSourceIds
 } from '../db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
-import { enrichRecipesWithFields,fetchRecipeDetailsBulk,filterRecipes,generateShoppingList,fetchSaveFilterRecipes } from '../helper.js';
+import { enrichRecipesWithFields,filterRecipes,generateShoppingList,fetchSaveFilterRecipes } from '../helper.js';
 
 
 /**
@@ -228,7 +229,7 @@ export const autoCompleteRecipes = async (req, res) => {
                 }));
                 console.log("🔍 DB Suggestions:", suggestions);
                 // Step 2: If enough suggestions, return
-                if (suggestions.length >= number/2) {
+                if (suggestions.length >= number) {
                     return res.status(200).json(suggestions.slice(0, number));
                 }
 
@@ -236,12 +237,21 @@ export const autoCompleteRecipes = async (req, res) => {
                 
                 console.log("api suggestion count",apiData.length);
                         // Step 4:  deduplicate results
-                const seenTitles = new Set(suggestions.map(s => s.title.toLowerCase()));
-                const newApiRecipes = apiData.filter(recipe => !seenTitles.has(recipe.title.toLowerCase()));
+                // const seenTitles = new Set(suggestions.map(s => s.title.toLowerCase()));
+                // const newApiRecipes = apiData.filter(recipe => !seenTitles.has(recipe.title.toLowerCase()));
                 
-                const recipeIds = newApiRecipes.map(recipe => recipe.id);
+                const apiIds = apiData.map(recipe => recipe.id);
+                console.log("api ids",apiIds);
 
-                const completeApiResults = await fetchSaveFilterRecipes(recipeIds, {});
+                // 🧠 Filter out already existing sourceIds
+                const existingSourceIds = await getExistingRecipeSourceIds(apiIds);
+                console.log("🔍 Existing Source IDs:", existingSourceIds);
+                // ✅ FIX: Coerce to string for consistent comparison
+                const existingIdsSet = new Set(existingSourceIds.map(String));
+                const missingIds = apiIds.filter(id => !existingIdsSet.has(String(id)));        
+                console.log("💾 Enriching New IDs:", missingIds);
+        
+                const completeApiResults = await fetchSaveFilterRecipes(missingIds, {});
                 
 
                     // Return only selected fields
