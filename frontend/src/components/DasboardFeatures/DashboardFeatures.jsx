@@ -7,10 +7,10 @@ const DashboardFeatures = ({ pageState, pageLocation, setPageState, showResults,
   return (
     <Tabs.Root defaultValue="searchUtility" padding="2" size="lg">
       <Tabs.List>
-        <Tabs.Trigger value="searchUtility">
+        {/* <Tabs.Trigger value="searchUtility">
           <LuUtensils />
           Recipes
-        </Tabs.Trigger>
+        </Tabs.Trigger> */}
         <Tabs.Trigger value="mealPlan">
           <LuClipboard />
           Meal Plan
@@ -20,7 +20,7 @@ const DashboardFeatures = ({ pageState, pageLocation, setPageState, showResults,
           Nutrition
         </Tabs.Trigger>
       </Tabs.List>
-      <Tabs.Content value="searchUtility">
+      {/* <Tabs.Content value="searchUtility">
         {
           <RecipeSearchUtility
             pageState={pageState}
@@ -30,7 +30,7 @@ const DashboardFeatures = ({ pageState, pageLocation, setPageState, showResults,
             setSearchParams={setSearchParams}
           />
         }
-      </Tabs.Content>
+      </Tabs.Content> */}
       <Tabs.Content value="mealPlan">Meal Planning Part</Tabs.Content>
       <Tabs.Content value="nutrition">
         Nutrition & calorie tracking

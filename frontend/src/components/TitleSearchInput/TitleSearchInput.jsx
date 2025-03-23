@@ -19,8 +19,8 @@ const TitleSearchInput = ({controller,handleSuggestionClick}) => {
   }
 
   return (
-    <Box>
-    <Input width="80vw" h="1" color="white" placeholder="Search..." background="none" border="none" _focus={{ border: "none", boxShadow: "none" }} variant="flushed"
+    <div>
+    <Input width="65vw" h="1" color="white" placeholder="Search..." background="none" border="none" _focus={{ border: "none", boxShadow: "none" }} variant="flushed"
       value={query}
       fontSize="md"
       fontWeight="medium"
@@ -40,7 +40,7 @@ const TitleSearchInput = ({controller,handleSuggestionClick}) => {
       }
       keyHandler={keyHandlerForSuggestion}
     />
-    </Box>
+    </div>
   ) 
 };
 

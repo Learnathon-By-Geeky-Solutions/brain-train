@@ -73,11 +73,11 @@ import { MdClose } from "react-icons/md";
           motionPreset="slide-in-bottom"
         >
           <Dialog.Trigger asChild>
-            <IconButton bgColor="var(--text-input)" borderRadius="3xl" padding="2" mt="6" alignSelf="center" variant="ghost">
-              <Icon>
-              <FaSliders />
+            <IconButton borderRadius="3xl" padding="2" variant="subtle" h="100%">
+              <Icon size="sm">
+              <FaSliders  />
               </Icon>
-              Advanced Filter
+              Filter
             </IconButton>
           </Dialog.Trigger>
           <Portal>

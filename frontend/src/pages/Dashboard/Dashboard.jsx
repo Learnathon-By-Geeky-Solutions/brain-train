@@ -129,8 +129,11 @@ export default function Dashboard() {
         photoUrl={photoURL}
         userName={user?.displayName}
         handleLogout={handleLogout}
-        loadCards={loadCards}
         setSearchParams={setSearchParams}
+        pageState={pageState}
+        pageLocation={pageLocation}
+        setPageState={setPageState}
+        showResults={loadCards}
       />
       <DashboardFeatures 
         pageState={pageState}

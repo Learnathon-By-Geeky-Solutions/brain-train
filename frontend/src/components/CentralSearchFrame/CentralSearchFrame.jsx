@@ -1,10 +1,10 @@
-import { IconButton, Flex, Badge } from '@chakra-ui/react';
+import { IconButton, Flex } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
-import { LuActivity, LuAirVent, LuAlarmClockCheck, LuSearch } from 'react-icons/lu';
+import { LuSearch } from 'react-icons/lu';
 import PropTypes from 'prop-types';
 
 
-const CentralSearchFrame = ({ feature, featureProps, filters, currentBadges, changeBadges, showResults}) => {
+const CentralSearchFrame = ({ feature, featureProps, filters, showResults}) => {
 
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({type:'', data:{}});
@@ -29,40 +29,25 @@ const CentralSearchFrame = ({ feature, featureProps, filters, currentBadges, cha
     const ref = useRef(null);
 
     if(featureProps?.ref == null) featureProps.ref = ref;
-    if(featureProps?.handleSuggestionClick == null) featureProps.handleSuggestionClick = () => {
-      handleSearch();
-    }
+    if(featureProps?.handleSuggestionClick == null) 
+      featureProps.handleSuggestionClick = () => {
+        handleSearch();
+      }
 
-    if(!currentBadges) currentBadges = [];  
-    const BadgesJsx = currentBadges.map((badge) => <Badge key={badge.id} colorPalette={badge.colorPalette}>{badge.text}</Badge>);
     return (
-        <Flex direction="column" maxWidth="80%" background="var(--text-input)" borderRadius="3xl" padding="2" m={6} marginBottom={0}>
-            <Flex direction="row" width="inherit">
-            {  BadgesJsx }
-            </Flex>
+        <Flex 
+          direction="row" background="var(--text-input)" 
+          borderRadius="4xl" padding="2" ml={6} mr={6} alignItems="center"
+          shadow="lg" shadowColor="bg.panel"
+        >
         <Feature {...featureProps} controller={setSearchData}/>
-        <Flex direction="row">
-          <IconButton aria-label="Activity" variant="ghost" borderRadius="full" size="sm" onClick={()=>{
-            changeBadges('Activity', 'pink');
-          }}>
-            <LuActivity colorScheme="dark" />
-          </IconButton>
-          <IconButton aria-label="Alarm" variant="ghost" borderRadius="full" size="sm" onClick={()=>
-            changeBadges('Alarm', 'pink')
-          }>
-            <LuAlarmClockCheck />
-          </IconButton>
-          <IconButton aria-label="Alarm" variant="ghost" borderRadius="full" size="sm" onClick={()=>
-            changeBadges('Airvent', 'pink')
-          }>
-            <LuAirVent />
-          </IconButton>
-          <IconButton aria-label="Alarm" variant="ghost" borderRadius="full" size="sm" marginLeft="auto" onClick={()=>{
+        <IconButton variant="subtle" borderRadius="full" size="lg" marginLeft="auto" 
+          onClick={()=>{
             handleSearch();
-          }}>
-            <LuSearch />
-          </IconButton>
-        </Flex>
+          }}
+        >
+          <LuSearch />
+        </IconButton>
       </Flex>
     )
 }
