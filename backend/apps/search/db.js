@@ -1,10 +1,15 @@
 import Recipe from "../../libraries/models/recipes.js";
 
-export const getRecipeFieldsByTitle = async (title, fields, number) => {
+export const getRecipeFieldsByTitle = async (title, fields, number,isAutoComplete=false) => {
   const conditions = {};
 
   if (title) {
-    conditions.title = { $regex: title, $options: "i" }; // Case-insensitive partial match
+    // conditions.title = { $regex: title, $options: "i" }; // Case-insensitive partial match
+    // conditions.title=isAutoComplete? { $regex: `^${title}`, $options: "i" } : { $regex: title, $options: "i" };
+    conditions.title = isAutoComplete?
+     { $regex: new RegExp(`\\b${title}`, "i") }
+  : { $regex: title, $options: "i" };
+
   }
 
   const recipes = await Recipe.find(conditions)
@@ -147,3 +152,4 @@ export const getRecipeInfoById = async (id, fields = "") => {
     .select(fields || "")
     .lean();
 };
+

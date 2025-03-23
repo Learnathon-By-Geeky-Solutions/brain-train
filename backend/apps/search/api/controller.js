@@ -214,19 +214,49 @@ export const getSimilarRecipes = async (req, res) => {
 
 // 🔍 Autocomplete Recipes
 export const autoCompleteRecipes = async (req, res) => {
-    try {
-        const { query, number = 5 } = req.query;
+            try {
+                const { query, number = 5 } = req.query;
 
-        if (!query) {
-            return res.status(400).json({ error: "Query parameter is required." });
-        }
+                if (!query) {
+                    return res.status(400).json({ error: "Query parameter is required." });
+                }
+                // Step 1: Search from DB with regex (LIKE 'query%')
+                const dbResults = await getRecipeFieldsByTitle(query, ['_id','title'], number, true); // true = regex autocomplete mode
+                let suggestions = dbResults.map(recipe => ({
+                    id: recipe.id,
+                    title: recipe.title
+                }));
+                console.log("🔍 DB Suggestions:", suggestions);
+                // Step 2: If enough suggestions, return
+                if (suggestions.length >= number/2) {
+                    return res.status(200).json(suggestions.slice(0, number));
+                }
 
-        const data = await spoonacularRequest('/recipes/autocomplete', { query, number });
+                const apiData = await spoonacularRequest('/recipes/autocomplete', { query, number });
+                
+                console.log("api suggestion count",apiData.length);
+                        // Step 4:  deduplicate results
+                const seenTitles = new Set(suggestions.map(s => s.title.toLowerCase()));
+                const newApiRecipes = apiData.filter(recipe => !seenTitles.has(recipe.title.toLowerCase()));
+                
+                const recipeIds = newApiRecipes.map(recipe => recipe.id);
 
-        return res.status(200).json(data);
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
+                const completeApiResults = await fetchSaveFilterRecipes(recipeIds, {});
+                
+
+                    // Return only selected fields
+                const filteredFields = completeApiResults.map(recipe => ({
+                    id: recipe.id,
+                    title: recipe.title
+                }));    
+                console.log("🔍 API Suggestions:", filteredFields);
+                suggestions = suggestions.concat(filteredFields).slice(0, number);
+            
+
+                return res.status(200).json(suggestions);
+                } catch (error) {
+                    return res.status(500).json({ error: error.message });
+                }
 };
 
 // 🍏 Autocomplete Ingredients
