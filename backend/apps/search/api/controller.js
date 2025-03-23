@@ -4,7 +4,7 @@ import {
     getRecipeFieldsByTitle,
     getRecipeInfoById,
     getRecipesByIngredients,
-    getExistingRecipeSourceIds
+    getRecipeBySourceId
 } from '../db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { enrichRecipesWithFields,filterRecipes,generateShoppingList,fetchSaveFilterRecipes } from '../helper.js';
@@ -234,20 +234,16 @@ export const autoCompleteRecipes = async (req, res) => {
                 }
 
                 const apiData = await spoonacularRequest('/recipes/autocomplete', { query, number });
-                
-                console.log("api suggestion count",apiData.length);
-                        // Step 4:  deduplicate results
-                // const seenTitles = new Set(suggestions.map(s => s.title.toLowerCase()));
-                // const newApiRecipes = apiData.filter(recipe => !seenTitles.has(recipe.title.toLowerCase()));
-                
                 const apiIds = apiData.map(recipe => recipe.id);
                 console.log("api ids",apiIds);
 
-                // 🧠 Filter out already existing sourceIds
-                const existingSourceIds = await getExistingRecipeSourceIds(apiIds);
-                console.log("🔍 Existing Source IDs:", existingSourceIds);
-                // ✅ FIX: Coerce to string for consistent comparison
-                const existingIdsSet = new Set(existingSourceIds.map(String));
+                //  Filter out already existing sourceIds
+                const existingRecipes = await getRecipeBySourceId(apiIds,"sourceId");
+                console.log("🔍 Existing Recipes:", existingRecipes);
+                // Coerce to string for consistent comparison
+
+
+                const existingIdsSet = new Set(existingRecipes.map(r => String(r.sourceId)));
                 const missingIds = apiIds.filter(id => !existingIdsSet.has(String(id)));        
                 console.log("💾 Enriching New IDs:", missingIds);
         
