@@ -23,6 +23,7 @@ export const decodeFirebaseIdToken = async (authorizationHeader) => {
   if (!idToken) {
     throw new Error("Token is missing after 'Bearer '");
   }
+  console.log("Decoding Firebase token:", idToken);
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);

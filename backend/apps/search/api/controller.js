@@ -1,11 +1,13 @@
 import { spoonacularRequest } from '../../../libraries/services/spoonacular.js';
 import { stripHtml } from 'string-strip-html'; 
 import { 
-    getRecipeFieldsByParams,
-    saveRecipeDetails,
-    getRecipeInfoById
+    getRecipeFieldsByTitle,
+    getRecipeInfoById,
+    getRecipesByIngredients
 } from '../db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
+import { enrichRecipesWithFields,fetchRecipeDetailsBulk,filterRecipes,generateShoppingList,fetchSaveFilterRecipes } from '../helper.js';
+
 
 /**
  * Search recipes by title
@@ -17,37 +19,45 @@ export const searchRecipes = async (req, res) => {
     try {
         await decodeFirebaseIdToken(req.headers.authorization);
         const { number = 10, fields = "" , ...params } = req.query;
+        const { query,...filters } = params;
 
         // Convert "fields" query string into an array (e.g., "summary,likes,nutrition")
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
-        const conditions = { ...params };
-
+    
+        
         // Query db with params, fields and limit
-        const dbResults = await  getRecipeFieldsByParams(conditions, fieldsArray, number);
+        let dbResults = await  getRecipeFieldsByTitle(query, fieldsArray, number);
+        console.log("🔍 DB Results Before Filtering:", dbResults.length);
+
+        //  Apply Filters to DB Results
+        dbResults = filterRecipes(dbResults, filters);
+
+        console.log(" DB Results After Filtering:", dbResults.length);
         if (dbResults.length > 0) {
             return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
         }
 
         // Fetch recipes
-        const recipesData = await spoonacularRequest('/recipes/complexSearch', { number, ...params });
+        console.log(" Fetching from Spoonacular API...", params);
+        const apiResults = await spoonacularRequest('/recipes/complexSearch', {number, ...params });
 
-        // Enrich recipes with requested fields
-        const enrichedRecipes = await enrichRecipesWithFields(recipesData.results, fieldsArray);
-
-        // Save recipe details to the database
-        await Promise.all(
-            enrichedRecipes.map(async (recipe) => {
-                const details = await spoonacularRequest(`/recipes/${recipe.id}/information`);
-                const savedRecipe = await saveRecipeDetails(details);
         
-                // Update the enrichedRecipes array with the new id from the saved recipe
-                recipe.id = savedRecipe._id.toString();
-        
-                return recipe;
-            })
-        );
 
-        return res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+
+        if (!apiResults.results || apiResults.results.length === 0) {
+            console.log(" No results found in Spoonacular API either.");
+            return res.status(404).json({ results: [], totalResults: 0 });
+        }
+
+        
+
+        //  Fetch additional fields in bulk using Spoonacular API
+        const recipeIds = apiResults.results.map(recipe => recipe.id);
+
+
+        const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
+
+        return res.status(200).json({ results: filteredApiResults, totalResults: filteredApiResults.length });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
@@ -57,18 +67,59 @@ export const searchRecipes = async (req, res) => {
 export const searchRecipesByIngredients = async (req, res) => {
     try {
         await decodeFirebaseIdToken(req.headers.authorization);
-        const {  number = 10 ,fields = "", ...params} = req.query;
+        
+        //  Extract required and optional parameters
+        const { number = 20, ingredients, fields = "", ...filters } = req.query;
+        
+        if (!ingredients) {
+            return res.status(400).json({ error: "'ingredients' parameter is required." });
+        }
+
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
 
-        const recipesData = await spoonacularRequest('/recipes/findByIngredients', { number, ...params });
-        const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
 
-        return  res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+        //  Fetch recipes from DB
+        let dbResults = await getRecipesByIngredients(ingredients, fieldsArray, number, filters);
+
+        console.log("🔍 DB Results Before Filtering:", dbResults.length);
+
+        //  Apply Filters to DB Results
+        dbResults = filterRecipes(dbResults, filters);
+
+        console.log(" DB Results After Filtering:", dbResults.length);
+
+        if (dbResults.length > 0) {
+            return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
+        }
+
+        //  No results from DB? Fetch from Spoonacular API
+        console.log(" Fetching from Spoonacular API...");
+        const apiResults = await spoonacularRequest('/recipes/findByIngredients', { number, ingredients });
+
+        if (!apiResults || apiResults.length === 0) {
+            console.log(" No results found in Spoonacular API either.");
+            return res.status(404).json({ results: [], totalResults: 0 });
+        }
+
+        console.log(" API Results Before Enrichment:", apiResults.length);
+
+        //  Fetch additional fields in bulk using Spoonacular API
+        const recipeIds = apiResults.map(recipe => recipe.id);
+
+        const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
+
+        return res.status(200).json({ results: filteredApiResults, totalResults: filteredApiResults.length });
 
     } catch (error) {
-        return  res.status(500).json({ error: error.message });
+        console.error(" Error in searchRecipesByIngredients:", error);
+        return res.status(500).json({ error: error.message });
     }
 };
+
+
+
+
+
 
 
 // Controller: Search Recipes by Nutrients
@@ -92,12 +143,14 @@ export const searchRecipesByNutrients = async (req, res) => {
 export const getRecipeInformation = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log("information", id);
         const data = await getRecipeInfoById(id);
 
         if (!data) {
+            console.log("Recipe not found");
             return res.status(404).json({ error: "Recipe not found." });
         }
-
+        
         return res.status(200).json(data);
     } catch (error) {
         return res.status(500).json({ error: error.message });
@@ -180,53 +233,28 @@ export const autoCompleteIngredients = async (req, res) => {
     }
 };
 
-/**
- * Fetches additional fields for each recipe dynamically.
- * @param {Array} recipes - List of recipe objects with IDs.
- * @param {Array} fields - List of fields to fetch (e.g., ["summary", "nutrition", "likes"]).
- * @returns {Array} - Recipes enriched with the requested fields.
- */
-const enrichRecipesWithFields = async (recipes, fields = []) => {
-
-    if (!recipes || recipes.length === 0 || fields.length === 0) return recipes;
-
-    // Define which endpoint to use for each requested field
-    const fieldEndpoints = {
-        summary: (id) => `/recipes/${id}/summary`,
-        likes: (id) => `/recipes/${id}/information`, // Likes come from "aggregateLikes" in this response
-    };
-
+export const getShoppingList = async (req, res) => {
     try {
-        // Fetch all requested fields for each recipe
-        const detailsFetchers = recipes.map(async (recipe) => {
-
-            let enrichedRecipe = { ...recipe };
-
-            for (const field of fields) {
-                if (!fieldEndpoints[field]) continue; // Skip if field is not recognized
-
-                try {
-                    const fieldData = await spoonacularRequest(fieldEndpoints[field](recipe.id));
-
-                    // Process data differently based on field type
-                    if (field === "summary") {
-                        enrichedRecipe.summary = stripHtml(fieldData.summary).result || "No summary available";
-                    } else if (field === "likes") {
-                        enrichedRecipe.likes = fieldData.aggregateLikes || 0;
-                    } 
-                } catch (error) {
-                    console.error("Error fetching %s for recipe %s: %s", field, recipe?.id, error.message);
-                }
-            }
-
-            return enrichedRecipe;
-        });
-
-        // Resolve all fetchers in parallel
-        return await Promise.all(detailsFetchers);
-
+      const { id } = req.params;
+      const { requestedServing } = req.query;
+  
+      if (!requestedServing || isNaN(requestedServing)) {
+        return res.status(400).json({ error: "Missing or invalid 'requestedServing' parameter." });
+      }
+  
+      
+      const data = await getRecipeInfoById(id);
+  
+      if (!data) {
+        console.log("Recipe not found");
+        return res.status(404).json({ error: "Recipe not found." });
+      }
+      
+      const shoppingList = generateShoppingList(data, Number(requestedServing) );
+      return res.status(200).json({ recipeId: id, servings: requestedServing, shoppingList });
+  
     } catch (error) {
-        console.error("Error enriching recipes with additional fields:", error);
-        return recipes.map(recipe => ({ ...recipe, error: "Failed to fetch additional details" }));
+      console.error("Error generating shopping list:", error);
+      return res.status(500).json({ error: error.message });
     }
-};
+  };
