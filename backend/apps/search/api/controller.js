@@ -3,9 +3,13 @@ import { stripHtml } from 'string-strip-html';
 import { 
     getRecipeFieldsByParams,
     saveRecipeDetails,
-    getRecipeInfoById
+    getRecipeInfoById,
+    getSearchHistoryByUid,
+    createUserEntryInUserSearchHistory
 } from '../db.js';
+import { findRecipesByIds } from '../../favourite/db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
+import mongoose from 'mongoose';
 
 /**
  * Search recipes by title
@@ -89,19 +93,35 @@ export const searchRecipesByNutrients = async (req, res) => {
 };
 
 // Controller: Get Recipe Information
-export const getRecipeInformation = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const data = await getRecipeInfoById(id);
-
-        if (!data) {
-            return res.status(404).json({ error: "Recipe not found." });
-        }
-
-        return res.status(200).json(data);
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
+export const getRecipeInformation = (req, res) => {
+    const id = req.params.id.toString();
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid recipe' });
     }
+
+    getRecipeInfoById(id)
+        .then(data => {
+            if (!data) {
+                return res.status(404).json({ error: "Recipe not found." });
+            }
+
+            decodeFirebaseIdToken(req.headers.authorization)
+                .then(({ uid }) => {
+                    updateUserSearchHistory(uid, id)
+                        .then(() => {
+                            return res.status(200).json(data);
+                        })
+                        .catch(error => {
+                            return res.status(500).json({ error: error.message });
+                        });
+                })
+                .catch(error => {
+                    return res.status(500).json({ error: error.message });
+                });
+        })
+        .catch(error => {
+            return res.status(500).json({ error: error.message });
+        });
 };
 
 // Controller: Get Recipe Summary
@@ -180,6 +200,33 @@ export const autoCompleteIngredients = async (req, res) => {
     }
 };
 
+export const getSearchesFromHistory = (req, res) => {
+    let { n } = req.params;
+    n = Number(n.toString());
+    if (!Number.isInteger(n) || n <= 0) {
+        return res.status(400).json({ error: "Invalid history query." });
+    }
+
+    decodeFirebaseIdToken(req.headers.authorization)
+        .then(({ uid }) => {
+            return getSearchHistoryByUid(uid);
+        })
+        .then(searchHistory => {
+            if (!searchHistory || searchHistory.history.length === 0) {
+                return res.status(200).json({ results: [] });
+            }
+
+            // Extract n unique recent history and fetch recipe details
+            return getUniqueRecentHistoryWithRecipeInfo(searchHistory.history, n)
+                .then(responseHistory => {
+                    return res.status(200).json({ results: responseHistory });
+                });
+        })
+        .catch(error => {
+            return res.status(500).json({ error: error.message });
+        });
+};
+
 /**
  * Fetches additional fields for each recipe dynamically.
  * @param {Array} recipes - List of recipe objects with IDs.
@@ -230,3 +277,46 @@ const enrichRecipesWithFields = async (recipes, fields = []) => {
         return recipes.map(recipe => ({ ...recipe, error: "Failed to fetch additional details" }));
     }
 };
+
+const getUniqueRecentHistoryWithRecipeInfo = (history, n) => {
+    const uniqueHistoryMap = new Map();
+
+    // Iterate from the beginning (most recent first due to unshift)
+    for (const { recipeId, searchedAt } of history) {
+        if (!uniqueHistoryMap.has(recipeId)) {
+            uniqueHistoryMap.set(recipeId, { recipeId, searchedAt });
+        }
+    }
+
+    // Get the n most recent unique searches
+    const recentUniqueSearches = Array.from(uniqueHistoryMap.values()).slice(0, n);
+
+    // Retrieve recipe details for the selected recipeIds
+    const recipeIds = recentUniqueSearches.map(entry => entry.recipeId);
+    return findRecipesByIds(recipeIds).then(recipes => {
+        const recipeMap = new Map(recipes.map(recipe => [recipe.id, recipe]));
+        
+        return recentUniqueSearches.map(({ recipeId, searchedAt }) => ({
+            searchedAt,
+            ...(recipeMap.get(recipeId) || { id: recipeId, title: null, image: null, likes: 0 })
+        }));
+    });
+};
+
+const updateUserSearchHistory = (uid, recipeId) => {
+    return getSearchHistoryByUid(uid)
+        .then(searchHistory => {
+            if (searchHistory && searchHistory.history) {
+                searchHistory.history.unshift({
+                    recipeId: recipeId,
+                    searchedAt: Date.now()
+                });
+                searchHistory.save();
+            } else {
+                createUserEntryInUserSearchHistory(uid, recipeId);
+            }
+        })
+        .catch(() => {
+            throw new Error("Failed to update search history");
+        });
+}

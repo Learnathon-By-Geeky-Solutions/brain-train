@@ -1,4 +1,5 @@
 import Recipe from "../../libraries/models/recipes.js";
+import UserSearchHistory from "../../libraries/models/userSearchHistory.js"
 
 export const getRecipeFieldsByParams = async (conditions, fields, number) => {
   if (conditions.query) {
@@ -53,4 +54,24 @@ export const saveRecipeDetails = async (details) => {
 
 export const getRecipeInfoById = async (id, fields = "") => {
   return await Recipe.findById(id).select(fields || "").lean();
+};
+
+export const getSearchHistoryByUid = async (uid) => {
+  try {
+    return await UserSearchHistory.findOne({ firebaseUid: uid });
+  } catch (error) {
+    console.error('Find user search history error:', error.message);
+    return null;
+  }
+};
+
+export const createUserEntryInUserSearchHistory = async (uid, recipeId) => {
+  const userSearchHistory = new UserSearchHistory({
+    firebaseUid: uid,
+    history: [{
+      recipeId: recipeId,
+      searchedAt: Date.now()
+    }]
+  });
+  await userSearchHistory.save();
 };
