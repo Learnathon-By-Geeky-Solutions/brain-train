@@ -31,11 +31,35 @@ async function getFavoriteRecipes() {
 }
 
 function handleSearchByTitle (searchData) {
-    return `${API_BASE_URL}/search/recipes?query=${searchData.data}&fields=summary,likes,title,image`;
+  let url = handleFilters(
+    `${API_BASE_URL}/search/recipes?query=${searchData.data}&fields=summary,likes,title,image`,
+    searchData
+  );
+  return url;
+}
+
+function handleFilters (url, searchData) {
+  for (const filter of searchData.filters) {
+    if(filter.cuisine){
+      url += `&cuisine=${filter.cuisine}`;
+    }
+    if(filter.diet && filter.diet.length > 0){
+      url += '&diet=';
+      for (const diet of filter.diet) {
+        url += `${diet},`;
+      }
+      url = url.slice(0, -1);
+    }
+    if(filter.rangeFilters && filter.rangeFilters.length > 0){
+      for (const rangeFilter of filter.rangeFilters) {
+        url += `&min${rangeFilter.type}=${rangeFilter.min}&max${rangeFilter.type}=${rangeFilter.max}`;
+      }
+    }
+  }
+  return url;
 }
 
 const handleSearchByIngredients = (searchData) => {
-    console.log('searchData from function by ing'+searchData);
     let ingredients = '';
     let data = searchData.data;
     data.fields.forEach((field) => {
@@ -43,7 +67,7 @@ const handleSearchByIngredients = (searchData) => {
     });
     ingredients = ingredients.slice(0, -1);
     console.log('url from function '+`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`);
-    return `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary`;
+    return `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`;
 }
 
 const fetchData = async (searchData) => {
@@ -52,6 +76,7 @@ const fetchData = async (searchData) => {
 
     if (searchData.type === "title") {
       url = handleSearchByTitle(searchData);
+      console.log('url from fetchData '+url);
     } else if (searchData.type === "ingredients") {
       url = handleSearchByIngredients(searchData);
     }

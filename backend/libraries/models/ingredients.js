@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { nutrientSchema } from "./nutrition.js";
 
 const ingredientSchema = new mongoose.Schema({
   title: {
@@ -16,7 +17,8 @@ const ingredientSchema = new mongoose.Schema({
   unit: {
     type: String,
     default: ""
-  }
+  },
+  nutrients: [nutrientSchema]
 });
 
 export default ingredientSchema;

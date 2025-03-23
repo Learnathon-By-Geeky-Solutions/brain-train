@@ -9,6 +9,8 @@ import {
 } from '../db.js';
 import { findRecipesByIds } from '../../favourite/db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
+import { enrichRecipesWithFields,fetchRecipeDetailsBulk,filterRecipes,generateShoppingList,fetchSaveFilterRecipes } from '../helper.js';
+
 import mongoose from 'mongoose';
 
 /**
@@ -21,37 +23,45 @@ export const searchRecipes = async (req, res) => {
     try {
         await decodeFirebaseIdToken(req.headers.authorization);
         const { number = 10, fields = "" , ...params } = req.query;
+        const { query,...filters } = params;
 
         // Convert "fields" query string into an array (e.g., "summary,likes,nutrition")
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
-        const conditions = { ...params };
-
+    
+        
         // Query db with params, fields and limit
-        const dbResults = await  getRecipeFieldsByParams(conditions, fieldsArray, number);
+        let dbResults = await  getRecipeFieldsByTitle(query, fieldsArray, number);
+        console.log("🔍 DB Results Before Filtering:", dbResults.length);
+
+        //  Apply Filters to DB Results
+        dbResults = filterRecipes(dbResults, filters);
+
+        console.log(" DB Results After Filtering:", dbResults.length);
         if (dbResults.length > 0) {
             return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
         }
 
         // Fetch recipes
-        const recipesData = await spoonacularRequest('/recipes/complexSearch', { number, ...params });
+        console.log(" Fetching from Spoonacular API...", params);
+        const apiResults = await spoonacularRequest('/recipes/complexSearch', {number, ...params });
 
-        // Enrich recipes with requested fields
-        const enrichedRecipes = await enrichRecipesWithFields(recipesData.results, fieldsArray);
-
-        // Save recipe details to the database
-        await Promise.all(
-            enrichedRecipes.map(async (recipe) => {
-                const details = await spoonacularRequest(`/recipes/${recipe.id}/information`);
-                const savedRecipe = await saveRecipeDetails(details);
         
-                // Update the enrichedRecipes array with the new id from the saved recipe
-                recipe.id = savedRecipe._id.toString();
-        
-                return recipe;
-            })
-        );
 
-        return res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+
+        if (!apiResults.results || apiResults.results.length === 0) {
+            console.log(" No results found in Spoonacular API either.");
+            return res.status(404).json({ results: [], totalResults: 0 });
+        }
+
+        
+
+        //  Fetch additional fields in bulk using Spoonacular API
+        const recipeIds = apiResults.results.map(recipe => recipe.id);
+
+
+        const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
+
+        return res.status(200).json({ results: filteredApiResults, totalResults: filteredApiResults.length });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
@@ -61,18 +71,59 @@ export const searchRecipes = async (req, res) => {
 export const searchRecipesByIngredients = async (req, res) => {
     try {
         await decodeFirebaseIdToken(req.headers.authorization);
-        const {  number = 10 ,fields = "", ...params} = req.query;
+        
+        //  Extract required and optional parameters
+        const { number = 20, ingredients, fields = "", ...filters } = req.query;
+        
+        if (!ingredients) {
+            return res.status(400).json({ error: "'ingredients' parameter is required." });
+        }
+
         const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
 
-        const recipesData = await spoonacularRequest('/recipes/findByIngredients', { number, ...params });
-        const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
 
-        return  res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+        //  Fetch recipes from DB
+        let dbResults = await getRecipesByIngredients(ingredients, fieldsArray, number, filters);
+
+        console.log("🔍 DB Results Before Filtering:", dbResults.length);
+
+        //  Apply Filters to DB Results
+        dbResults = filterRecipes(dbResults, filters);
+
+        console.log(" DB Results After Filtering:", dbResults.length);
+
+        if (dbResults.length > 0) {
+            return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
+        }
+
+        //  No results from DB? Fetch from Spoonacular API
+        console.log(" Fetching from Spoonacular API...");
+        const apiResults = await spoonacularRequest('/recipes/findByIngredients', { number, ingredients });
+
+        if (!apiResults || apiResults.length === 0) {
+            console.log(" No results found in Spoonacular API either.");
+            return res.status(404).json({ results: [], totalResults: 0 });
+        }
+
+        console.log(" API Results Before Enrichment:", apiResults.length);
+
+        //  Fetch additional fields in bulk using Spoonacular API
+        const recipeIds = apiResults.map(recipe => recipe.id);
+
+        const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
+
+        return res.status(200).json({ results: filteredApiResults, totalResults: filteredApiResults.length });
 
     } catch (error) {
-        return  res.status(500).json({ error: error.message });
+        console.error(" Error in searchRecipesByIngredients:", error);
+        return res.status(500).json({ error: error.message });
     }
 };
+
+
+
+
+
 
 
 // Controller: Search Recipes by Nutrients
@@ -147,18 +198,32 @@ export const getRecipeSummary = async (req, res) => {
 export const getSimilarRecipes = async (req, res) => {
     try {
         let { id } = req.params;
-        const { number = 5,fields="" } = req.query;
-        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
+        const { number = 10} = req.query;
 
-        id = Number(id);
-        if (!Number.isInteger(id) || id <= 0) {
-            return res.status(400).json({ error: "Invalid recipe ID." });
-        }
+        const data=await getRecipeInfoById(id,"_id sourceId");
         
-        const recipesData = await spoonacularRequest(`/recipes/${id}/similar`, { number });
-        const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
+        const recipesData = await spoonacularRequest(`/recipes/${data.sourceId}/similar`, { number });
+        // const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
+                //  Fetch additional fields in bulk using Spoonacular API
+        const recipeIds = recipesData.map(recipe => recipe.id);
 
-        return  res.status(200).json({ results: enrichedRecipes });
+        const completeApiResults = await fetchSaveFilterRecipes(recipeIds, {});
+        
+
+            // Return only selected fields
+        const filteredFields = completeApiResults.map(recipe => ({
+            id: recipe.id,
+            title: recipe.title,
+            summary: recipe.summary,
+            likes: recipe.likes
+        }));
+    
+        return res.status(200).json({
+            results: filteredFields,
+            totalResults: filteredFields.length
+        });
+
+        
 
     } catch (error) {
         return  res.status(500).json({ error: error.message });
@@ -276,7 +341,7 @@ const enrichRecipesWithFields = async (recipes, fields = []) => {
         console.error("Error enriching recipes with additional fields:", error);
         return recipes.map(recipe => ({ ...recipe, error: "Failed to fetch additional details" }));
     }
-};
+  };
 
 const getUniqueRecentHistoryWithRecipeInfo = (history, n) => {
     const uniqueHistoryMap = new Map();

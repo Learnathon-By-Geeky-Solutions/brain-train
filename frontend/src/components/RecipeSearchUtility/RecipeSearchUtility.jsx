@@ -10,10 +10,12 @@ import Toolbar from '@/components/Toolbar/Toolbar';
 import { Route, Routes } from 'react-router-dom';
 import TitleSearchInput from '@/components/TitleSearchInput/TitleSearchInput';
 import { FaSliders } from 'react-icons/fa6';
+import FilterController from './filter';
 
 
 export default function RecipeSearchUtility({ pageState, setPageState, pageLocation, showResults, setSearchParams }) {
   const [badges, setBadges] = useState([]);
+  const [filters, setFilters] = useState([]);
 
   function changePageState(newState) {
     setSearchParams({});
@@ -31,6 +33,24 @@ export default function RecipeSearchUtility({ pageState, setPageState, pageLocat
     setBadges(newBadges);
   }
 
+  function addFilter(filter) {
+    const newFilters = [...filters];
+    for (const f of filter) {
+      newFilters.push(f);
+    }
+    setFilters(newFilters);
+  }
+
+  function removeFilter(filter) {
+    const newFilters = [...filters];
+    newFilters.splice(newFilters.findIndex((f) => f === filter), 1);
+    setFilters(newFilters);
+  }
+
+  function clearFilters() {
+    setFilters([]);
+  }
+
   return (
     <Flex direction="column" width="100%" height="100%" alignItems="center" className="dashboard">
 
@@ -40,18 +60,23 @@ export default function RecipeSearchUtility({ pageState, setPageState, pageLocat
               <CentralSearchFrame 
                 feature={TitleSearchInput} 
                 featureProps={{ handleSuggestionClick: null }}
+                filters={filters}
                 currentBadges={badges} 
                 changeBadges={
                   (text, color) => { modifyBadges(text, color) }
                 }
                 showResults={showResults}
               />
-                  <IconButton bgColor="var(--text-input)" borderRadius="3xl" padding="2" mt="6" alignSelf="center" variant="ghost">
+                  {/* <IconButton bgColor="var(--text-input)" borderRadius="3xl" padding="2" mt="6" alignSelf="center" variant="ghost">
                       <Icon>
                       <FaSliders />
                       </Icon>
                         Advanced Filter
-                  </IconButton>
+                  </IconButton> */}
+                  <FilterController 
+                    addFilter={addFilter} 
+                    clearFilters={clearFilters}
+                  />
               </Flex>
             <Toolbar click={[() => { changePageState('ingSearch') }]} />
             {/* <PreloadedCards txt="Recently Searched" cards={recipes} />
@@ -66,7 +91,8 @@ export default function RecipeSearchUtility({ pageState, setPageState, pageLocat
         pageState === 'ingSearch' && pageLocation === 'dashboard' && (
           <CentralSearchFrame
             feature={IngredientSearchForm}
-            featureProps={{ prevState: () => { changePageState('init') }, ref: null }} 
+            featureProps={{ prevState: () => { changePageState('init') }, ref: null }}
+            filters={filters}
             currentBadges={badges} 
             changeBadges={(text, color) => { modifyBadges(text, color) }}
             showResults={showResults}

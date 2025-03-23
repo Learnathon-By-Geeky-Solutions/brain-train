@@ -4,7 +4,7 @@ import { LuActivity, LuAirVent, LuAlarmClockCheck, LuSearch } from 'react-icons/
 import PropTypes from 'prop-types';
 
 
-const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges, showResults}) => {
+const CentralSearchFrame = ({ feature, featureProps, filters, currentBadges, changeBadges, showResults}) => {
 
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({type:'', data:{}});
@@ -13,6 +13,8 @@ const CentralSearchFrame = ({ feature, featureProps, currentBadges, changeBadges
     console.log("Triggering form submission...");
     if(ref.current)
       ref.current.requestSubmit(); // Trigger form submission
+    searchData.filters = filters;
+    console.log(searchData);
     setShouldFetch(true); // Indicate that we should proceed once state updates
   };
 

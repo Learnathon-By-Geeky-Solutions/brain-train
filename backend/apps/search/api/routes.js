@@ -6,6 +6,8 @@ import {
     getRecipeInformation,
     getRecipeSummary,
     getSimilarRecipes,
+    getShoppingList,
+    
     autoCompleteIngredients,
     autoCompleteRecipes,
     getSearchesFromHistory
@@ -19,6 +21,8 @@ router.get('/recipes/nutrients', searchRecipesByNutrients);
 router.get('/recipes/:id', getRecipeInformation);
 router.get('/recipes/:id/summary', getRecipeSummary);
 router.get('/recipes/:id/similar', getSimilarRecipes);
+router.get('/recipes/:id/shoppingList', getShoppingList);
+
 
 // Autocomplete endpoints
 router.get('/title/autocomplete', autoCompleteRecipes);
