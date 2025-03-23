@@ -250,6 +250,7 @@ export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
       detailedRecipes.map(async (recipe) => {
         const savedRecipe = await saveRecipeDetails(recipe);
         recipe.id = savedRecipe._id.toString();
+        recipe.likes=savedRecipe.likes;
         return recipe;
       })
     );

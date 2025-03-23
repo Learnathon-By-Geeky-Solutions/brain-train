@@ -130,10 +130,7 @@ export const saveRecipeDetails = async (details) => {
     }
   };
 
-  // // Insert recipe into DB
-  // const newRecipe = new Recipe(recipeData);
-  // const savedRecipe = await newRecipe.save();
-  // return savedRecipe;
+
   await Recipe.updateOne(
     { sourceId: recipeData.sourceId },   // Match by sourceId
     { $set: recipeData },                // Set the entire new data

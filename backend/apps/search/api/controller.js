@@ -180,18 +180,32 @@ export const getRecipeSummary = async (req, res) => {
 export const getSimilarRecipes = async (req, res) => {
     try {
         let { id } = req.params;
-        const { number = 5,fields="" } = req.query;
-        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
+        const { number = 10} = req.query;
 
-        id = Number(id);
-        if (!Number.isInteger(id) || id <= 0) {
-            return res.status(400).json({ error: "Invalid recipe ID." });
-        }
+        const data=await getRecipeInfoById(id,"_id sourceId");
         
-        const recipesData = await spoonacularRequest(`/recipes/${id}/similar`, { number });
-        const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
+        const recipesData = await spoonacularRequest(`/recipes/${data.sourceId}/similar`, { number });
+        // const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
+                //  Fetch additional fields in bulk using Spoonacular API
+        const recipeIds = recipesData.map(recipe => recipe.id);
 
-        return  res.status(200).json({ results: enrichedRecipes });
+        const completeApiResults = await fetchSaveFilterRecipes(recipeIds, {});
+        
+
+            // Return only selected fields
+        const filteredFields = completeApiResults.map(recipe => ({
+            id: recipe.id,
+            title: recipe.title,
+            summary: recipe.summary,
+            likes: recipe.likes
+        }));
+    
+        return res.status(200).json({
+            results: filteredFields,
+            totalResults: filteredFields.length
+        });
+
+        
 
     } catch (error) {
         return  res.status(500).json({ error: error.message });
