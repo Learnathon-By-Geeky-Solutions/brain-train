@@ -39,16 +39,27 @@ function handleSearchByTitle (searchData) {
 }
 
 function handleFilters (url, searchData) {
+  console.log('from handleFilters ');
+  console.log(searchData);
   for (const filter of searchData.filters) {
     if(filter.cuisine){
       url += `&cuisine=${filter.cuisine}`;
     }
     if(filter.diet && filter.diet.length > 0){
-      url += '&diet=';
       for (const diet of filter.diet) {
-        url += `${diet},`;
+        if(diet === "Vegetarian"){
+          url += '&vegetarian=true';
+        }
+        else if(diet === "Vegan"){
+          url += '&vegan=true';
+        }
+        else if(diet === "Gluten Free"){
+          url += '&glutenFree=true';
+        }
+        else if(diet === "Dairy Free"){
+          url += '&dairyFree=true';
+        }
       }
-      url = url.slice(0, -1);
     }
     if(filter.rangeFilters && filter.rangeFilters.length > 0){
       for (const rangeFilter of filter.rangeFilters) {
@@ -66,8 +77,7 @@ const handleSearchByIngredients = (searchData) => {
         ingredients += field.name + ',';
     });
     ingredients = ingredients.slice(0, -1);
-    console.log('url from function '+`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`);
-    return `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`;
+    return handleFilters(`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`, searchData);
 }
 
 const fetchData = async (searchData) => {
@@ -79,6 +89,7 @@ const fetchData = async (searchData) => {
       console.log('url from fetchData '+url);
     } else if (searchData.type === "ingredients") {
       url = handleSearchByIngredients(searchData);
+      console.log('url from fetchData '+url);
     }
 
     try {

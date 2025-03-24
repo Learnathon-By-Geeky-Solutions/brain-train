@@ -28,6 +28,19 @@ import { MdClose } from "react-icons/md";
       rangeFilterTypes.map((type) => ({type: type, min: 0, max: 100}))
     );
     const [isRangeFiltersActive, setIsRangeFiltersActive] = useState([false, false, false, false]);
+    const [filtersApplied, setFiltersApplied] = useState(false);
+
+    function clearFiltersWithState(){
+      setCuisine("");
+      setDietFiltersToggled([false, false, false, false]);
+      setDietFilters([]);
+      setRangeFilters(
+        rangeFilterTypes.map((type) => ({type: type, min: 0, max: 100}))
+      );
+      setIsRangeFiltersActive([false, false, false, false]);
+      setFiltersApplied(false);
+      clearFilters();
+    }
 
     function toggleDietFilter(index,filter){
       const newDietFiltersToggled = [...dietFiltersToggled];
@@ -73,7 +86,11 @@ import { MdClose } from "react-icons/md";
           motionPreset="slide-in-bottom"
         >
           <Dialog.Trigger asChild>
-            <IconButton borderRadius="3xl" padding="2" variant="subtle" h="100%">
+            <IconButton borderRadius="3xl" padding="2" 
+              variant="subtle" h="100%"
+              borderColor={filtersApplied ? "Highlight" : "none"}
+              borderWidth="3"
+            >
               <Icon size="sm">
               <FaSliders  />
               </Icon>
@@ -113,7 +130,7 @@ import { MdClose } from "react-icons/md";
                       Diet
                     </Text>
                     <Flex wrap="wrap" gap="3">
-                    {["Vegan", "Vegetarian", "Gluten Free", "Lacto Vegetarian", "Ketogenic"].map((diet,index) => (
+                    {["Vegan", "Vegetarian", "Gluten Free", "Dairy Free"].map((diet,index) => (
                         <Button 
                           variant="outline"
                           onClick={()=>{
@@ -221,7 +238,7 @@ import { MdClose } from "react-icons/md";
                     <Button 
                       variant="outline"
                       onClick={()=>{
-                        clearFilters();
+                        clearFiltersWithState();
                       }}
                     >
                       Clear
@@ -230,6 +247,7 @@ import { MdClose } from "react-icons/md";
                   <Button
                     onClick={()=>{
                       console.log(isRangeFiltersActive);
+                      setFiltersApplied(true);
                       let activeRangeFilters = [];
                       for (let i = 0; i < isRangeFiltersActive.length; i++) {
                         if(isRangeFiltersActive[i]){
@@ -245,7 +263,7 @@ import { MdClose } from "react-icons/md";
                          {diet: dietFilters},
                          {rangeFilters: activeRangeFilters}
                         ]
-                        );
+                      );
                     }}
                   >
                     Apply

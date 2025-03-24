@@ -8,12 +8,12 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults}) => {
 
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({type:'', data:{}});
+  const [containerClosed, setContainerClosed] = useState(false);
 
   const handleSearch = () => {
     console.log("Triggering form submission...");
     if(ref.current)
       ref.current.requestSubmit(); // Trigger form submission
-    searchData.filters = filters;
     console.log(searchData);
     setShouldFetch(true); // Indicate that we should proceed once state updates
   };
@@ -21,6 +21,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults}) => {
   useEffect(() => {
     if (!shouldFetch) return;
 
+    searchData.filters = filters;
     showResults(searchData);
     setShouldFetch(false); // Reset fetch trigger
   }, [searchData, shouldFetch]); // Watch for changes in searchData
@@ -40,10 +41,16 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults}) => {
           borderRadius="4xl" padding="2" ml={6} mr={6} alignItems="center"
           shadow="lg" shadowColor="bg.panel"
         >
-        <Feature {...featureProps} controller={setSearchData}/>
-        <IconButton variant="subtle" borderRadius="full" size="lg" marginLeft="auto" 
+        <Feature {...featureProps} 
+          controller={setSearchData}
+          containerClosed={containerClosed}
+          setContainerClosed={setContainerClosed}
+        />
+        <IconButton variant="subtle" borderRadius="full" size="lg" marginLeft="auto"
+          alignSelf="start"
           onClick={()=>{
             handleSearch();
+            setContainerClosed(true);
           }}
         >
           <LuSearch />

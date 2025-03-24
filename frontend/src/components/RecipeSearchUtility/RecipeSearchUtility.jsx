@@ -15,7 +15,7 @@ import FilterController from './filter';
 export default function RecipeSearchUtility(
   { pageState, setPageState, pageLocation, 
     showResults, setSearchParams,
-    filters
+    filters, setShowSecondBar, showSecondBar
   }
 ) {
   // const [filters, setFilters] = useState([]);
@@ -40,8 +40,8 @@ export default function RecipeSearchUtility(
   return (
     <Flex direction="column" width="100%" minHeight="16" alignItems="center" mb="6">
 
-      {pageState === 'init' && pageLocation === 'dashboard' && (
-          <Flex direction="row" h="100%" gap={2}>
+      {( pageState === 'init' || !showSecondBar ) && pageLocation === 'dashboard' && (
+          <Flex direction="row" h="100%" gap={2} onClick={() => setShowSecondBar(true)}>
             <CentralSearchFrame 
               feature={TitleSearchInput} 
               featureProps={{ handleSuggestionClick: null }}
@@ -57,7 +57,7 @@ export default function RecipeSearchUtility(
       }
 
       {
-        pageState === 'ingSearch' && pageLocation === 'dashboard' && (
+        pageState === 'ingSearch' && pageLocation === 'dashboard' && showSecondBar && (
           <CentralSearchFrame
             feature={IngredientSearchForm}
             featureProps={{ prevState: () => { changePageState('init') }, ref: null }}
@@ -66,10 +66,6 @@ export default function RecipeSearchUtility(
           />
         )
       }
-
-      <Routes>
-        <Route path="recipe" element={<RecipeDetails />} />
-      </Routes>
     </Flex>
   );
 };

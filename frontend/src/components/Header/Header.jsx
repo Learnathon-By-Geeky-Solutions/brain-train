@@ -36,9 +36,15 @@ const StickyHeader = ({
 ) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [filters, setFilters] = useState([]);
+  const [filters, setFilters] = useState([{cuisine: ''}, {diet: null}, {rangeFilters: null}]);
   const [showSecondBar, setShowSecondBar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+
+  // useEffect(() => {
+  //   if(location.pathname === '/dashboard/recipe'){
+  //     setShowSecondBar(false);
+  //   }
+  // }, [location.pathname]);
 
   useEffect(() => {
     const controlSecondBar = () => {
@@ -46,7 +52,7 @@ const StickyHeader = ({
       const currentScrollY = window.scrollY;
       
       // If we're at the top (or very close to it), always show the second bar
-      if (currentScrollY < 10) {
+      if ((currentScrollY < 10) && (location.pathname !== '/dashboard/recipe')) {
         setShowSecondBar(true);
       } 
       // Otherwise hide it when scrolling down
@@ -89,8 +95,9 @@ const StickyHeader = ({
 
   function addFilter(filter) {
     const newFilters = [...filters];
-    for (const f of filter) {
-      newFilters.push(f);
+    let i;
+    for( i = 0; i < filter.length; i++) {
+      newFilters[i] = filter[i];
     }
     setFilters(newFilters);
   }
@@ -139,7 +146,7 @@ const StickyHeader = ({
             </Text>
           </Flex>
 
-          <Flex gap={2}>
+          { showSecondBar && (<Flex gap={2}>
             <Button 
               variant="subtle"
               borderRadius="3xl"
@@ -160,7 +167,8 @@ const StickyHeader = ({
             >
               Pantry Match
             </Button>
-          </Flex>
+          </Flex>)}
+
           {/* Icon Buttons */}
           <Flex gap={2}>
             <FilterController 
@@ -193,19 +201,10 @@ const StickyHeader = ({
                     <DrawerTitle>Hello {userName}</DrawerTitle>
                   </DrawerHeader>
                   <DrawerBody>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                      eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    <IconButton
-                      aria-label="Favorite Recipes"
-                      variant="ghost"
-                      w="10"
-                      h="auto"
-                      onClick={showFavouriteRecipes}
-                    >
-                      <FaHeart />
-                    </IconButton>
+                    <Flex direction="column" mt={2}>
+                      <Button onClick={showFavouriteRecipes} variant="ghost">Favourite Recipes</Button>
+                      <Button variant="ghost">Dummy</Button>
+                    </Flex>
                   </DrawerBody>
                   <DrawerFooter>
                     <DrawerActionTrigger asChild>
@@ -224,7 +223,6 @@ const StickyHeader = ({
         </Flex>
         <Box
          transform={showSecondBar ? "translateY(0) " : "translateY(-20%) scale(0.5)"}
-        //  opacity={showSecondBar ? 1 : 0}
          transition="transform 0.3s, opacity 0.3s "
          position={!showSecondBar ? "absolute" : "relative"}
          placeSelf={!showSecondBar ? "center" : "auto"}
@@ -236,6 +234,8 @@ const StickyHeader = ({
           showResults={showResults}
           setSearchParams={setSearchParams}
           filters={filters}
+          setShowSecondBar={setShowSecondBar}
+          showSecondBar={showSecondBar}
         />
         </Box>
       </Flex>

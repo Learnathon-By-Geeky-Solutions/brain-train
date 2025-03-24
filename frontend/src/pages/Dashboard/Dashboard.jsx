@@ -1,15 +1,16 @@
 import { Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import './Dashboard.css';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { auth } from '@/services/firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import Header from '@/components/Header/Header';
-import DashboardFeatures from '@/components/DasboardFeatures/DashboardFeatures';
 import recipes from './recipe';
 import PreloadedCards from '@/components/DasboardFeatures/PreloadedCards';
 import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
 import fetchData, { getFavoriteRecipes } from './api';
+import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
+
 
 
 export default function Dashboard() {
@@ -84,6 +85,8 @@ export default function Dashboard() {
     return;
 
     if(data){
+      console.log("setting search params");
+      console.log(data);
       setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)) });
       return;
     }
@@ -123,7 +126,7 @@ export default function Dashboard() {
 
   return (
     <Flex direction="column" width="100%" height="100%" minHeight="100vh" 
-    className="dashboard"
+    className="dashboard" gap={2}
     >
       <Header
         photoUrl={photoURL}
@@ -134,13 +137,6 @@ export default function Dashboard() {
         pageLocation={pageLocation}
         setPageState={setPageState}
         showResults={loadCards}
-      />
-      <DashboardFeatures 
-        pageState={pageState}
-        pageLocation={pageLocation}
-        setPageState={setPageState}
-        showResults={loadCards}
-        setSearchParams={setSearchParams}
       />
       {
         !searchParams.get("type") && pageLocation === 'dashboard' &&
@@ -153,8 +149,11 @@ export default function Dashboard() {
       }
       { 
         searchParams.get("type") && pageLocation === 'dashboard' &&
-        <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} perRow={5} numRows={5} />
+        <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} perRow={4} numRows={5} />
       }
+      <Routes>
+        <Route path="recipe" element={<RecipeDetails />} />
+      </Routes>
     </Flex>
   );
 };

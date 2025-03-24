@@ -4,8 +4,8 @@ import RecipeCardContainer from '../RecipeCardContainer/RecipeCardContainer';
 
 const PreloadedCards = ({txt,cards}) => {
     return (
-        <Flex direction="column" width="100%" height="100%" p="4">
-            <Text fontSize="2xl" fontWeight="medium" marginBottom={2} p={2}>
+        <Flex direction="column" width="100%" height="100%" p="4" px="2">
+            <Text fontSize="2xl" fontWeight="medium" marginBottom={2} p={2} px="4">
                 {txt}
             </Text>
             <RecipeCardContainer recipe_prop={cards} perRow={10} numRows={1} />

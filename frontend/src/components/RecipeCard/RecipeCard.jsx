@@ -46,7 +46,7 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
           e.target.src = recipe_default;
         }}
       />
-      <Card.Body gap="1" h="35%">
+      <Card.Body gap="1" h="35%" pb={2}>
       <Flex alignItems="center" justifyContent="space-between" W="100%" h="20%">
         <Card.Title W="85%" whiteSpace="nowrap" textOverflow="ellipsis" overflow="hidden">{recipe.title}</Card.Title>
         <Flex alignItems="center" w="15%">
@@ -56,13 +56,15 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
           </Text>
         </Flex>
       </Flex>
-        <Card.Description h="80%" mt={1}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.
+        <Card.Description 
+          h="80%" mt={1} 
+          overflow="hidden"
+          dangerouslySetInnerHTML={{ __html: recipe.summary }}
+        >
         </Card.Description>
       </Card.Body>
-      <Card.Footer gap="1">
-        { type === "favourites" && 
-        (
+      { type === "favourites" && 
+        (<Card.Footer gap="1">
           <Button
             size="sm"
             variant="ghost"
@@ -73,9 +75,7 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
           >
             Remove
           </Button>
-        )
-      }
-      </Card.Footer>
+      </Card.Footer>)}
     </Card.Root>
 )};
 

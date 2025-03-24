@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { useState } from "react";
 import SuggestionContainer from "../SuggestionContainer/SuggestionContainer";
 
-const TitleSearchInput = ({controller,handleSuggestionClick}) => {
+const TitleSearchInput = ({controller,handleSuggestionClick,containerClosed,setContainerClosed}) => {
 
   const [query, setQuery] = useState("");
   const [keyHandlerForSuggestion, setKeyHandlerForSuggestion] = useState(null);
@@ -39,6 +39,8 @@ const TitleSearchInput = ({controller,handleSuggestionClick}) => {
         }
       }
       keyHandler={keyHandlerForSuggestion}
+      containerClosed={containerClosed}
+      setContainerClosed={setContainerClosed}
     />
     </div>
   ) 
