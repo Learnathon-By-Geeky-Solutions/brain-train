@@ -40,11 +40,11 @@ const StickyHeader = ({
   const [showSecondBar, setShowSecondBar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // useEffect(() => {
-  //   if(location.pathname === '/dashboard/recipe'){
-  //     setShowSecondBar(false);
-  //   }
-  // }, [location.pathname]);
+  useEffect(() => {
+    if(location.pathname != '/dashboard' && location.pathname != '/dashboard/') {
+      setShowSecondBar(false);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const controlSecondBar = () => {
@@ -52,7 +52,7 @@ const StickyHeader = ({
       const currentScrollY = window.scrollY;
       
       // If we're at the top (or very close to it), always show the second bar
-      if ((currentScrollY < 10) && (location.pathname !== '/dashboard/recipe')) {
+      if ((currentScrollY < 10) && (location.pathname === '/dashboard' || location.pathname === '/dashboard/')) {
         setShowSecondBar(true);
       } 
       // Otherwise hide it when scrolling down

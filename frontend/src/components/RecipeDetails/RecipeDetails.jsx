@@ -9,13 +9,33 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { LuClock, LuHeart, LuUtensils } from 'react-icons/lu';
-import { useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import addToFavourites from './api';
 import { Toaster, toaster } from '../ui/toaster';
+import ShoppingList from './ShoppingList';
+import DialogForShoppingList from './DialogForShoppingList';
+import { useState } from 'react';
+
 
 const RecipeDetails = () => {
   const location = useLocation();
+  const [servingSize, setServingSize] = useState(1);
   const recipe = location.state?.recipe;
+  const id = recipe._id;
+  const navigate = useNavigate();
+
+  // function handleShoppingList(id,servingSize) {
+  //   getShoppingList(id,servingSize).then(data => {
+  //     if(data.status === 'error'){
+  //       console.log(data.msg);
+  //     }
+  //     else{
+  //       navigate('/shoppingList', { state: { data: data } });
+  //     }
+  //   }
+  //   );
+  // }
+
   return (
     <Box maxWidth="900px" mx="auto" p={6} borderWidth="2px" borderRadius="lg" borderColor="gray.400">
       <Image
@@ -98,11 +118,19 @@ const RecipeDetails = () => {
         >
           Save Recipe
         </Button>
-        <Button variant="outline" size="lg" borderColor="gray.400">
-          Share
-        </Button>
+        <DialogForShoppingList
+          handleDone={() => {
+            console.log("in handleDone");
+            navigate('/dashboard/recipe/shoppingList', { state: { id: id, servingSize: servingSize } });
+          }}
+          setServingSize={setServingSize}
+          servingSize={servingSize}
+        />
       </HStack>
       <Toaster />
+      {/* <Routes>
+        <Route path="recipe/shoppingList" element={<ShoppingList />} />
+      </Routes> */}
     </Box>
   );
 };

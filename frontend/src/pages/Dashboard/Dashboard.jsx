@@ -10,6 +10,7 @@ import PreloadedCards from '@/components/DasboardFeatures/PreloadedCards';
 import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
 import fetchData, { getFavoriteRecipes } from './api';
 import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
+import ShoppingList from '@/components/RecipeDetails/ShoppingList';
 
 
 
@@ -152,7 +153,8 @@ export default function Dashboard() {
         <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} perRow={4} numRows={5} />
       }
       <Routes>
-        <Route path="recipe" element={<RecipeDetails />} />
+        <Route path="recipe/*" element={<RecipeDetails />} />
+        <Route path="recipe/shoppingList" element={<ShoppingList />} />
       </Routes>
     </Flex>
   );
