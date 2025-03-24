@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, GridItem } from '@chakra-ui/react';
+import { Box, Grid, GridItem } from '@chakra-ui/react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import RecipeCard from '../RecipeCard/RecipeCard';
 import PropTypes from 'prop-types';

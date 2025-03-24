@@ -1,15 +1,10 @@
 import { Flex } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import IngredientSearchForm from '@/components/IngredientSearchFormInput/IngredientSearchFormInput';
-import { useState } from 'react';
-import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
 
 import './RecipeSearchUtility.css';
 import CentralSearchFrame from '@/components/CentralSearchFrame/CentralSearchFrame';
-import Toolbar from '@/components/Toolbar/Toolbar';
-import { Route, Routes } from 'react-router-dom';
 import TitleSearchInput from '@/components/TitleSearchInput/TitleSearchInput';
-import FilterController from './filter';
 
 
 export default function RecipeSearchUtility(
@@ -18,24 +13,12 @@ export default function RecipeSearchUtility(
     filters, setShowSecondBar, showSecondBar
   }
 ) {
-  // const [filters, setFilters] = useState([]);
 
   function changePageState(newState) {
     setSearchParams({});
     setPageState(newState);
   }
 
-  // function addFilter(filter) {
-  //   const newFilters = [...filters];
-  //   for (const f of filter) {
-  //     newFilters.push(f);
-  //   }
-  //   setFilters(newFilters);
-  // }
-
-  // function clearFilters() {
-  //   setFilters([]);
-  // }
 
   return (
     <Flex direction="column" width="100%" minHeight="16" alignItems="center" mb="6">
@@ -77,4 +60,7 @@ RecipeSearchUtility.propTypes = {
   pageLocation: PropTypes.string.isRequired,
   showResults: PropTypes.func.isRequired,
   setSearchParams: PropTypes.func.isRequired,
+  filters: PropTypes.array.isRequired,
+  showSecondBar: PropTypes.bool.isRequired,
+  setShowSecondBar: PropTypes.func.isRequired,
 };

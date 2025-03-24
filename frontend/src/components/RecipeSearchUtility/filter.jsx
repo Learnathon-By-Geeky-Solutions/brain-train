@@ -14,6 +14,7 @@ import {
   } from "@chakra-ui/react"
 
 import { useState } from "react";
+import PropTypes from 'prop-types';
 import { FaSliders } from 'react-icons/fa6';
 import { MdClose } from "react-icons/md";
 
@@ -142,6 +143,7 @@ import { MdClose } from "react-icons/md";
                           _hover={{
                             borderColor: "Highlight" 
                           }}
+                          key={diet}
                         >
                           {diet}
                         </Button>
@@ -151,7 +153,7 @@ import { MdClose } from "react-icons/md";
                   </div>
                   <Accordion.Root multiple display="flex" flexDirection="column">
                   {rangeFilterTypes.map((type,index) => (
-                    <Accordion.Item key={index} value={index}>
+                    <Accordion.Item key={type} value={index}>
                       <Accordion.ItemTrigger>
                         <Text fontSize="lg" fontWeight="semibold">
                           {type}
@@ -199,7 +201,7 @@ import { MdClose } from "react-icons/md";
                           </Slider.Control>
                          <Flex direction="row" justifyContent="space-between" mt="2">
                             {["Minimum", "Maximum"].map((label,index) => (
-                                <VStack w="1/6" gap="0" p="0">
+                                <VStack w="1/6" gap="0" p="0" key={label}>
                                   <Text fontSize="sm">
                                     {label}
                                   </Text>
@@ -276,5 +278,9 @@ import { MdClose } from "react-icons/md";
       </HStack>
     )
   }
+FilterController.propTypes = {
+  addFilter: PropTypes.func.isRequired,
+  clearFilters: PropTypes.func.isRequired,
+};
 
 export default FilterController;

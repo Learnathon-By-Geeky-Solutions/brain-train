@@ -1,6 +1,5 @@
 import { Box, Flex, IconButton, Image, Text, Button } from "@chakra-ui/react";
 import PropTypes from 'prop-types';
-import { FaHeart } from "react-icons/fa";
 import logo from "../../assets/logo.png";
 import { MdLogout } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -247,6 +246,10 @@ StickyHeader.propTypes = {
   userName: PropTypes.string.isRequired,
   handleLogout: PropTypes.func.isRequired,
   setSearchParams: PropTypes.func.isRequired,
+  pageState: PropTypes.string.isRequired,
+  pageLocation: PropTypes.string.isRequired,
+  setPageState: PropTypes.func.isRequired,
+  showResults: PropTypes.bool.isRequired,
 };
 
 export default StickyHeader;

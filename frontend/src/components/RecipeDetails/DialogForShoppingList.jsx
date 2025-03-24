@@ -1,6 +1,6 @@
 import { Button, Dialog, Portal, NumberInput, Flex } from "@chakra-ui/react"
-import { LuDelete } from "react-icons/lu"
 import { CloseButton } from "../ui/close-button"
+import PropTypes from 'prop-types'
 
 const DialogForShoppingList = ({handleDone,setServingSize,servingSize}) => {
   return (
@@ -49,5 +49,11 @@ const DialogForShoppingList = ({handleDone,setServingSize,servingSize}) => {
     </Dialog.Root>
   )
 }
+DialogForShoppingList.propTypes = {
+  handleDone: PropTypes.func.isRequired,
+  setServingSize: PropTypes.func.isRequired,
+  servingSize: PropTypes.number.isRequired,
+}
+
 
 export default DialogForShoppingList

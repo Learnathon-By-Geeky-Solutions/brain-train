@@ -134,7 +134,9 @@ SuggestionContainer.propTypes = {
   type: PropTypes.string.isRequired,
   query: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
-  keyHandler: PropTypes.object
+  keyHandler: PropTypes.object,
+  containerClosed: PropTypes.bool.isRequired,
+  setContainerClosed: PropTypes.func.isRequired
 };
 
 export default SuggestionContainer;

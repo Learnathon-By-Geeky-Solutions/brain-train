@@ -70,6 +70,7 @@ CentralSearchFrame.propTypes = {
   currentBadges: PropTypes.array,
   changeBadges: PropTypes.func.isRequired,
   showResults: PropTypes.func.isRequired,
+  filters: PropTypes.object.isRequired,
 };
 
 export default CentralSearchFrame;

@@ -1,15 +1,15 @@
 import React, { forwardRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { Input, Flex, IconButton, NativeSelectField, NativeSelectRoot, VStack } from '@chakra-ui/react';
-import { MdAdd, MdArrowBack, MdScale } from 'react-icons/md';
+import { Input, Flex, IconButton, VStack } from '@chakra-ui/react';
+import { MdAdd, MdArrowBack } from 'react-icons/md';
 import { Field } from '../ui/field';
 import { LuDelete } from 'react-icons/lu';
 import SuggestionContainer from '../SuggestionContainer/SuggestionContainer';
 
 
 const IngredientSearchFormInput = forwardRef(({prevState, controller, containerClosed, setContainerClosed}, ref)=> {
-  const { register, setValue, handleSubmit, formState: {errors}, control } = useForm({
+  const { setValue, handleSubmit, formState: {errors}, control } = useForm({
     defaultValues: {
       fields: [{ name: '', amount: '', unit: '' }],
     },
@@ -41,25 +41,6 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller, containerC
       return newIngredients;
     });
   };
-
-
-  // function updateStates(index){
-
-  //   const newStates = [...amountStates];
-
-  //   if(!newStates[index]){
-  //       newStates[index]={amount: 0};
-  //       newStates[index].amount = 1;
-  //   }else{
-  //       newStates[index].amount = 1 - newStates[index].amount;
-  //   } 
-  //   setAmountStates(newStates);
-
-  //   if( newStates[index].amount == 0 ){
-  //       setValue(`fields.${index}.amount`, '');
-  //       setValue(`fields.${index}.unit`, '');
-  //   }
-  // }
 
 
   return (
@@ -142,6 +123,8 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller, containerC
 IngredientSearchFormInput.propTypes = {
   prevState: PropTypes.func.isRequired,
   controller: PropTypes.func.isRequired,
+  setContainerClosed: PropTypes.func.isRequired,
+  containerClosed: PropTypes.bool.isRequired,
 };
 
 export default IngredientSearchFormInput;

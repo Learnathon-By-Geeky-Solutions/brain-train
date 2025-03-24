@@ -85,6 +85,7 @@ RecipeCard.propTypes = {
     image: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     likes: PropTypes.number.isRequired,
+    summary: PropTypes.string.isRequired,
   }).isRequired,
   changeVisibility: PropTypes.func,
   type: PropTypes.string,

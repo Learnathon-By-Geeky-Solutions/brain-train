@@ -1,5 +1,4 @@
 import {
-  Box,
   Input,
 } from "@chakra-ui/react";
 
@@ -49,6 +48,8 @@ const TitleSearchInput = ({controller,handleSuggestionClick,containerClosed,setC
 TitleSearchInput.propTypes = {
   controller: PropTypes.func.isRequired,
   handleSuggestionClick: PropTypes.func.isRequired,
+  containerClosed: PropTypes.bool.isRequired,
+  setContainerClosed: PropTypes.func.isRequired,
 };
 
 

@@ -35,35 +35,6 @@ async function addToFavourites(recipe) {
     return data;
 }
 
-// async function getShoppingList(servingSize,id,user){
-//     // const auth = getAuth();
-//     // const user = auth.currentUser;
-
-//     let data = {status: "error", msg: ""};
-//     const url = `${API_BASE_URL}/search/recipes/${id}/shoppingList?requestedServing=${servingSize}`;
-  
-//     // if (user) {
-//       const idToken = await user.getIdToken(true); // Get the ID token
-//       const response = await fetch(url, {
-//         method: "GET",
-//         headers: {
-//           'Content-Type': 'application/json',
-//           Authorization: `Bearer ${idToken}`, // Send the token in the Authorization header
-//         },
-//       });
-
-//       console.log(response);
-//       if (response.ok) {
-//         data = await response.json();
-//       } else {
-//         data.msg = "Failed to get shopping list";
-//       }
-//     // } else {
-//     //     data.msg = "User not logged in";
-//     // }
-//     return data;
-// }
-
 async function getShoppingList(servingSize, id) {
   const auth = getAuth();
   let data = {status: "error", msg: ""};

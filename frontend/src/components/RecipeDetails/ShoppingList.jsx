@@ -8,7 +8,6 @@ import {
   Image,
   Badge,
   Container,
-  SimpleGrid,
   Card,
   Flex,
   IconButton,
@@ -16,7 +15,7 @@ import {
   Separator
 } from '@chakra-ui/react';
 import { getShoppingList } from './api';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useColorModeValue } from '../ui/color-mode';
 import { LuPrinter } from 'react-icons/lu';
 
@@ -25,19 +24,6 @@ const ShoppingList = () => {
   const location = useLocation();
   const id = location.state?.id;
   const servingSize = location.state?.servingSize;
-  const navigate = useNavigate();
-
-  // const setupAuthStateListener = () => {
-  //   return new Promise((resolve) => {
-  //     unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-  //       if (currentUser) {
-  //         resolve(currentUser);  // Resolve with the user
-  //       } else {
-  //         resolve(null);
-  //       }
-  //     });
-  //   });
-  // };
 
   useEffect(() => {
     console.log('in useEffect of shopping list');
@@ -118,8 +104,8 @@ const ShoppingList = () => {
                         <Text fontWeight="bold" noOfLines={1}>
                           {title}
                         </Text>
-                        {items.map((item, index) => (
-                          <Text key={index} fontSize="sm" color="gray.300">
+                        {items.map((item) => (
+                          <Text key={item.id} fontSize="sm" color="gray.300">
                             {item.amount} {item.unit}
                           </Text>
                         ))}

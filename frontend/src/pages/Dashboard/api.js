@@ -38,35 +38,88 @@ function handleSearchByTitle (searchData) {
   return url;
 }
 
-function handleFilters (url, searchData) {
-  console.log('from handleFilters ');
-  console.log(searchData);
+// function handleFilters (url, searchData) {
+//   for (const filter of searchData.filters) {
+//     if(filter.cuisine){
+//       url += `&cuisine=${filter.cuisine}`;
+//     }
+//     if(filter.diet && filter.diet.length > 0){
+//       for (const diet of filter.diet) {
+//         if(diet === "Vegetarian"){
+//           url += '&vegetarian=true';
+//         }
+//         else if(diet === "Vegan"){
+//           url += '&vegan=true';
+//         }
+//         else if(diet === "Gluten Free"){
+//           url += '&glutenFree=true';
+//         }
+//         else if(diet === "Dairy Free"){
+//           url += '&dairyFree=true';
+//         }
+//       }
+//     }
+//     if(filter.rangeFilters && filter.rangeFilters.length > 0){
+//       for (const rangeFilter of filter.rangeFilters) {
+//         url += `&min${rangeFilter.type}=${rangeFilter.min}&max${rangeFilter.type}=${rangeFilter.max}`;
+//       }
+//     }
+//   }
+//   return url;
+// }
+
+function handleFilters(url, searchData) {
+  if (!searchData.filters?.length) {
+    return url;
+  }
+
   for (const filter of searchData.filters) {
-    if(filter.cuisine){
-      url += `&cuisine=${filter.cuisine}`;
-    }
-    if(filter.diet && filter.diet.length > 0){
-      for (const diet of filter.diet) {
-        if(diet === "Vegetarian"){
-          url += '&vegetarian=true';
-        }
-        else if(diet === "Vegan"){
-          url += '&vegan=true';
-        }
-        else if(diet === "Gluten Free"){
-          url += '&glutenFree=true';
-        }
-        else if(diet === "Dairy Free"){
-          url += '&dairyFree=true';
-        }
-      }
-    }
-    if(filter.rangeFilters && filter.rangeFilters.length > 0){
-      for (const rangeFilter of filter.rangeFilters) {
-        url += `&min${rangeFilter.type}=${rangeFilter.min}&max${rangeFilter.type}=${rangeFilter.max}`;
-      }
+    url = appendCuisineFilter(url, filter);
+    url = appendDietFilters(url, filter);
+    url = appendRangeFilters(url, filter);
+  }
+  
+  return url;
+}
+
+function appendCuisineFilter(url, filter) {
+  if (filter.cuisine) {
+    url += `&cuisine=${filter.cuisine}`;
+  }
+  return url;
+}
+
+function appendDietFilters(url, filter) {
+  if (!filter.diet || filter.diet.length === 0) {
+    return url;
+  }
+  
+  const dietMappings = {
+    "Vegetarian": "vegetarian",
+    "Vegan": "vegan",
+    "Gluten Free": "glutenFree",
+    "Dairy Free": "dairyFree"
+  };
+  
+  for (const diet of filter.diet) {
+    const paramName = dietMappings[diet];
+    if (paramName) {
+      url += `&${paramName}=true`;
     }
   }
+  
+  return url;
+}
+
+function appendRangeFilters(url, filter) {
+  if (!filter.rangeFilters || filter.rangeFilters.length === 0) {
+    return url;
+  }
+  
+  for (const rangeFilter of filter.rangeFilters) {
+    url += `&min${rangeFilter.type}=${rangeFilter.min}&max${rangeFilter.type}=${rangeFilter.max}`;
+  }
+  
   return url;
 }
 
