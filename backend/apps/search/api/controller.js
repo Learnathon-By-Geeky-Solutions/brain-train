@@ -3,8 +3,7 @@ import { stripHtml } from 'string-strip-html';
 import { 
     getRecipeFieldsByTitle,
     getRecipeInfoById,
-    getRecipesByIngredients,
-    getRecipeBySourceId
+    getRecipesByIngredients
 } from '../db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { enrichRecipesWithFields,filterRecipes,generateShoppingList,fetchSaveFilterRecipes } from '../helper.js';
@@ -186,8 +185,7 @@ export const getSimilarRecipes = async (req, res) => {
         const data=await getRecipeInfoById(id,"_id sourceId");
         
         const recipesData = await spoonacularRequest(`/recipes/${data.sourceId}/similar`, { number });
-        // const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
-                //  Fetch additional fields in bulk using Spoonacular API
+
         const recipeIds = recipesData.map(recipe => recipe.id);
 
         const completeApiResults = await fetchSaveFilterRecipes(recipeIds, {});
