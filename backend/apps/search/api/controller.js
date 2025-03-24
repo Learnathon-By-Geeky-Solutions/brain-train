@@ -11,7 +11,8 @@ import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { 
     enrichRecipesWithFields,
     filterRecipes,
-    fetchSaveFilterRecipes
+    fetchSaveFilterRecipes,
+    generateShoppingList
 } from '../helper.js';
 
 import mongoose from 'mongoose';
