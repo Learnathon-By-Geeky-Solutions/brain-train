@@ -5,7 +5,8 @@ import {
     saveRecipeDetails,
     getRecipeInfoById,
     getSearchHistoryByUid,
-    createUserEntryInUserSearchHistory
+    createUserEntryInUserSearchHistory,
+    getRecipeFieldsByTitle
 } from '../db.js';
 import { findRecipesByIds } from '../../favourite/db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
@@ -385,3 +386,29 @@ const updateUserSearchHistory = (uid, recipeId) => {
             throw new Error("Failed to update search history");
         });
 }
+
+export const getShoppingList = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { requestedServing } = req.query;
+
+        if (!requestedServing || isNaN(requestedServing)) {
+        return res.status(400).json({ error: "Missing or invalid 'requestedServing' parameter." });
+    }
+
+        const data = await getRecipeInfoById(id);
+
+        if (!data) {
+        console.log("Recipe not found");
+        return res.status(404).json({ error: "Recipe not found." });
+    }
+
+        const shoppingList = generateShoppingList(data, Number(requestedServing) );
+        return res.status(200).json({ recipeId: id, servings: requestedServing, shoppingList });
+
+    } catch (error) {
+        console.error("Error generating shopping list:", error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
