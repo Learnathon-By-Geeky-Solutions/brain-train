@@ -41,7 +41,7 @@ export const findUserByEmail = async (email) => {
  * @returns {Object} The user object.
  */
 export const findUserByUsername = async (username) => {
-  return await User.findOne({ username });
+  return await User.findOne({ username: { $eq: username.toString() } }, null, { sanitizeFilter: true });
 }
 
 /**
