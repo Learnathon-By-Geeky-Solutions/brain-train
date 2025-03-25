@@ -214,7 +214,7 @@ export const getSimilarRecipes = async (req, res) => {
         const completeApiResults = await fetchSaveFilterRecipes(recipeIds, {});
         
 
-            // Return only selected fields
+        // Return only selected fields
         const filteredFields = completeApiResults.map(recipe => ({
             id: recipe.id,
             title: recipe.title,
@@ -298,17 +298,19 @@ export const getSearchesFromHistory = (req, res) => {
 
 const getUniqueRecentHistoryWithRecipeInfo = (history, n) => {
     const uniqueHistoryMap = new Map();
+    let count = 0; // Keeps track of the number of unique recipes
 
-    // Iterate from the beginning (most recent first due to unshift)
     for (const { recipeId, searchedAt } of history) {
         if (!uniqueHistoryMap.has(recipeId)) {
             uniqueHistoryMap.set(recipeId, { recipeId, searchedAt });
+            count++;
         }
+        if (count >= n) break;
     }
 
     // Get the n most recent unique searches
-    const recentUniqueSearches = Array.from(uniqueHistoryMap.values()).slice(0, n);
-
+    const recentUniqueSearches = Array.from(uniqueHistoryMap.values());
+    
     // Retrieve recipe details for the selected recipeIds
     const recipeIds = recentUniqueSearches.map(entry => entry.recipeId);
     return findRecipesByIds(recipeIds).then(recipes => {
