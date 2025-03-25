@@ -10,13 +10,14 @@ export const findRecipesByIds = async (recipeIds) => {
   try {
     const recipes = await Recipe.find(
       { _id: { $in: recipeIds } },
-      "_id title image likes"
+      "_id title image summary likes"
     );
     const formattedRecipes = recipes.map(recipe => ({
       id: recipe._id.toString(), // id
       title: recipe.title,
       image: recipe.image,
-      likes: recipe.likes
+      likes: recipe.likes,
+      summary: recipe.summary
     }));
     return formattedRecipes;
   } catch (error) {
