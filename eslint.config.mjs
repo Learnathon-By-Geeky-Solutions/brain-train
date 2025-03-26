@@ -7,7 +7,7 @@ import prettierConfig from "eslint-config-prettier";
 
 export default defineConfig([
   {
-    files: ["**/*.{js,mjs,cjs,jsx}"],
+    files: ["**/*.{js,mjs,cjs,jsx,html,css,scss}"],
     languageOptions: {
       globals: {
         ...globals.browser,
