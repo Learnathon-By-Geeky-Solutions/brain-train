@@ -27,10 +27,11 @@ export const searchRecipes = async (req, res) => {
         
         // Query db with params, fields and limit
         let dbResults = await  getRecipeFieldsByTitle(query, fieldsArray, number);
-        console.log("🔍 DB Results Before Filtering:", dbResults.length);
+        
+        console.log("🔍 DB Results length Before Filtering:", dbResults.length);
 
         //  Apply Filters to DB Results
-        dbResults = filterRecipes(dbResults, filters);
+        dbResults =await filterRecipes(dbResults, filters);
 
         console.log(" DB Results After Filtering:", dbResults.length);
         if (dbResults.length > 0) {
@@ -80,11 +81,12 @@ export const searchRecipesByIngredients = async (req, res) => {
 
         //  Fetch recipes from DB
         let dbResults = await getRecipesByIngredients(ingredients, fieldsArray, number, filters);
+        
 
         console.log("🔍 DB Results Before Filtering:", dbResults.length);
 
         //  Apply Filters to DB Results
-        dbResults = filterRecipes(dbResults, filters);
+        dbResults =await filterRecipes(dbResults, filters);
 
         console.log(" DB Results After Filtering:", dbResults.length);
 
