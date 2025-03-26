@@ -3,3 +3,4 @@
 .lh/*
 .vscode/*
 node_modules/
+.eslintcache
