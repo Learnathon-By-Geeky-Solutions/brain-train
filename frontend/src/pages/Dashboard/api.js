@@ -38,24 +38,58 @@ function handleSearchByTitle (searchData) {
   return url;
 }
 
-function handleFilters (url, searchData) {
+function handleFilters(url, searchData) {
+  if (!searchData.filters?.length) {
+    return url;
+  }
+
   for (const filter of searchData.filters) {
-    if(filter.cuisine){
-      url += `&cuisine=${filter.cuisine}`;
-    }
-    if(filter.diet && filter.diet.length > 0){
-      url += '&diet=';
-      for (const diet of filter.diet) {
-        url += `${diet},`;
-      }
-      url = url.slice(0, -1);
-    }
-    if(filter.rangeFilters && filter.rangeFilters.length > 0){
-      for (const rangeFilter of filter.rangeFilters) {
-        url += `&min${rangeFilter.type}=${rangeFilter.min}&max${rangeFilter.type}=${rangeFilter.max}`;
-      }
+    url = appendCuisineFilter(url, filter);
+    url = appendDietFilters(url, filter);
+    url = appendRangeFilters(url, filter);
+  }
+  
+  return url;
+}
+
+function appendCuisineFilter(url, filter) {
+  if (filter.cuisine) {
+    url += `&cuisine=${filter.cuisine}`;
+  }
+  return url;
+}
+
+function appendDietFilters(url, filter) {
+  if (!filter.diet || filter.diet.length === 0) {
+    return url;
+  }
+  
+  const dietMappings = {
+    "Vegetarian": "vegetarian",
+    "Vegan": "vegan",
+    "Gluten Free": "glutenFree",
+    "Dairy Free": "dairyFree"
+  };
+  
+  for (const diet of filter.diet) {
+    const paramName = dietMappings[diet];
+    if (paramName) {
+      url += `&${paramName}=true`;
     }
   }
+  
+  return url;
+}
+
+function appendRangeFilters(url, filter) {
+  if (!filter.rangeFilters || filter.rangeFilters.length === 0) {
+    return url;
+  }
+  
+  for (const rangeFilter of filter.rangeFilters) {
+    url += `&min${rangeFilter.type}=${rangeFilter.min}&max${rangeFilter.type}=${rangeFilter.max}`;
+  }
+  
   return url;
 }
 
@@ -66,8 +100,7 @@ const handleSearchByIngredients = (searchData) => {
         ingredients += field.name + ',';
     });
     ingredients = ingredients.slice(0, -1);
-    console.log('url from function '+`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`);
-    return `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`;
+    return handleFilters(`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`, searchData);
 }
 
 const fetchData = async (searchData) => {
@@ -79,6 +112,7 @@ const fetchData = async (searchData) => {
       console.log('url from fetchData '+url);
     } else if (searchData.type === "ingredients") {
       url = handleSearchByIngredients(searchData);
+      console.log('url from fetchData '+url);
     }
 
     try {

@@ -14,6 +14,7 @@ import {
   } from "@chakra-ui/react"
 
 import { useState } from "react";
+import PropTypes from 'prop-types';
 import { FaSliders } from 'react-icons/fa6';
 import { MdClose } from "react-icons/md";
 
@@ -28,6 +29,19 @@ import { MdClose } from "react-icons/md";
       rangeFilterTypes.map((type) => ({type: type, min: 0, max: 100}))
     );
     const [isRangeFiltersActive, setIsRangeFiltersActive] = useState([false, false, false, false]);
+    const [filtersApplied, setFiltersApplied] = useState(false);
+
+    function clearFiltersWithState(){
+      setCuisine("");
+      setDietFiltersToggled([false, false, false, false]);
+      setDietFilters([]);
+      setRangeFilters(
+        rangeFilterTypes.map((type) => ({type: type, min: 0, max: 100}))
+      );
+      setIsRangeFiltersActive([false, false, false, false]);
+      setFiltersApplied(false);
+      clearFilters();
+    }
 
     function toggleDietFilter(index,filter){
       const newDietFiltersToggled = [...dietFiltersToggled];
@@ -73,11 +87,15 @@ import { MdClose } from "react-icons/md";
           motionPreset="slide-in-bottom"
         >
           <Dialog.Trigger asChild>
-            <IconButton bgColor="var(--text-input)" borderRadius="3xl" padding="2" mt="6" alignSelf="center" variant="ghost">
-              <Icon>
-              <FaSliders />
+            <IconButton borderRadius="3xl" padding="2" 
+              variant="subtle" h="100%"
+              borderColor={filtersApplied ? "Highlight" : "none"}
+              borderWidth="3"
+            >
+              <Icon size="sm">
+              <FaSliders  />
               </Icon>
-              Advanced Filter
+              Filter
             </IconButton>
           </Dialog.Trigger>
           <Portal>
@@ -113,7 +131,7 @@ import { MdClose } from "react-icons/md";
                       Diet
                     </Text>
                     <Flex wrap="wrap" gap="3">
-                    {["Vegan", "Vegetarian", "Gluten Free", "Lacto Vegetarian", "Ketogenic"].map((diet,index) => (
+                    {["Vegan", "Vegetarian", "Gluten Free", "Dairy Free"].map((diet,index) => (
                         <Button 
                           variant="outline"
                           onClick={()=>{
@@ -125,6 +143,7 @@ import { MdClose } from "react-icons/md";
                           _hover={{
                             borderColor: "Highlight" 
                           }}
+                          key={diet}
                         >
                           {diet}
                         </Button>
@@ -134,7 +153,7 @@ import { MdClose } from "react-icons/md";
                   </div>
                   <Accordion.Root multiple display="flex" flexDirection="column">
                   {rangeFilterTypes.map((type,index) => (
-                    <Accordion.Item key={index} value={index}>
+                    <Accordion.Item key={type} value={index}>
                       <Accordion.ItemTrigger>
                         <Text fontSize="lg" fontWeight="semibold">
                           {type}
@@ -167,6 +186,7 @@ import { MdClose } from "react-icons/md";
                             onValueChange={(e)=>{
                               addRangeFilter(type,e.value[0],e.value[1]);
                             }}
+                            w="100%"
                           >
                           <Slider.Control>
                             <Slider.Track>
@@ -181,12 +201,13 @@ import { MdClose } from "react-icons/md";
                           </Slider.Control>
                          <Flex direction="row" justifyContent="space-between" mt="2">
                             {["Minimum", "Maximum"].map((label,index) => (
-                                <VStack w="1/6" gap="0">
+                                <VStack w="1/6" gap="0" p="0" key={label}>
                                   <Text fontSize="sm">
                                     {label}
                                   </Text>
+                                  <HStack p="0" gap="0">
                                   <Input
-                                    value={`${getRangeFilter(type)[index]}${(type === "Calories") ? " cal" : " g"}`}
+                                    value={(type === "Calories") ? (getRangeFilter(type)[index]*100) : getRangeFilter(type)[index]}
                                     onChange={(e)=>{
                                       const value = getRangeFilter(type);
                                       value[index] = e.target.value;
@@ -195,8 +216,12 @@ import { MdClose } from "react-icons/md";
                                     bgColor={"var(--text-input)"}
                                     borderRadius="3xl"
                                     color="var(--text)"
-                                    textAlign="center"
+                                    w="90%"
                                   />
+                                  <Text fontSize="sm">
+                                    {type === "Calories" ? "cal" : "g"}
+                                  </Text>
+                                </HStack>
                                 </VStack>
                               ))
                             }
@@ -215,7 +240,7 @@ import { MdClose } from "react-icons/md";
                     <Button 
                       variant="outline"
                       onClick={()=>{
-                        clearFilters();
+                        clearFiltersWithState();
                       }}
                     >
                       Clear
@@ -224,10 +249,15 @@ import { MdClose } from "react-icons/md";
                   <Button
                     onClick={()=>{
                       console.log(isRangeFiltersActive);
+                      setFiltersApplied(true);
                       let activeRangeFilters = [];
                       for (let i = 0; i < isRangeFiltersActive.length; i++) {
                         if(isRangeFiltersActive[i]){
-                          activeRangeFilters.push(rangeFilters[i]);
+                          if(rangeFilters[i].type === "Calories"){
+                            activeRangeFilters.push({type: rangeFilters[i].type, min: rangeFilters[i].min*100, max: rangeFilters[i].max*100});
+                          }else{
+                            activeRangeFilters.push(rangeFilters[i]);
+                          }
                         }
                       }
                       addFilter(
@@ -235,7 +265,7 @@ import { MdClose } from "react-icons/md";
                          {diet: dietFilters},
                          {rangeFilters: activeRangeFilters}
                         ]
-                        );
+                      );
                     }}
                   >
                     Apply
@@ -248,5 +278,9 @@ import { MdClose } from "react-icons/md";
       </HStack>
     )
   }
+FilterController.propTypes = {
+  addFilter: PropTypes.func.isRequired,
+  clearFilters: PropTypes.func.isRequired,
+};
 
 export default FilterController;
