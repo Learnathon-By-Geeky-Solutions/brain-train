@@ -124,11 +124,9 @@ export const filterRecipes = async (recipes, filters) => {
 
     const results = [];
 
-    console.log("recipes to be filtered",recipes);
 
     // return recipes.filter(r => {
     for (const r of recipes) {    
-        // console.log("r details",r);
         console.debug("Processing recipe:", r._id);
         const recipe= await ensureFullRecipe(r);
 
