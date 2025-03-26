@@ -116,11 +116,9 @@ export const filterRecipes = async (recipes, filters) => {
 
     const cuisineList = cuisine ? cuisine.split(",").map(c => c.trim().toLowerCase()) : [];
     const dietList = diet ? diet.split(",").map(d => d.trim().toLowerCase()) : [];
-    // const intoleranceList = intolerances ? intolerances.split(",").map(i => i.trim().toLowerCase()) : [];
 
     console.debug("Cuisine list:", cuisineList);
     console.debug("Diet list:", dietList);
-    // console.debug("Intolerance list:", intoleranceList);
 
     const results = [];
 
@@ -170,9 +168,7 @@ export const filterRecipes = async (recipes, filters) => {
         console.debug("Meets diet criteria:", meetsDietCriteria);
         console.log("recipes cuisines",recipe.cuisines);
 
-        // const meetsCuisineCriteria =
-        //     cuisineList.length === 0 ||
-        //     (recipe.cuisines && recipe.cuisines.some(c => cuisineList.includes(c.toLowerCase())));
+
         const meetsCuisineCriteria =
           cuisineList.length === 0 ||
           (recipe.cuisines && cuisineList.some(c => recipe.cuisines.map(rc => rc.toLowerCase()).includes(c)));
@@ -292,9 +288,14 @@ export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
     // 1. Get existing recipes from DB by sourceId
     const existingRecipes = await getRecipeBySourceId(recipeIds);
     const existingIdsSet = new Set(existingRecipes.map(r => String(r.sourceId)));
+    console.log("Existing Recipe Count:", existingRecipes.length);
+    console.log("Existing Recipe Count:", existingIdsSet);
+    console.log("Existing Recipe :", existingRecipes);
   
     // 2. Get only the missing recipe IDs
     const missingIds = recipeIds.filter(id => !existingIdsSet.has(String(id)));
+    console.log("Missing Recipe Count:", missingIds.length);
+    console.log("Missing Recipe Count:", missingIds);
   
     let newRecipes = [];
   
@@ -320,15 +321,18 @@ export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
     }
   
     // 4. Combine new + existing recipes
-    const allRecipes = [...existingRecipes, ...newRecipes];
+    const allRecipes = [...existingRecipes, ...newRecipes].map(recipe => ({
+        ...recipe,
+        id: recipe._id?.toString() || recipe.id // Ensure `id` is set
+    }));
+    
   
     // 5. Filter and return
     const filtered =await filterRecipes(allRecipes, filters);
     
-    
+    console.log("all recipes after filtration",allRecipes);
     console.log("all recipes count",allRecipes.length);
     console.log("✅ Filtered Results:", filtered.length);
   
     return filtered;
   };
-  
