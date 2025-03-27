@@ -166,6 +166,14 @@ const StickyHeader = ({
             >
               Pantry Match
             </Button>
+            <Button
+              onClick={() => {
+                navigate('/dashboard/mealPlan');
+              }
+            }
+            >
+              Meal Plan
+            </Button>
           </Flex>)}
 
           {/* Icon Buttons */}

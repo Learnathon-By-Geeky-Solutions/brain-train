@@ -11,6 +11,7 @@ import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardCont
 import fetchData, { getFavoriteRecipes } from './api';
 import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
 import ShoppingList from '@/components/RecipeDetails/ShoppingList';
+import MealPlanningCalendar from '@/components/MealPlanning/MealPlan';
 
 
 
@@ -127,7 +128,7 @@ export default function Dashboard() {
 
   return (
     <Flex direction="column" width="100%" height="100%" minHeight="100vh" 
-    className="dashboard" gap={2}
+    className="dashboard" gap={0}
     >
       <Header
         photoUrl={photoURL}
@@ -153,6 +154,7 @@ export default function Dashboard() {
         <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} perRow={4} numRows={5} />
       }
       <Routes>
+        <Route path="mealPlan" element={<MealPlanningCalendar/>} />
         <Route path="recipe/*" element={<RecipeDetails />} />
         <Route path="recipe/shoppingList" element={<ShoppingList />} />
       </Routes>
