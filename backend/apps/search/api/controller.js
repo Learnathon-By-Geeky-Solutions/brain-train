@@ -4,7 +4,8 @@ import {
     getRecipeInfoById,
     getSearchHistoryByUid,
     createUserEntryInUserSearchHistory,
-    getRecipeFieldsByTitle
+    getRecipeFieldsByTitle,
+    getRecipesByIngredients
 } from '../db.js';
 import { findRecipesByIds } from '../../favourite/db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
@@ -40,6 +41,8 @@ export const searchRecipes = async (req, res) => {
 
         //  Apply Filters to DB Results
         dbResults =await filterRecipes(dbResults, filters);
+
+        console.log(" DB Results After Filtering:", dbResults);
 
         console.log(" DB Results After Filtering:", dbResults.length);
         if (dbResults.length > 0) {
@@ -151,8 +154,11 @@ export const searchRecipesByNutrients = async (req, res) => {
 
 // Controller: Get Recipe Information
 export const getRecipeInformation = (req, res) => {
+
     const id = req.params.id.toString();
+    console.log("Information",id);
     if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("Invalid Recipe id");
         return res.status(400).json({ error: 'Invalid recipe' });
     }
 

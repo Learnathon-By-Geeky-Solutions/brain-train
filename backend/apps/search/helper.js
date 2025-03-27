@@ -197,7 +197,11 @@ export const filterRecipes = async (recipes, filters) => {
         // return result;
         if (result) results.push(recipe);
     }
-    return results;
+    const allRecipes = results.map(recipe => ({
+      ...recipe,
+      id: recipe._id?.toString() || recipe.id // Ensure `id` is set
+  }));
+    return allRecipes;
 };
 
 
