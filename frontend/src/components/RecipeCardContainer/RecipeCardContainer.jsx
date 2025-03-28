@@ -1,43 +1,39 @@
-import { Box, Flex } from '@chakra-ui/react';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import RecipeCard from '../RecipeCard/RecipeCard';
-import PropTypes from 'prop-types';
-import { Toaster, toaster } from '../ui/toaster';
-import removeFavoriteRecipe from './api';
+import { Box, Grid, GridItem } from "@chakra-ui/react";
+import { useLocation, useSearchParams } from "react-router-dom";
+import RecipeCard from "../RecipeCard/RecipeCard";
+import PropTypes from "prop-types";
+import { Toaster, toaster } from "../ui/toaster";
+import removeFavoriteRecipe from "./api";
 
-
-const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
+const RecipeCardContainer = ({ recipe_prop, perRow, numRows, removeCard }) => {
   const location = useLocation();
   const searchParams = useSearchParams()[0];
-  
 
   if (!recipe_prop || recipe_prop.length === 0) {
-    return (<div>No recipes found</div>);
+    return <div>No recipes found</div>;
   }
 
   let type = location.state?.type || searchParams.get("type");
 
   function toggleVisibility(index) {
     let toasterText = "Could not remove recipe from favourites";
-    let toasterType = "error"; 
+    let toasterType = "error";
     removeFavoriteRecipe(recipe_prop[index]).then((result) => {
-      if(result.status === 'success'){
+      if (result.status === "success") {
         toasterText = "Recipe removed from favourites";
         toasterType = "success";
       }
-      toaster.create(
-        {
-          title: toasterText,
-          type: toasterType,
-        }
-      );
+      toaster.create({
+        title: toasterText,
+        type: toasterType,
+      });
       setTimeout(() => {
         removeCard(index);
       }, 1000);
     });
   }
   // Maximum number of cards per row and rows to display
-  const cardsPerRow = perRow || 5;
+  const cardsPerRow = perRow || 4;
   const maxRows = numRows || 5;
   const maxCards = cardsPerRow * maxRows;
 
@@ -50,23 +46,30 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
       overflowY="auto"
       maxW="100%"
       p={2}
+      px={4}
       bg="none"
       css={{
         "&::-webkit-scrollbar": {
-          display: "none", 
+          display: "none",
         },
         "-ms-overflow-style": "none",
-        "scrollbar-width": "none", 
+        "scrollbar-width": "none",
       }}
     >
-      <Flex flexWrap={ numRows === 1 ? "nowrap" : "wrap" }
-      justify={ numRows === 1 ? "start" : "center" }
-      width={ numRows === 1 ? "max-content" : "auto" }
-      gap={4}>
-        {visibleRecipes.map((recipe, index) => (
-            <RecipeCard key={recipe.id} recipe={recipe} changeVisibility={()=>toggleVisibility(index)} type={type}/>
-        ))}
-      </Flex>
+      <Grid templateColumns={`repeat(${cardsPerRow}, 1fr)`} gap={4}>
+        {visibleRecipes.map((recipe, index) => {
+          // Only display items that fit within the grid dimensions
+          return (
+            <GridItem key={recipe.id}>
+              <RecipeCard
+                recipe={recipe}
+                changeVisibility={() => toggleVisibility(index)}
+                type={type}
+              />
+            </GridItem>
+          );
+        })}
+      </Grid>
       <Toaster />
     </Box>
   );

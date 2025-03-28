@@ -37,10 +37,13 @@ export const searchRecipes = async (req, res) => {
 
     // Query db with params, fields and limit
     let dbResults = await getRecipeFieldsByTitle(query, fieldsArray, number);
-    console.log("🔍 DB Results Before Filtering:", dbResults.length);
+
+    console.log("🔍 DB Results length Before Filtering:", dbResults.length);
 
     //  Apply Filters to DB Results
-    dbResults = filterRecipes(dbResults, filters);
+    dbResults = await filterRecipes(dbResults, filters);
+
+    console.log(" DB Results After Filtering:", dbResults);
 
     console.log(" DB Results After Filtering:", dbResults.length);
     if (dbResults.length > 0) {
@@ -104,7 +107,7 @@ export const searchRecipesByIngredients = async (req, res) => {
     console.log("🔍 DB Results Before Filtering:", dbResults.length);
 
     //  Apply Filters to DB Results
-    dbResults = filterRecipes(dbResults, filters);
+    dbResults = await filterRecipes(dbResults, filters);
 
     console.log(" DB Results After Filtering:", dbResults.length);
 
@@ -173,7 +176,9 @@ export const searchRecipesByNutrients = async (req, res) => {
 // Controller: Get Recipe Information
 export const getRecipeInformation = (req, res) => {
   const id = req.params.id.toString();
+  console.log("Information", id);
   if (!mongoose.Types.ObjectId.isValid(id)) {
+    console.log("Invalid Recipe id");
     return res.status(400).json({ error: "Invalid recipe" });
   }
 
@@ -231,8 +236,7 @@ export const getSimilarRecipes = async (req, res) => {
       `/recipes/${data.sourceId}/similar`,
       { number },
     );
-    // const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
-    //  Fetch additional fields in bulk using Spoonacular API
+
     const recipeIds = recipesData.map((recipe) => recipe.id);
 
     const completeApiResults = await fetchSaveFilterRecipes(recipeIds, {});
@@ -262,13 +266,40 @@ export const autoCompleteRecipes = async (req, res) => {
     if (!query) {
       return res.status(400).json({ error: "Query parameter is required." });
     }
+    // Step 1: Search from DB with regex (LIKE 'query%')
+    const dbResults = await getRecipeFieldsByTitle(
+      query,
+      ["_id", "title"],
+      number,
+      true,
+    ); // true = regex autocomplete mode
+    let suggestions = dbResults.map((recipe) => ({
+      id: recipe.id,
+      title: recipe.title,
+    }));
+    console.log("🔍 DB Suggestions:", suggestions);
+    // Step 2: If enough suggestions, return
+    if (suggestions.length >= number) {
+      return res.status(200).json(suggestions.slice(0, number));
+    }
 
-    const data = await spoonacularRequest("/recipes/autocomplete", {
+    const apiData = await spoonacularRequest("/recipes/autocomplete", {
       query,
       number,
     });
+    const apiIds = apiData.map((recipe) => recipe.id);
+    console.log("api ids", apiIds);
+    const seenTitles = new Set(suggestions.map((s) => s.title.toLowerCase()));
+    const newApiRecipes = apiData.filter(
+      (recipe) => !seenTitles.has(recipe.title.toLowerCase()),
+    );
 
-    return res.status(200).json(data);
+    const savedApiResults = await fetchSaveFilterRecipes(apiIds, {});
+    console.log("api results saved", savedApiResults.length);
+
+    suggestions = suggestions.concat(newApiRecipes).slice(0, number);
+
+    return res.status(200).json(suggestions);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
