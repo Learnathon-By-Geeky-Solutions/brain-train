@@ -14,24 +14,22 @@ if (!admin.apps.length) {
  * @throws {Error} Throws an error if the token is invalid, missing, or verification fails.
  */
 export const decodeFirebaseIdToken = async (authorizationHeader) => {
-  if (!authorizationHeader?.startsWith('Bearer ')) {
+  if (!authorizationHeader?.startsWith("Bearer ")) {
     throw new Error("No token provided or token format is incorrect");
   }
 
-  const idToken = authorizationHeader.split(' ')[1];
+  const idToken = authorizationHeader.split(" ")[1];
 
   if (!idToken) {
     throw new Error("Token is missing after 'Bearer '");
   }
-  console.log("Decoding Firebase token:", idToken);
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     const { email, name, picture, uid } = decodedToken;
-    return { email, name, picture, uid };  // Return all required info
+    return { email, name, picture, uid }; // Return all required info
   } catch (error) {
     console.error("Error verifying Firebase token:", error.message);
     throw new Error("Invalid or expired authentication token");
   }
 };
-

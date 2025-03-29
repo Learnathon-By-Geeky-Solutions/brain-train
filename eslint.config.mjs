@@ -12,6 +12,8 @@ export default defineConfig([
     languageOptions: {
       globals: {
         ...globals.browser,
+        ...globals.node,
+        global: "readonly",
         process: "readonly"
       },
       parserOptions: {
@@ -22,13 +24,14 @@ export default defineConfig([
     },
   },
   {
-    files: ["**/*.test.js", "**/*.spec.js", "**/jest.setup.js", "**/test/**/*.js"],
+    files: ["**/*.test.js", "**/*.spec.js", "**/testSetup.js", "**/jest.setup.js", "**/test/**/*.js"],
     plugins: {
       jest: pluginJest
     },
     languageOptions: {
       globals: {
-        ...pluginJest.environments.globals.globals
+        ...pluginJest.environments.globals.globals,
+        global: "writable"
       }
     },
     rules: {
@@ -61,5 +64,5 @@ export default defineConfig([
         version: "detect",
       }
     },
-  },
+  }
 ]);
