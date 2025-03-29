@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "test": "set NODE_OPTIONS=--experimental-vm-modules && jest"
+    "test": "set NODE_OPTIONS=--experimental-vm-modules --no-warnings && jest"
   },
   "keywords": [],
   "author": "",
@@ -33,7 +33,7 @@
   },
   "jest": {
     "transform": {},
-    "setupFilesAfterEnv": ["<rootDir>\\config\\testSetup.js"], 
+    "setupFilesAfterEnv": ["<rootDir>\\config\\jest.setup.js"], 
     "testEnvironment": "node",
     "collectCoverage": true,
     "coverageDirectory": "coverage",
