@@ -21,6 +21,7 @@ export const favouriteRecipesFinder = (req, res) => {
       });
     })
     .catch((error) => {
+      console.error("Get favourite recipes error:", error.message);
       return res.status(500).json({ error: "Internal server error" });
     });
 };
