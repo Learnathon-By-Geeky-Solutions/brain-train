@@ -1,0 +1,47 @@
+name: CI Pipeline
+
+# Trigger the workflow on push or pull_request events to the main branch
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  # Define the test job
+  test:
+    runs-on: ubuntu-latest  # Choose the OS to run the CI pipeline
+
+    steps:
+      # Step 1: Check out the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'  # Your Node.js version (can be set to a specific version like 20.2.0)
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run tests (including security tests, if defined)
+      - name: Run tests
+        run: npm run test:security  # This will run the 'test:security' script from your package.json
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      # Step 5: Run unit tests
+      - name: Run unit tests with Jest
+        run: npm test  # This will run the 'test' script from your package.json
+
+      # Step 6: Run lint-staged to fix linting issues
+      - name: Run lint-staged
+        run: npx lint-staged
+
