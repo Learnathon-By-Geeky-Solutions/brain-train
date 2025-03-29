@@ -22,7 +22,7 @@ export default defineConfig([
     },
   },
   {
-    files: ["**/*.test.js", "**/*.spec.js"],
+    files: ["**/*.test.js", "**/*.spec.js", "**/jest.setup.js", "**/test/**/*.js"],
     plugins: {
       jest: pluginJest
     },

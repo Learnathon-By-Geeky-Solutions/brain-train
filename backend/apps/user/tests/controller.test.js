@@ -1,15 +1,7 @@
 import request from "supertest";
 import app from "../../../app.js";
-import { jest } from "@jest/globals";
-import mongoose from "mongoose";
-
-jest.mock("../../../libraries/models/users.js");
 
 describe("POST /user/checkUsername", () => {
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
-
   it("should return 400 for invalid username format", async () => {
     const response = await request(app)
       .post("/user/checkUsername")

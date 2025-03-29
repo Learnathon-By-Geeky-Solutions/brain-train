@@ -33,6 +33,7 @@
   },
   "jest": {
     "transform": {},
+    "setupFilesAfterEnv": ["<rootDir>\\config\\testSetup.js"], 
     "testEnvironment": "node",
     "collectCoverage": true,
     "coverageDirectory": "coverage",
