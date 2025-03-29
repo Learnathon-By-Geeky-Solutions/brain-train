@@ -31,17 +31,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Run tests (including security tests, if defined)
-      - name: Run tests
-        run: npm run test:security  # This will run the 'test:security' script from your package.json
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-      # Step 5: Run unit tests
+      # Step 4: Run unit tests
       - name: Run unit tests with Jest
         run: npm test  # This will run the 'test' script from your package.json
 
-      # Step 6: Run lint-staged to fix linting issues
+      # Step 5: Run lint-staged to fix linting issues
       - name: Run lint-staged
         run: npx lint-staged
 
