@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   VStack,
@@ -12,18 +12,44 @@ import {
   IconButton,
   Collapsible,
   List,
+  Menu,
+  Portal,
 } from '@chakra-ui/react';
 
 import { useColorModeValue } from '../ui/color-mode';
 import { LuCalendar, LuClipboard, LuCog, LuMenu, LuPlus, LuRepeat, LuSearch, LuStar } from 'react-icons/lu';
 import { MdDateRange } from 'react-icons/md';
+import { deletePlan, getMyPlans } from './api';
+import { formatDate, formatMealPlanDateRange, getCurrentDateFormatted } from './dateFormatter';
+import { useSearchParams } from 'react-router-dom';
 
 
+const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) => {
 
-const MealPlanningSidebar = () => {
+  const [planList, setPlanList] = useState(getMyPlans());
+  const [isActiveIdx,setIsActiveIdx] = useState(0);
+
+  useEffect(() => {
+    console.log('reload in useEffect in mealplan sidenavbar');
+    if(!reload) return;
+    setPlanList(getMyPlans());
+  }, [reload]);
+
+
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const hoverBg = useColorModeValue('gray.100', 'gray.700');
+  const activeBg = useColorModeValue('green.50', 'green.900');
+  const activeColor = useColorModeValue('green.700', 'green.200');
+
+  function getPlanString(plan){
+    if(plan.time === 'week'){
+      return formatMealPlanDateRange(plan.startDate);
+    }
+    else{
+      return formatDate(plan.startDate);
+    }
+  }
 
   return (
     <Box
@@ -47,22 +73,42 @@ const MealPlanningSidebar = () => {
 
       {/* Main Navigation */}
       <VStack spacing={2} align="stretch" mb={6}>
-        <NavItem isActive>
-            <Flex gap={1}>
-                <LuCalendar />
-                Weekly Calendar
-            </Flex>
+        <NavItem
+          idx={0}
+          isActiveIdx={isActiveIdx}
+          setIsActiveIdx={setIsActiveIdx}
+          clickFn={() => {
+            setSearchParams({});
+            setStartDate(getCurrentDateFormatted());
+          }}
+        >
+          <Flex gap={1}>
+              <LuCalendar />
+              Weekly Calendar
+          </Flex>
         </NavItem>
-        <NavItem>
-            <Flex gap={1}>
-              <MdDateRange />
-              Today's Plan
-            </Flex>
+        <NavItem
+          idx={1}
+          isActiveIdx={isActiveIdx}
+          setIsActiveIdx={setIsActiveIdx}
+          clickFn={() => {
+            setSearchParams({ time: 'day', date: getCurrentDateFormatted() });
+          }
+        }
+        >
+          <Flex gap={1}>
+            <MdDateRange />
+            Today's Plan
+          </Flex>
         </NavItem>
         
         <Collapsible.Root>
           <Collapsible.Trigger w="100%">
-          <NavItem>
+          <NavItem
+            idx={2}
+            isActiveIdx={isActiveIdx}
+            setIsActiveIdx={setIsActiveIdx}
+          >
           <Flex gap={1}>
             <LuClipboard />
             My Plans
@@ -70,22 +116,47 @@ const MealPlanningSidebar = () => {
           </NavItem>
           </Collapsible.Trigger>
           <Collapsible.Content>
-          <List.Root py="2" px="5" variant="plain" fontSize="sm" gap={2}>
-            <List.Item _hover={{ bg: hoverBg, cursor: 'pointer' }}>March 31st - April 6th</List.Item>
-            <List.Item _hover={{ bg: hoverBg, cursor: 'pointer' }}>March 31st - April 6th</List.Item>
+          <List.Root py="2" px="5" variant="plain" fontSize="sm" gap={2} alignItems="start">
+            {planList.map((plan,index) => (
+              <Menu.Root>
+                <Menu.ContextTrigger>
+                  <List.Item
+                     bg={isActiveIdx === 20 + index ? activeBg : 'transparent'}
+                     color={isActiveIdx === 20 + index ? activeColor : undefined}
+                    _hover={{ bg: hoverBg, cursor: 'pointer' }}
+                    onClick={() => {
+                      if(plan.time === 'week'){
+                        // setStartDate(plan.startDate);
+                        setSearchParams({});
+                      }
+                      else{
+                        setSearchParams({ time: 'day', date: plan.startDate });
+                      }
+                      setIsActiveIdx(20+index);
+                    }}
+                  >
+                    {getPlanString(plan)}
+                  </List.Item>
+                </Menu.ContextTrigger>
+              <Portal>
+                <Menu.Positioner>
+                  <Menu.Content>
+                    <Menu.Item
+                      onClick={() => {
+                        deletePlan(plan.id);
+                        setReload(true);
+                      }}
+                    >
+                      Delete
+                    </Menu.Item>
+                  </Menu.Content>
+                </Menu.Positioner>
+              </Portal>
+              </Menu.Root>
+            ))}
           </List.Root>
           </Collapsible.Content>
         </Collapsible.Root>
-        
-        <NavItem >
-          <Flex gap={1}>
-            <LuStar />
-            Favorites
-            <Badge colorScheme="green" borderRadius="full">
-                24
-            </Badge>
-          </Flex>
-        </NavItem>
       </VStack>
 
       <Separator mb={6} />
@@ -130,7 +201,7 @@ const MealPlanningSidebar = () => {
 };
 
 // Navigation Item component
-const NavItem = ({ icon, children, isActive }) => {
+const NavItem = ({ children, clickFn, idx, isActiveIdx, setIsActiveIdx }) => {
   const activeBg = useColorModeValue('green.50', 'green.900');
   const activeColor = useColorModeValue('green.700', 'green.200');
   const hoverBg = useColorModeValue('gray.100', 'gray.700');
@@ -140,15 +211,21 @@ const NavItem = ({ icon, children, isActive }) => {
       variant="ghost"
       justifyContent="flex-start"
       alignItems="center"
-      fontWeight={isActive ? "semibold" : "normal"}
+      fontWeight={isActiveIdx === idx ? "semibold" : "normal"}
       py={3}
       px={4}
       borderRadius="md"
       role="group"
-      bg={isActive ? activeBg : 'transparent'}
-      color={isActive ? activeColor : undefined}
-      _hover={{ bg: isActive ? activeBg : hoverBg }}
+      bg={isActiveIdx === idx ? activeBg : 'transparent'}
+      color={isActiveIdx === idx ? activeColor : undefined}
+      _hover={{ bg: isActiveIdx === idx ? activeBg : hoverBg }}
       w="100%"
+      onClick={()=>{
+        if(clickFn)
+          clickFn();
+        if(idx != 2)
+          setIsActiveIdx(idx);
+      }}
     >
       <Flex justify="space-between" w="100%" align="center">
         <Text>{children}</Text>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Grid,
@@ -13,133 +13,60 @@ import {
 import { LuArrowLeft, LuArrowRight } from 'react-icons/lu';
 import { useColorModeValue } from '../ui/color-mode';
 import MealPlanningSidebar from './SideNavBar';
-import { formatMealPlanDateRange, getDaysOfWeek, getOtherWeekStartDate } from './dateFormatter';
+import { formatMealPlanDateRange, getCurrentDateFormatted, getDaysOfWeek, getOffsetDate, getOtherWeekStartDate } from './dateFormatter';
+import { getMealData } from './api';
+import PlanController from './AddMealPlan';
+import { useSearchParams } from 'react-router-dom';
+import DailyMealPlan from './DailyMealPlan';
 
-
-// Sample meal data structure
-const sampleMealData = {
-  startDate: '2025-03-31',
-  monday: {
-    meals:[
-        { title: '', image: '' },
-        { title: '', image: '' },
-        { title: '', image: '' }
-    ],
-    nutrients:{
-        "calories": 2003.28,
-        "protein": 123.23,
-        "fat": 147.31,
-        "carbohydrates": 49.37
-    }
-  },
-  tuesday: {
-    meals:[
-        { title: 'Chicken Caesar Salad', image: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' },
-        { 
-            title: 'Coffee & Banana with Peanut Butter', 
-            image: 'https://images.unsplash.com/photo-1592663527359-cf6642f54cff?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' 
-        },
-        { title: '', image: '' }
-    ],
-    nutrients:{
-        "calories": 2003.28,
-        "protein": 123.23,
-        "fat": 147.31,
-        "carbohydrates": 49.37
-    }
-  },
-  wednesday: {
-    meals:[
-        { title: '', image: '' },
-        { title: '', image: '' },
-        { title: '', image: '' }
-    ],
-    nutrients:{
-        "calories": 2003.28,
-        "protein": 123.23,
-        "fat": 147.31,
-        "carbohydrates": 49.37
-    }
-  },
-  thursday: {
-    meals:[
-        { title: '', image: '' },
-        { title: '', image: '' },
-        { title: '', image: '' }
-    ],
-    nutrients:{
-        "calories": 2003.28,
-        "protein": 123.23,
-        "fat": 147.31,
-        "carbohydrates": 49.37
-    }
-  },
-  friday: {
-    meals:[
-        { title: '', image: '' },
-        { title: '', image: '' },
-        { title: '', image: '' }
-    ],
-    nutrients:{
-        "calories": 2003.28,
-        "protein": 123.23,
-        "fat": 147.31,
-        "carbohydrates": 49.37
-    }
-  },
-  saturday: {
-    meals:[
-        { title: '', image: '' },
-        { title: '', image: '' },
-        { title: '', image: '' }
-    ],
-    nutrients:{
-        "calories": 2003.28,
-        "protein": 123.23,
-        "fat": 147.31,
-        "carbohydrates": 49.37
-    }
-  },
-  sunday: {
-    meals:[
-        { title: '', image: '' },
-        { title: '', image: '' },
-        { title: '', image: '' }
-    ],
-    nutrients:{
-        "calories": 2003.28,
-        "protein": 123.23,
-        "fat": 147.31,
-        "carbohydrates": 49.37
-    }
-  },
-
-
-};
 
 const MealPlanningCalendar = () => {
-  const [startDate, setStartDate] = useState(sampleMealData.startDate);
-  const days = getDaysOfWeek(startDate);
+  const [startDate, setStartDate] = useState(getCurrentDateFormatted());
+  const [reload, setReload] = useState(false);
+  const [days, setDays] = useState(getDaysOfWeek(startDate));
+  const [mealData, setMealData] = useState(getMealData(startDate, 'week'));
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    console.log('reload in useEffect in mealplan');
+    if(!reload) return;
+    setDays(getDaysOfWeek(startDate));
+    setMealData(getMealData(startDate, 'week'));
+    setReload(false);
+  }, [reload]);
+
+
+  const initialStartDate = getCurrentDateFormatted();
   const mealTimes = ['Morning', 'Noon', 'Evening'];
   
   const borderColor = useColorModeValue('gray.200', 'gray.600');
   const bgColor = useColorModeValue('white', 'gray.800');
   const highlightColor = useColorModeValue('orange.400', 'orange.500');
 
+  function changeStartDate(date){
+    setStartDate(date);
+    setReload(true);
+  }
+
   function setPreviousWeek(){
     const prevStartDate = getOtherWeekStartDate(startDate,false);
-    setStartDate(prevStartDate);
+    changeStartDate(prevStartDate);
   }
 
   function setNextWeek(){
     const nxtStartDate = getOtherWeekStartDate(startDate,true);
-    setStartDate(nxtStartDate);
+    changeStartDate(nxtStartDate);
   }
   
   return (
     <Flex>
-      <MealPlanningSidebar />
-      <Box maxW="100%" overflowX="auto" pt={0}>
+      <MealPlanningSidebar 
+        setStartDate={changeStartDate}
+        reload={reload}
+        setSearchParams={setSearchParams}
+        setReload={setReload}
+      />
+      {!searchParams.get("time") ? (<Box maxW="100%" overflowX="auto" pt={0}>
         {/* Calendar Header with Navigation */}
         <Flex 
           justify="space-between" 
@@ -206,9 +133,9 @@ const MealPlanningCalendar = () => {
               </Box>
               
               {/* Meal Cells for Each Day */}
-              {days.map((day) => {
+              {days.map((day,dayIndex) => {
                 const dayKey = day.toLowerCase();
-                const meal = sampleMealData[dayKey]?.meals?.[index] || { title: '', image: '' };
+                const meal = mealData[dayKey]?.meals?.[index] || { title: '', image: '' };
                 
                 return (
                   <Box 
@@ -249,6 +176,18 @@ const MealPlanningCalendar = () => {
                         </Box>
                       </Box>
                     )}
+
+                    {
+                      !meal.title && (
+                        <Flex h="100%" placeContent="center">
+                          <PlanController  
+                            currentDate={getOffsetDate(startDate,dayIndex)}
+                            startDate={initialStartDate}
+                            setReload={setReload}
+                          />
+                        </Flex>
+                      )
+                    }
                   </Box>
                 );
               })}
@@ -278,7 +217,7 @@ const MealPlanningCalendar = () => {
           {/* Nutrition Summary for Each Day */}
           {days.map((day) => {
             const dayKey = day.toLowerCase();
-            const nutrition = sampleMealData[dayKey]?.nutrients 
+            const nutrition = mealData[dayKey]?.nutrients 
             
             return (
               <VStack 
@@ -298,7 +237,10 @@ const MealPlanningCalendar = () => {
             );
           })}
         </Grid>
-      </Box>
+      </Box>)
+      :
+      (<DailyMealPlan searchParams={searchParams}/>) 
+      }
     </Flex>
   );
 };

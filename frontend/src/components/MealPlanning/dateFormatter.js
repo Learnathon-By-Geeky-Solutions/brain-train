@@ -34,6 +34,7 @@ function formatMealPlanDateRange(startDateStr) {
    * @returns {string} Formatted date string
    */
   function formatDate(date) {
+    date = date instanceof Date ? date : new Date(date);
     const months = [
       'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'
@@ -88,8 +89,30 @@ function getDaysOfWeek(startDate) {
     
     return daysArray;
   }
+
+  function getCurrentDateFormatted() {
+    const today = new Date();
+    console.log(today.toISOString().split('T')[0]);
+    return today.toISOString().split('T')[0];
+  }
+
+  function getOffsetDate(dateStr, offset) {
+    const date = new Date(dateStr);
+    date.setDate(date.getDate() + offset);
+    return date.toISOString().split('T')[0];
+  }
+
+  function getDay(dateStr) {
+    const date = new Date(dateStr);
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[date.getDay()];
+  }
   
 
   export { formatMealPlanDateRange };
   export { getOtherWeekStartDate };
   export { getDaysOfWeek };
+  export { getCurrentDateFormatted };
+  export { getOffsetDate };
+  export { formatDate };
+  export { getDay };
