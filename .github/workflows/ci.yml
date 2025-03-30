@@ -12,7 +12,7 @@ on:
       - develop
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest  # OS to run the CI pipeline
 
     steps:
@@ -35,6 +35,11 @@ jobs:
 
       - name: Run unit tests with Jest
         run: npm test
+      
+      - name: Run Snyk security test
+        run: snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Run lint-staged
         run: npx lint-staged
