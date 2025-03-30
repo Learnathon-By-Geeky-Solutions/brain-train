@@ -1,6 +1,6 @@
 import { spoonacularRequest } from '../../libraries/services/spoonacular.js';
 import { stripHtml } from 'string-strip-html'; 
-import{ saveRecipeDetails,getRecipeBySourceId } from './db.js';
+import{ saveRecipeDetails,getRecipeBySourceId, getRecipeInfoById } from './db.js';
 
 
 /**
@@ -88,7 +88,7 @@ export const fetchRecipeDetailsBulk = async (recipeIds) => {
     };
 
 
-export const filterRecipes = (recipes, filters) => {
+export const filterRecipes = async (recipes, filters) => {
     if (!recipes || recipes.length === 0) {
         console.debug("No recipes provided or empty list.");
         return [];
@@ -99,14 +99,14 @@ export const filterRecipes = (recipes, filters) => {
     const {
         minCarbs, maxCarbs, minProtein, maxProtein,
         minFat, maxFat, minCalories, maxCalories,
-        diet, cuisine, intolerances,
+        diet, cuisine,
         vegetarian, vegan, glutenFree, dairyFree
     } = filters;
 
     // Check if all optional fields are empty
     const allFieldsEmpty = !minCarbs && !maxCarbs && !minProtein && !maxProtein &&
         !minFat && !maxFat && !minCalories && !maxCalories &&
-        !diet && !cuisine && !intolerances &&
+        !diet && !cuisine  &&
         !vegetarian && !vegan && !glutenFree && !dairyFree;
 
     if (allFieldsEmpty) {
@@ -116,14 +116,17 @@ export const filterRecipes = (recipes, filters) => {
 
     const cuisineList = cuisine ? cuisine.split(",").map(c => c.trim().toLowerCase()) : [];
     const dietList = diet ? diet.split(",").map(d => d.trim().toLowerCase()) : [];
-    const intoleranceList = intolerances ? intolerances.split(",").map(i => i.trim().toLowerCase()) : [];
 
     console.debug("Cuisine list:", cuisineList);
     console.debug("Diet list:", dietList);
-    console.debug("Intolerance list:", intoleranceList);
 
-    return recipes.filter(recipe => {
-        console.debug("Processing recipe:", recipe.id);
+    const results = [];
+
+
+    // return recipes.filter(r => {
+    for (const r of recipes) {    
+        console.debug("Processing recipe:", r._id);
+        const recipe= await ensureFullRecipe(r);
 
         const nutrients = recipe.nutrition?.nutrients || [];
 
@@ -163,20 +166,17 @@ export const filterRecipes = (recipes, filters) => {
             dietList.length === 0 || (recipe.diets && recipe.diets.some(d => dietList.includes(d.toLowerCase())));
 
         console.debug("Meets diet criteria:", meetsDietCriteria);
+        console.log("recipes cuisines",recipe.cuisines);
+
 
         const meetsCuisineCriteria =
-            cuisineList.length === 0 ||
-            (recipe.cuisines && recipe.cuisines.some(c => cuisineList.includes(c.toLowerCase())));
+          cuisineList.length === 0 ||
+          (recipe.cuisines && cuisineList.some(c => recipe.cuisines.map(rc => rc.toLowerCase()).includes(c)));
+
 
         console.debug("Meets cuisine criteria:", meetsCuisineCriteria);
 
-        const meetsIntoleranceCriteria =
-            intoleranceList.length === 0 ||
-            !recipe.extendedIngredients?.some(ingredient =>
-                intoleranceList.includes(ingredient.name?.toLowerCase() || "")
-            );
 
-        console.debug("Meets intolerance criteria:", meetsIntoleranceCriteria);
         
         const vegetarianExpected = convertToBoolean(vegetarian);
         const veganExpected = convertToBoolean(vegan);
@@ -191,11 +191,17 @@ export const filterRecipes = (recipes, filters) => {
 
         console.debug("Meets boolean criteria:", meetsBooleanCriteria);
 
-        const result = meetsNutrientCriteria && meetsDietCriteria && meetsCuisineCriteria && meetsIntoleranceCriteria && meetsBooleanCriteria;
-        console.debug("Final decision for recipe", recipe.id, ":", result);
+        const result = meetsNutrientCriteria && meetsDietCriteria && meetsCuisineCriteria  && meetsBooleanCriteria;
+        console.debug("Final decision for recipe", recipe._id, ":", result);
 
-        return result;
-    });
+        // return result;
+        if (result) results.push(recipe);
+    }
+    const allRecipes = results.map(recipe => ({
+      ...recipe,
+      id: recipe._id?.toString() || recipe.id // Ensure `id` is set
+  }));
+    return allRecipes;
 };
 
 
@@ -233,42 +239,104 @@ export const generateShoppingList = (recipe, requestedServings) => {
     return Object.values(merged);
   };
   
-  
+
+/**
+ * Ensure the recipe object includes all fields needed by filterRecipes.
+ * If fields are missing, fetch the full recipe from the database.
+ *
+ * @param {Object} recipe - Partial or full recipe object
+ * @returns {Object} - Complete recipe object
+ */
+export const ensureFullRecipe = async (recipe) => {
+  // Check if all required fields exist (regardless of being empty or null)
+  const hasAllRequiredFields =
+    "nutrition" in recipe &&
+    "cuisines" in recipe &&
+    "vegetarian" in recipe &&
+    "vegan" in recipe &&
+    "glutenFree" in recipe &&
+    "dairyFree" in recipe;
+
+  if (hasAllRequiredFields) {
+    console.log("Recipe already has all required fields.");
+    return recipe; // Already good to go
+  }
+  console.log("Recipe is missing some required fields. Fetching full details...");
+
+  // Try to load by MongoDB _id or fallback id
+  if (recipe._id || recipe.id) {
+    const full = await getRecipeInfoById(recipe._id || recipe.id);
+    if (full) return full;
+  }
+
+  // Fallback to lookup by sourceId (e.g., Spoonacular ID)
+  if (recipe.sourceId) {
+    const matches = await getRecipeBySourceId([recipe.sourceId]);
+    if (matches.length > 0) return matches[0];
+  }
+
+  console.warn(" Could not find full recipe in DB for:", recipe._id || recipe.sourceId || recipe.id);
+  return recipe; // Return partial recipe as a last resort
+};
+
 
   
-/**
- * Fetch recipes by IDs from Spoonacular, enrich them, save to DB, and filter.
+
+  /**
+ * Fetch recipes by IDs from Spoonacular, enrich them if missing, save to DB, and return all filtered.
  * @param {Array} recipeIds - Array of recipe IDs from Spoonacular
  * @param {Object} filters - Optional filters to apply
- * @returns {Array} - Filtered enriched recipes
+ * @returns {Array} - Filtered enriched recipes (existing + new)
  */
 export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
-
-
-                    //  Filter out already existing sourceIds
-    const existingRecipes = await getRecipeBySourceId(recipeIds,"sourceId");
-    
-    // Coerce to string for consistent comparison
-    
-    
+    // 1. Get existing recipes from DB by sourceId
+    const existingRecipes = await getRecipeBySourceId(recipeIds);
     const existingIdsSet = new Set(existingRecipes.map(r => String(r.sourceId)));
-    const missingIds = recipeIds.filter(id => !existingIdsSet.has(String(id)));  
-    const detailedRecipes = await fetchRecipeDetailsBulk(missingIds);
-    console.log("📊 new Recipe Count:", detailedRecipes.length);
+    console.log("Existing Recipe Count:", existingRecipes.length);
+    console.log("Existing Recipe Count:", existingIdsSet);
+    console.log("Existing Recipe :", existingRecipes);
   
-    await Promise.all(
-      detailedRecipes.map(async (recipe) => {
-        const savedRecipe = await saveRecipeDetails(recipe);
-        recipe.id = savedRecipe._id.toString();
-        recipe.likes=savedRecipe.likes;
-        return recipe;
-      })
-    );
-
+    // 2. Get only the missing recipe IDs
+    const missingIds = recipeIds.filter(id => !existingIdsSet.has(String(id)));
+    console.log("Missing Recipe Count:", missingIds.length);
+    console.log("Missing Recipe Count:", missingIds);
   
-    const filtered = filterRecipes(detailedRecipes, filters);
+    let newRecipes = [];
+  
+    // 3. If any missing, fetch from API and save to DB
+    if (missingIds.length > 0) {
+      try {
+        const detailedRecipes = await fetchRecipeDetailsBulk(missingIds);
+        console.log("📊 New Recipe Count:", detailedRecipes.length);
+  
+        await Promise.all(
+          detailedRecipes.map(async (recipe) => {
+            const savedRecipe = await saveRecipeDetails(recipe);
+            recipe.id = savedRecipe._id.toString();
+            recipe.likes = savedRecipe.likes;
+            return recipe;
+          })
+        );
+  
+        newRecipes = detailedRecipes;
+      } catch (err) {
+        console.error("❌ Error fetching/saving recipes:", err);
+      }
+    }
+  
+    // 4. Combine new + existing recipes
+    const allRecipes = [...existingRecipes, ...newRecipes].map(recipe => ({
+        ...recipe,
+        id: recipe._id?.toString() || recipe.id // Ensure `id` is set
+    }));
+    
+  
+    // 5. Filter and return
+    const filtered =await filterRecipes(allRecipes, filters);
+    
+    console.log("all recipes after filtration",allRecipes);
+    console.log("all recipes count",allRecipes.length);
     console.log("✅ Filtered Results:", filtered.length);
   
     return filtered;
   };
-  

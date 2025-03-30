@@ -1,13 +1,22 @@
 import { spoonacularRequest } from '../../../libraries/services/spoonacular.js';
 import { stripHtml } from 'string-strip-html'; 
-import { 
-    getRecipeFieldsByTitle,
+import {
     getRecipeInfoById,
+    getSearchHistoryByUid,
+    createUserEntryInUserSearchHistory,
+    getRecipeFieldsByTitle,
     getRecipesByIngredients
 } from '../db.js';
+import { findRecipesByIds } from '../../favourite/db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
-import { enrichRecipesWithFields,filterRecipes,generateShoppingList,fetchSaveFilterRecipes } from '../helper.js';
+import { 
+    enrichRecipesWithFields,
+    filterRecipes,
+    fetchSaveFilterRecipes,
+    generateShoppingList
+} from '../helper.js';
 
+import mongoose from 'mongoose';
 
 /**
  * Search recipes by title
@@ -27,10 +36,13 @@ export const searchRecipes = async (req, res) => {
         
         // Query db with params, fields and limit
         let dbResults = await  getRecipeFieldsByTitle(query, fieldsArray, number);
-        console.log("🔍 DB Results Before Filtering:", dbResults.length);
+        
+        console.log("🔍 DB Results length Before Filtering:", dbResults.length);
 
         //  Apply Filters to DB Results
-        dbResults = filterRecipes(dbResults, filters);
+        dbResults =await filterRecipes(dbResults, filters);
+
+        console.log(" DB Results After Filtering:", dbResults);
 
         console.log(" DB Results After Filtering:", dbResults.length);
         if (dbResults.length > 0) {
@@ -80,11 +92,12 @@ export const searchRecipesByIngredients = async (req, res) => {
 
         //  Fetch recipes from DB
         let dbResults = await getRecipesByIngredients(ingredients, fieldsArray, number, filters);
+        
 
         console.log("🔍 DB Results Before Filtering:", dbResults.length);
 
         //  Apply Filters to DB Results
-        dbResults = filterRecipes(dbResults, filters);
+        dbResults =await filterRecipes(dbResults, filters);
 
         console.log(" DB Results After Filtering:", dbResults.length);
 
@@ -140,21 +153,38 @@ export const searchRecipesByNutrients = async (req, res) => {
 };
 
 // Controller: Get Recipe Information
-export const getRecipeInformation = async (req, res) => {
-    try {
-        const { id } = req.params;
-        console.log("information", id);
-        const data = await getRecipeInfoById(id);
+export const getRecipeInformation = (req, res) => {
 
-        if (!data) {
-            console.log("Recipe not found");
-            return res.status(404).json({ error: "Recipe not found." });
-        }
-        
-        return res.status(200).json(data);
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
+    const id = req.params.id.toString();
+    console.log("Information",id);
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        console.log("Invalid Recipe id");
+        return res.status(400).json({ error: 'Invalid recipe' });
     }
+
+    getRecipeInfoById(id)
+        .then(data => {
+            if (!data) {
+                return res.status(404).json({ error: "Recipe not found." });
+            }
+
+            decodeFirebaseIdToken(req.headers.authorization)
+                .then(({ uid }) => {
+                    updateUserSearchHistory(uid, id)
+                        .then(() => {
+                            return res.status(200).json(data);
+                        })
+                        .catch(error => {
+                            return res.status(500).json({ error: error.message });
+                        });
+                })
+                .catch(error => {
+                    return res.status(500).json({ error: error.message });
+                });
+        })
+        .catch(error => {
+            return res.status(500).json({ error: error.message });
+        });
 };
 
 // Controller: Get Recipe Summary
@@ -270,28 +300,98 @@ export const autoCompleteIngredients = async (req, res) => {
     }
 };
 
+export const getSearchesFromHistory = (req, res) => {
+    let { n } = req.params;
+    n = Number(n.toString());
+    if (!Number.isInteger(n) || n <= 0) {
+        return res.status(400).json({ error: "Invalid history query." });
+    }
+
+    decodeFirebaseIdToken(req.headers.authorization)
+        .then(({ uid }) => {
+            return getSearchHistoryByUid(uid);
+        })
+        .then(searchHistory => {
+            if (!searchHistory || searchHistory.history.length === 0) {
+                return res.status(200).json({ results: [] });
+            }
+
+            // Extract n unique recent history and fetch recipe details
+            return getUniqueRecentHistoryWithRecipeInfo(searchHistory.history, n)
+                .then(responseHistory => {
+                    return res.status(200).json({ results: responseHistory });
+                });
+        })
+        .catch(error => {
+            return res.status(500).json({ error: error.message });
+        });
+};
+
+const getUniqueRecentHistoryWithRecipeInfo = (history, n) => {
+    const uniqueHistoryMap = new Map();
+
+    // Iterate from the beginning (most recent first due to unshift)
+    for (const { recipeId, searchedAt } of history) {
+        if (!uniqueHistoryMap.has(recipeId)) {
+            uniqueHistoryMap.set(recipeId, { recipeId, searchedAt });
+        }
+    }
+
+    // Get the n most recent unique searches
+    const recentUniqueSearches = Array.from(uniqueHistoryMap.values()).slice(0, n);
+
+    // Retrieve recipe details for the selected recipeIds
+    const recipeIds = recentUniqueSearches.map(entry => entry.recipeId);
+    return findRecipesByIds(recipeIds).then(recipes => {
+        const recipeMap = new Map(recipes.map(recipe => [recipe.id, recipe]));
+        
+        return recentUniqueSearches.map(({ recipeId, searchedAt }) => ({
+            searchedAt,
+            ...(recipeMap.get(recipeId) || { id: recipeId, title: null, image: null, likes: 0 })
+        }));
+    });
+};
+
+const updateUserSearchHistory = (uid, recipeId) => {
+    return getSearchHistoryByUid(uid)
+        .then(searchHistory => {
+            if (searchHistory && searchHistory.history) {
+                searchHistory.history.unshift({
+                    recipeId: recipeId,
+                    searchedAt: Date.now()
+                });
+                searchHistory.save();
+            } else {
+                createUserEntryInUserSearchHistory(uid, recipeId);
+            }
+        })
+        .catch(() => {
+            throw new Error("Failed to update search history");
+        });
+}
+
 export const getShoppingList = async (req, res) => {
     try {
-      const { id } = req.params;
-      const { requestedServing } = req.query;
-  
-      if (!requestedServing || isNaN(requestedServing)) {
+        const { id } = req.params;
+        const { requestedServing } = req.query;
+
+        if (!requestedServing || isNaN(requestedServing)) {
         return res.status(400).json({ error: "Missing or invalid 'requestedServing' parameter." });
-      }
-  
-      
-      const data = await getRecipeInfoById(id);
-  
-      if (!data) {
+    }
+
+        const data = await getRecipeInfoById(id);
+
+        if (!data) {
         console.log("Recipe not found");
         return res.status(404).json({ error: "Recipe not found." });
-      }
-      
-      const shoppingList = generateShoppingList(data, Number(requestedServing) );
-      return res.status(200).json({ recipeId: id, servings: requestedServing, shoppingList });
-  
-    } catch (error) {
-      console.error("Error generating shopping list:", error);
-      return res.status(500).json({ error: error.message });
     }
-  };
+
+        const shoppingList = generateShoppingList(data, Number(requestedServing) );
+        return res.status(200).json({ recipeId: id, servings: requestedServing, shoppingList });
+
+    } catch (error) {
+        console.error("Error generating shopping list:", error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+

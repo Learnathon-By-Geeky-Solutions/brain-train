@@ -1,11 +1,11 @@
 import Recipe from "../../libraries/models/recipes.js";
+import UserSearchHistory from "../../libraries/models/userSearchHistory.js"
 
 export const getRecipeFieldsByTitle = async (title, fields, number,isAutoComplete=false) => {
   const conditions = {};
 
   if (title) {
-    // conditions.title = { $regex: title, $options: "i" }; // Case-insensitive partial match
-    // conditions.title=isAutoComplete? { $regex: `^${title}`, $options: "i" } : { $regex: title, $options: "i" };
+  
     conditions.title = isAutoComplete?
      { $regex: new RegExp(`\\b${title}`, "i") }
   : { $regex: title, $options: "i" };
@@ -14,7 +14,7 @@ export const getRecipeFieldsByTitle = async (title, fields, number,isAutoComplet
 
   const recipes = await Recipe.find(conditions)
     .select(fields.join(" "))
-    .limit(number)
+    .limit(number*3)
     .lean();
 
   // Rename _id to id in the result
@@ -147,20 +147,37 @@ export const saveRecipeDetails = async (details) => {
   
 };
 
-export const getRecipeBySourceId = async (sourceIds = [],fields="") => {
-  const results = await Recipe.find(
-    { sourceId: { $in: sourceIds } }
-  )
-    .select(fields || "sourceId") // Default to just sourceId if none provided
-    .lean();
 
-  return results;
+
+export const getRecipeBySourceId = async (sourceIds = [], fields = null) => {
+  return await Recipe.find({ sourceId: { $in: sourceIds } })
+    .select(fields)
+    .lean();
 };
 
 
-export const getRecipeInfoById = async (id, fields = "") => {
+export const getRecipeInfoById = async (id, fields = null) => {
   return await Recipe.findById(id)
-    .select(fields || "")
+    .select(fields)
     .lean();
 };
 
+export const getSearchHistoryByUid = async (uid) => {
+  try {
+    return await UserSearchHistory.findOne({ firebaseUid: uid });
+  } catch (error) {
+    console.error('Find user search history error:', error.message);
+    return null;
+  }
+};
+
+export const createUserEntryInUserSearchHistory = async (uid, recipeId) => {
+  const userSearchHistory = new UserSearchHistory({
+    firebaseUid: uid,
+    history: [{
+      recipeId: recipeId,
+      searchedAt: Date.now()
+    }]
+  });
+  await userSearchHistory.save();
+};

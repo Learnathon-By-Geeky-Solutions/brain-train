@@ -9,7 +9,8 @@ import {
     getShoppingList,
     
     autoCompleteIngredients,
-    autoCompleteRecipes
+    autoCompleteRecipes,
+    getSearchesFromHistory
 } from './controller.js';
 
 const router = express.Router();
@@ -26,5 +27,7 @@ router.get('/recipes/:id/shoppingList', getShoppingList);
 // Autocomplete endpoints
 router.get('/title/autocomplete', autoCompleteRecipes);
 router.get('/ingredients/autocomplete', autoCompleteIngredients);
+
+router.get('/history/:n', getSearchesFromHistory);
 
 export default router;
