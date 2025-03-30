@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   VStack,
-  HStack,
   Flex,
   Heading,
   IconButton,

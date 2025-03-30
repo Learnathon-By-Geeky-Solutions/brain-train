@@ -3,13 +3,9 @@ import {
   Box,
   VStack,
   Heading,
-  Button,
-  Text,
   Flex,
   Avatar,
-  Badge,
   Separator,
-  IconButton,
   Collapsible,
   List,
   Menu,
@@ -21,7 +17,8 @@ import { LuCalendar, LuClipboard, LuCog, LuMenu, LuPlus, LuRepeat, LuSearch, LuS
 import { MdDateRange } from 'react-icons/md';
 import { deletePlan, getMyPlans } from './api';
 import { formatDate, formatMealPlanDateRange, getCurrentDateFormatted } from './dateFormatter';
-import { useSearchParams } from 'react-router-dom';
+import NavItem from './NavItem';
+
 
 
 const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) => {
@@ -69,7 +66,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
         <Heading size="md" ml={3}>Meal Planner</Heading>
       </Flex>
 
-      <Separator mb={6} />
+      <Separator mb={3} />
 
       {/* Main Navigation */}
       <VStack spacing={2} align="stretch" mb={6}>
@@ -158,105 +155,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
           </Collapsible.Content>
         </Collapsible.Root>
       </VStack>
-
-      <Separator mb={6} />
-
-      {/* Recipe Collections */}
-      <Box mb={6}>
-        <Heading size="xs" textTransform="uppercase" mb={4} color="gray.500">
-          Recipe Collections
-        </Heading>
-        <VStack spacing={2} align="stretch">
-          <CollectionItem name="Breakfast Ideas" count={18} />
-          <CollectionItem name="Quick Lunches" count={23} />
-          <CollectionItem name="Family Dinners" count={42} />
-          <CollectionItem name="Healthy Snacks" count={15} />
-          <Button  
-            variant="ghost" 
-            justifyContent="flex-start" 
-            size="sm"
-            color="gray.500"
-          >
-            {/* <AddIcon /> */}
-            Add Collection
-          </Button>
-        </VStack>
-      </Box>
-
-      <Separator mb={6} />
-
-      {/* Actions */}
-      <VStack spacing={3} align="stretch">
-        <IconButton variant="outline">
-           <LuPlus />
-          Add New Recipe
-        </IconButton>
-        <IconButton variant="outline">
-            <LuCog />
-          Settings
-        </IconButton>
-      </VStack>
     </Box>
-  );
-};
-
-// Navigation Item component
-const NavItem = ({ children, clickFn, idx, isActiveIdx, setIsActiveIdx }) => {
-  const activeBg = useColorModeValue('green.50', 'green.900');
-  const activeColor = useColorModeValue('green.700', 'green.200');
-  const hoverBg = useColorModeValue('gray.100', 'gray.700');
-
-  return (
-    <Button
-      variant="ghost"
-      justifyContent="flex-start"
-      alignItems="center"
-      fontWeight={isActiveIdx === idx ? "semibold" : "normal"}
-      py={3}
-      px={4}
-      borderRadius="md"
-      role="group"
-      bg={isActiveIdx === idx ? activeBg : 'transparent'}
-      color={isActiveIdx === idx ? activeColor : undefined}
-      _hover={{ bg: isActiveIdx === idx ? activeBg : hoverBg }}
-      w="100%"
-      onClick={()=>{
-        if(clickFn)
-          clickFn();
-        if(idx != 2)
-          setIsActiveIdx(idx);
-      }}
-    >
-      <Flex justify="space-between" w="100%" align="center">
-        <Text>{children}</Text>
-      </Flex>
-    </Button>
-  );
-};
-
-// Collection Item component
-const CollectionItem = ({ name, count }) => {
-  const hoverBg = useColorModeValue('gray.100', 'gray.700');
-  
-  return (
-    <Button
-      variant="ghost"
-      justifyContent="flex-start"
-      py={2}
-      px={4}
-      borderRadius="md"
-      role="group"
-      _hover={{ bg: hoverBg }}
-      w="100%"
-      size="sm"
-    >
-      <Flex justify="space-between" w="100%" align="center" gap={1}>
-        <Text>{name}</Text>
-        <Badge colorScheme="gray" borderRadius="full">
-          {count}
-        </Badge>
-      </Flex>
-    </Button>
   );
 };
 
