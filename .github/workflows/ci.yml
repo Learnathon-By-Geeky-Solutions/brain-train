@@ -12,22 +12,18 @@ on:
       - develop
 
 jobs:
-  # Define the test job
   test:
-    runs-on: ubuntu-latest  # Choose the OS to run the CI pipeline
+    runs-on: ubuntu-latest  # OS to run the CI pipeline
 
     steps:
-      # Step 1: Check out the code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
 
-      # Step 3: Install dependencies
       - name: Root dependencies
         run: npm install
 
@@ -37,10 +33,25 @@ jobs:
       - name: Frontend dependencies
         run: cd frontend && npm install
 
-      # Step 4: Run unit tests
       - name: Run unit tests with Jest
         run: npm test
 
-      # Step 5: Run lint-staged to fix linting issues
       - name: Run lint-staged
         run: npx lint-staged
+
+  sonarcloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: .  # Change if your project is not in root
+          args: >
+            -Dsonar.projectKey=your-project-key
+            -Dsonar.organization=your-org
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
