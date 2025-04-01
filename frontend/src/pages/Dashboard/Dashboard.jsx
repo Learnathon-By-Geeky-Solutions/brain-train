@@ -50,21 +50,6 @@ export default function Dashboard() {
     };
   }, [navigate,searchParams]);
 
-  useEffect(() => {
-    const handlePopState = () => {
-      // Clear search params when back button is pressed
-      if (location.pathname === '/dashboard' || location.pathname === '/dashboard/'){
-        setSearchParams({});
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-    
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
-
   const setupAuthStateListener = () => {
     return new Promise((resolve) => {
       unsubscribe = onAuthStateChanged(auth, (currentUser) => {
