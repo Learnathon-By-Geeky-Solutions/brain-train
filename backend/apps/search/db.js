@@ -1,16 +1,20 @@
 import Recipe from "../../libraries/models/recipes.js";
 import UserSearchHistory from "../../libraries/models/userSearchHistory.js"
 
-export const getRecipeFieldsByTitle = async (title, fields, number) => {
+export const getRecipeFieldsByTitle = async (title, fields, number,isAutoComplete=false) => {
   const conditions = {};
 
   if (title) {
-    conditions.title = { $regex: title, $options: "i" }; // Case-insensitive partial match
+  
+    conditions.title = isAutoComplete?
+     { $regex: new RegExp(`\\b${title}`, "i") }
+  : { $regex: title, $options: "i" };
+
   }
 
   const recipes = await Recipe.find(conditions)
     .select(fields.join(" "))
-    .limit(number)
+    .limit(number*3)
     .lean();
 
   // Rename _id to id in the result
@@ -142,9 +146,18 @@ export const saveRecipeDetails = async (details) => {
   
 };
 
-export const getRecipeInfoById = async (id, fields = "") => {
+
+
+export const getRecipeBySourceId = async (sourceIds = [], fields = null) => {
+  return await Recipe.find({ sourceId: { $in: sourceIds } })
+    .select(fields)
+    .lean();
+};
+
+
+export const getRecipeInfoById = async (id, fields = null) => {
   return await Recipe.findById(id)
-    .select(fields || "")
+    .select(fields)
     .lean();
 };
 
