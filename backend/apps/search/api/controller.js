@@ -349,7 +349,7 @@ const getUniqueRecentHistoryWithRecipeInfo = (history, n) => {
         
         return recentUniqueSearches.map(({ recipeId, searchedAt }) => ({
             searchedAt,
-            ...(recipeMap.get(recipeId) || { id: recipeId, title: null, image: null, likes: 0 })
+            ...(recipeMap.get(recipeId) || { id: recipeId, title: null, image: null, likes: 0, summary: null })
         }));
     });
 };
