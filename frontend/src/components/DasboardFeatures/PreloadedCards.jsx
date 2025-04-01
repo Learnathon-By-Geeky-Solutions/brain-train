@@ -3,9 +3,9 @@ import { Flex, Text } from '@chakra-ui/react';
 import RecipeCardContainer from '../RecipeCardContainer/RecipeCardContainer';
 import { getRecentRecipes, getRecommendedRecipes } from './api';
 import { useEffect, useState } from 'react';
+import ExploreCuisine from './ExploreCuisine';
 
 const PreloadedCards = ({txt,cards}) => {
-
     const [newCards, setNewCards] = useState(cards);
     useEffect(() => {
         let fn;
@@ -26,13 +26,18 @@ const PreloadedCards = ({txt,cards}) => {
     ,[]);
     
     return (
+        
         <Flex direction="column" width="100%" height="100%" p="4" px="2">
             <Text fontSize="2xl" fontWeight="medium" marginBottom={2} p={2} px="4">
                 {txt}
             </Text>
-            <RecipeCardContainer recipe_prop={newCards} perRow={10} numRows={1} />
-        </Flex>
-    )
+            { txt!=="Explore a cuisine" ? 
+            (<RecipeCardContainer recipe_prop={newCards} perRow={10} numRows={1} />)
+            : 
+            (<ExploreCuisine />)
+            }
+        </Flex> 
+    );
 }
 PreloadedCards.propTypes = {
     txt: PropTypes.string.isRequired,
