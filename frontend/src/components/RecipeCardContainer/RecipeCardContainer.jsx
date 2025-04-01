@@ -4,11 +4,43 @@ import RecipeCard from '../RecipeCard/RecipeCard';
 import PropTypes from 'prop-types';
 import { Toaster, toaster } from '../ui/toaster';
 import removeFavoriteRecipe from './api';
+import { useEffect, useState } from 'react';
 
 
 const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
   const location = useLocation();
   const searchParams = useSearchParams()[0];
+  const [cardsPerRow, setCardsPerRow] = useState(5);
+  const [maxRows, setMaxRows] = useState(6);
+  
+  useEffect(() => {
+    function handleResize() {
+      // For example, change layout based on window width
+      if (window.innerWidth < 600) {
+        setCardsPerRow(2); // Mobile: 2 card per row
+        setMaxRows(15);    // But show more rows
+      } else if (window.innerWidth < 960) {
+        setCardsPerRow(3); // Tablet: 2 cards per row
+        setMaxRows(10);
+      } else if (window.innerWidth < 1440) {
+        setCardsPerRow(5); // Desktop: 4 cards per row
+        setMaxRows(6);
+      }
+      else {
+        setCardsPerRow(6); // Desktop: 4 cards per row
+        setMaxRows(6);
+      }
+    }
+    
+    // Set initial values
+    handleResize();
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
 
   if (!recipe_prop || recipe_prop.length === 0) {
@@ -36,9 +68,7 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
       }, 1000);
     });
   }
-  // Maximum number of cards per row and rows to display
-  const cardsPerRow = perRow || 4;
-  const maxRows = numRows || 5;
+  
   const maxCards = cardsPerRow * maxRows;
 
   // Slice the recipes array to show only the maximum number of cards
@@ -50,7 +80,7 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
       overflowY="auto"
       maxW="100%"
       p={2}
-      px={4}
+      // px={4}
       bg="none"
       css={{
         "&::-webkit-scrollbar": {
@@ -68,7 +98,7 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
         {visibleRecipes.map((recipe, index) => {
           // Only display items that fit within the grid dimensions
           return (
-            <GridItem key={recipe.id}>
+            <GridItem key={recipe.id} w="fit-content">
               <RecipeCard recipe={recipe} changeVisibility={()=>toggleVisibility(index)} type={type}/>
             </GridItem>
           );
