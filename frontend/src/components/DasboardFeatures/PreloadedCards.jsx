@@ -1,21 +1,27 @@
 import PropTypes from 'prop-types';
 import { Flex, Text } from '@chakra-ui/react';
 import RecipeCardContainer from '../RecipeCardContainer/RecipeCardContainer';
-import { getRecentRecipes } from './api';
+import { getRecentRecipes, getRecommendedRecipes } from './api';
 import { useEffect, useState } from 'react';
 
 const PreloadedCards = ({txt,cards}) => {
-    
+
     const [newCards, setNewCards] = useState(cards);
     useEffect(() => {
+        let fn;
         if( txt === "Recently Searched" ){
-            getRecentRecipes(5).then((data) => {
-                if(data.status != "error")
-                    setNewCards(data.results);
-                else
-                    console.log(data.msg);
-            });
+            fn = getRecentRecipes;
         }
+        else if( txt === "Recommended for You" ){
+            fn = getRecommendedRecipes;
+        }
+
+        fn?.(5).then((data) => {
+            if(data.status != "error")
+                setNewCards(data.results);
+            else
+                console.log(data.msg);
+        });
     }
     ,[]);
     
