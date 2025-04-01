@@ -89,6 +89,5 @@ const Recipe = mongoose.model("Recipe", recipeSchema);
 export default Recipe;
 
 export const findRecipeById = async (recipeId) => {
-  return await Recipe.findOne({ _id: recipeId });
+  return await Recipe.findOne({ _id: { $eq: recipeId.toString() } }, null, { sanitizeFilter: true });
 };
-
