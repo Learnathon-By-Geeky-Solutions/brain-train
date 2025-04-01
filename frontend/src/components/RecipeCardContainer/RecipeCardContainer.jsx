@@ -7,7 +7,7 @@ import removeFavoriteRecipe from './api';
 import { useEffect, useState } from 'react';
 
 
-const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
+const RecipeCardContainer = ({recipe_prop,removeCard}) => {
   const location = useLocation();
   const searchParams = useSearchParams()[0];
   const [cardsPerRow, setCardsPerRow] = useState(5);
@@ -110,8 +110,6 @@ const RecipeCardContainer = ({recipe_prop,perRow,numRows,removeCard}) => {
 };
 RecipeCardContainer.propTypes = {
   recipe_prop: PropTypes.array,
-  perRow: PropTypes.number,
-  numRows: PropTypes.number,
   removeCard: PropTypes.func,
 };
 

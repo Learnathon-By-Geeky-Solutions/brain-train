@@ -151,7 +151,7 @@ export default function Dashboard() {
       }
       { 
         searchParams.get("type") && pageLocation === 'dashboard' &&
-        <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} perRow={4} numRows={5} />
+        <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} />
       }
       <Routes>
         <Route path="mealPlan" element={<MealPlanningCalendar/>} />

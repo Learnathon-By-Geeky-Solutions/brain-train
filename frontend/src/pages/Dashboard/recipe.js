@@ -34,90 +34,91 @@ const recipes = [
     title: "Beef Stroganoff",
     summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
   },
-  {
-    id: 6,
-    image: "https://img.spoonacular.com/recipes/662089-312x231.jpg",
-    likes: 29,
-    title: "Mediterranean Salad",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 7,
-    image: "https://img.spoonacular.com/recipes/665486-312x231.jpg",
-    likes: 64,
-    title: "Pan-Seared Salmon",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 8,
-    image: "https://img.spoonacular.com/recipes/655418-312x231.jpg",
-    likes: 45,
-    title: "Avocado Toast",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 9,
-    image: "https://img.spoonacular.com/recipes/656592-312x231.jpg",
-    likes: 33,
-    title: "Teriyaki Chicken Bowl",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 10,
-    image: "https://img.spoonacular.com/recipes/649991-312x231.jpg",
-    likes: 50,
-    title: "Chocolate Lava Cake",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 11,
-    image: "https://img.spoonacular.com/recipes/649986-312x231.jpg",
-    likes: 20,
-    title: "Caesar Salad",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 12,
-    image: "https://img.spoonacular.com/recipes/648733-312x231.jpg",
-    likes: 72,
-    title: "Homemade Tacos",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 13,
-    image: "https://img.spoonacular.com/recipes/648435-312x231.jpg",
-    likes: 15,
-    title: "Mushroom Risotto",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 14,
-    image: "https://img.spoonacular.com/recipes/648213-312x231.jpg",
-    likes: 40,
-    title: "Grilled Cheese Sandwich",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 15,
-    image: "https://img.spoonacular.com/recipes/647760-312x231.jpg",
-    likes: 61,
-    title: "Pancakes with Syrup",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 16,
-    image: "https://img.spoonacular.com/recipes/647717-312x231.jpg",
-    likes: 53,
-    title: "Shrimp Fried Rice",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  },
-  {
-    id: 17,
-    image: "https://img.spoonacular.com/recipes/647426-312x231.jpg",
-    likes: 19,
-    title: "Quinoa Salad",
-    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
-  }
 ];
 
 export default recipes;
+
+// {
+//   id: 7,
+//   image: "https://img.spoonacular.com/recipes/665486-312x231.jpg",
+//   likes: 64,
+//   title: "Pan-Seared Salmon",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
+// {
+//   id: 8,
+//   image: "https://img.spoonacular.com/recipes/655418-312x231.jpg",
+//   likes: 45,
+//   title: "Avocado Toast",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
+// {
+//   id: 9,
+//   image: "https://img.spoonacular.com/recipes/656592-312x231.jpg",
+//   likes: 33,
+//   title: "Teriyaki Chicken Bowl",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
+// {
+//   id: 10,
+//   image: "https://img.spoonacular.com/recipes/649991-312x231.jpg",
+//   likes: 50,
+//   title: "Chocolate Lava Cake",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
+// {
+//   id: 11,
+//   image: "https://img.spoonacular.com/recipes/649986-312x231.jpg",
+//   likes: 20,
+//   title: "Caesar Salad",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
+// {
+//   id: 12,
+//   image: "https://img.spoonacular.com/recipes/648733-312x231.jpg",
+//   likes: 72,
+//   title: "Homemade Tacos",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
+// {
+//   id: 13,
+//   image: "https://img.spoonacular.com/recipes/648435-312x231.jpg",
+//   likes: 15,
+//   title: "Mushroom Risotto",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
+// {
+//   id: 14,
+//   image: "https://img.spoonacular.com/recipes/648213-312x231.jpg",
+//   likes: 40,
+//   title: "Grilled Cheese Sandwich",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
+// {
+//   id: 15,
+//   image: "https://img.spoonacular.com/recipes/647760-312x231.jpg",
+//   likes: 61,
+//   title: "Pancakes with Syrup",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
+// {
+//   id: 16,
+//   image: "https://img.spoonacular.com/recipes/647717-312x231.jpg",
+//   likes: 53,
+//   title: "Shrimp Fried Rice",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
+// {
+//   id: 17,
+//   image: "https://img.spoonacular.com/recipes/647426-312x231.jpg",
+//   likes: 19,
+//   title: "Quinoa Salad",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// }
+// {
+//   id: 6,
+//   image: "https://img.spoonacular.com/recipes/662089-312x231.jpg",
+//   likes: 29,
+//   title: "Mediterranean Salad",
+//   summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ac"
+// },
