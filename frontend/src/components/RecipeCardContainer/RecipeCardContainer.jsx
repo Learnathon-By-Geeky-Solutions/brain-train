@@ -1,10 +1,11 @@
-import { Box, For, Grid, GridItem, HStack, Skeleton, VStack } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Skeleton, Flex, Image, Heading } from '@chakra-ui/react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import RecipeCard from '../RecipeCard/RecipeCard';
 import PropTypes from 'prop-types';
 import { Toaster, toaster } from '../ui/toaster';
 import removeFavoriteRecipe from './api';
 import { useEffect, useState } from 'react';
+import zero_results from '../../assets/zero_results.png';
 
 
 
@@ -44,10 +45,6 @@ const RecipeCardContainer = ({recipe_prop,removeCard}) => {
   }, []);
   
 
-  // if (!recipe_prop || recipe_prop.length === 0) {
-  //   <Skeleton height="100%" width="100%" />;
-  // }
-
   let type = location.state?.type || searchParams.get("type");
 
   function toggleVisibility(index) {
@@ -81,7 +78,6 @@ const RecipeCardContainer = ({recipe_prop,removeCard}) => {
       overflowY="auto"
       maxW="100%"
       p={2}
-      // px={4}
       bg="none"
       css={{
         "&::-webkit-scrollbar": {
@@ -104,11 +100,25 @@ const RecipeCardContainer = ({recipe_prop,removeCard}) => {
           :
           visibleRecipes.map((recipe, index) => {
             // Only display items that fit within the grid dimensions
-            return (
-              <GridItem key={recipe.id} w="fit-content">
-                <RecipeCard recipe={recipe} changeVisibility={()=>toggleVisibility(index)} type={type}/>
-              </GridItem>
-            );
+            return recipe.id !== -1 ? 
+            (<GridItem key={recipe.id} w="fit-content">
+              <RecipeCard recipe={recipe} changeVisibility={()=>toggleVisibility(index)} type={type}/>
+            </GridItem>)
+            :
+            (<Flex w="100vw" h="lg" alignItems="center" justifyContent="center" direction="column">
+              <Image
+                src={zero_results} alt="No results found" 
+                w="initial" h="initial"
+              />
+              <Heading
+                size="xl"
+                color="gray.500"
+                textAlign="center"
+                mt={4}
+              >
+                No Recipes Found
+              </Heading>
+            </Flex>);
           })
         }
       </Grid>

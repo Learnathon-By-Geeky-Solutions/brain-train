@@ -139,6 +139,7 @@ const fetchData = async (searchData) => {
     if (response.ok)
     return data.results; 
     console.error("Failed to fetch recipes. Error code:", response.status);
+    return [{id:-1}];
       
     } catch (error) {
       console.error("Error fetching data:", error.message);
