@@ -64,16 +64,21 @@ export default function Dashboard() {
   };
 
 
-  function loadCards( data ) {
-
+  function loadCards( data, clearCards = false) {
     const type = searchParams.get("type");
-    console.log("Type: ", type);
+
+    if(clearCards){
+      setCardData([]);
+      return;
+    }
+    
     if(!data && !type)
     return;
 
     if(data){
       console.log("setting search params");
       console.log(data);
+      setCardData([]);
       setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)) });
       return;
     }

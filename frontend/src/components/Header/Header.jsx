@@ -74,6 +74,7 @@ const StickyHeader = ({
 
   const showFavouriteRecipes= () => {
     console.log("Fetching favourite recipes...");
+    showResults(null, true);
     if( location.pathname !== "/dashboard" && location.pathname !== "/dashboard/") {
       console.log("Navigating to dashboard");
       navigate({

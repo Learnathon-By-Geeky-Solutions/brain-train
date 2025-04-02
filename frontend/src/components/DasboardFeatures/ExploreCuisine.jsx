@@ -32,8 +32,7 @@ const ExploreCuisine = ({showResults}) => {
     <Flex
     overflowX="auto"
     gap={spacing}
-    px={2}
-    py={4}
+    p={4}
     css={{
         "&::-webkit-scrollbar": {
             display: "none", 

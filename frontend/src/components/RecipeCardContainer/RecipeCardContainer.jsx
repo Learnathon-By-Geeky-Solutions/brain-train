@@ -78,6 +78,7 @@ const RecipeCardContainer = ({recipe_prop,removeCard}) => {
       overflowY="auto"
       maxW="100%"
       p={2}
+      m={2}
       bg="none"
       css={{
         "&::-webkit-scrollbar": {
