@@ -301,7 +301,8 @@ export const autoCompleteIngredients = async (req, res) => {
 };
 
 export const getSearchesFromHistory = (req, res) => {
-    if(!numericValidator(req.params.n)) {
+    let { n } = req.params;
+    if(!numericValidator(n)) {
         return res.status(400).json({ error: "Invalid history query." });
     }
 
