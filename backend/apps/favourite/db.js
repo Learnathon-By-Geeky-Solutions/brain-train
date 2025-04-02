@@ -1,5 +1,5 @@
-import UserFavourites from '../../libraries/models/userFavourites.js';
-import Recipe from '../../libraries/models/recipes.js';
+import UserFavourites from "../../libraries/models/userFavourites.js";
+import Recipe from "../../libraries/models/recipes.js";
 
 /**
  * Find recipes by their ids.
@@ -10,20 +10,21 @@ export const findRecipesByIds = async (recipeIds) => {
   try {
     const recipes = await Recipe.find(
       { _id: { $in: recipeIds } },
-      "_id title image likes"
+      "_id title image summary likes",
     );
-    const formattedRecipes = recipes.map(recipe => ({
+    const formattedRecipes = recipes.map((recipe) => ({
       id: recipe._id.toString(), // id
       title: recipe.title,
       image: recipe.image,
-      likes: recipe.likes
+      likes: recipe.likes,
+      summary: recipe.summary,
     }));
     return formattedRecipes;
   } catch (error) {
-    console.error('Find recipes by ids error:', error.message);
+    console.error("Find recipes by ids error:", error.message);
     return [];
   }
-}
+};
 
 /**
  * Find favourite recipe ids by user firebaseUid.
@@ -34,11 +35,10 @@ export const findFavouriteRecipeIdsByUid = async (uid) => {
   try {
     return await UserFavourites.findOne({ firebaseUid: uid });
   } catch (error) {
-    console.error('Find favourite recipe ids error:', error.message);
+    console.error("Find favourite recipe ids error:", error.message);
     return null;
   }
-}
-
+};
 
 /**
  * Creates a new entry in the user's favourites.
@@ -50,7 +50,7 @@ export const findFavouriteRecipeIdsByUid = async (uid) => {
 export const createUserEntryInUserFavourites = async (uid, recipeId) => {
   const userFavourites = new UserFavourites({
     firebaseUid: uid,
-    recipeIds: [recipeId]
+    recipeIds: [recipeId],
   });
   await userFavourites.save();
-}
+};
