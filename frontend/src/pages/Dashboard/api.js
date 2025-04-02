@@ -21,7 +21,15 @@ async function getFavoriteRecipes() {
         const rawData = await response.json();
         data.recipes = rawData.recipes;
         data.status = "success";
-      } else {
+        if(data.recipes.length === 0) {
+          data.recipes.push({id: -1});
+        }
+      } 
+      else if(response.status === 404) {
+        data.recipes.push({id: -1});
+        data.status = "success";
+      }
+      else {
         data.msg = "Failed to fetch favorite recipes";
       }
     } else {
@@ -137,9 +145,10 @@ const fetchData = async (searchData) => {
       const data = await response.json();
 
     if (response.ok)
-    return data.results; 
+    return data.results;
+    if(response.status === 404)
+    return [{id: -1}];
     console.error("Failed to fetch recipes. Error code:", response.status);
-    return [{id:-1}];
       
     } catch (error) {
       console.error("Error fetching data:", error.message);

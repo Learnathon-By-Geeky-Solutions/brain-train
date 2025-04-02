@@ -111,10 +111,10 @@ const RecipeCardContainer = ({recipe_prop,removeCard}) => {
                 w="initial" h="initial"
               />
               <Heading
-                size="xl"
+                size="2xl"
                 color="gray.500"
                 textAlign="center"
-                mt={4}
+                p="4"
               >
                 No Recipes Found
               </Heading>
