@@ -38,6 +38,20 @@ function handleSearchByTitle (searchData) {
   return url;
 }
 
+const handleSearchByIngredients = (searchData) => {
+  let ingredients = '';
+  let data = searchData.data;
+  data.fields.forEach((field) => {
+      ingredients += field.name + ',';
+  });
+  ingredients = ingredients.slice(0, -1);
+  return handleFilters(`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`, searchData);
+};
+
+function handleSearchByCuisine(searchData) {
+  return `${API_BASE_URL}/search/recipes?cuisine=${searchData.cuisine}&fields=summary,likes,title,image`;
+}
+
 function handleFilters(url, searchData) {
   if (!searchData.filters?.length) {
     return url;
@@ -93,15 +107,6 @@ function appendRangeFilters(url, filter) {
   return url;
 }
 
-const handleSearchByIngredients = (searchData) => {
-    let ingredients = '';
-    let data = searchData.data;
-    data.fields.forEach((field) => {
-        ingredients += field.name + ',';
-    });
-    ingredients = ingredients.slice(0, -1);
-    return handleFilters(`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`, searchData);
-}
 
 const fetchData = async (searchData) => {
 
@@ -112,6 +117,9 @@ const fetchData = async (searchData) => {
       console.log('url from fetchData '+url);
     } else if (searchData.type === "ingredients") {
       url = handleSearchByIngredients(searchData);
+      console.log('url from fetchData '+url);
+    } else if (searchData.type === "cuisine") {
+      url = handleSearchByCuisine(searchData);
       console.log('url from fetchData '+url);
     }
 

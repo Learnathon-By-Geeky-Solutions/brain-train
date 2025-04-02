@@ -5,7 +5,7 @@ import { getRecentRecipes, getRecommendedRecipes } from './api';
 import { useEffect, useState } from 'react';
 import ExploreCuisine from './ExploreCuisine';
 
-const PreloadedCards = ({txt,cards}) => {
+const PreloadedCards = ({txt,cards,showResults = null}) => {
     const [newCards, setNewCards] = useState(cards);
     useEffect(() => {
         let fn;
@@ -34,7 +34,7 @@ const PreloadedCards = ({txt,cards}) => {
             { txt!=="Explore a cuisine" ? 
             (<RecipeCardContainer recipe_prop={newCards} perRow={10} numRows={1} />)
             : 
-            (<ExploreCuisine />)
+            (<ExploreCuisine showResults={showResults}/>)
             }
         </Flex> 
     );

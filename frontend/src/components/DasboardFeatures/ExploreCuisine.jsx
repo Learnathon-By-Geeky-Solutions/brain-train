@@ -4,6 +4,7 @@ import italian_cuisine from '@/assets/italian_cuisine.jpg';
 import french_cuisine from '@/assets/french_cuisine.jpg';
 import arabic_cuisine from '@/assets/arabic_cuisine.jpg';
 import indian_cuisine from '@/assets/indian_cuisine.jpg';
+import fetchData from '@/pages/Dashboard/api';
 
 // Usage example:
 const cuisines = [
@@ -14,7 +15,7 @@ const cuisines = [
   { name: "indian", imageUrl: indian_cuisine },
 ];
 
-const ExploreCuisine = () => {
+const ExploreCuisine = ({showResults}) => {
   // Responsive settings
   const imageSize = useBreakpointValue({ base: '150px', md: '200px', lg: '250px' });
   const spacing = useBreakpointValue({ base: 2, md: 4, lg: 6 });
@@ -43,17 +44,22 @@ const ExploreCuisine = () => {
     >
     {cuisines.map((cuisine, index) => (
     <Box 
-    key={index} 
-    position="relative" 
-    minW={imageSize} 
-    h={imageSize} 
-    borderRadius="lg" 
-    overflow="hidden"
-    transition="transform 0.3s ease"
-    _hover={{ 
-        transform: 'scale(1.05)',
-        cursor: 'pointer'
-    }}
+      key={index} 
+      position="relative" 
+      minW={imageSize} 
+      h={imageSize} 
+      borderRadius="lg" 
+      overflow="hidden"
+      transition="transform 0.3s ease"
+      _hover={{ 
+          transform: 'scale(1.05)',
+          cursor: 'pointer'
+      }}
+      onClick={() => {
+         fetchData({type:'cuisine', cuisine: cuisine.name}).then((result) => {
+           showResults(result);
+         });
+      }}
     >
         <Image
             src={cuisine.imageUrl}

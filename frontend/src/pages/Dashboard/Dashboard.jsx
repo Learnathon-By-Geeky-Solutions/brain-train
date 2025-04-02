@@ -130,7 +130,7 @@ export default function Dashboard() {
         <Flex direction="column" width="100%" h="100%" className="dashboard">
           <PreloadedCards txt="Recently Searched" cards={recipes} />
           <PreloadedCards txt="Trending Recipes" cards={recipes} /> 
-          <PreloadedCards txt="Explore a cuisine" cards={recipes} />
+          <PreloadedCards txt="Explore a cuisine" cards={recipes} showResults={loadCards} />
           <PreloadedCards txt="Recommended for You" cards={recipes} />
         </Flex>
       }
