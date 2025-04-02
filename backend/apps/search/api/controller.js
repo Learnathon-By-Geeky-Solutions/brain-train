@@ -301,9 +301,7 @@ export const autoCompleteIngredients = async (req, res) => {
 };
 
 export const getSearchesFromHistory = (req, res) => {
-    let { n } = req.params;
-    n = Number(n.toString());
-    if (!Number.isInteger(n) || n <= 0) {
+    if(!numericValidator(req.params.n)) {
         return res.status(400).json({ error: "Invalid history query." });
     }
 
@@ -397,3 +395,7 @@ export const getShoppingList = async (req, res) => {
     }
 };
 
+export const numericValidator = (n) => {
+    n = Number(n.toString());
+    return Number.isInteger(n) && n > 0;
+};

@@ -7,10 +7,9 @@ import {
     getRecipeSummary,
     getSimilarRecipes,
     getShoppingList,
-    
     autoCompleteIngredients,
     autoCompleteRecipes,
-    getSearchesFromHistory
+    getSearchesFromHistory,
 } from './controller.js';
 
 const router = express.Router();
