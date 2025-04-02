@@ -84,6 +84,10 @@ const recipeSchema = new mongoose.Schema({
   nutrition: nutritionSchema,
 });
 
+recipeSchema.statics.getTopLikedRecipes = function (n) {
+  return this.find().sort({ likes: -1 }).limit(n);
+};
+
 const Recipe = mongoose.model("Recipe", recipeSchema);
 
 export default Recipe;

@@ -38,14 +38,14 @@ export const searchRecipes = async (req, res) => {
     // Query db with params, fields and limit
     let dbResults = await getRecipeFieldsByTitle(query, fieldsArray, number);
 
-    console.log("🔍 DB Results length Before Filtering:", dbResults.length);
+    // console.log("🔍 DB Results length Before Filtering:", dbResults.length);
 
     //  Apply Filters to DB Results
     dbResults = await filterRecipes(dbResults, filters);
 
-    console.log(" DB Results After Filtering:", dbResults);
+    // console.log(" DB Results After Filtering:", dbResults);
 
-    console.log(" DB Results After Filtering:", dbResults.length);
+    // console.log(" DB Results After Filtering:", dbResults.length);
     if (dbResults.length > 0) {
       return res
         .status(200)
@@ -53,14 +53,14 @@ export const searchRecipes = async (req, res) => {
     }
 
     // Fetch recipes
-    console.log(" Fetching from Spoonacular API...", params);
+    // console.log(" Fetching from Spoonacular API...", params);
     const apiResults = await spoonacularRequest("/recipes/complexSearch", {
       number,
       ...params,
     });
 
     if (!apiResults.results || apiResults.results.length === 0) {
-      console.log(" No results found in Spoonacular API either.");
+      // console.log(" No results found in Spoonacular API either.");
       return res.status(404).json({ results: [], totalResults: 0 });
     }
 
@@ -69,10 +69,12 @@ export const searchRecipes = async (req, res) => {
 
     const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
 
-    return res.status(200).json({
-      results: filteredApiResults,
-      totalResults: filteredApiResults.length,
-    });
+    return res
+      .status(200)
+      .json({
+        results: filteredApiResults,
+        totalResults: filteredApiResults.length,
+      });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -104,12 +106,12 @@ export const searchRecipesByIngredients = async (req, res) => {
       filters,
     );
 
-    console.log("🔍 DB Results Before Filtering:", dbResults.length);
+    // console.log("🔍 DB Results Before Filtering:", dbResults.length);
 
     //  Apply Filters to DB Results
     dbResults = await filterRecipes(dbResults, filters);
 
-    console.log(" DB Results After Filtering:", dbResults.length);
+    // console.log(" DB Results After Filtering:", dbResults.length);
 
     if (dbResults.length > 0) {
       return res
@@ -118,28 +120,30 @@ export const searchRecipesByIngredients = async (req, res) => {
     }
 
     //  No results from DB? Fetch from Spoonacular API
-    console.log(" Fetching from Spoonacular API...");
+    // console.log(" Fetching from Spoonacular API...");
     const apiResults = await spoonacularRequest("/recipes/findByIngredients", {
       number,
       ingredients,
     });
 
     if (!apiResults || apiResults.length === 0) {
-      console.log(" No results found in Spoonacular API either.");
+      // console.log(" No results found in Spoonacular API either.");
       return res.status(404).json({ results: [], totalResults: 0 });
     }
 
-    console.log(" API Results Before Enrichment:", apiResults.length);
+    // console.log(" API Results Before Enrichment:", apiResults.length);
 
     //  Fetch additional fields in bulk using Spoonacular API
     const recipeIds = apiResults.map((recipe) => recipe.id);
 
     const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
 
-    return res.status(200).json({
-      results: filteredApiResults,
-      totalResults: filteredApiResults.length,
-    });
+    return res
+      .status(200)
+      .json({
+        results: filteredApiResults,
+        totalResults: filteredApiResults.length,
+      });
   } catch (error) {
     console.error(" Error in searchRecipesByIngredients:", error);
     return res.status(500).json({ error: error.message });
@@ -164,10 +168,12 @@ export const searchRecipesByNutrients = async (req, res) => {
       fieldsArray,
     );
 
-    return res.status(200).json({
-      results: enrichedRecipes,
-      totalResults: recipesData.totalResults,
-    });
+    return res
+      .status(200)
+      .json({
+        results: enrichedRecipes,
+        totalResults: recipesData.totalResults,
+      });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -176,9 +182,9 @@ export const searchRecipesByNutrients = async (req, res) => {
 // Controller: Get Recipe Information
 export const getRecipeInformation = (req, res) => {
   const id = req.params.id.toString();
-  console.log("Information", id);
+  // console.log("Information",id);
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    console.log("Invalid Recipe id");
+    // console.log("Invalid Recipe id");
     return res.status(400).json({ error: "Invalid recipe" });
   }
 
@@ -277,7 +283,7 @@ export const autoCompleteRecipes = async (req, res) => {
       id: recipe.id,
       title: recipe.title,
     }));
-    console.log("🔍 DB Suggestions:", suggestions);
+    // console.log("🔍 DB Suggestions:", suggestions);
     // Step 2: If enough suggestions, return
     if (suggestions.length >= number) {
       return res.status(200).json(suggestions.slice(0, number));
@@ -288,14 +294,14 @@ export const autoCompleteRecipes = async (req, res) => {
       number,
     });
     const apiIds = apiData.map((recipe) => recipe.id);
-    console.log("api ids", apiIds);
+    // console.log("api ids",apiIds);
     const seenTitles = new Set(suggestions.map((s) => s.title.toLowerCase()));
     const newApiRecipes = apiData.filter(
       (recipe) => !seenTitles.has(recipe.title.toLowerCase()),
     );
 
     const savedApiResults = await fetchSaveFilterRecipes(apiIds, {});
-    console.log("api results saved", savedApiResults.length);
+    // console.log("api results saved",savedApiResults.length);
 
     suggestions = suggestions.concat(newApiRecipes).slice(0, number);
 
@@ -328,8 +334,7 @@ export const autoCompleteIngredients = async (req, res) => {
 
 export const getSearchesFromHistory = (req, res) => {
   let { n } = req.params;
-  n = Number(n.toString());
-  if (!Number.isInteger(n) || n <= 0) {
+  if (!numericValidator(n)) {
     return res.status(400).json({ error: "Invalid history query." });
   }
 
@@ -357,19 +362,18 @@ export const getSearchesFromHistory = (req, res) => {
 
 const getUniqueRecentHistoryWithRecipeInfo = (history, n) => {
   const uniqueHistoryMap = new Map();
+  let count = 0; // Keeps track of the number of unique recipes
 
-  // Iterate from the beginning (most recent first due to unshift)
   for (const { recipeId, searchedAt } of history) {
     if (!uniqueHistoryMap.has(recipeId)) {
       uniqueHistoryMap.set(recipeId, { recipeId, searchedAt });
+      count++;
     }
+    if (count >= n) break;
   }
 
   // Get the n most recent unique searches
-  const recentUniqueSearches = Array.from(uniqueHistoryMap.values()).slice(
-    0,
-    n,
-  );
+  const recentUniqueSearches = Array.from(uniqueHistoryMap.values());
 
   // Retrieve recipe details for the selected recipeIds
   const recipeIds = recentUniqueSearches.map((entry) => entry.recipeId);
@@ -383,6 +387,7 @@ const getUniqueRecentHistoryWithRecipeInfo = (history, n) => {
         title: null,
         image: null,
         likes: 0,
+        summary: null,
       }),
     }));
   });
@@ -420,7 +425,7 @@ export const getShoppingList = async (req, res) => {
     const data = await getRecipeInfoById(id);
 
     if (!data) {
-      console.log("Recipe not found");
+      // console.log("Recipe not found");
       return res.status(404).json({ error: "Recipe not found." });
     }
 
@@ -432,4 +437,9 @@ export const getShoppingList = async (req, res) => {
     console.error("Error generating shopping list:", error);
     return res.status(500).json({ error: error.message });
   }
+};
+
+export const numericValidator = (n) => {
+  n = Number(n.toString());
+  return Number.isInteger(n) && n > 0;
 };
