@@ -64,10 +64,10 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
         </Card.Description>
       </Card.Body>
       { type === "favourites" && 
-        (<Card.Footer gap="1">
+        (<Card.Footer>
           <Button
             size="sm"
-            variant="ghost"
+            variant="outline"
             onClick={(e) => {
               e.stopPropagation();
               changeVisibility();

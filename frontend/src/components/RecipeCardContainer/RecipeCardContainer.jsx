@@ -1,10 +1,11 @@
-import { Box, Grid, GridItem } from '@chakra-ui/react';
+import { Box, For, Grid, GridItem, HStack, Skeleton, VStack } from '@chakra-ui/react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import RecipeCard from '../RecipeCard/RecipeCard';
 import PropTypes from 'prop-types';
 import { Toaster, toaster } from '../ui/toaster';
 import removeFavoriteRecipe from './api';
 import { useEffect, useState } from 'react';
+
 
 
 const RecipeCardContainer = ({recipe_prop,removeCard}) => {
@@ -43,9 +44,9 @@ const RecipeCardContainer = ({recipe_prop,removeCard}) => {
   }, []);
   
 
-  if (!recipe_prop || recipe_prop.length === 0) {
-    return (<div>No recipes found</div>);
-  }
+  // if (!recipe_prop || recipe_prop.length === 0) {
+  //   <Skeleton height="100%" width="100%" />;
+  // }
 
   let type = location.state?.type || searchParams.get("type");
 
@@ -72,7 +73,7 @@ const RecipeCardContainer = ({recipe_prop,removeCard}) => {
   const maxCards = cardsPerRow * maxRows;
 
   // Slice the recipes array to show only the maximum number of cards
-  const visibleRecipes = recipe_prop.slice(0, maxCards);
+  const visibleRecipes = recipe_prop?.slice(0, maxCards);
 
   return (
     <Box
@@ -90,19 +91,26 @@ const RecipeCardContainer = ({recipe_prop,removeCard}) => {
         "scrollbar-width": "none", 
       }}
     >
-
       <Grid 
         templateColumns={`repeat(${cardsPerRow}, 1fr)`}
         gap={4}
       >
-        {visibleRecipes.map((recipe, index) => {
-          // Only display items that fit within the grid dimensions
-          return (
-            <GridItem key={recipe.id} w="fit-content">
-              <RecipeCard recipe={recipe} changeVisibility={()=>toggleVisibility(index)} type={type}/>
+        { (!recipe_prop || recipe_prop.length === 0) ?
+          Array.from({ length: 10 }).map((_, index) => (
+            <GridItem w="fit-content">
+              <Skeleton key={index} height="72" width="72" bgColor="gray.950" />
             </GridItem>
-          );
-        })}
+          ))
+          :
+          visibleRecipes.map((recipe, index) => {
+            // Only display items that fit within the grid dimensions
+            return (
+              <GridItem key={recipe.id} w="fit-content">
+                <RecipeCard recipe={recipe} changeVisibility={()=>toggleVisibility(index)} type={type}/>
+              </GridItem>
+            );
+          })
+        }
       </Grid>
       <Toaster />
     </Box>
