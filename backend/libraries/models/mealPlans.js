@@ -3,13 +3,13 @@ import mongoose from 'mongoose';
 const mealSchema = new mongoose.Schema({
   sourceId: {
     type: String, 
-    required: true,
-    unique: true
+    // //required: true,
+    // unique: true
   },
   recipeId: {
     type: String,
-    required: true,
-    unique: true
+    // //required: true,
+    // unique: true
   },
   image: {
     type: String,
@@ -39,12 +39,17 @@ const mealPlanSchema = new mongoose.Schema({
     {
       name: {
         type: String,
-        required: true
+        //required: true
       },
       amount: {
         type: Number,
         default: 0
-      }
+      },
+      unit: { 
+        type: String, 
+        default: "" 
+      }  
+
     }
   ]
 });
@@ -52,8 +57,7 @@ const mealPlanSchema = new mongoose.Schema({
 const dailyMealSchema = new mongoose.Schema({
   firebaseUid: {
     type: String, 
-    required: true,
-    unique: true
+    required: true
   },
   dailyMealPlans: [
     {
@@ -64,8 +68,12 @@ const dailyMealSchema = new mongoose.Schema({
       mealPlan: mealPlanSchema,
       savedAt: {
         type: Date,
-        default: Date.now()
-      }
+        default: Date.now
+      },
+      startDate: {
+        type: Date,
+        default: Date.now
+      },
     }
   ]
 });
@@ -73,8 +81,7 @@ const dailyMealSchema = new mongoose.Schema({
 const weeklyPlanSchema = new mongoose.Schema({
   firebaseUid: {
     type: String, 
-    required: true,
-    unique: true
+    required: true
   },
   weeklyMealPlans: [
     {
@@ -83,18 +90,25 @@ const weeklyPlanSchema = new mongoose.Schema({
         default: "Weekly Meal Plan#"
       },
       dailyMealPlans: [mealPlanSchema],
+      savedAt: {
+        type: Date,
+        default: Date.now
+      },
       startDate: {
         type: Date,
-        required: true,
-        default: Date.now()
+        //required: true,
+        default: Date.now
       },
       endDate: {
         type: Date,
-        required: true
+        //required: true
       }
     }
   ]
 });
+
+dailyMealSchema.index({ firebaseUid: 1 });
+weeklyPlanSchema.index({ firebaseUid: 1 });
 
 
 const DailyMealPlan = mongoose.model('DailyMealPlan', dailyMealSchema);

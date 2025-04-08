@@ -334,7 +334,6 @@ export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
     // 5. Filter and return
     const filtered =await filterRecipes(allRecipes, filters);
     
-    console.log("all recipes after filtration",allRecipes);
     console.log("all recipes count",allRecipes.length);
     console.log("✅ Filtered Results:", filtered.length);
   

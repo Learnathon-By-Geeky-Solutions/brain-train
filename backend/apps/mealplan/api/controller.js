@@ -1,22 +1,14 @@
-import { spoonacularRequest } from '../../../libraries/services/spoonacular.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
-
-// Controller: Search Recipes by Ingredients
-export const planMeal = async (req, res) => {
-    try {
-        // await decodeFirebaseIdToken(req.headers.authorization);
-        
-        
-        let { timeFrame,...params } = req.query ;
-        timeFrame = timeFrame || 'day';
-        console.log("timeFrame", timeFrame);
-        console.log("🔍 Searching plan for...", params);
-        
-        const plan = await spoonacularRequest('/mealplanner/generate', { timeFrame, ...params });
-        return res.status(200).json({ results: plan });
+import { generateMealPlanAndSave } from '../utils/planService.js';
 
 
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
-};
+
+export const planMeal = (req, res) => {
+    decodeFirebaseIdToken(req.headers.authorization)
+      .then(({ uid }) => generateMealPlanAndSave(uid, req.body))
+      .then(plan => res.status(201).json({ plan }))
+      .catch(error => {
+        console.error(' Meal planning error:', error.message);
+        return res.status(500).json({ error: 'Internal server error' });
+      });
+  };

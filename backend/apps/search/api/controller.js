@@ -42,7 +42,6 @@ export const searchRecipes = async (req, res) => {
         //  Apply Filters to DB Results
         dbResults =await filterRecipes(dbResults, filters);
 
-        console.log(" DB Results After Filtering:", dbResults);
 
         console.log(" DB Results After Filtering:", dbResults.length);
         if (dbResults.length > 0) {
