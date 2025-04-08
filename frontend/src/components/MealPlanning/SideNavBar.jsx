@@ -80,8 +80,8 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
           }}
         >
           <Flex gap={1}>
-              <LuCalendar />
-              Weekly Calendar
+            <LuCalendar />
+            Weekly Calendar
           </Flex>
         </NavItem>
         <NavItem

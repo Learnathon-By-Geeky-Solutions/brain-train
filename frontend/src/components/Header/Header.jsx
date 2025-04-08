@@ -1,4 +1,4 @@
-import { Box, Flex, IconButton, Image, Text, Button } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Image, Text, Button, Avatar } from "@chakra-ui/react";
 import PropTypes from 'prop-types';
 import logo from "../../assets/logo.png";
 import { MdLogout } from "react-icons/md";
@@ -199,7 +199,11 @@ const StickyHeader = ({
                   >
                     <Flex direction="row" alignItems="center" justifyContent="space-around" h="12" gap={1}>
                       <LuMenu />
-                      <Image src={photoUrl} alt="DP" borderRadius="full" h="8" w="auto" ml="auto"/>
+                      {/* <Image src={photoUrl} alt="DP" borderRadius="full" h="8" w="auto" ml="auto"/> */}
+                      <Avatar.Root size="xs" variant="outline">
+                        <Avatar.Fallback name={userName} />
+                        <Avatar.Image src={photoUrl} />
+                      </Avatar.Root>
                     </Flex>
                   </IconButton>
                   {/* <Image src={photoUrl} alt="User Profile" borderRadius="full"/> */}

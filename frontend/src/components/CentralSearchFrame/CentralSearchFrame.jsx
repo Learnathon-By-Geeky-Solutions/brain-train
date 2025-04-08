@@ -2,9 +2,10 @@ import { IconButton, Flex } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { LuSearch } from 'react-icons/lu';
 import PropTypes from 'prop-types';
+import DummySearchBar from '../RecipeSearchUtility/DummySearchBar';
 
 
-const CentralSearchFrame = ({ feature, featureProps, filters, showResults}) => {
+const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => {
 
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({type:'', data:{}});
@@ -26,6 +27,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults}) => {
     setShouldFetch(false); // Reset fetch trigger
   }, [searchData, shouldFetch]); // Watch for changes in searchData
 
+
     const Feature = feature;
     const ref = useRef(null);
 
@@ -34,6 +36,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults}) => {
       featureProps.handleSuggestionClick = () => {
         handleSearch();
       }
+    
 
     return (
         <Flex 

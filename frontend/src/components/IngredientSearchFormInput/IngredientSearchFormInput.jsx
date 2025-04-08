@@ -73,7 +73,8 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller, containerC
                         />
                       )}
                     />
-                    <SuggestionContainer type="ingredients" 
+                    <SuggestionContainer 
+                      type="ingredients" 
                       query={ingredients[index]} 
                       handleClick={(name) => { 
                         handleIngredientChange(index, name);

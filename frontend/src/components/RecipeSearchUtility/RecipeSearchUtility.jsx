@@ -5,6 +5,8 @@ import IngredientSearchForm from '@/components/IngredientSearchFormInput/Ingredi
 import './RecipeSearchUtility.css';
 import CentralSearchFrame from '@/components/CentralSearchFrame/CentralSearchFrame';
 import TitleSearchInput from '@/components/TitleSearchInput/TitleSearchInput';
+import DummySearchBar from './DummySearchBar';
+import { useRef } from 'react';
 
 
 export default function RecipeSearchUtility(
@@ -19,11 +21,10 @@ export default function RecipeSearchUtility(
     setPageState(newState);
   }
 
-
   return (
     <Flex direction="column" width="100%" minHeight="16" alignItems="center" mb="6">
 
-      {( pageState === 'init' || !showSecondBar ) && pageLocation === 'dashboard' && (
+      { ( pageState === 'init' || !showSecondBar ) && pageLocation === 'dashboard' && (
           <Flex direction="row" h="100%" gap={2} onClick={() => setShowSecondBar(true)}>
             <CentralSearchFrame 
               feature={TitleSearchInput} 
