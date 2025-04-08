@@ -94,8 +94,7 @@ export const saveRecipeDetails = async (details) => {
   // Prepare recipe data
   const recipeData = {
     sourceId: details.id.toString(),
-    
-    source: "spoonacular",
+    isUploaded: details.isUploaded || false,
     title: details.title,
     image: details.image,
     summary: details.summary,

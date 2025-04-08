@@ -34,10 +34,10 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
 
   return (
   <Card.Root w="72" h="72" overflow="hidden"
-  _hover={{ transform: 'scale(1.05)', transition: 'all 0.3s ease-in-out' }}
-  onClick={() => {
-    handleRecipeDetail();
-  }}
+    _hover={{ transform: 'scale(1.05)', transition: 'all 0.3s ease-in-out' }}
+    onClick={() => {
+      handleRecipeDetail();
+    }}
   >
       <Image w="100%" h="65%" overflow="hidden"
         src={recipe.image || recipe_default}
@@ -64,10 +64,10 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
         </Card.Description>
       </Card.Body>
       { type === "favourites" && 
-        (<Card.Footer gap="1">
+        (<Card.Footer>
           <Button
             size="sm"
-            variant="ghost"
+            variant="outline"
             onClick={(e) => {
               e.stopPropagation();
               changeVisibility();

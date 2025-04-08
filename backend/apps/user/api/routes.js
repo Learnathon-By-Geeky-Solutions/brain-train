@@ -1,5 +1,8 @@
 import express from 'express';
-import { usernameValidator } from './controller.js';
+import { 
+  usernameValidator,
+  recipeRecommender
+} from './controller.js';
 
 /**
  * USER AUTHENTICATION ROUTER
@@ -8,5 +11,6 @@ import { usernameValidator } from './controller.js';
 const router = express.Router();
 
 router.post('/checkUsername', usernameValidator);
+router.get('/recommended', recipeRecommender);
 
 export default router;

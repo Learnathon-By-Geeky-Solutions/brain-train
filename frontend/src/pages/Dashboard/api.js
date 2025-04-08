@@ -21,7 +21,15 @@ async function getFavoriteRecipes() {
         const rawData = await response.json();
         data.recipes = rawData.recipes;
         data.status = "success";
-      } else {
+        if(data.recipes.length === 0) {
+          data.recipes.push({id: -1});
+        }
+      } 
+      else if(response.status === 404) {
+        data.recipes.push({id: -1});
+        data.status = "success";
+      }
+      else {
         data.msg = "Failed to fetch favorite recipes";
       }
     } else {
@@ -36,6 +44,20 @@ function handleSearchByTitle (searchData) {
     searchData
   );
   return url;
+}
+
+const handleSearchByIngredients = (searchData) => {
+  let ingredients = '';
+  let data = searchData.data;
+  data.fields.forEach((field) => {
+      ingredients += field.name + ',';
+  });
+  ingredients = ingredients.slice(0, -1);
+  return handleFilters(`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`, searchData);
+};
+
+function handleSearchByCuisine(searchData) {
+  return `${API_BASE_URL}/search/recipes?cuisine=${searchData.cuisine}&fields=summary,likes,title,image`;
 }
 
 function handleFilters(url, searchData) {
@@ -93,15 +115,6 @@ function appendRangeFilters(url, filter) {
   return url;
 }
 
-const handleSearchByIngredients = (searchData) => {
-    let ingredients = '';
-    let data = searchData.data;
-    data.fields.forEach((field) => {
-        ingredients += field.name + ',';
-    });
-    ingredients = ingredients.slice(0, -1);
-    return handleFilters(`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`, searchData);
-}
 
 const fetchData = async (searchData) => {
 
@@ -112,6 +125,9 @@ const fetchData = async (searchData) => {
       console.log('url from fetchData '+url);
     } else if (searchData.type === "ingredients") {
       url = handleSearchByIngredients(searchData);
+      console.log('url from fetchData '+url);
+    } else if (searchData.type === "cuisine") {
+      url = handleSearchByCuisine(searchData);
       console.log('url from fetchData '+url);
     }
 
@@ -129,7 +145,9 @@ const fetchData = async (searchData) => {
       const data = await response.json();
 
     if (response.ok)
-    return data.results; 
+    return data.results;
+    if(response.status === 404)
+    return [{id: -1}];
     console.error("Failed to fetch recipes. Error code:", response.status);
       
     } catch (error) {

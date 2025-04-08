@@ -74,6 +74,7 @@ const StickyHeader = ({
 
   const showFavouriteRecipes= () => {
     console.log("Fetching favourite recipes...");
+    showResults(null, true);
     if( location.pathname !== "/dashboard" && location.pathname !== "/dashboard/") {
       console.log("Navigating to dashboard");
       navigate({
@@ -165,6 +166,14 @@ const StickyHeader = ({
               }}
             >
               Pantry Match
+            </Button>
+            <Button
+              onClick={() => {
+                navigate('/dashboard/mealPlan');
+              }
+            }
+            >
+              Meal Plan
             </Button>
           </Flex>)}
 
