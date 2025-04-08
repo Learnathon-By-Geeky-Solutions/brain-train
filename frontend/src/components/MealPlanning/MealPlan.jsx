@@ -95,7 +95,10 @@ const MealPlanningCalendar = () => {
         <Grid templateColumns="80px repeat(7, 1fr)">
           {/* Day Headers */}
           <Box p={4} borderWidth="1px" borderColor={borderColor}></Box>
-          {days.map((day) => (
+          {days.map((day,dayIndex) => {
+            const dayKey = day.toLowerCase();
+            const mealSize = mealData[dayKey]?.meals?.length;
+            return (
             <Box 
               key={day} 
               p={4} 
@@ -105,8 +108,19 @@ const MealPlanningCalendar = () => {
               bg={bgColor}
             >
               <Text fontWeight="medium">{day}</Text>
+              {
+                mealSize > 0 && (
+                  <Flex h="100%" placeContent="center">
+                    <PlanController  
+                      currentDate={getOffsetDate(startDate,dayIndex)}
+                      startDate={initialStartDate}
+                      setReload={setReload}
+                    />
+                  </Flex>
+                )
+              }
             </Box>
-          ))}
+          )})}
           
           {/* Meal Time Rows */}
           {mealTimes.map((mealTime,index) => (
@@ -176,7 +190,7 @@ const MealPlanningCalendar = () => {
                       </Box>
                     )}
 
-                    {
+                    {/* {
                       !meal.title && (
                         <Flex h="100%" placeContent="center">
                           <PlanController  
@@ -186,7 +200,7 @@ const MealPlanningCalendar = () => {
                           />
                         </Flex>
                       )
-                    }
+                    } */}
                   </Box>
                 );
               })}
