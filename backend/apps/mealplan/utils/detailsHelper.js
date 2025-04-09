@@ -26,11 +26,7 @@ export const mapSpoonacularMeal = (meal, recipe = null) => ({
 
     return meals.map(meal => {
         const matchedRecipe = recipeMap.get(String(meal.id));
-        if (!matchedRecipe) {
-          console.warn(`⚠️ No recipe match for meal ID: ${meal.id}`);
-        } else {
-          console.log(`✅ Matched ${meal.title} → RecipeId: ${matchedRecipe._id}`);
-        }
+
       
         return mapSpoonacularMeal(meal, matchedRecipe);
       });

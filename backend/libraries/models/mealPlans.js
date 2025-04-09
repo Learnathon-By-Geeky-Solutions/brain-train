@@ -3,12 +3,12 @@ import mongoose from 'mongoose';
 const mealSchema = new mongoose.Schema({
   sourceId: {
     type: String, 
-    // //required: true,
+    required: true,
     // unique: true
   },
   recipeId: {
     type: String,
-    // //required: true,
+    required: true,
     // unique: true
   },
   image: {
@@ -89,7 +89,24 @@ const weeklyPlanSchema = new mongoose.Schema({
         type: String,
         default: "Weekly Meal Plan#"
       },
-      dailyMealPlans: [mealPlanSchema],
+      // dailyMealPlans: [mealPlanSchema],
+      dailyMealPlans: [
+        {
+          title: {
+            type: String,
+            default: "Daily Meal Plan#"
+          },
+          mealPlan: mealPlanSchema,
+          startDate: {
+            type: Date,
+            default: Date.now
+          },
+          savedAt: {
+            type: Date,
+            default: Date.now
+          }
+        }
+      ],
       savedAt: {
         type: Date,
         default: Date.now

@@ -1,5 +1,5 @@
 import {DailyMealPlan,WeeklyMealPlan } from "../../libraries/models/mealPlans.js";
-import { mapSpoonacularWeekToDates } from "./utils/dateHelper.js";
+import { generateIndexedWeeklyMealPlans } from "./utils/weeklyHelper.js";
 import { enrichMealsWithRecipeIds } from "./utils/detailsHelper.js";
 
 export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
@@ -25,16 +25,16 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
   
  export const saveWeeklyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
     const endDate = new Date(startDate.getTime() + 6 * 86400000);
-    const dailyPlans = mapSpoonacularWeekToDates(plan.week, startDate); // Returns objects with correct format
+    const indexedDailyPlans = await generateIndexedWeeklyMealPlans(plan.week, startDate);
+    
+    const dailyPlansArray = Object.values(indexedDailyPlans); // For saving to DB
 
-    console.log("dailyPlans", dailyPlans);
-  
     const newWeeklyPlan = new WeeklyMealPlan({
       firebaseUid,
       weeklyMealPlans: [
         {
           title: customTitle || `Weekly Plan - ${startDate.toLocaleDateString()}`,
-          dailyMealPlans: dailyPlans, 
+          dailyMealPlans: dailyPlansArray, 
           startDate,
           endDate,
           savedAt: new Date()
@@ -43,6 +43,11 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
     });
   
     await newWeeklyPlan.save();
-    return plan;
+    return newWeeklyPlan;
   };
+  export const fetchUserDailyPlans = async (firebaseUid) => {
+    const plans = await DailyMealPlan.find({ firebaseUid }).lean();
+    return plans.flatMap(p => p.dailyMealPlans);
+  };
+  
   
