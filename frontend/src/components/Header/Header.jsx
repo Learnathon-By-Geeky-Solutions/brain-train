@@ -179,10 +179,10 @@ const StickyHeader = ({
 
           {/* Icon Buttons */}
           <Flex gap={2}>
-            <FilterController 
+            {showSecondBar && (<FilterController 
               addFilter={addFilter} 
               clearFilters={clearFilters}
-            />
+            />)}
              <IconButton
               aria-label="User Profile"
               variant="ghost"
