@@ -1,5 +1,5 @@
 import {DailyMealPlan,WeeklyMealPlan } from "../../libraries/models/mealPlans.js";
-import { prepareWeeklyDailyPlans } from "./utils/weeklyHelper.js";
+import { prepareWeeklyDailyPlans ,indexByWeekday} from "./utils/weeklyHelper.js";
 import { enrichMealsWithRecipeIds } from "./utils/detailsHelper.js";
 
 export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
@@ -25,10 +25,6 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
   
  export const saveWeeklyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
     const endDate = new Date(startDate.getTime() + 6 * 86400000);
-    // const indexedDailyPlans = await generateIndexedWeeklyMealPlans(plan.week, startDate);
-
-    
-    // const dailyPlansArray = Object.values(indexedDailyPlans); // For saving to DB
     const dailyPlansArray = await prepareWeeklyDailyPlans(plan.week, startDate); // For saving to DB
 
     const newWeeklyPlan = new WeeklyMealPlan({
@@ -51,5 +47,20 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
     const plans = await DailyMealPlan.find({ firebaseUid }).lean();
     return plans.flatMap(p => p.dailyMealPlans);
   };
-
+  export const fetchUserWeeklyPlans = async (firebaseUid) => {
+    const plans = await WeeklyMealPlan.find({ firebaseUid }).lean();
+  
+    return plans.flatMap(weeklyDoc => {
+      if (!weeklyDoc.weeklyMealPlans || weeklyDoc.weeklyMealPlans.length === 0) return [];
+  
+      return weeklyDoc.weeklyMealPlans.map(entry => ({
+        _id: weeklyDoc._id,
+        title: entry.title,
+        startDate: entry.startDate,
+        endDate: entry.endDate,
+        savedAt: entry.savedAt,
+        plansByWeekday: indexByWeekday(entry.dailyMealPlans || [])
+      }));
+    });
+  };
   
