@@ -49,7 +49,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => 
           containerClosed={containerClosed}
           setContainerClosed={setContainerClosed}
         />
-        {/* <IconButton variant="subtle" borderRadius="full" size="lg" marginLeft="auto"
+        <IconButton variant="subtle" borderRadius="full" size="lg" marginLeft="auto"
           alignSelf="start"
           onClick={()=>{
             handleSearch();
@@ -57,7 +57,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => 
           }}
         >
           <LuSearch />
-        </IconButton> */}
+        </IconButton>
       </Flex>
     )
 }
