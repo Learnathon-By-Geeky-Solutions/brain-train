@@ -168,6 +168,8 @@ const StickyHeader = ({
               Pantry Match
             </Button>
             <Button
+              variant="subtle"
+              borderRadius="3xl"
               onClick={() => {
                 navigate('/dashboard/mealPlan');
               }
