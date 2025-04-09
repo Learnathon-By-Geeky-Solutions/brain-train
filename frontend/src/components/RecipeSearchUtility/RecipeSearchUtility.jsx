@@ -24,7 +24,7 @@ export default function RecipeSearchUtility(
   return (
     <Flex direction="column" width="100%" minHeight="16" alignItems="center" mb="6">
 
-      { ( pageState === 'init' || !showSecondBar ) && pageLocation === 'dashboard' && (
+      { ( pageState === 'init' || !showSecondBar )  && (
           <Flex direction="row" h="100%" gap={2} onClick={() => setShowSecondBar(true)}>
             <CentralSearchFrame 
               feature={TitleSearchInput} 
@@ -41,7 +41,7 @@ export default function RecipeSearchUtility(
       }
 
       {
-        pageState === 'ingSearch' && pageLocation === 'dashboard' && showSecondBar && (
+        pageState === 'ingSearch'  && showSecondBar && (
           <CentralSearchFrame
             feature={IngredientSearchForm}
             featureProps={{ prevState: () => { changePageState('init') }, ref: null }}

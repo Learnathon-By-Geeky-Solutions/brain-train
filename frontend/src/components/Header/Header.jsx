@@ -51,7 +51,7 @@ const StickyHeader = ({
       const currentScrollY = window.scrollY;
       
       // If we're at the top (or very close to it), always show the second bar
-      if ((currentScrollY < 10) && (location.pathname === '/dashboard' || location.pathname === '/dashboard/')) {
+      if ((currentScrollY < 10) ) {
         setShowSecondBar(true);
       } 
       // Otherwise hide it when scrolling down

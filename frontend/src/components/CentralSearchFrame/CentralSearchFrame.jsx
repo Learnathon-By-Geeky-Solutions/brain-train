@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { LuSearch } from 'react-icons/lu';
 import PropTypes from 'prop-types';
 import DummySearchBar from '../RecipeSearchUtility/DummySearchBar';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => {
@@ -24,7 +25,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => 
 
     searchData.filters = filters;
     showResults(searchData);
-    setShouldFetch(false); // Reset fetch trigger
+    setShouldFetch(false);// Reset fetch trigger
   }, [searchData, shouldFetch]); // Watch for changes in searchData
 
 
