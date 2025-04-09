@@ -24,11 +24,11 @@ export const viewMealPlans = async (req, res) => {
     const response = {};
 
     if (!type || type === 'day') {
-      response.dailyPlans = await fetchUserDailyPlans(firebaseUid);
+      // response.dailyPlans = await fetchUserDailyPlans(firebaseUid);
     }
 
     if (!type || type === 'week') {
-      response.weeklyPlans = await fetchUserWeeklyPlans(firebaseUid);
+      // response.weeklyPlans = await fetchUserWeeklyPlans(firebaseUid);
     }
 
     return res.status(200).json({ success: true, ...response });

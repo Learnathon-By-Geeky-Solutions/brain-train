@@ -1,5 +1,5 @@
 import {DailyMealPlan,WeeklyMealPlan } from "../../libraries/models/mealPlans.js";
-import { generateIndexedWeeklyMealPlans } from "./utils/weeklyHelper.js";
+import { prepareWeeklyDailyPlans } from "./utils/weeklyHelper.js";
 import { enrichMealsWithRecipeIds } from "./utils/detailsHelper.js";
 
 export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
@@ -25,9 +25,11 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
   
  export const saveWeeklyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
     const endDate = new Date(startDate.getTime() + 6 * 86400000);
-    const indexedDailyPlans = await generateIndexedWeeklyMealPlans(plan.week, startDate);
+    // const indexedDailyPlans = await generateIndexedWeeklyMealPlans(plan.week, startDate);
+
     
-    const dailyPlansArray = Object.values(indexedDailyPlans); // For saving to DB
+    // const dailyPlansArray = Object.values(indexedDailyPlans); // For saving to DB
+    const dailyPlansArray = await prepareWeeklyDailyPlans(plan.week, startDate); // For saving to DB
 
     const newWeeklyPlan = new WeeklyMealPlan({
       firebaseUid,
@@ -49,5 +51,5 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
     const plans = await DailyMealPlan.find({ firebaseUid }).lean();
     return plans.flatMap(p => p.dailyMealPlans);
   };
-  
+
   
