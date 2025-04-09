@@ -1,15 +1,16 @@
 import {DailyMealPlan,WeeklyMealPlan } from "../../libraries/models/mealPlans.js";
 import { mapSpoonacularWeekToDates } from "./utils/dateHelper.js";
+import { enrichMealsWithRecipeIds } from "./utils/detailsHelper.js";
 
 export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
-    const title = customTitle || `Daily Plan - ${startDate.toLocaleDateString()}`;
+    const meals = await enrichMealsWithRecipeIds(plan.meals);
     const newDailyPlan = new DailyMealPlan({
       firebaseUid,
       dailyMealPlans: [
         {
-          title,
+          title: customTitle || `Daily Plan - ${startDate.toLocaleDateString()}`,
           mealPlan: {
-            meals: plan.meals,
+            meals,
             nutrients: plan.nutrients
           },
           startDate,              // basically the date of the meal plan
@@ -19,11 +20,10 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
     });
   
     await newDailyPlan.save();
-    return plan;
+    return newDailyPlan;
   };
   
  export const saveWeeklyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
-    const title = customTitle || `Weekly Plan - ${startDate.toLocaleDateString()}`;
     const endDate = new Date(startDate.getTime() + 6 * 86400000);
     const dailyPlans = mapSpoonacularWeekToDates(plan.week, startDate); // Returns objects with correct format
 
@@ -33,7 +33,7 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
       firebaseUid,
       weeklyMealPlans: [
         {
-          title,
+          title: customTitle || `Weekly Plan - ${startDate.toLocaleDateString()}`,
           dailyMealPlans: dailyPlans, 
           startDate,
           endDate,

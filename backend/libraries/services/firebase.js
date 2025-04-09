@@ -15,6 +15,7 @@ if (!admin.apps.length) {
  */
 export const decodeFirebaseIdToken = async (authorizationHeader) => {
   const idToken = extractBearerToken(authorizationHeader);
+  console.log("idToken", idToken);
   return verifyToken(idToken);
 };
 
