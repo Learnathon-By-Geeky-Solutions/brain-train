@@ -214,7 +214,9 @@ const StickyHeader = ({
                   </DrawerHeader>
                   <DrawerBody>
                     <Flex direction="column" mt={2}>
-                      <Button onClick={showFavouriteRecipes} variant="ghost">Favourite Recipes</Button>
+                      <DrawerActionTrigger asChild>
+                        <Button onClick={showFavouriteRecipes} variant="ghost">Favourite Recipes</Button>
+                      </DrawerActionTrigger>
                       <Button variant="ghost">Dummy</Button>
                     </Flex>
                   </DrawerBody>
