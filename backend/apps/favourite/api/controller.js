@@ -31,7 +31,7 @@ export const favouriteRecipesAdder = (req, res) => {
   const id = recipeId.toString();
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'Invalid recipe' });
+    return res.status(400).json({ error: 'Invalid recipe ID' });
   }
 
   decodeFirebaseIdToken(req.headers.authorization)
@@ -40,7 +40,7 @@ export const favouriteRecipesAdder = (req, res) => {
     })
     .then(({ uid, id, recipe }) => {
       if (!recipe) {
-        return res.status(400).json({ error: 'Recipe not found' });
+        return res.status(404).json({ error: 'Recipe not found' });
       }
       return findFavouriteRecipeIdsByUid(uid).then(userFavourites => ({ uid, id, userFavourites }));
     })
@@ -51,7 +51,7 @@ export const favouriteRecipesAdder = (req, res) => {
       }
 
       if (userFavourites.recipeIds.includes(id)) {
-        return res.status(400).json({ error: 'Recipe already in favourites' });
+        return res.status(409).json({ error: 'Recipe already in favourites' });
       }
 
       userFavourites.recipeIds.push(id);
@@ -64,17 +64,23 @@ export const favouriteRecipesAdder = (req, res) => {
 };
 
 export const favouriteRecipesRemover = (req, res) => {
+  const { recipeId } = req.body;
+  const id = recipeId.toString();
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: 'Invalid recipe ID' });
+  }
+
   decodeFirebaseIdToken(req.headers.authorization)
     .then(({ uid }) => {
-      const { recipeId } = req.body;
-      return findFavouriteRecipeIdsByUid(uid).then(userFavourites => ({ uid, recipeId, userFavourites }));
+      return findFavouriteRecipeIdsByUid(uid).then(userFavourites => ({ uid, id, userFavourites }));
     })
-    .then(({ recipeId, userFavourites }) => {
-      if (!userFavourites?.recipeIds?.includes(recipeId)) {
-        return res.status(400).json({ error: 'Recipe not in favourites' });
+    .then(({ id, userFavourites }) => {
+      if (!userFavourites?.recipeIds?.includes(id)) {
+        return res.status(404).json({ error: 'Recipe not in favourites' });
       }
 
-      userFavourites.recipeIds = userFavourites.recipeIds.filter(id => id !== recipeId);
+      userFavourites.recipeIds = userFavourites.recipeIds.filter(recipeId => recipeId !== id);
       return userFavourites.save().then(() => res.status(200).json({ message: 'Recipe removed from favourites' }));
     })
     .catch(error => {
