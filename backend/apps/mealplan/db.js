@@ -1,5 +1,5 @@
 import {DailyMealPlan,WeeklyMealPlan } from "../../libraries/models/mealPlans.js";
-import { prepareWeeklyDailyPlans ,indexByWeekday} from "./utils/weeklyHelper.js";
+import { prepareWeeklyDailyPlans ,formatWeeklyMealPlans} from "./utils/weeklyHelper.js";
 import { enrichMealsWithRecipeIds } from "./utils/detailsHelper.js";
 
 export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
@@ -43,24 +43,25 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
     await newWeeklyPlan.save();
     return newWeeklyPlan;
   };
+
   export const fetchUserDailyPlans = async (firebaseUid) => {
     const plans = await DailyMealPlan.find({ firebaseUid }).lean();
     return plans.flatMap(p => p.dailyMealPlans);
   };
+
+
   export const fetchUserWeeklyPlans = async (firebaseUid) => {
     const plans = await WeeklyMealPlan.find({ firebaseUid }).lean();
-  
-    return plans.flatMap(weeklyDoc => {
-      if (!weeklyDoc.weeklyMealPlans || weeklyDoc.weeklyMealPlans.length === 0) return [];
-  
-      return weeklyDoc.weeklyMealPlans.map(entry => ({
-        _id: weeklyDoc._id,
-        title: entry.title,
-        startDate: entry.startDate,
-        endDate: entry.endDate,
-        savedAt: entry.savedAt,
-        plansByWeekday: indexByWeekday(entry.dailyMealPlans || [])
-      }));
-    });
+    return plans.flatMap(formatWeeklyMealPlans);
   };
-  
+
+  export const findDailyPlanById = async (planId, uid) => {
+    return DailyMealPlan.findOne({ _id: planId, firebaseUid: uid }).lean();
+  };
+
+  export const findWeeklyPlanById = async (planId, uid) => {
+    const doc = await WeeklyMealPlan.findOne({ _id: planId, firebaseUid: uid }).lean();
+    const formatted = formatWeeklyMealPlans(doc);
+    return formatted[0] || null;
+  };
+    

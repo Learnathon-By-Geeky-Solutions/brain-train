@@ -42,9 +42,21 @@ export const indexByWeekday = (dailyMealPlans) => {
   dailyMealPlans.forEach(daily => {
     if (!daily?.startDate) return;
     const weekday=daily.startDate.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-    console.log('weekday from indexByWeekday:', weekday);
     indexed[weekday] = daily;
   });
 
   return indexed;
-}
+};
+
+export const formatWeeklyMealPlans = (weeklyDoc) => {
+  if (!weeklyDoc || !weeklyDoc.weeklyMealPlans) return [];
+
+  return weeklyDoc.weeklyMealPlans.map(entry => ({
+    _id: weeklyDoc._id,
+    title: entry.title,
+    startDate: entry.startDate,
+    endDate: entry.endDate,
+    savedAt: entry.savedAt,
+    plansByWeekday: indexByWeekday(entry.dailyMealPlans || [])
+  }));
+};

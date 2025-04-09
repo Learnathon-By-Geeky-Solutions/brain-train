@@ -1,6 +1,6 @@
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { generateMealPlanAndSave } from '../utils/planService.js';
-import { fetchUserDailyPlans, fetchUserWeeklyPlans } from '../db.js';
+import { fetchUserDailyPlans, fetchUserWeeklyPlans,findDailyPlanById,findWeeklyPlanById } from '../db.js';
 
 
 
@@ -36,6 +36,33 @@ export const planMeal = (req, res) => {
       });
   };
   
+
+  
+export const viewMealPlanById = (req, res) => {
+  decodeFirebaseIdToken(req.headers.authorization)
+    .then(({ uid }) => {
+      const { planId } = req.params;
+      const { type } = req.query;
+
+      if (!planId || !type || !['day', 'week'].includes(type)) {
+        return res.status(400).json({ success: false, message: 'Invalid plan type or ID.' });
+      }
+
+      const fetchFn = type === 'day' ? findDailyPlanById : findWeeklyPlanById;
+
+      return fetchFn(planId, uid).then(plan => {
+        if (!plan) {
+          return res.status(404).json({ success: false, message: 'Meal plan not found.' });
+        }
+
+        return res.status(200).json({ success: true, plan });
+      });
+    })
+    .catch(err => {
+      console.error('[MealPlans] Single View Error:', err);
+      return res.status(500).json({ success: false, message: 'Failed to fetch meal plan.' });
+    });
+};
 
 
 
