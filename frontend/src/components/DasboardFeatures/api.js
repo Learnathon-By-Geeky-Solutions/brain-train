@@ -72,5 +72,39 @@ const getRecommendedRecipes = async()=>{
   });
 }
 
+const getTrendingRecipes = async()=>{
+  const auth = getAuth();
+  let data = {status: "error", msg: ""};
+  const url = `${API_BASE_URL}/trending/5`;
+  
+  // Return a promise that resolves when auth state is ready
+  return new Promise((resolve) => {
+    // This listener fires once when auth state is first determined
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      unsubscribe(); // Stop listening immediately after first auth state is determined
+      
+      if (user) {
+        const idToken = await user.getIdToken();
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+        
+        if (response.ok) {
+          data = await response.json();
+        } else {
+          data.msg = "Failed to get trending recipes";
+        }
+      } else {
+        data.msg = "User not logged in";
+      }
+      resolve(data);
+    });
+  });
+}
 
-export { getRecentRecipes, getRecommendedRecipes };
+
+export { getRecentRecipes, getRecommendedRecipes, getTrendingRecipes };
