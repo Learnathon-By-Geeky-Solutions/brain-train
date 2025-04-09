@@ -64,4 +64,17 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
     const formatted = formatWeeklyMealPlans(doc);
     return formatted[0] || null;
   };
+
+  export const deleteDailyPlanById = async (planId, uid) => {
+    return await DailyMealPlan.deleteOne({ _id: planId, firebaseUid: uid });
+  };
+  
+  export const deleteWeeklyPlanById = async (planId, uid) => {
+    return await WeeklyMealPlan.deleteOne({ _id: planId, firebaseUid: uid });
+  };
+  
+  export const deleteAllUserMealPlans = async (uid) => {
+    await DailyMealPlan.deleteMany({ firebaseUid: uid });
+    await WeeklyMealPlan.deleteMany({ firebaseUid: uid });
+  };
     
