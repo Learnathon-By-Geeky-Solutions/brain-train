@@ -14,8 +14,8 @@ router.post('/generate',validateMealPlanRequest, planMeal);
 router.get('/view',viewMealPlans);
 router.get('/view/:planId', viewMealPlanById);
 
+router.delete('/all', deleteAllMealPlans);
 router.delete('/:planId', deleteMealPlanById); 
-router.delete('all', deleteAllMealPlans);
 
 
 export default router;
