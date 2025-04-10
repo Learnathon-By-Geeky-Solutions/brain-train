@@ -124,7 +124,7 @@ const handleSpoonacularFallback = (recipeId, count, selectedRecipeIds) => {
         .map((recipe) => recipe.id)
         .filter((id) => !selectedRecipeIds.has(id));
 
-      if (similarRecipeIds.length === 0) return []; // No similar recipes found
+      if (similarRecipeIds.length === 0) return { detailedRecipes: [] }; // No similar recipes found
 
       return fetchSaveFilterRecipes(similarRecipeIds, {}).then(
         (detailedRecipes) => ({ detailedRecipes, similarRecipeIds })
