@@ -49,7 +49,7 @@ export const indexByWeekday = (dailyMealPlans) => {
 };
 
 export const formatWeeklyMealPlans = (weeklyDoc) => {
-  if (!weeklyDoc || !weeklyDoc.weeklyMealPlans) return [];
+  if (!weeklyDoc?.weeklyMealPlans) return [];
 
   return weeklyDoc.weeklyMealPlans.map(entry => ({
     _id: weeklyDoc._id,

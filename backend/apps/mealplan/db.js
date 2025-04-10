@@ -1,6 +1,7 @@
 import {DailyMealPlan,WeeklyMealPlan } from "../../libraries/models/mealPlans.js";
 import { prepareWeeklyDailyPlans ,formatWeeklyMealPlans} from "./utils/weeklyHelper.js";
 import { enrichMealsWithRecipeIds } from "./utils/detailsHelper.js";
+import { summarizePlans } from "./utils/planHelper.js";
 
 export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
     const meals = await enrichMealsWithRecipeIds(plan.meals);
@@ -18,9 +19,8 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
         }
       ]
     });
-  
-    await newDailyPlan.save();
-    return newDailyPlan;
+    const saved = await newDailyPlan.save();
+    return summarizePlans([saved], 'day')[0]; // Return the saved plan in a summarized format
   };
   
  export const saveWeeklyMealPlan = async (firebaseUid, plan, startDate,customTitle) => {
@@ -39,9 +39,9 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
         }
       ]
     });
-  
-    await newWeeklyPlan.save();
-    return newWeeklyPlan;
+    
+    const saved = await newWeeklyPlan.save();
+    return summarizePlans([saved], 'week')[0]; 
   };
 
 
@@ -64,7 +64,11 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
       'weeklyMealPlans.endDate': { $gte: dayStart }
     }).lean();
   
-    return {dailyPlans, weeklyPlans};
+    return {
+          dailyPlans : summarizePlans(dailyPlans, 'day'),
+          weeklyPlans : summarizePlans(weeklyPlans, 'week')
+          };
+      
   };
   
   
@@ -88,7 +92,10 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
       'weeklyMealPlans.endDate': { $gte: start }
     }).lean();
   
-    return {dailyPlans, weeklyPlans};
+    return {
+      dailyPlans : summarizePlans(dailyPlans, 'day'),
+      weeklyPlans : summarizePlans(weeklyPlans, 'week')
+      };
   };
   
   
@@ -99,13 +106,13 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
 
   export const fetchUserDailyPlans = async (firebaseUid) => {
     const plans = await DailyMealPlan.find({ firebaseUid }).lean();
-    return plans.flatMap(p => p.dailyMealPlans);
+    return summarizePlans(plans, 'day');
   };
 
 
   export const fetchUserWeeklyPlans = async (firebaseUid) => {
     const plans = await WeeklyMealPlan.find({ firebaseUid }).lean();
-    return plans.flatMap(formatWeeklyMealPlans);
+    return summarizePlans(plans, 'week');
   };
 
   export const findDailyPlanById = async (planId, uid) => {
