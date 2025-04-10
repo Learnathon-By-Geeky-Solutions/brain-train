@@ -5,7 +5,7 @@ const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"
 const getRecentRecipes = async(noOfRecipes)=>{
   const auth = getAuth();
   let data = {status: "error", msg: ""};
-  const url = `${API_BASE_URL}/search/history/${noOfRecipes}`;
+  const url = `${API_BASE_URL}/search/history`;
   
   // Return a promise that resolves when auth state is ready
   return new Promise((resolve) => {
@@ -25,8 +25,12 @@ const getRecentRecipes = async(noOfRecipes)=>{
         
         if (response.ok) {
           data = await response.json();
+          console.log("Data: from recent recipes");
+          console.log(data);
         } else {
           data.msg = "Failed to get recent recipes";
+          console.log("Data: from recent recipes when failed");
+          console.log(data);
         }
       } else {
         data.msg = "User not logged in";

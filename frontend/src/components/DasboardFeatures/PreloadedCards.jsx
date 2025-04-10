@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Flex, Text } from '@chakra-ui/react';
 import RecipeCardContainer from '../RecipeCardContainer/RecipeCardContainer';
-import { getRecentRecipes, getRecommendedRecipes } from './api';
+import { getRecentRecipes, getRecommendedRecipes, getTrendingRecipes } from './api';
 import { useEffect, useState } from 'react';
 import ExploreCuisine from './ExploreCuisine';
 
@@ -14,6 +14,9 @@ const PreloadedCards = ({txt,cards,showResults = null}) => {
         }
         else if( txt === "Recommended for You" ){
             fn = getRecommendedRecipes;
+        }
+        else if( txt === "Trending Recipes" ){
+            fn = getTrendingRecipes;
         }
 
         fn?.(5).then((data) => {
