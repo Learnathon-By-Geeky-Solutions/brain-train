@@ -9,9 +9,19 @@ export const validateMealPlanRequest = [
 
   // Optional field: startDate
   body('startDate')
-    .optional()
-    .isISO8601()
-    .withMessage('startDate must be a valid date (ISO 8601 format)'),
+  .optional({ checkFalsy: true }) // ensures empty or missing values are ignored
+  .isISO8601()
+  .withMessage('startDate must be a valid date (ISO 8601 format)')
+  .custom((value) => {
+    const date = new Date(value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date < today) {
+      throw new Error('startDate cannot be in the past');
+    }
+    return true;
+  }),
+
 
   // Optional numeric field: targetCalories
   body('targetCalories')

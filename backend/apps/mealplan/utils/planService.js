@@ -10,6 +10,7 @@ export const generateMealPlanAndSave = async (firebaseUid, body) => {
     } = body;
 
     const parsedStartDate = startDate ? new Date(startDate) : new Date();
+    
     const conflict =
     timeFrame === 'day'
       ? await getDailyOverlaps(firebaseUid, parsedStartDate)
