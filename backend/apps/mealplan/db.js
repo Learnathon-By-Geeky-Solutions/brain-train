@@ -44,6 +44,59 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
     return newWeeklyPlan;
   };
 
+
+  // Check for a daily plan or overlapping weekly plan on the given date
+  export const getDailyOverlaps = async (firebaseUid, date) => {
+    const dayStart = new Date(date.setHours(0, 0, 0, 0));
+    const dayEnd = new Date(date.setHours(23, 59, 59, 999));
+  
+    const dailyPlans = await DailyMealPlan.find({
+      firebaseUid,
+      'dailyMealPlans.startDate': {
+        $gte: dayStart,
+        $lte: dayEnd
+      }
+    }).lean();
+  
+    const weeklyPlans = await WeeklyMealPlan.find({
+      firebaseUid,
+      'weeklyMealPlans.startDate': { $lte: dayEnd },
+      'weeklyMealPlans.endDate': { $gte: dayStart }
+    }).lean();
+  
+    return {dailyPlans, weeklyPlans};
+  };
+  
+  
+  // Check for any daily or weekly plans that overlap the 7-day span
+  export const getWeeklyOverlaps = async (firebaseUid, startDate) => {
+    const start = new Date(startDate.setHours(0, 0, 0, 0));
+    const end = new Date(start.getTime() + 6 * 86400000);
+    end.setHours(23, 59, 59, 999);
+  
+    const dailyPlans = await DailyMealPlan.find({
+      firebaseUid,
+      'dailyMealPlans.startDate': {
+        $gte: start,
+        $lte: end
+      }
+    }).lean();
+  
+    const weeklyPlans = await WeeklyMealPlan.find({
+      firebaseUid,
+      'weeklyMealPlans.startDate': { $lte: end },
+      'weeklyMealPlans.endDate': { $gte: start }
+    }).lean();
+  
+    return {dailyPlans, weeklyPlans};
+  };
+  
+  
+
+
+
+
+
   export const fetchUserDailyPlans = async (firebaseUid) => {
     const plans = await DailyMealPlan.find({ firebaseUid }).lean();
     return plans.flatMap(p => p.dailyMealPlans);

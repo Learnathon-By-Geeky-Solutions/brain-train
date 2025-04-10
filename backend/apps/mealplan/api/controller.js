@@ -5,16 +5,21 @@ import { fetchUserDailyPlans, fetchUserWeeklyPlans,findDailyPlanById,findWeeklyP
 } from '../db.js';
 
 
-
-export const planMeal = (req, res) => {
+  export const planMeal = (req, res) => {
     decodeFirebaseIdToken(req.headers.authorization)
       .then(({ uid }) => generateMealPlanAndSave(uid, req.body))
-      .then(plan => res.status(201).json({ success: true, plan }))
+      .then(result => {
+        if (!result.success) {
+          return res.status(409).json(result); // Already exists or failed validation
+        }
+        return res.status(201).json(result); // Success
+      })
       .catch(error => {
-        console.error(' Meal planning error:', error.message);
-        return res.status(500).json({success:false, error: 'Internal server error' });
+        console.error('Meal planning error:', error.message);
+        return res.status(500).json({ success: false, error: 'Internal server error' });
       });
   };
+  
 
   export const viewMealPlans = (req, res) => {
     decodeFirebaseIdToken(req.headers.authorization)
