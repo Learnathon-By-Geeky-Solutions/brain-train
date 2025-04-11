@@ -57,11 +57,10 @@ async function getMealData(startDate,timeFrame,id) {
   });
 }
 
-async function saveMealPlan(plan,startDate,setReload) {
+async function saveMealPlan(plan,startDate) {
   const auth = getAuth();
   let data = {status: "error", msg: ""};
   const reqBody = generateMealPlanReqBody(startDate, plan);
-  setReload(true);
   console.log('plan from saveMealPlan ');
   console.log(plan);
   console.log(reqBody);

@@ -58,6 +58,10 @@ const MealPlanningCalendar = () => {
     const nxtStartDate = getOtherWeekStartDate(startDate,true);
     changeStartDate(nxtStartDate);
   }
+
+  function toggleReload(){
+    setReload(!reload);
+  }
   
   return (
     <Flex>
@@ -116,7 +120,7 @@ const MealPlanningCalendar = () => {
                     <PlanController  
                       currentDate={getOffsetDate(startDate,dayIndex)}
                       startDate={initialStartDate}
-                      setReload={setReload}
+                      toggleReload={toggleReload}
                     />
                   </Flex>
                 )
