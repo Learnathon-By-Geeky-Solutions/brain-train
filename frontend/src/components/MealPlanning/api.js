@@ -103,7 +103,7 @@ async function saveMealPlan(plan,startDate,setReload) {
 
 async function getMyPlans() {
   const auth = getAuth();
-  let data = {status: "error", msg: "", plans:[]};
+  let data = {status: "error", msg: "", plans:{daily:[], weekly:[]} };
   const url = `${API_BASE_URL}/plan/view`;
   
   // Return a promise that resolves when auth state is ready
@@ -125,10 +125,10 @@ async function getMyPlans() {
         if (response.ok) {
           data.status = "success"
           const planList = await response.json();
-          data.plans.push(...planList.dailyPlans);
-          console.log("day plans: ", data.plans);
-          data.plans.push(...planList.weeklyPlans);
-          console.log("week plans: ", data.plans);
+          data.plans.daily = planList.dailyPlans;
+          console.log("day plans: ", data.plans.daily);
+          data.plans.weekly = planList.weeklyPlans;
+          console.log("week plans: ", data.plans.weekly);
          
         } else {
           data.msg = "Failed to get my plans";
@@ -142,10 +142,10 @@ async function getMyPlans() {
   });
 }
 
-async function deletePlan(planId){
+async function deletePlan(planId,type){
     const auth = getAuth();
     let data = {status: "error", msg: ""};
-    const url = `${API_BASE_URL}/plan/${planId}?type=day`;
+    const url = `${API_BASE_URL}/plan/${planId}?type=${type}`;
     
     // Return a promise that resolves when auth state is ready
     return new Promise((resolve) => {
