@@ -347,3 +347,14 @@ export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
   
     return filtered;
   };
+  export const minimizeRecipeData = (recipes) => {
+    return recipes.map(recipe => ({
+      _id: recipe._id || recipe.id,
+      id: recipe._id || recipe.id,
+      title: recipe.title,
+      image: recipe.image,
+      summary: recipe.summary,
+      likes: recipe.likes
+    }));
+  };
+  

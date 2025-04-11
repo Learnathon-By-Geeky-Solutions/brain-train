@@ -13,7 +13,8 @@ import {
     enrichRecipesWithFields,
     filterRecipes,
     fetchSaveFilterRecipes,
-    generateShoppingList
+    generateShoppingList,
+    minimizeRecipeData
 } from '../helper.js';
 
 import mongoose from 'mongoose';
@@ -45,7 +46,7 @@ export const searchRecipes = async (req, res) => {
 
         console.log(" DB Results After Filtering:", dbResults.length);
         if (dbResults.length > 0) {
-            return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
+            return res.status(200).json({ results: minimizeRecipeData(dbResults), totalResults: dbResults.length });
         }
 
         // Fetch recipes
@@ -68,7 +69,7 @@ export const searchRecipes = async (req, res) => {
 
         const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
 
-        return res.status(200).json({ results: filteredApiResults, totalResults: filteredApiResults.length });
+        return res.status(200).json({ results: minimizeRecipeData( filteredApiResults), totalResults: filteredApiResults.length });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
@@ -101,7 +102,7 @@ export const searchRecipesByIngredients = async (req, res) => {
         console.log(" DB Results After Filtering:", dbResults.length);
 
         if (dbResults.length > 0) {
-            return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
+            return res.status(200).json({ results: minimizeRecipeData(dbResults), totalResults: dbResults.length });
         }
 
         //  No results from DB? Fetch from Spoonacular API
@@ -120,7 +121,7 @@ export const searchRecipesByIngredients = async (req, res) => {
 
         const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
 
-        return res.status(200).json({ results: filteredApiResults, totalResults: filteredApiResults.length });
+        return res.status(200).json({ results: minimizeRecipeData( filteredApiResults), totalResults: filteredApiResults.length });
 
     } catch (error) {
         console.error(" Error in searchRecipesByIngredients:", error);
@@ -144,7 +145,7 @@ export const searchRecipesByNutrients = async (req, res) => {
         const recipesData = await spoonacularRequest('/recipes/findByNutrients', { number, ...params });
         const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
 
-        return  res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+        return  res.status(200).json({ results: minimizeRecipeData(enrichedRecipes), totalResults: recipesData.totalResults });
 
     } catch (error) {
         return  res.status(500).json({ error: error.message });
