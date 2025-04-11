@@ -23,13 +23,38 @@ import NavItem from './NavItem';
 
 const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) => {
 
-  const [planList, setPlanList] = useState(getMyPlans());
+  const [planList, setPlanList] = useState([]);
   const [isActiveIdx,setIsActiveIdx] = useState(0);
+
+  useEffect(() => {
+    getMyPlans().then((data) => {
+      if(data.status === 'error'){
+        console.error('Failed to fetch plans in 1st useEffect: ', data.msg);
+        console.log('Data: ', data);
+        setPlanList([]);
+      }
+      else{
+        console.log('Fetched plans from 1st useEffect: ', data.plans);
+        setPlanList(data.plans);
+      }
+    }
+    );
+  },[]);
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan sidenavbar');
     if(!reload) return;
-    setPlanList(getMyPlans());
+    getMyPlans().then((data) => {
+      if(data.status === 'error'){
+        console.error('Failed to fetch plans in useEffect: ', data.msg);
+        console.log('Data: ', data);
+        setPlanList([]);
+      }
+      else{
+        console.log('Fetched plans from useEffect: ', data.plans);
+        setPlanList(data.plans);
+      }
+    });
   }, [reload]);
 
 
@@ -40,7 +65,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
   const activeColor = useColorModeValue('green.700', 'green.200');
 
   function getPlanString(plan){
-    if(plan.time === 'week'){
+    if(plan?.time === 'week'){
       return formatMealPlanDateRange(plan.startDate);
     }
     else{
@@ -122,12 +147,12 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
                      color={isActiveIdx === 20 + index ? activeColor : undefined}
                     _hover={{ bg: hoverBg, cursor: 'pointer' }}
                     onClick={() => {
-                      if(plan.time === 'week'){
+                      if(plan?.time === 'week'){
                         // setStartDate(plan.startDate);
                         setSearchParams({});
                       }
                       else{
-                        setSearchParams({ time: 'day', date: plan.startDate });
+                        setSearchParams({ time: 'day', date: plan.startDate, id: plan._id });
                       }
                       setIsActiveIdx(20+index);
                     }}
@@ -140,8 +165,18 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
                   <Menu.Content>
                     <Menu.Item
                       onClick={() => {
-                        deletePlan(plan.id);
-                        setReload(true);
+                        deletePlan(plan._id).then((data) => {
+                          if(data.status === 'error'){
+                            console.error('Failed to delete plan: ');
+                            console.log(data);
+                          }
+                          else{
+                            console.log('Deleted plan: ');
+                            console.log(data);
+                            setReload(true);
+                          }
+                        }
+                        );
                       }}
                     >
                       Delete

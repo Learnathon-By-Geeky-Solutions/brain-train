@@ -309,7 +309,10 @@ import { saveMealPlan } from "./api";
                       plan = newPlan;
                       console.log("Meal Plan updated");
                       console.log(plan);
-                      saveMealPlan(plan,startDate,setReload);
+                      saveMealPlan(plan,currentDate,setReload).then((data) => {
+                        console.log("Meal Plan saving response");
+                        console.log(data);
+                      });
                     }}
                   >
                     Save

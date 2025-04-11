@@ -17,20 +17,22 @@ import { getMealData } from './api';
 import PlanController from './AddMealPlan';
 import { useSearchParams } from 'react-router-dom';
 import DailyMealPlan from './DailyMealPlan';
+import sampleMealData from './sampleMealData';
 
 
 const MealPlanningCalendar = () => {
   const [startDate, setStartDate] = useState(getCurrentDateFormatted());
   const [reload, setReload] = useState(false);
   const [days, setDays] = useState(getDaysOfWeek(startDate));
-  const [mealData, setMealData] = useState(getMealData(startDate, 'week'));
+  const [mealData, setMealData] = useState(sampleMealData);
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan');
     if(!reload) return;
     setDays(getDaysOfWeek(startDate));
-    setMealData(getMealData(startDate, 'week'));
+    // setMealData(getMealData(startDate, 'week'));
+    setMealData(sampleMealData);
     setReload(false);
   }, [reload]);
 
