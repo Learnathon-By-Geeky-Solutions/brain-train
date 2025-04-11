@@ -142,7 +142,7 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
     await WeeklyMealPlan.deleteMany({ firebaseUid: uid });
   };
 
-  export const getDailyPlansOnDate = async (firebaseUid, dayStart, dayEnd) => {
+  export const getDailyPlansOnDateRange = async (firebaseUid, dayStart, dayEnd) => {
     return DailyMealPlan.find({
       firebaseUid,
       'dailyMealPlans.startDate': {
@@ -160,6 +160,13 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
         $gte: dayStart,
         $lte: dayEnd
       }
+    }).lean();
+  };
+  export const getWeeklyPlansInRange = async (firebaseUid, start, end) => {
+    return WeeklyMealPlan.find({
+      firebaseUid,
+      'weeklyMealPlans.startDate': { $lte: end },
+      'weeklyMealPlans.endDate': { $gte: start }
     }).lean();
   };
   

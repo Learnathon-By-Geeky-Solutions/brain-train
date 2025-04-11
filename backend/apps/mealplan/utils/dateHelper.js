@@ -13,9 +13,9 @@ export const extractMatchingDailyPlansFromWeekly = (weeklyDocs, dayStart, dayEnd
           .map(dp => ({
             ...dp,
             source: 'weekly',
-            title: weekly.title,
-            startDate: weekly.startDate,
-            endDate: weekly.endDate
+            weeklyStartDate: weekly.startDate,
+            weeklyTitle: weekly.title,
+            weeklyEndDate: weekly.endDate
           }));
   
         matchedPlans.push(...matches);
@@ -44,3 +44,27 @@ export const extractMatchingDailyPlansFromWeekly = (weeklyDocs, dayStart, dayEnd
   
     return matchedPlans;
   };
+  export const buildWeekIndexedPlans = (start, plansByDate) => {
+    const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const result = {};
+  
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(start);
+      date.setDate(start.getDate() + i);
+      const key = date.toDateString();
+      const weekday = weekdays[date.getDay()];
+      result[weekday] = plansByDate[key] || null;
+    }
+  
+    return result;
+  };
+  export const groupPlansByDate = (plansArray) => {
+    const result = {};
+    for (const plan of plansArray) {
+      const date = new Date(plan.startDate);
+
+      result[date.toDateString()] = plan;
+    }
+    return result;
+  };
+  
