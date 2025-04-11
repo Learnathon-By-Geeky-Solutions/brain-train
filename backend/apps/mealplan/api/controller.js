@@ -1,5 +1,5 @@
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
-import { generateMealPlanAndSave } from '../utils/planService.js';
+import { generateMealPlanAndSave,searchDailyPlansByDate } from '../utils/planService.js';
 import { fetchUserDailyPlans, fetchUserWeeklyPlans,findDailyPlanById,findWeeklyPlanById 
   ,deleteDailyPlanById, deleteWeeklyPlanById, deleteAllUserMealPlans
 } from '../db.js';
@@ -113,3 +113,40 @@ export const deleteMealPlanById = (req, res) => {
 
 
 
+
+export const searchMealPlanByDate = (req, res) => {
+  decodeFirebaseIdToken(req.headers.authorization)
+    .then(({ uid }) => {
+      const { date, type } = req.query;
+
+      if (!date || !type || !['day', 'week'].includes(type)) {
+        return res.status(400).json({ success: false, message: 'Invalid or missing parameters.' });
+      }
+
+      if (type === 'day') {
+        return searchDailyPlansByDate(uid, date);
+      }
+
+      if (type === 'week') {
+        // ⚠️ Placeholder for future implementation
+        throw new Error('WEEK_TYPE_NOT_IMPLEMENTED');
+      }
+
+      throw new Error('UNSUPPORTED_TYPE');
+    })
+    .then(plans => {
+      res.status(200).json({ success: true, plans });
+    })
+    .catch(error => {
+      const messageMap = {
+        WEEK_TYPE_NOT_IMPLEMENTED: 'Week-based search is not implemented yet.',
+        UNSUPPORTED_TYPE: 'Unsupported plan type.'
+      };
+
+      const message = messageMap[error.message] || 'Failed to search meal plan by date.';
+      const status = error.message in messageMap ? 400 : 500;
+
+      console.error('[SearchMealPlan] Error:', error.message);
+      res.status(status).json({ success: false, message });
+    });
+};
