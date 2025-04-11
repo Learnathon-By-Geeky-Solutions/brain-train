@@ -27,28 +27,27 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
   const [weeklyPlanList, setweeklyPlanList] = useState([]);
   const [isActiveIdx,setIsActiveIdx] = useState(0);
 
-  useEffect(() => {
-    getMyPlans().then((data) => {
-      if(data.status === 'error'){
-        console.error('Failed to fetch plans in 1st useEffect: ');
-        console.log('Data: ');
-        console.log(data);
-        setDailyPlanList([]);
-        setweeklyPlanList([]);
-      }
-      else{
-        console.log('Fetched plans from 1st useEffect: ');
-        console.log(data.plans);
-        setDailyPlanList(data.plans.daily);
-        setweeklyPlanList(data.plans.weekly);
-      }
-    }
-    );
-  },[]);
+  // useEffect(() => {
+  //   getMyPlans().then((data) => {
+  //     if(data.status === 'error'){
+  //       console.error('Failed to fetch plans in 1st useEffect: ');
+  //       console.log('Data: ');
+  //       console.log(data);
+  //       setDailyPlanList([]);
+  //       setweeklyPlanList([]);
+  //     }
+  //     else{
+  //       console.log('Fetched plans from 1st useEffect: ');
+  //       console.log(data.plans);
+  //       setDailyPlanList(data.plans.daily);
+  //       setweeklyPlanList(data.plans.weekly);
+  //     }
+  //   }
+  //   );
+  // },[]);
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan sidenavbar');
-    // if(!reload) return;
     getMyPlans().then((data) => {
       if(data.status === 'error'){
         console.error('Failed to fetch plans in 1st useEffect: ');
