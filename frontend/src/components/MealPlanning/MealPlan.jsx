@@ -29,11 +29,11 @@ const MealPlanningCalendar = () => {
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan');
-    if(!reload) return;
+    // if(!reload) return;
     setDays(getDaysOfWeek(startDate));
     // setMealData(getMealData(startDate, 'week'));
     setMealData(sampleMealData);
-    setReload(false);
+    // setReload(false);
   }, [reload]);
 
 
@@ -254,7 +254,7 @@ const MealPlanningCalendar = () => {
         </Grid>
       </Box>)
       :
-      (<DailyMealPlan searchParams={searchParams}/>) 
+      (<DailyMealPlan searchParams={searchParams} reload={reload}/>) 
       }
     </Flex>
   );

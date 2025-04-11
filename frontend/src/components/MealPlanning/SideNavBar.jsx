@@ -48,7 +48,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan sidenavbar');
-    if(!reload) return;
+    // if(!reload) return;
     getMyPlans().then((data) => {
       if(data.status === 'error'){
         console.error('Failed to fetch plans in 1st useEffect: ');
@@ -176,7 +176,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
                           else{
                             console.log('Deleted plan: ');
                             console.log(data);
-                            setReload(true);
+                            setReload(!reload);
                           }
                         }
                         );
@@ -218,7 +218,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
                           else{
                             console.log('Deleted plan: ');
                             console.log(data);
-                            setReload(true);
+                            setReload(!reload);
                           }
                         }
                         );

@@ -34,7 +34,7 @@ const DailyMealPlan = ({searchParams,reload}) => {
         console.log('Data: ');
         console.log(data);
         setMeals([]);
-        setNutrients({});
+        setNutrients({protein: "", carbohydrates: "", fat: "", calories: ""});
       }
       else{
         console.log('Fetched meal data: ');
@@ -51,14 +51,14 @@ const DailyMealPlan = ({searchParams,reload}) => {
   },[]);
 
   useEffect(() => {
-    if(!reload) return;
+    // if(!reload) return;
     getMealData(dateStr, 'day', id).then((data) => {
       if(data.status === 'error'){
         console.error('Failed to fetch meal data from reload ', data.msg);
         console.log('Data: ');
         console.log(data);
         setMeals([]);
-        setNutrients({});
+        setNutrients({protein: "", carbohydrates: "", fat: "", calories: ""});
       }
       else{
         console.log('Fetched meal data from reload ');
