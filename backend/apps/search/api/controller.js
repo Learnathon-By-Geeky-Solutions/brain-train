@@ -304,9 +304,7 @@ export const autoCompleteIngredients = async (req, res) => {
 };
 
 export const getSearchesFromHistory = (req, res) => {
-    let { n } = req.params;
-    n = Number(n.toString());
-    if (!Number.isInteger(n) || n <= 0) {
+    if(!numericValidator(req.params.n)) {
         return res.status(400).json({ error: "Invalid history query." });
     }
 
@@ -352,7 +350,7 @@ const getUniqueRecentHistoryWithRecipeInfo = (history, n) => {
         
         return recentUniqueSearches.map(({ recipeId, searchedAt }) => ({
             searchedAt,
-            ...(recipeMap.get(recipeId) || { id: recipeId, title: null, image: null, likes: 0 })
+            ...(recipeMap.get(recipeId) || { id: recipeId, title: null, image: null, likes: 0, summary: null })
         }));
     });
 };
@@ -429,4 +427,7 @@ export const getRecipesByCuisine = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error.' });
       }
 
+};export const numericValidator = (n) => {
+    n = Number(n.toString());
+    return Number.isInteger(n) && n > 0;
 };
