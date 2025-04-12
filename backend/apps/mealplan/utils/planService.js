@@ -1,7 +1,8 @@
 import { spoonacularRequest } from '../../../libraries/services/spoonacular.js';
-import { saveDailyMealPlan, saveWeeklyMealPlan ,getDailyOverlaps,getWeeklyOverlaps } from '../db.js';
-
-
+import { saveDailyMealPlan, saveWeeklyMealPlan ,getDailyOverlaps,getWeeklyOverlaps,
+  getDailyPlansOnDateRange,getWeeklyPlansInRange
+ } from '../db.js';
+import { extractMatchingDailyPlansFromDaily, extractMatchingDailyPlansFromWeekly,groupPlansByDate,buildWeekIndexedPlans } from './dateHelper.js';
 
 const checkConflicts = (uid, frame, date) => {
   return frame === 'day'
@@ -46,4 +47,34 @@ export const generateMealPlanAndSave = async (firebaseUid, body) => {
     return { success: true, plan: saved };
   };
   
+  // Function to extract matching daily plans from daily and weekly results,on the specified date
+  export const searchPlansByDateOrRange = async (firebaseUid, dateStr, type) => {
+    const start = new Date(dateStr);
+    start.setHours(0, 0, 0, 0);
   
+    const end = new Date(start);
+    if (type === 'week') {
+      end.setDate(start.getDate() + 6);
+    }
+    end.setHours(23, 59, 59, 999);
+  
+    const [dailyDocs, weeklyDocs] = await Promise.all([
+      getDailyPlansOnDateRange(firebaseUid, start, end),
+      getWeeklyPlansInRange(firebaseUid, start, end)
+    ]);
+
+    const dailyPlans = extractMatchingDailyPlansFromDaily(dailyDocs, start, end);
+    const weeklyPlans = extractMatchingDailyPlansFromWeekly(weeklyDocs, start, end);
+
+    const dailyMap = groupPlansByDate(dailyPlans);
+    const weeklyMap = groupPlansByDate(weeklyPlans);
+
+    const combinedMap = { ...weeklyMap, ...dailyMap }; // daily takes priority
+    console.log('combinedMap', combinedMap);
+    if (type === 'day') {
+      console.log('day', start.toDateString(), combinedMap[start.toDateString()]);
+      return combinedMap[start.toDateString()] ? [combinedMap[start.toDateString()]] : [];
+    }
+  
+    return buildWeekIndexedPlans(start, combinedMap);
+  };

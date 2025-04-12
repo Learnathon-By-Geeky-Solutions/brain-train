@@ -29,8 +29,8 @@ export const prepareWeeklyDailyPlans = async (weekData, startDate) => {
   return dailyPlans;
 };
 
-const guessUnit = (name) => {
-  if (name === 'calories') return 'kcal';
+export const guessUnit = (name) => {
+  if (name === 'calories') return 'Cal';
   if (['protein', 'fat', 'carbohydrates'].includes(name)) return 'g';
   return '';
 };

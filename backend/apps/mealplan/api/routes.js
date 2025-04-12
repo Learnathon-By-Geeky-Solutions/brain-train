@@ -5,7 +5,8 @@ import {
   viewMealPlans,
   viewMealPlanById,
   deleteMealPlanById,
-  deleteAllMealPlans
+  deleteAllMealPlans,
+  searchMealPlanByDate
 } from './controller.js';
 
 const router = express.Router();
@@ -16,6 +17,8 @@ router.get('/view/:planId', viewMealPlanById);
 
 router.delete('/all', deleteAllMealPlans);
 router.delete('/:planId', deleteMealPlanById); 
+
+router.get('/search',searchMealPlanByDate);
 
 
 export default router;

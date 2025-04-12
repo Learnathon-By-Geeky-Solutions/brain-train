@@ -161,6 +161,34 @@ export const getRecipeInfoById = async (id, fields = null) => {
     .lean();
 };
 
+export const searchRecipesByCuisine = async (cuisine, limit = 10) => {
+  const pipeline = [
+    {
+      $match: {
+        cuisines: {
+          $elemMatch: {
+            $regex: new RegExp(cuisine, 'i') // partial & case-insensitive
+          }
+        }
+      }
+    },
+    { $sample: { size: parseInt(limit) } },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        image: 1,
+        summary: 1,
+        likes: 1
+      }
+    }
+  ];
+
+  const results = await Recipe.aggregate(pipeline);
+  return results;
+};
+
+
 export const getSearchHistoryByUid = async (uid) => {
   try {
     return await UserSearchHistory.findOne({ firebaseUid: uid });

@@ -1,5 +1,5 @@
 import {DailyMealPlan,WeeklyMealPlan } from "../../libraries/models/mealPlans.js";
-import { prepareWeeklyDailyPlans ,formatWeeklyMealPlans} from "./utils/weeklyHelper.js";
+import { prepareWeeklyDailyPlans ,formatWeeklyMealPlans , guessUnit} from "./utils/weeklyHelper.js";
 import { enrichMealsWithRecipeIds } from "./utils/detailsHelper.js";
 import { summarizePlans } from "./utils/planHelper.js";
 
@@ -12,7 +12,11 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
           title: customTitle || `Daily Plan - ${startDate.toLocaleDateString()}`,
           mealPlan: {
             meals,
-            nutrients: plan.nutrients
+            nutrients: Object.entries(plan.nutrients).map(([name, amount]) => ({
+              name,
+              amount,
+              unit: guessUnit(name)
+            }))
           },
           startDate,              // basically the date of the meal plan
           savedAt: new Date()
@@ -137,4 +141,32 @@ export const saveDailyMealPlan = async (firebaseUid, plan, startDate,customTitle
     await DailyMealPlan.deleteMany({ firebaseUid: uid });
     await WeeklyMealPlan.deleteMany({ firebaseUid: uid });
   };
-    
+
+  export const getDailyPlansOnDateRange = async (firebaseUid, dayStart, dayEnd) => {
+    return DailyMealPlan.find({
+      firebaseUid,
+      'dailyMealPlans.startDate': {
+        $gte: dayStart,
+        $lte: dayEnd
+      }
+    }).lean();
+  };
+
+  //checks if a weekly plan exists on a given date(the given date falls within the weekly plan range)
+  export const getWeeklyPlansOnDate = async (firebaseUid, dayStart, dayEnd) => {
+    return WeeklyMealPlan.find({
+      firebaseUid,
+      'weeklyMealPlans.dailyMealPlans.startDate': {
+        $gte: dayStart,
+        $lte: dayEnd
+      }
+    }).lean();
+  };
+  export const getWeeklyPlansInRange = async (firebaseUid, start, end) => {
+    return WeeklyMealPlan.find({
+      firebaseUid,
+      'weeklyMealPlans.startDate': { $lte: end },
+      'weeklyMealPlans.endDate': { $gte: start }
+    }).lean();
+  };
+  

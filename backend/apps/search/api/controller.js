@@ -5,7 +5,8 @@ import {
     getSearchHistoryByUid,
     createUserEntryInUserSearchHistory,
     getRecipeFieldsByTitle,
-    getRecipesByIngredients
+    getRecipesByIngredients,
+    searchRecipesByCuisine
 } from '../db.js';
 import { findRecipesByIds } from '../../favourite/db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
@@ -13,7 +14,8 @@ import {
     enrichRecipesWithFields,
     filterRecipes,
     fetchSaveFilterRecipes,
-    generateShoppingList
+    generateShoppingList,
+    minimizeRecipeData
 } from '../helper.js';
 
 import mongoose from 'mongoose';
@@ -45,7 +47,8 @@ export const searchRecipes = async (req, res) => {
 
         console.log(" DB Results After Filtering:", dbResults.length);
         if (dbResults.length > 0) {
-            return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
+            console.log(" DB Results Found to return :", dbResults.length);
+            return res.status(200).json({ results: minimizeRecipeData(dbResults), totalResults: dbResults.length });
         }
 
         // Fetch recipes
@@ -67,8 +70,9 @@ export const searchRecipes = async (req, res) => {
 
 
         const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
+        
 
-        return res.status(200).json({ results: filteredApiResults, totalResults: filteredApiResults.length });
+        return res.status(200).json({ results: minimizeRecipeData( filteredApiResults), totalResults: filteredApiResults.length });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
@@ -101,7 +105,7 @@ export const searchRecipesByIngredients = async (req, res) => {
         console.log(" DB Results After Filtering:", dbResults.length);
 
         if (dbResults.length > 0) {
-            return res.status(200).json({ results: dbResults, totalResults: dbResults.length });
+            return res.status(200).json({ results: minimizeRecipeData(dbResults), totalResults: dbResults.length });
         }
 
         //  No results from DB? Fetch from Spoonacular API
@@ -120,7 +124,7 @@ export const searchRecipesByIngredients = async (req, res) => {
 
         const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
 
-        return res.status(200).json({ results: filteredApiResults, totalResults: filteredApiResults.length });
+        return res.status(200).json({ results: minimizeRecipeData( filteredApiResults), totalResults: filteredApiResults.length });
 
     } catch (error) {
         console.error(" Error in searchRecipesByIngredients:", error);
@@ -144,7 +148,7 @@ export const searchRecipesByNutrients = async (req, res) => {
         const recipesData = await spoonacularRequest('/recipes/findByNutrients', { number, ...params });
         const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
 
-        return  res.status(200).json({ results: enrichedRecipes, totalResults: recipesData.totalResults });
+        return  res.status(200).json({ results: minimizeRecipeData(enrichedRecipes), totalResults: recipesData.totalResults });
 
     } catch (error) {
         return  res.status(500).json({ error: error.message });
@@ -394,7 +398,33 @@ export const getShoppingList = async (req, res) => {
     }
 };
 
-export const numericValidator = (n) => {
-    n = Number(n.toString());
-    return Number.isInteger(n) && n > 0;
+export const getRecipesByCuisine = async (req, res) => {
+    try {
+        const { cuisine, number  } = req.query;
+        console.log("cuisine search got called ",cuisine, number);
+    
+        if (!cuisine) {
+          return res.status(400).json({
+            success: false,
+            message: 'Cuisine name is required.'
+          });
+        }
+    
+        let results = await searchRecipesByCuisine(cuisine, number || 60);
+        const limit = parseInt(number) || 60;
+        console.log("cuisine search db results length",results.length);
+        if(results.length < limit) {
+            const apiResults = await spoonacularRequest('/recipes/complexSearch', { cuisine, number: limit });
+            const recipeIds = apiResults.results.map(recipe => recipe.id);
+            const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, {});
+            results = results.concat(filteredApiResults);
+
+
+        }
+        res.status(200).json({ success: true, results: minimizeRecipeData(results), total: results.length });
+      } catch (err) {
+        console.error('[getRecipesByCuisine] Error:', err.message);
+        res.status(500).json({ success: false, message: 'Server error.' });
+      }
+
 };

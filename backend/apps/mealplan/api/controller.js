@@ -1,5 +1,5 @@
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
-import { generateMealPlanAndSave } from '../utils/planService.js';
+import { generateMealPlanAndSave,searchPlansByDateOrRange } from '../utils/planService.js';
 import { fetchUserDailyPlans, fetchUserWeeklyPlans,findDailyPlanById,findWeeklyPlanById 
   ,deleteDailyPlanById, deleteWeeklyPlanById, deleteAllUserMealPlans
 } from '../db.js';
@@ -113,3 +113,29 @@ export const deleteMealPlanById = (req, res) => {
 
 
 
+
+export const searchMealPlanByDate = (req, res) => {
+  decodeFirebaseIdToken(req.headers.authorization)
+    .then(({ uid }) => {
+      const { date, type } = req.query;
+
+      if (!date || !type || !['day', 'week'].includes(type)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid or missing parameters. "date" and "type" (day|week) are required.'
+        });
+      }
+
+      return searchPlansByDateOrRange(uid, date, type);
+    })
+    .then(plans => {
+      res.status(200).json({ success: true, plans });
+    })
+    .catch(error => {
+      console.error('[SearchMealPlan] Error:', error.message);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to search meal plans.'
+      });
+    });
+};
