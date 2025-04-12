@@ -56,6 +56,7 @@ const ExploreCuisine = ({showResults}) => {
       }}
       onClick={() => {
          fetchData({type:'cuisine', cuisine: cuisine.name}).then((result) => {
+            console.log('result from frontend',result);
            showResults(result);
          });
       }}

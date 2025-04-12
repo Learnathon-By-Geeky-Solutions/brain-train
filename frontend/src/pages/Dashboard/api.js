@@ -57,7 +57,7 @@ const handleSearchByIngredients = (searchData) => {
 };
 
 function handleSearchByCuisine(searchData) {
-  return `${API_BASE_URL}/search/recipes?cuisine=${searchData.cuisine}&fields=summary,likes,title,image`;
+  return `${API_BASE_URL}/search/recipes/cuisines?cuisine=${searchData.cuisine}`;
 }
 
 function handleFilters(url, searchData) {
