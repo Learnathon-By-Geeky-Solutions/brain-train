@@ -142,6 +142,7 @@ const fetchData = async (searchData) => {
           Authorization: `Bearer ${idToken}`,
         },
       });
+      console.log("response1 from fetchData", response);
       const data = await response.json();
 
     if (response.ok)
