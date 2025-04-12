@@ -13,16 +13,12 @@ function generateMealPlanReqBody(startDate, plan) {
     return reqBody;
 }
 
-async function getMealData(startDate,timeFrame,id) {
+async function getMealData(startDate,timeFrame) {
   const auth = getAuth();
   let data = {status: "error", msg: ""};
-  let url = `${API_BASE_URL}/plan/view/${id}`;
-  if(timeFrame === 'week'){
-    url += `?type=week`;
-  }
-  else{
-    url += `?type=day`;
-  }
+  const url = `${API_BASE_URL}/plan/search?date=${startDate}&type=${timeFrame}`;
+  console.log('url from getMealData');
+  console.log(url);
   
   // Return a promise that resolves when auth state is ready
   return new Promise((resolve) => {
@@ -59,7 +55,7 @@ async function getMealData(startDate,timeFrame,id) {
 
 async function saveMealPlan(plan,startDate) {
   const auth = getAuth();
-  let data = {status: "error", msg: ""};
+  let data = {status: "error", msg: "", res:null};
   const reqBody = generateMealPlanReqBody(startDate, plan);
   console.log('plan from saveMealPlan ');
   console.log(plan);
@@ -86,12 +82,20 @@ async function saveMealPlan(plan,startDate) {
           data = await response.json();
             console.log("res ok from saveMealPlan");
             console.log(data);
-        } else {
-          data.msg = "Failed to get meal plan";
+        } 
+        else if(response.status === 409){
+          data.msg = "overlap";
+          data.res = await response.json();
+          console.log("overlap from saveMealPlan");
+          console.log(data);
+        }
+        else{
+          data.msg = "Failed to save meal plan";
           console.log("res not ok from saveMealPlan");
           console.log(data);
         }
-      } else {
+      } 
+      else {
         data.msg = "User not logged in";
       }
       

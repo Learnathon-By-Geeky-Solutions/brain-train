@@ -9,6 +9,7 @@ import {
   Heading,
   IconButton,
 } from '@chakra-ui/react';
+import { Toaster, toaster } from '../ui/toaster';
 import { LuArrowLeft, LuArrowRight } from 'react-icons/lu';
 import { useColorModeValue } from '../ui/color-mode';
 import MealPlanningSidebar from './SideNavBar';
@@ -24,7 +25,7 @@ const MealPlanningCalendar = () => {
   const [startDate, setStartDate] = useState(getCurrentDateFormatted());
   const [reload, setReload] = useState(false);
   const [days, setDays] = useState(getDaysOfWeek(startDate));
-  const [mealData, setMealData] = useState(sampleMealData);
+  const [mealData, setMealData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
@@ -33,11 +34,11 @@ const MealPlanningCalendar = () => {
     setDays(getDaysOfWeek(startDate));
     // setMealData(getMealData(startDate, 'week'));
     // setMealData(sampleMealData);
-    getMealData(startDate, 'week', '67f952aa95bde76c78c23a7c').then((data) => {
+    getMealData(startDate, 'week').then((data) => {
       if(data.status !== 'error'){
         console.log('Fetched meal data: ');
         console.log(data);
-        setMealData(data.plan.plansByWeekday);
+        setMealData(data.plans);
       }
     });
     // setReload(false);
@@ -251,8 +252,9 @@ const MealPlanningCalendar = () => {
           {/* Nutrition Summary for Each Day */}
           {days.map((day) => {
             const dayKey = day.toLowerCase();
-            let newNutrients = {protein: "", carbohydrates: "", fat: "", calories: ""};
+            let newNutrients = {protein: 0, carbohydrates: 0, fat: 0, calories: 0};
             
+            if(mealData[dayKey])
             for (const nutrient of mealData[dayKey]?.mealPlan?.nutrients) {
               newNutrients[nutrient.name] = nutrient.amount;
             }
@@ -281,6 +283,7 @@ const MealPlanningCalendar = () => {
       :
       (<DailyMealPlan searchParams={searchParams} reload={reload}/>) 
       }
+      <Toaster />
     </Flex>
   );
 };

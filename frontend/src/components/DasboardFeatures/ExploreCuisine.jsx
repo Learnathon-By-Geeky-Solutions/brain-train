@@ -4,7 +4,6 @@ import italian_cuisine from '@/assets/italian_cuisine.jpg';
 import french_cuisine from '@/assets/french_cuisine.jpg';
 import arabic_cuisine from '@/assets/arabic_cuisine.jpg';
 import indian_cuisine from '@/assets/indian_cuisine.jpg';
-import fetchData from '@/pages/Dashboard/api';
 
 // Usage example:
 const cuisines = [
@@ -55,10 +54,7 @@ const ExploreCuisine = ({showResults}) => {
           cursor: 'pointer'
       }}
       onClick={() => {
-         fetchData({type:'cuisine', cuisine: cuisine.name}).then((result) => {
-            console.log('result from frontend',result);
-           showResults(result);
-         });
+         showResults({type:'cuisine', cuisine: cuisine.name});
       }}
     >
         <Image

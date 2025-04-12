@@ -18,6 +18,7 @@ import { FaSliders } from 'react-icons/fa6';
 import { MdClose } from "react-icons/md";
 import { LuCirclePlus, LuPlus } from "react-icons/lu";
 import { saveMealPlan } from "./api";
+import { Toaster, toaster } from '../ui/toaster';
 
   
   const PlanController = ({startDate,currentDate,toggleReload}) => {
@@ -312,7 +313,16 @@ import { saveMealPlan } from "./api";
                       saveMealPlan(plan,currentDate).then((data) => {
                         console.log("Meal Plan saving response");
                         console.log(data);
-                        if(data.status !== 'error') toggleReload();
+                        if(data.status !== 'error') {
+                          toggleReload()
+                          toaster({title: "Meal Plan succesfully saved", status: "success"});
+                        }
+                        else if(data.msg == 'overlap'){
+                          toaster({title: "Meal Plan overlaps", status: "error"});
+                        }
+                        else{
+                          toaster({title: data.msg, status: "error"});
+                        }
                       });
                     }}
                   >

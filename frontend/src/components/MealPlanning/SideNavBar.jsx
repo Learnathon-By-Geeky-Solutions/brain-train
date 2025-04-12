@@ -155,7 +155,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
                      color={isActiveIdx === 20 + index ? activeColor : undefined}
                     _hover={{ bg: hoverBg, cursor: 'pointer' }}
                     onClick={() => {
-                      setSearchParams({ time: 'day', date: plan.startDate, id: plan._id });
+                      setSearchParams({ time: 'day', date: plan.startDate });
                       setIsActiveIdx(20+index);
                     }}
                   >
