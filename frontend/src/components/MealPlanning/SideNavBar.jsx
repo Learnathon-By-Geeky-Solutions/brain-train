@@ -23,13 +23,46 @@ import NavItem from './NavItem';
 
 const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) => {
 
-  const [planList, setPlanList] = useState(getMyPlans());
+  const [dailyPlanList, setDailyPlanList] = useState([]);
+  const [weeklyPlanList, setweeklyPlanList] = useState([]);
   const [isActiveIdx,setIsActiveIdx] = useState(0);
+
+  // useEffect(() => {
+  //   getMyPlans().then((data) => {
+  //     if(data.status === 'error'){
+  //       console.error('Failed to fetch plans in 1st useEffect: ');
+  //       console.log('Data: ');
+  //       console.log(data);
+  //       setDailyPlanList([]);
+  //       setweeklyPlanList([]);
+  //     }
+  //     else{
+  //       console.log('Fetched plans from 1st useEffect: ');
+  //       console.log(data.plans);
+  //       setDailyPlanList(data.plans.daily);
+  //       setweeklyPlanList(data.plans.weekly);
+  //     }
+  //   }
+  //   );
+  // },[]);
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan sidenavbar');
-    if(!reload) return;
-    setPlanList(getMyPlans());
+    getMyPlans().then((data) => {
+      if(data.status === 'error'){
+        console.error('Failed to fetch plans in 1st useEffect: ');
+        console.log('Data: ');
+        console.log(data);
+        setDailyPlanList([]);
+        setweeklyPlanList([]);
+      }
+      else{
+        console.log('Fetched plans from 1st useEffect: ');
+        console.log(data.plans);
+        setDailyPlanList(data.plans.daily);
+        setweeklyPlanList(data.plans.weekly);
+      }
+    });
   }, [reload]);
 
 
@@ -40,7 +73,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
   const activeColor = useColorModeValue('green.700', 'green.200');
 
   function getPlanString(plan){
-    if(plan.time === 'week'){
+    if(plan?.time === 'week'){
       return formatMealPlanDateRange(plan.startDate);
     }
     else{
@@ -80,8 +113,8 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
           }}
         >
           <Flex gap={1}>
-              <LuCalendar />
-              Weekly Calendar
+            <LuCalendar />
+            Weekly Calendar
           </Flex>
         </NavItem>
         <NavItem
@@ -114,7 +147,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
           </Collapsible.Trigger>
           <Collapsible.Content>
           <List.Root py="2" px="5" variant="plain" fontSize="sm" gap={2} alignItems="start">
-            {planList.map((plan,index) => (
+            {dailyPlanList.map((plan,index) => (
               <Menu.Root>
                 <Menu.ContextTrigger>
                   <List.Item
@@ -122,17 +155,11 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
                      color={isActiveIdx === 20 + index ? activeColor : undefined}
                     _hover={{ bg: hoverBg, cursor: 'pointer' }}
                     onClick={() => {
-                      if(plan.time === 'week'){
-                        // setStartDate(plan.startDate);
-                        setSearchParams({});
-                      }
-                      else{
-                        setSearchParams({ time: 'day', date: plan.startDate });
-                      }
+                      setSearchParams({ time: 'day', date: plan.startDate, id: plan._id });
                       setIsActiveIdx(20+index);
                     }}
                   >
-                    {getPlanString(plan)}
+                    {plan.title}
                   </List.Item>
                 </Menu.ContextTrigger>
               <Portal>
@@ -140,8 +167,60 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
                   <Menu.Content>
                     <Menu.Item
                       onClick={() => {
-                        deletePlan(plan.id);
-                        setReload(true);
+                        deletePlan(plan._id,'day').then((data) => {
+                          if(data.status === 'error'){
+                            console.error('Failed to delete plan: ');
+                            console.log(data);
+                          }
+                          else{
+                            console.log('Deleted plan: ');
+                            console.log(data);
+                            setReload(!reload);
+                          }
+                        }
+                        );
+                      }}
+                    >
+                      Delete
+                    </Menu.Item>
+                  </Menu.Content>
+                </Menu.Positioner>
+              </Portal>
+              </Menu.Root>
+            ))}
+            {weeklyPlanList.map((plan,index) => (
+              <Menu.Root>
+                <Menu.ContextTrigger>
+                  <List.Item
+                    bg={isActiveIdx === 30 + index ? activeBg : 'transparent'}
+                    color={isActiveIdx === 30 + index ? activeColor : undefined}
+                    _hover={{ bg: hoverBg, cursor: 'pointer' }}
+                    onClick={() => {
+                      setStartDate(plan.startDate);
+                      setSearchParams({});
+                      setIsActiveIdx(30+index);
+                    }}
+                  >
+                    {plan.title}
+                  </List.Item>
+                </Menu.ContextTrigger>
+              <Portal>
+                <Menu.Positioner>
+                  <Menu.Content>
+                    <Menu.Item
+                      onClick={() => {
+                        deletePlan(plan._id,'week').then((data) => {
+                          if(data.status === 'error'){
+                            console.error('Failed to delete plan: ');
+                            console.log(data);
+                          }
+                          else{
+                            console.log('Deleted plan: ');
+                            console.log(data);
+                            setReload(!reload);
+                          }
+                        }
+                        );
                       }}
                     >
                       Delete

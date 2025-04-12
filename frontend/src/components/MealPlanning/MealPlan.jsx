@@ -17,21 +17,30 @@ import { getMealData } from './api';
 import PlanController from './AddMealPlan';
 import { useSearchParams } from 'react-router-dom';
 import DailyMealPlan from './DailyMealPlan';
+import sampleMealData from './sampleMealData';
 
 
 const MealPlanningCalendar = () => {
   const [startDate, setStartDate] = useState(getCurrentDateFormatted());
   const [reload, setReload] = useState(false);
   const [days, setDays] = useState(getDaysOfWeek(startDate));
-  const [mealData, setMealData] = useState(getMealData(startDate, 'week'));
+  const [mealData, setMealData] = useState(sampleMealData);
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan');
-    if(!reload) return;
+    // if(!reload) return;
     setDays(getDaysOfWeek(startDate));
-    setMealData(getMealData(startDate, 'week'));
-    setReload(false);
+    // setMealData(getMealData(startDate, 'week'));
+    // setMealData(sampleMealData);
+    getMealData(startDate, 'week', '67f952aa95bde76c78c23a7c').then((data) => {
+      if(data.status !== 'error'){
+        console.log('Fetched meal data: ');
+        console.log(data);
+        setMealData(data.plan.plansByWeekday);
+      }
+    });
+    // setReload(false);
   }, [reload]);
 
 
@@ -44,7 +53,7 @@ const MealPlanningCalendar = () => {
 
   function changeStartDate(date){
     setStartDate(date);
-    setReload(true);
+    toggleReload();
   }
 
   function setPreviousWeek(){
@@ -55,6 +64,10 @@ const MealPlanningCalendar = () => {
   function setNextWeek(){
     const nxtStartDate = getOtherWeekStartDate(startDate,true);
     changeStartDate(nxtStartDate);
+  }
+
+  function toggleReload(){
+    setReload(!reload);
   }
   
   return (
@@ -97,7 +110,7 @@ const MealPlanningCalendar = () => {
           <Box p={4} borderWidth="1px" borderColor={borderColor}></Box>
           {days.map((day,dayIndex) => {
             const dayKey = day.toLowerCase();
-            const mealSize = mealData[dayKey]?.meals?.length;
+            const mealSize = mealData[dayKey]?.mealPlan?.meals?.length;
             return (
             <Box 
               key={day} 
@@ -114,7 +127,7 @@ const MealPlanningCalendar = () => {
                     <PlanController  
                       currentDate={getOffsetDate(startDate,dayIndex)}
                       startDate={initialStartDate}
-                      setReload={setReload}
+                      toggleReload={toggleReload}
                     />
                   </Flex>
                 )
@@ -148,7 +161,7 @@ const MealPlanningCalendar = () => {
               {/* Meal Cells for Each Day */}
               {days.map((day,dayIndex) => {
                 const dayKey = day.toLowerCase();
-                const meal = mealData[dayKey]?.meals?.[index] || { title: '', image: '' };
+                const meal = mealData[dayKey]?.mealPlan?.meals?.[index] || { title: '', image: '' };
                 
                 return (
                   <Box 
@@ -182,8 +195,16 @@ const MealPlanningCalendar = () => {
                           bg={highlightColor}
                           p={2}
                           color="white"
+                          overflow="hidden"
+                          textOverflow="ellipsis"
+                          h="10"
+                          _hover={{height: "auto"}}
+                          transition="height 0.5s ease"
                         >
-                          <Text fontSize="sm" fontWeight="medium">
+                          <Text 
+                            fontSize="sm" 
+                            fontWeight="medium"
+                          >
                             {meal.title}
                           </Text>
                         </Box>
@@ -230,7 +251,13 @@ const MealPlanningCalendar = () => {
           {/* Nutrition Summary for Each Day */}
           {days.map((day) => {
             const dayKey = day.toLowerCase();
-            const nutrition = mealData[dayKey]?.nutrients 
+            let newNutrients = {protein: "", carbohydrates: "", fat: "", calories: ""};
+            
+            for (const nutrient of mealData[dayKey]?.mealPlan?.nutrients) {
+              newNutrients[nutrient.name] = nutrient.amount;
+            }
+            
+            // const nutrition = mealData[dayKey]?.mealPlan?.nutrients 
             
             return (
               <VStack 
@@ -242,17 +269,17 @@ const MealPlanningCalendar = () => {
                 spacing={0}
                 fontSize="xs"
               >
-                <Text>Calories: {nutrition.calories}</Text>
-                <Text>Fat: {nutrition.fat}g</Text>
-                <Text>Protein: {nutrition.protein}g</Text>
-                <Text>Carbs: {nutrition.carbohydrates}g</Text>
+                <Text>Calories: {newNutrients?.calories}</Text>
+                <Text>Fat: {newNutrients?.fat}g</Text>
+                <Text>Protein: {newNutrients?.protein}g</Text>
+                <Text>Carbs: {newNutrients?.carbohydrates}g</Text>
               </VStack>
             );
           })}
         </Grid>
       </Box>)
       :
-      (<DailyMealPlan searchParams={searchParams}/>) 
+      (<DailyMealPlan searchParams={searchParams} reload={reload}/>) 
       }
     </Flex>
   );

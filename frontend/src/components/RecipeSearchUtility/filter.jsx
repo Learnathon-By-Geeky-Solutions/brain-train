@@ -236,16 +236,17 @@ import { MdClose } from "react-icons/md";
                   </Flex>
                 </Dialog.Body>
                 <Dialog.Footer>
-                  <Dialog.ActionTrigger asChild>
+                  <Dialog.ActionTrigger>
                     <Button 
                       variant="outline"
                       onClick={()=>{
                         clearFiltersWithState();
                       }}
+                      mr="1"
                     >
                       Clear
                     </Button>
-                  </Dialog.ActionTrigger>
+                  {/* </Dialog.ActionTrigger> */}
                   <Button
                     onClick={()=>{
                       console.log(isRangeFiltersActive);
@@ -270,6 +271,7 @@ import { MdClose } from "react-icons/md";
                   >
                     Apply
                   </Button>
+                  </Dialog.ActionTrigger>
                 </Dialog.Footer>
               </Dialog.Content>
             </Dialog.Positioner>

@@ -15,21 +15,63 @@ import {
 import { useColorModeValue } from '../ui/color-mode';
 import { getMealData } from './api';
 import { formatDate, getCurrentDateFormatted, getDay } from './dateFormatter';
+import { useState } from 'react';
+
 
 const DailyMealPlan = ({searchParams,reload}) => {
 
   let dateStr = searchParams.get('date');
   let day = getDay(dateStr);
-  let mealData = getMealData(dateStr, 'day');
-  let meals = mealData.meals;
-  let nutrients = mealData.nutrients;
+  let id = searchParams.get('id');
+  const [meals, setMeals] = useState([]);
+  const [nutrients, setNutrients] = useState({});
   let isToday = dateStr === getCurrentDateFormatted();
 
+  // useEffect(() => {
+  //   getMealData(dateStr, 'day', id).then((data) => {
+  //     if(data.status === 'error'){
+  //       console.error('Failed to fetch meal data: ', data.msg);
+  //       console.log('Data: ');
+  //       console.log(data);
+  //       setMeals([]);
+  //       setNutrients({protein: "", carbohydrates: "", fat: "", calories: ""});
+  //     }
+  //     else{
+  //       console.log('Fetched meal data: ');
+  //       console.log(data);
+  //       const plan =  data.plan.dailyMealPlans[0].mealPlan;
+  //       setMeals(plan.meals);
+  //       let newNutrients = {protein: "", carbohydrates: "", fat: "", calories: ""};
+  //       for (const nutrient in plan.nutrients) {
+  //         newNutrients[nutrient.name] = nutrient.amount;
+  //       }
+  //       setNutrients(newNutrients);
+  //     }
+  //   });
+  // },[]);
+
   useEffect(() => {
-    if(!reload) return;
-    mealData = getMealData(dateStr, 'day');
-    meals = mealData?.meals;
-    nutrients = mealData?.nutrients;
+    // if(!reload) return;
+    getMealData(dateStr, 'day', id).then((data) => {
+      if(data.status === 'error'){
+        console.error('Failed to fetch meal data from reload ', data.msg);
+        console.log('Data: ');
+        console.log(data);
+        setMeals([]);
+        setNutrients({protein: "", carbohydrates: "", fat: "", calories: ""});
+      }
+      else{
+        console.log('Fetched meal data from reload ');
+        console.log(data);
+        const plan =  data.plan.dailyMealPlans[0].mealPlan;
+        setMeals(plan.meals);
+        let newNutrients = {protein: "", carbohydrates: "", fat: "", calories: ""};
+        for (const nutrient of plan.nutrients) {
+          newNutrients[nutrient.name] = nutrient.amount;
+        }
+        setNutrients(newNutrients);
+      }
+    });
   }, [reload]);
 
   // Colors based on light/dark mode
@@ -107,8 +149,8 @@ const DailyMealPlan = ({searchParams,reload}) => {
       
       <Card.Body p={4}>
         <VStack spacing={4} align="stretch">
-          {meals.length > 0 ? (
-            meals.map((meal, index) => (
+          {meals?.length > 0 ? (
+            meals?.map((meal, index) => (
               <Box key={`${day}-meal-${index}`}>
                 {index > 0 && <Separator my={2} />}
                 <HStack>
@@ -124,7 +166,7 @@ const DailyMealPlan = ({searchParams,reload}) => {
                 </HStack>
                 
                 <Flex direction="row" mt={2} gap={4}>
-                  {meal.image && (
+                  {meal?.image && (
                     <Image 
                       src={meal.image} 
                       fallbackSrc="https://via.placeholder.com/80"

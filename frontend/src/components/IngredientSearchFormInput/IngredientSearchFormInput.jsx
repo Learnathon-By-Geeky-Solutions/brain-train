@@ -1,7 +1,7 @@
 import React, { forwardRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { Input, Flex, IconButton, VStack } from '@chakra-ui/react';
+import { Input, Flex, IconButton, VStack, Separator } from '@chakra-ui/react';
 import { MdAdd, MdArrowBack } from 'react-icons/md';
 import { Field } from '../ui/field';
 import { LuDelete } from 'react-icons/lu';
@@ -44,11 +44,11 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller, containerC
 
 
   return (
-    <Flex direction="column">
+    <Flex direction="column" maxWidth="450px">
       <form ref={ref} onSubmit={handleSubmit(onSubmit)} style={{"padding":"5px","border-radius":"15px", "background-color":"var(--text-input)"}}>
-        <VStack alignItems="center" margin="none" maxWidth="450px">
+        <VStack alignItems="center" margin="none">
           {fields.map((field, index) => (
-            <Flex key={field.id} minHeight="16" minWidth="70%" direction="row" alignItems="center" backgroundColor="var(--dark-light-text-input1)" padding="5px" borderRadius="2xl">
+            <Flex key={field.id} minHeight="16" minWidth="70%" direction="row" alignItems="center" backgroundColor="var(--dark-light-text-input1)" borderRadius="2xl" >
               <Flex direction="row" alignItems="center">
                 <Field w="100" invalid={errors.fields?.[index]?.name} errorText={(errors.fields?.[index]?.name) ? errors.fields?.[index]?.name.message : "An error occured"} >
                       <Controller
@@ -73,7 +73,8 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller, containerC
                         />
                       )}
                     />
-                    <SuggestionContainer type="ingredients" 
+                    <SuggestionContainer 
+                      type="ingredients" 
                       query={ingredients[index]} 
                       handleClick={(name) => { 
                         handleIngredientChange(index, name);
@@ -88,9 +89,10 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller, containerC
               </Flex>
               <IconButton marginLeft="auto" 
                   aria-label="Delete field"
-                  variant="solid"
-                  borderRadius="lg"
-                  size="sm"
+                  variant="ghost"
+                  borderLeftRadius="none"
+                  borderRightRadius="2xl"
+                  h="16"
                   onClick={() => {
                       remove(index);
                       const newStates = [...amountStates];
@@ -102,13 +104,32 @@ const IngredientSearchFormInput = forwardRef(({prevState, controller, containerC
             </Flex>
           ))}
         </VStack>
-        <Flex direction="row" alignItems="center" width="100%" marginTop="10px">
-          <IconButton size="sm" borderRadius="lg" onClick={()=>{
-            prevState();
-          }}>
+        <Flex 
+          direction="row" 
+          alignItems="center" 
+          width="100%" 
+          marginTop="10px"
+        >
+          <IconButton
+            size="lg"
+            w="50%"
+            variant="subtle"
+            onClick={()=>{
+              prevState();
+            }}
+            borderLeftRadius="2xl"
+            borderRightRadius="none"
+          >
               <MdArrowBack />
           </IconButton>
-          <IconButton size="sm" borderRadius="lg" marginLeft="auto" 
+          <Separator orientation="vertical" height="auto" />
+          <IconButton 
+            variant="subtle"
+            size="lg"
+            marginLeft="auto"
+            w="50%"
+            borderLeftRadius="none"
+            borderRightRadius="2xl"
             onClick={() => {
               append({ name: '', amount: '', unit: ''});
               handleIngredientChange("default", "default");

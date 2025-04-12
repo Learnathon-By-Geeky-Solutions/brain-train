@@ -79,7 +79,16 @@ export default function Dashboard() {
       console.log("setting search params");
       console.log(data);
       setCardData([]);
-      setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)) });
+      if(location.pathname !== "/dashboard" && location.pathname !== "/dashboard/") {
+        console.log("Navigating to dashboard from loadCards");
+        navigate({
+          pathname: '/dashboard',
+          search: `?type=showResults&q=${encodeURIComponent(JSON.stringify(data))}`,
+        });
+      }
+      else{
+        setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)) });
+      }
       return;
     }
 

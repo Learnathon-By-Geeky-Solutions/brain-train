@@ -1,177 +1,179 @@
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import sampleMealData, { sampleMeals, samplePlanList } from "./sampleMealData";
 
-function generateMealPlanUrl(startDate, plan) {
-    let url = `${API_BASE_URL}/plan?startDate=${startDate}`;
-    
-    if (plan.exclude) {
-        url += `&exclude=${plan.exclude}`;
-    }
-    
-    if (plan.diet.length) {
-        url += `&diet=${plan.diet.join(",")}`;
-    }
-    
-    if (plan.timeFrame) {
-        url += `&timeFrame=${plan.timeFrame}`;
-    }
-    
-    if (plan.targetCalories) {
-        url += `&targetCalories=${plan.targetCalories}`;
-    }
-    
-    return url;
+function generateMealPlanReqBody(startDate, plan) {
+    const reqBody = {
+        startDate: startDate,
+        targetCalories: plan.targetCalories,
+        exclude: plan.exclude,
+        diet:`${plan.diet.join(",")}`,
+        timeFrame: plan.timeFrame
+    };
+    return reqBody;
 }
 
-function getMealData(startDate,timeFrame) {
-    if(timeFrame === 'week')
-    return sampleMealData;
-    return sampleMeals;
-//   const auth = getAuth();
-//   let data = {status: "error", msg: ""};
-//   const url = `${API_BASE_URL}/plan?startDate=${startDate}`;
-  
-//   // Return a promise that resolves when auth state is ready
-//   return new Promise((resolve) => {
-//     // This listener fires once when auth state is first determined
-//     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-//       unsubscribe(); // Stop listening immediately after first auth state is determined
-      
-//       if (user) {
-//         const idToken = await user.getIdToken();
-//         const response = await fetch(url, {
-//           method: "GET",
-//           headers: {
-//             'Content-Type': 'application/json',
-//             Authorization: `Bearer ${idToken}`,
-//           },
-//         });
-        
-//         if (response.ok) {
-//           data = await response.json();
-//         } else {
-//           data.msg = "Failed to get meal data";
-//         }
-//       } else {
-//         data.msg = "User not logged in";
-//       }
-      
-//       resolve(data);
-//     });
-//   });
-}
-
-async function saveMealPlan(plan,startDate,setReload) {
+async function getMealData(startDate,timeFrame,id) {
   const auth = getAuth();
   let data = {status: "error", msg: ""};
-  const url = generateMealPlanUrl(startDate, plan);
-  setReload(true);
+  let url = `${API_BASE_URL}/plan/view/${id}`;
+  if(timeFrame === 'week'){
+    url += `?type=week`;
+  }
+  else{
+    url += `?type=day`;
+  }
+  
+  // Return a promise that resolves when auth state is ready
+  return new Promise((resolve) => {
+    // This listener fires once when auth state is first determined
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      unsubscribe(); // Stop listening immediately after first auth state is determined
+      
+      if (user) {
+        const idToken = await user.getIdToken();
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+        
+        if (response.ok) {
+          data = await response.json();
+          console.log("res ok from getMealData");
+          console.log(data);
+        } else {
+          console.log("res not ok from getMealData");
+          data.msg = "Failed to get meal data";
+        }
+      } else {
+        data.msg = "User not logged in";
+      }
+      
+      resolve(data);
+    });
+  });
+}
+
+async function saveMealPlan(plan,startDate) {
+  const auth = getAuth();
+  let data = {status: "error", msg: ""};
+  const reqBody = generateMealPlanReqBody(startDate, plan);
   console.log('plan from saveMealPlan ');
   console.log(plan);
-  console.log(url);
+  console.log(reqBody);
   
-//   // Return a promise that resolves when auth state is ready
-//   return new Promise((resolve) => {
-//     // This listener fires once when auth state is first determined
-//     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-//       unsubscribe(); // Stop listening immediately after first auth state is determined
+  // Return a promise that resolves when auth state is ready
+  return new Promise((resolve) => {
+    // This listener fires once when auth state is first determined
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      unsubscribe(); // Stop listening immediately after first auth state is determined
       
-//       if (user) {
-//         const idToken = await user.getIdToken();
-//         const response = await fetch(url, {
-//           method: "GET",
-//           headers: {
-//             'Content-Type': 'application/json',
-//             Authorization: `Bearer ${idToken}`,
-//           },
-//         });
+      if (user) {
+        const idToken = await user.getIdToken();
+        const response = await fetch(`${API_BASE_URL}/plan/generate`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify(reqBody)
+        });
         
-//         if (response.ok) {
-//           data = await response.json();
-//         } else {
-//           data.msg = "Failed to get shopping list";
-//         }
-//       } else {
-//         data.msg = "User not logged in";
-//       }
+        if (response.ok) {
+          data = await response.json();
+            console.log("res ok from saveMealPlan");
+            console.log(data);
+        } else {
+          data.msg = "Failed to get meal plan";
+          console.log("res not ok from saveMealPlan");
+          console.log(data);
+        }
+      } else {
+        data.msg = "User not logged in";
+      }
       
-//       resolve(data);
-//     });
-//   });
+      resolve(data);
+    });
+  });
 }
 
- function getMyPlans() {
-    return samplePlanList;
-//   const auth = getAuth();
-//   let data = {status: "error", msg: ""};
-//   const url = `${API_BASE_URL}/plan`;
+async function getMyPlans() {
+  const auth = getAuth();
+  let data = {status: "error", msg: "", plans:{daily:[], weekly:[]} };
+  const url = `${API_BASE_URL}/plan/view`;
   
-//   // Return a promise that resolves when auth state is ready
-//   return new Promise((resolve) => {
-//     // This listener fires once when auth state is first determined
-//     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-//       unsubscribe(); // Stop listening immediately after first auth state is determined
+  // Return a promise that resolves when auth state is ready
+  return new Promise((resolve) => {
+    // This listener fires once when auth state is first determined
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      unsubscribe(); // Stop listening immediately after first auth state is determined
       
-//       if (user) {
-//         const idToken = await user.getIdToken();
-//         const response = await fetch(url, {
-//           method: "GET",
-//           headers: {
-//             'Content-Type': 'application/json',
-//             Authorization: `Bearer ${idToken}`,
-//           },
-//         });
+      if (user) {
+        const idToken = await user.getIdToken();
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
         
-//         if (response.ok) {
-//           data = await response.json();
-//         } else {
-//           data.msg = "Failed to get shopping list";
-//         }
-//       } else {
-//         data.msg = "User not logged in";
-//       }
+        if (response.ok) {
+          data.status = "success"
+          const planList = await response.json();
+          data.plans.daily = planList.dailyPlans;
+          console.log("day plans: ", data.plans.daily);
+          data.plans.weekly = planList.weeklyPlans;
+          console.log("week plans: ", data.plans.weekly);
+         
+        } else {
+          data.msg = "Failed to get my plans";
+        }
+      } else {
+        data.msg = "User not logged in";
+      }
       
-//       resolve(data);
-//     });
-//   });
+      resolve(data);
+    });
+  });
 }
 
-async function deletePlan(planId){
-    console.log('delete plan with id: ', planId);
-    // const auth = getAuth();
-    // let data = {status: "error", msg: ""};
-    // const url = `${API_BASE_URL}/plan/${planId}`;
+async function deletePlan(planId,type){
+    const auth = getAuth();
+    let data = {status: "error", msg: ""};
+    const url = `${API_BASE_URL}/plan/${planId}?type=${type}`;
     
-    // // Return a promise that resolves when auth state is ready
-    // return new Promise((resolve) => {
-    //     // This listener fires once when auth state is first determined
-    //     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    //     unsubscribe(); // Stop listening immediately after first auth state is determined
+    // Return a promise that resolves when auth state is ready
+    return new Promise((resolve) => {
+        // This listener fires once when auth state is first determined
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        unsubscribe(); // Stop listening immediately after first auth state is determined
         
-    //     if (user) {
-    //         const idToken = await user.getIdToken();
-    //         const response = await fetch(url, {
-    //         method: "DELETE",
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             Authorization: `Bearer ${idToken}`,
-    //         },
-    //         });
+        if (user) {
+            const idToken = await user.getIdToken();
+            const response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${idToken}`,
+            },
+            });
             
-    //         if (response.ok) {
-    //         data = await response.json();
-    //         } else {
-    //         data.msg = "Failed to delete plan";
-    //         }
-    //     } else {
-    //         data.msg = "User not logged in";
-    //     }
+            if (response.ok) {
+            data = await response.json();
+            } else {
+            data.msg = "Failed to delete plan";
+            }
+        } else {
+            data.msg = "User not logged in";
+        }
         
-    //     resolve(data);
-    //     });
-    // });
+        resolve(data);
+        });
+    });
 }
 
 export { getMealData, saveMealPlan, getMyPlans, deletePlan };

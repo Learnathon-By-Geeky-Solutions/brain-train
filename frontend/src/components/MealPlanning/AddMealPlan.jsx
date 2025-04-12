@@ -20,7 +20,7 @@ import { LuCirclePlus, LuPlus } from "react-icons/lu";
 import { saveMealPlan } from "./api";
 
   
-  const PlanController = ({startDate,currentDate,setReload}) => {
+  const PlanController = ({startDate,currentDate,toggleReload}) => {
     const rangeFilterTypes = ["Target Calories"];
     const dietFilterTypes = ["Vegan", "Vegetarian", "Gluten Free", "Ketogenic", "Lacto-Vegetarian", "Pescetarian"];
     const timeFrameFilterTypes = ["Day", "Week"];
@@ -309,7 +309,11 @@ import { saveMealPlan } from "./api";
                       plan = newPlan;
                       console.log("Meal Plan updated");
                       console.log(plan);
-                      saveMealPlan(plan,startDate,setReload);
+                      saveMealPlan(plan,currentDate).then((data) => {
+                        console.log("Meal Plan saving response");
+                        console.log(data);
+                        if(data.status !== 'error') toggleReload();
+                      });
                     }}
                   >
                     Save
