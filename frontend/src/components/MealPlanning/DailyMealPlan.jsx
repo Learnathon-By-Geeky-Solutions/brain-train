@@ -16,6 +16,8 @@ import { useColorModeValue } from '../ui/color-mode';
 import { getMealData } from './api';
 import { formatDate, getCurrentDateFormatted, getDay } from './dateFormatter';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import handleRecipeDetail from '../RecipeCard/api';
 
 
 const DailyMealPlan = ({searchParams,reload}) => {
@@ -24,6 +26,7 @@ const DailyMealPlan = ({searchParams,reload}) => {
   let day = getDay(dateStr);
   const [meals, setMeals] = useState([]);
   const [nutrients, setNutrients] = useState({});
+  const navigate = useNavigate();
   let isToday = dateStr === getCurrentDateFormatted();
 
   // useEffect(() => {
@@ -150,7 +153,13 @@ const DailyMealPlan = ({searchParams,reload}) => {
         <VStack spacing={4} align="stretch">
           {meals?.length > 0 ? (
             meals?.map((meal, index) => (
-              <Box key={`${day}-meal-${index}`}>
+              <Box 
+                key={`${day}-meal-${index}`}
+                onClick={() => {
+                  handleRecipeDetail(meal.recipeId, navigate);
+                }
+                }
+              >
                 {index > 0 && <Separator my={2} />}
                 <HStack>
                   <Badge 
