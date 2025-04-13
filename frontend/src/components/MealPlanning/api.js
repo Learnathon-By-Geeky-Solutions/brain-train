@@ -5,11 +5,13 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 function generateMealPlanReqBody(startDate, plan) {
     const reqBody = {
         startDate: startDate,
-        targetCalories: plan.targetCalories,
         exclude: plan.exclude,
         diet:`${plan.diet.join(",")}`,
         timeFrame: plan.timeFrame
     };
+    if(plan.targetCalories){
+        reqBody.targetCalories = plan.targetCalories;
+    }
     return reqBody;
 }
 
@@ -90,7 +92,8 @@ async function saveMealPlan(plan,startDate) {
           console.log(data);
         }
         else{
-          data.msg = "Failed to save meal plan";
+          const res = await response.json();
+          data.msg = res.errors[0].msg;
           console.log("res not ok from saveMealPlan");
           console.log(data);
         }

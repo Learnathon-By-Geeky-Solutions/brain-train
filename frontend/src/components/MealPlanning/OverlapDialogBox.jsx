@@ -10,7 +10,6 @@ import {
     ListItem,
   } from "@chakra-ui/react"
 import { useState } from "react";
-import AlertBox from "./Alert";
 import { IoMdAlert } from "react-icons/io";
 import { LuTriangleAlert } from "react-icons/lu";
   
@@ -24,6 +23,7 @@ import { LuTriangleAlert } from "react-icons/lu";
             key="center"
             placement="center"
             motionPreset="slide-in-bottom"
+            onExitComplete={() => setIsOpen(false)}
         >
             <Dialog.Trigger 
               asChild
@@ -88,7 +88,9 @@ import { LuTriangleAlert } from "react-icons/lu";
                         </Button>
                     </Dialog.ActionTrigger>
                     <Dialog.ActionTrigger asChild>
-                        <Button bgColor="bg.info" variant="subtle">No</Button>
+                        <Button bgColor="bg.info" variant="subtle">
+                            No
+                        </Button>
                     </Dialog.ActionTrigger>
                 </Dialog.Footer>
                 </Dialog.Content>

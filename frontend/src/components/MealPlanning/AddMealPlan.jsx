@@ -134,7 +134,10 @@ import Demo from "./OverlapDialogBox";
         }
         else{
           toaster.dismiss();
-          toaster.create({title: data.msg, status: "error"});
+          let toasterTitle = data.msg;
+          if(data.msg === 'targetCalories must be a number')
+          toasterTitle = "Target Calories must be set";
+          toaster.create({title: toasterTitle, type: "error"});
         }
       });
     }

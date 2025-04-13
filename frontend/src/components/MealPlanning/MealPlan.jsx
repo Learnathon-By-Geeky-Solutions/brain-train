@@ -15,10 +15,11 @@ import MealPlanningSidebar from './SideNavBar';
 import { formatMealPlanDateRange, getCurrentDateFormatted, getDaysOfWeek, getOffsetDate, getOtherWeekStartDate } from './dateFormatter';
 import { getMealData } from './api';
 import PlanController from './AddMealPlan';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import DailyMealPlan from './DailyMealPlan';
 import sampleMealData from './sampleMealData';
 import { Toaster, toaster } from '../ui/toaster'
+import handleRecipeDetail from '../RecipeCard/api';
 
 
 const MealPlanningCalendar = () => {
@@ -27,6 +28,7 @@ const MealPlanningCalendar = () => {
   const [days, setDays] = useState(getDaysOfWeek(startDate));
   const [mealData, setMealData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan');
@@ -179,6 +181,11 @@ const MealPlanningCalendar = () => {
                       <Box 
                         position="relative"
                         h="full"
+                        onClick={() => {
+                          console.log('getting recipe detail from meal plan');
+                          handleRecipeDetail(meal.recipeId,navigate);
+                        }
+                        }
                       >
                         {meal.image && (
                           <Image 
