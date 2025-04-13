@@ -15,17 +15,20 @@ import MealPlanningSidebar from './SideNavBar';
 import { formatMealPlanDateRange, getCurrentDateFormatted, getDaysOfWeek, getOffsetDate, getOtherWeekStartDate } from './dateFormatter';
 import { getMealData } from './api';
 import PlanController from './AddMealPlan';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import DailyMealPlan from './DailyMealPlan';
 import sampleMealData from './sampleMealData';
+import { Toaster, toaster } from '../ui/toaster'
+import handleRecipeDetail from '../RecipeCard/api';
 
 
 const MealPlanningCalendar = () => {
   const [startDate, setStartDate] = useState(getCurrentDateFormatted());
   const [reload, setReload] = useState(false);
   const [days, setDays] = useState(getDaysOfWeek(startDate));
-  const [mealData, setMealData] = useState(sampleMealData);
+  const [mealData, setMealData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan');
@@ -33,11 +36,11 @@ const MealPlanningCalendar = () => {
     setDays(getDaysOfWeek(startDate));
     // setMealData(getMealData(startDate, 'week'));
     // setMealData(sampleMealData);
-    getMealData(startDate, 'week', '67f952aa95bde76c78c23a7c').then((data) => {
+    getMealData(startDate, 'week').then((data) => {
       if(data.status !== 'error'){
         console.log('Fetched meal data: ');
         console.log(data);
-        setMealData(data.plan.plansByWeekday);
+        setMealData(data.plans);
       }
     });
     // setReload(false);
@@ -111,6 +114,8 @@ const MealPlanningCalendar = () => {
           {days.map((day,dayIndex) => {
             const dayKey = day.toLowerCase();
             const mealSize = mealData[dayKey]?.mealPlan?.meals?.length;
+            // console.log('condition');
+            // console.log(startDate >= getCurrentDateFormatted());
             return (
             <Box 
               key={day} 
@@ -122,7 +127,7 @@ const MealPlanningCalendar = () => {
             >
               <Text fontWeight="medium">{day}</Text>
               {
-                mealSize > 0 && (
+                !mealSize && startDate >= getCurrentDateFormatted() && (
                   <Flex h="100%" placeContent="center">
                     <PlanController  
                       currentDate={getOffsetDate(startDate,dayIndex)}
@@ -176,6 +181,11 @@ const MealPlanningCalendar = () => {
                       <Box 
                         position="relative"
                         h="full"
+                        onClick={() => {
+                          console.log('getting recipe detail from meal plan');
+                          handleRecipeDetail(meal.recipeId,navigate);
+                        }
+                        }
                       >
                         {meal.image && (
                           <Image 
@@ -251,8 +261,9 @@ const MealPlanningCalendar = () => {
           {/* Nutrition Summary for Each Day */}
           {days.map((day) => {
             const dayKey = day.toLowerCase();
-            let newNutrients = {protein: "", carbohydrates: "", fat: "", calories: ""};
+            let newNutrients = {protein: 0, carbohydrates: 0, fat: 0, calories: 0};
             
+            if(mealData[dayKey])
             for (const nutrient of mealData[dayKey]?.mealPlan?.nutrients) {
               newNutrients[nutrient.name] = nutrient.amount;
             }
@@ -281,6 +292,7 @@ const MealPlanningCalendar = () => {
       :
       (<DailyMealPlan searchParams={searchParams} reload={reload}/>) 
       }
+      <Toaster />
     </Flex>
   );
 };

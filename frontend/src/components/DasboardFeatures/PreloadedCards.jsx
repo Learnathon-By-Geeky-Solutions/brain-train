@@ -19,7 +19,7 @@ const PreloadedCards = ({txt,cards,showResults = null}) => {
             fn = getTrendingRecipes;
         }
 
-        fn?.(5).then((data) => {
+        fn?.(7).then((data) => {
             if(data.status != "error")
                 setNewCards(data.results);
             else
@@ -35,7 +35,7 @@ const PreloadedCards = ({txt,cards,showResults = null}) => {
                 {txt}
             </Text>
             { txt!=="Explore a cuisine" ? 
-            (<RecipeCardContainer recipe_prop={newCards} perRow={10} numRows={1} />)
+            (<RecipeCardContainer recipe_prop={newCards} perRow={10} numRows={1} containerType="carousel" />)
             : 
             (<ExploreCuisine showResults={showResults}/>)
             }

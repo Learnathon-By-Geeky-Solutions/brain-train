@@ -7,6 +7,7 @@ import CentralSearchFrame from '@/components/CentralSearchFrame/CentralSearchFra
 import TitleSearchInput from '@/components/TitleSearchInput/TitleSearchInput';
 import DummySearchBar from './DummySearchBar';
 import { useRef } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 export default function RecipeSearchUtility(
@@ -16,6 +17,8 @@ export default function RecipeSearchUtility(
   }
 ) {
 
+  const location = useLocation();
+
   function changePageState(newState) {
     setSearchParams({});
     setPageState(newState);
@@ -24,7 +27,7 @@ export default function RecipeSearchUtility(
   return (
     <Flex direction="column" width="100%" minHeight="16" alignItems="center" mb="6">
 
-      { ( pageState === 'init' || !showSecondBar )  && (
+      { ( pageState === 'init' || !showSecondBar )  && location.pathname !== '/dashboard/mealPlan' && (
           <Flex direction="row" h="100%" gap={2} onClick={() => setShowSecondBar(true)}>
             <CentralSearchFrame 
               feature={TitleSearchInput} 

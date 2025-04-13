@@ -16,15 +16,17 @@ import { useColorModeValue } from '../ui/color-mode';
 import { getMealData } from './api';
 import { formatDate, getCurrentDateFormatted, getDay } from './dateFormatter';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import handleRecipeDetail from '../RecipeCard/api';
 
 
 const DailyMealPlan = ({searchParams,reload}) => {
 
   let dateStr = searchParams.get('date');
   let day = getDay(dateStr);
-  let id = searchParams.get('id');
   const [meals, setMeals] = useState([]);
   const [nutrients, setNutrients] = useState({});
+  const navigate = useNavigate();
   let isToday = dateStr === getCurrentDateFormatted();
 
   // useEffect(() => {
@@ -52,7 +54,7 @@ const DailyMealPlan = ({searchParams,reload}) => {
 
   useEffect(() => {
     // if(!reload) return;
-    getMealData(dateStr, 'day', id).then((data) => {
+    getMealData(dateStr, 'day').then((data) => {
       if(data.status === 'error'){
         console.error('Failed to fetch meal data from reload ', data.msg);
         console.log('Data: ');
@@ -63,7 +65,7 @@ const DailyMealPlan = ({searchParams,reload}) => {
       else{
         console.log('Fetched meal data from reload ');
         console.log(data);
-        const plan =  data.plan.dailyMealPlans[0].mealPlan;
+        const plan =  data.plans[0].mealPlan;
         setMeals(plan.meals);
         let newNutrients = {protein: "", carbohydrates: "", fat: "", calories: ""};
         for (const nutrient of plan.nutrients) {
@@ -151,7 +153,13 @@ const DailyMealPlan = ({searchParams,reload}) => {
         <VStack spacing={4} align="stretch">
           {meals?.length > 0 ? (
             meals?.map((meal, index) => (
-              <Box key={`${day}-meal-${index}`}>
+              <Box 
+                key={`${day}-meal-${index}`}
+                onClick={() => {
+                  handleRecipeDetail(meal.recipeId, navigate);
+                }
+                }
+              >
                 {index > 0 && <Separator my={2} />}
                 <HStack>
                   <Badge 

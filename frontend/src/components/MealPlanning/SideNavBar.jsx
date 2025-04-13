@@ -18,6 +18,7 @@ import { MdDateRange } from 'react-icons/md';
 import { deletePlan, getMyPlans } from './api';
 import { formatDate, formatMealPlanDateRange, getCurrentDateFormatted } from './dateFormatter';
 import NavItem from './NavItem';
+import { toaster } from '../ui/toaster';
 
 
 
@@ -155,7 +156,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
                      color={isActiveIdx === 20 + index ? activeColor : undefined}
                     _hover={{ bg: hoverBg, cursor: 'pointer' }}
                     onClick={() => {
-                      setSearchParams({ time: 'day', date: plan.startDate, id: plan._id });
+                      setSearchParams({ time: 'day', date: plan.startDate });
                       setIsActiveIdx(20+index);
                     }}
                   >
@@ -167,15 +168,20 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
                   <Menu.Content>
                     <Menu.Item
                       onClick={() => {
+                        toaster.create({title: 'Deleting plan. Please wait...', type: 'loading'});
                         deletePlan(plan._id,'day').then((data) => {
                           if(data.status === 'error'){
                             console.error('Failed to delete plan: ');
                             console.log(data);
+                            toaster.dismiss();
+                            toaster.create({title: data.msg, type: 'error'});
                           }
                           else{
                             console.log('Deleted plan: ');
                             console.log(data);
                             setReload(!reload);
+                            toaster.dismiss();
+                            toaster.create({title: 'Plan deleted successfully', type: 'success'});
                           }
                         }
                         );
@@ -209,15 +215,20 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
                   <Menu.Content>
                     <Menu.Item
                       onClick={() => {
+                        toaster.create({title: 'Deleting plan. Please wait...', type: 'loading'});
                         deletePlan(plan._id,'week').then((data) => {
                           if(data.status === 'error'){
                             console.error('Failed to delete plan: ');
                             console.log(data);
+                            toaster.dismiss();
+                            toaster.create({title: data.msg, type: 'error'});
                           }
                           else{
                             console.log('Deleted plan: ');
                             console.log(data);
                             setReload(!reload);
+                            toaster.dismiss();
+                            toaster.create({title: 'Plan deleted successfully', type: 'success'});
                           }
                         }
                         );

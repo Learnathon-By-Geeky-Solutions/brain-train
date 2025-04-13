@@ -18,6 +18,8 @@ import { FaSliders } from 'react-icons/fa6';
 import { MdClose } from "react-icons/md";
 import { LuCirclePlus, LuPlus } from "react-icons/lu";
 import { saveMealPlan } from "./api";
+import { Toaster, toaster } from '../ui/toaster';
+import Demo from "./OverlapDialogBox";
 
   
   const PlanController = ({startDate,currentDate,toggleReload}) => {
@@ -32,13 +34,15 @@ import { saveMealPlan } from "./api";
     const [rangeFilters, setRangeFilters] = useState(
       rangeFilterTypes.map((type) => ({type: type, value: 0}))
     );
+    const [planName, setPlanName] = useState("");
     const [isRangeFiltersActive, setIsRangeFiltersActive] = useState([false]);
     const [filtersApplied, setFiltersApplied] = useState(false);
 
-    let plan = {exclude:"",diet:[],timeFrame:"",targetCalories:""};
+    let plan = {name:"",exclude:"",diet:[],timeFrame:"",targetCalories:""};
 
     function clearFiltersWithState(){
       setExclude("");
+      setPlanName("");
       setDietFiltersToggled([false, false, false, false, false, false]);
       setDietFilters([]);
       // setTimeFrameFiltersToggled([false, false]);
@@ -49,7 +53,7 @@ import { saveMealPlan } from "./api";
       );
       setIsRangeFiltersActive([false]);
       setFiltersApplied(false);
-      plan = {exclude:"",diet:[],timeFrame:"",targetCalories:""};
+      plan = {name:"",exclude:"",diet:[],timeFrame:"",targetCalories:""};
       console.log("Meal Plan cleared");
       console.log(plan);
     }
@@ -99,6 +103,48 @@ import { saveMealPlan } from "./api";
       setIsRangeFiltersActive(newIsRangeFiltersActive);
     }
 
+    function handleSaveMealPlan(setVisible,setDailyPlans,setWeeklyPlans){
+      toaster.create({title: "Meal Plan is being saved. Please wait..", type: "loading"});
+      setFiltersApplied(true);
+      let newPlan = {...plan};
+      newPlan.exclude = exclude;
+      newPlan.name = planName;
+      isRangeFiltersActive[0] ? newPlan.targetCalories = rangeFilters[0].value : newPlan.targetCalories = "";
+      for( const diet of dietFilters ){
+        if( newPlan.diet.indexOf(diet) === -1 ){
+          newPlan.diet.push(diet);
+        }
+      }
+      newPlan.timeFrame = isWeekly ? "week" : "day";
+      plan = newPlan;
+      console.log("Meal Plan updated");
+      console.log(plan);
+      saveMealPlan(plan,currentDate).then((data) => {
+        console.log("Meal Plan saving response");
+        console.log(data);
+        if(data.status !== 'error') {
+          toggleReload();
+          toaster.dismiss();
+          toaster.create({title: "Meal Plan succesfully saved", type: "success"});
+
+        }
+        else if(data.msg == 'overlap'){
+          // toaster.create({title: "Meal Plan overlaps", type: "error"});
+          toaster.dismiss();
+          setVisible(true);
+          setDailyPlans(data.res.existingPlans.dailyPlans);
+          setWeeklyPlans(data.res.existingPlans.weeklyPlans);
+        }
+        else{
+          toaster.dismiss();
+          let toasterTitle = data.msg;
+          if(data.msg === 'targetCalories must be a number')
+          toasterTitle = "Target Calories must be set";
+          toaster.create({title: toasterTitle, type: "error"});
+        }
+      });
+    }
+
     if( currentDate < startDate ){
       return null;
     }
@@ -135,6 +181,20 @@ import { saveMealPlan } from "./api";
                 </Dialog.Header>
                 <Dialog.Body>
                   <Flex direction="column" gap="4" w="100%">
+                  <div>
+                    <Text fontSize="lg" fontWeight="semibold">
+                      Give a name to your plan
+                    </Text>
+                    <Input placeholder="Example: My Great Vegeterian week!" 
+                      value={planName}
+                      onChange={(e)=>{
+                        setPlanName(e.target.value);
+                      }}
+                      bgColor={"var(--text-input)"}
+                      borderRadius="3xl"
+                      color="var(--text)"
+                    />
+                  </div>
                   <div>
                     <Text fontSize="lg" fontWeight="semibold">
                       Exclude
@@ -294,7 +354,8 @@ import { saveMealPlan } from "./api";
                       Clear
                     </Button>
                   </Dialog.ActionTrigger>
-                  <Button
+                  <Dialog.ActionTrigger asChild>
+                  {/* <Button
                     onClick={()=>{
                       setFiltersApplied(true);
                       let newPlan = {...plan};
@@ -312,17 +373,29 @@ import { saveMealPlan } from "./api";
                       saveMealPlan(plan,currentDate).then((data) => {
                         console.log("Meal Plan saving response");
                         console.log(data);
-                        if(data.status !== 'error') toggleReload();
+                        if(data.status !== 'error') {
+                          toggleReload()
+                          toaster.create({title: "Meal Plan succesfully saved", type: "success"});
+                        }
+                        else if(data.msg == 'overlap'){
+                          toaster.create({title: "Meal Plan overlaps", type: "error"});
+                        }
+                        else{
+                          toaster.create({title: data.msg, status: "error"});
+                        }
                       });
                     }}
                   >
                     Save
-                  </Button>
+                  </Button> */}
+                  <Demo clickFn={handleSaveMealPlan}/>
+                  </Dialog.ActionTrigger>
                 </Dialog.Footer>
               </Dialog.Content>
             </Dialog.Positioner>
           </Portal>
         </Dialog.Root>
+        {/* <Toaster /> */}
       </HStack>
     )
   }
