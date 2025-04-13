@@ -5,8 +5,8 @@ import { getRecentRecipes, getRecommendedRecipes, getTrendingRecipes } from './a
 import { useEffect, useState } from 'react';
 import ExploreCuisine from './ExploreCuisine';
 
-const PreloadedCards = ({txt,cards,showResults = null}) => {
-    const [newCards, setNewCards] = useState(cards);
+const PreloadedCards = ({txt,showResults = null}) => {
+    const [newCards, setNewCards] = useState([]);
     useEffect(() => {
         let fn;
         if( txt === "Recently Searched" ){

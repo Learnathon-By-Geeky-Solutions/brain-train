@@ -94,11 +94,11 @@ const RecipeCardContainer = ({recipe_prop,removeCard,containerType="default"}) =
       }}
     >
       <Grid 
-        templateColumns={`repeat(${cardsPerRow}, 1fr)`}
+        templateColumns={`repeat(${cardsPerRow == 0 ? 7:cardsPerRow}, 1fr)`}
         gap={4}
       >
         { (!recipe_prop || recipe_prop.length === 0) ?
-          Array.from({ length: 10 }).map((_, index) => (
+          Array.from({ length: 7 }).map((_, index) => (
             <GridItem w="fit-content">
               <Skeleton key={index} height="72" width="72" bgColor="gray.950" />
             </GridItem>

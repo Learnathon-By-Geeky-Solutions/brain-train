@@ -5,7 +5,6 @@ import { Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-
 import { auth } from '@/services/firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import Header from '@/components/Header/Header';
-import recipes from './recipe';
 import PreloadedCards from '@/components/DasboardFeatures/PreloadedCards';
 import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
 import fetchData, { getFavoriteRecipes } from './api';
@@ -142,10 +141,10 @@ export default function Dashboard() {
       {
         !searchParams.get("type") && pageLocation === 'dashboard' &&
         <Flex direction="column" width="100%" h="100%" className="dashboard">
-          <PreloadedCards txt="Recently Searched" cards={recipes} />
-          <PreloadedCards txt="Trending Recipes" cards={recipes} /> 
-          <PreloadedCards txt="Explore a cuisine" cards={recipes} showResults={loadCards} />
-          <PreloadedCards txt="Recommended for You" cards={recipes} />
+          <PreloadedCards txt="Recently Searched" />
+          <PreloadedCards txt="Trending Recipes" /> 
+          <PreloadedCards txt="Explore a cuisine" showResults={loadCards} />
+          <PreloadedCards txt="Recommended for You" />
         </Flex>
       }
       { 
