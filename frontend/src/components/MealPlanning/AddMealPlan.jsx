@@ -34,13 +34,15 @@ import Demo from "./OverlapDialogBox";
     const [rangeFilters, setRangeFilters] = useState(
       rangeFilterTypes.map((type) => ({type: type, value: 0}))
     );
+    const [planName, setPlanName] = useState("");
     const [isRangeFiltersActive, setIsRangeFiltersActive] = useState([false]);
     const [filtersApplied, setFiltersApplied] = useState(false);
 
-    let plan = {exclude:"",diet:[],timeFrame:"",targetCalories:""};
+    let plan = {name:"",exclude:"",diet:[],timeFrame:"",targetCalories:""};
 
     function clearFiltersWithState(){
       setExclude("");
+      setPlanName("");
       setDietFiltersToggled([false, false, false, false, false, false]);
       setDietFilters([]);
       // setTimeFrameFiltersToggled([false, false]);
@@ -51,7 +53,7 @@ import Demo from "./OverlapDialogBox";
       );
       setIsRangeFiltersActive([false]);
       setFiltersApplied(false);
-      plan = {exclude:"",diet:[],timeFrame:"",targetCalories:""};
+      plan = {name:"",exclude:"",diet:[],timeFrame:"",targetCalories:""};
       console.log("Meal Plan cleared");
       console.log(plan);
     }
@@ -106,6 +108,7 @@ import Demo from "./OverlapDialogBox";
       setFiltersApplied(true);
       let newPlan = {...plan};
       newPlan.exclude = exclude;
+      newPlan.name = planName;
       isRangeFiltersActive[0] ? newPlan.targetCalories = rangeFilters[0].value : newPlan.targetCalories = "";
       for( const diet of dietFilters ){
         if( newPlan.diet.indexOf(diet) === -1 ){
@@ -178,6 +181,20 @@ import Demo from "./OverlapDialogBox";
                 </Dialog.Header>
                 <Dialog.Body>
                   <Flex direction="column" gap="4" w="100%">
+                  <div>
+                    <Text fontSize="lg" fontWeight="semibold">
+                      Give a name to your plan
+                    </Text>
+                    <Input placeholder="Example: My Great Vegeterian week!" 
+                      value={planName}
+                      onChange={(e)=>{
+                        setPlanName(e.target.value);
+                      }}
+                      bgColor={"var(--text-input)"}
+                      borderRadius="3xl"
+                      color="var(--text)"
+                    />
+                  </div>
                   <div>
                     <Text fontSize="lg" fontWeight="semibold">
                       Exclude

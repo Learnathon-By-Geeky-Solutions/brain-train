@@ -10,7 +10,10 @@ function generateMealPlanReqBody(startDate, plan) {
         timeFrame: plan.timeFrame
     };
     if(plan.targetCalories){
-        reqBody.targetCalories = plan.targetCalories;
+      reqBody.targetCalories = plan.targetCalories;
+    }
+    if(plan.name){
+      reqBody.title = plan.name;
     }
     return reqBody;
 }
