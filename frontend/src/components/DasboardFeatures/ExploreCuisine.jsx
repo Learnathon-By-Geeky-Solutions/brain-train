@@ -9,7 +9,7 @@ import indian_cuisine from '@/assets/indian_cuisine.jpg';
 const cuisines = [
   { name: "italian", imageUrl: italian_cuisine },
   { name: "french", imageUrl: french_cuisine },
-  { name: "arabic", imageUrl: arabic_cuisine },
+  { name: "mexican", imageUrl: arabic_cuisine },
   { name: "english", imageUrl: english_cuisine },
   { name: "indian", imageUrl: indian_cuisine },
 ];
