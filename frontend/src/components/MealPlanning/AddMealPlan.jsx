@@ -19,6 +19,7 @@ import { MdClose } from "react-icons/md";
 import { LuCirclePlus, LuPlus } from "react-icons/lu";
 import { saveMealPlan } from "./api";
 import { Toaster, toaster } from '../ui/toaster';
+import Demo from "./OverlapDialogBox";
 
   
   const PlanController = ({startDate,currentDate,toggleReload}) => {
@@ -98,6 +99,44 @@ import { Toaster, toaster } from '../ui/toaster';
       const newIsRangeFiltersActive = [...isRangeFiltersActive];
       newIsRangeFiltersActive[index] = !newIsRangeFiltersActive[index];
       setIsRangeFiltersActive(newIsRangeFiltersActive);
+    }
+
+    function handleSaveMealPlan(setVisible,setDailyPlans,setWeeklyPlans){
+      toaster.create({title: "Meal Plan is being saved. Please wait..", type: "loading"});
+      setFiltersApplied(true);
+      let newPlan = {...plan};
+      newPlan.exclude = exclude;
+      isRangeFiltersActive[0] ? newPlan.targetCalories = rangeFilters[0].value : newPlan.targetCalories = "";
+      for( const diet of dietFilters ){
+        if( newPlan.diet.indexOf(diet) === -1 ){
+          newPlan.diet.push(diet);
+        }
+      }
+      newPlan.timeFrame = isWeekly ? "week" : "day";
+      plan = newPlan;
+      console.log("Meal Plan updated");
+      console.log(plan);
+      saveMealPlan(plan,currentDate).then((data) => {
+        console.log("Meal Plan saving response");
+        console.log(data);
+        if(data.status !== 'error') {
+          toggleReload();
+          toaster.dismiss();
+          toaster.create({title: "Meal Plan succesfully saved", type: "success"});
+
+        }
+        else if(data.msg == 'overlap'){
+          // toaster.create({title: "Meal Plan overlaps", type: "error"});
+          toaster.dismiss();
+          setVisible(true);
+          setDailyPlans(data.res.existingPlans.dailyPlans);
+          setWeeklyPlans(data.res.existingPlans.weeklyPlans);
+        }
+        else{
+          toaster.dismiss();
+          toaster.create({title: data.msg, status: "error"});
+        }
+      });
     }
 
     if( currentDate < startDate ){
@@ -296,7 +335,7 @@ import { Toaster, toaster } from '../ui/toaster';
                     </Button>
                   </Dialog.ActionTrigger>
                   <Dialog.ActionTrigger asChild>
-                  <Button
+                  {/* <Button
                     onClick={()=>{
                       setFiltersApplied(true);
                       let newPlan = {...plan};
@@ -328,7 +367,8 @@ import { Toaster, toaster } from '../ui/toaster';
                     }}
                   >
                     Save
-                  </Button>
+                  </Button> */}
+                  <Demo clickFn={handleSaveMealPlan}/>
                   </Dialog.ActionTrigger>
                 </Dialog.Footer>
               </Dialog.Content>
