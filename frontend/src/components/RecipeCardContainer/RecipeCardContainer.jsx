@@ -12,8 +12,8 @@ import zero_results from '../../assets/zero_results.png';
 const RecipeCardContainer = ({recipe_prop,removeCard,containerType="default"}) => {
   const location = useLocation();
   const searchParams = useSearchParams()[0];
-  const [cardsPerRow, setCardsPerRow] = useState(5);
-  const [maxRows, setMaxRows] = useState(6);
+  const [cardsPerRow, setCardsPerRow] = useState(containerType === "carousel" ? recipe_prop.length : 6);
+  const [maxRows, setMaxRows] = useState(containerType === "carousel" ? 1 : 6);
   
   useEffect(() => {
     function handleResize() {
@@ -47,7 +47,7 @@ const RecipeCardContainer = ({recipe_prop,removeCard,containerType="default"}) =
     
     // Clean up
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [recipe_prop.length]);
   
 
   let type = location.state?.type || searchParams.get("type");
