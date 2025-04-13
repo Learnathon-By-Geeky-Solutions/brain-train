@@ -295,6 +295,7 @@ import { Toaster, toaster } from '../ui/toaster';
                       Clear
                     </Button>
                   </Dialog.ActionTrigger>
+                  <Dialog.ActionTrigger asChild>
                   <Button
                     onClick={()=>{
                       setFiltersApplied(true);
@@ -315,24 +316,26 @@ import { Toaster, toaster } from '../ui/toaster';
                         console.log(data);
                         if(data.status !== 'error') {
                           toggleReload()
-                          toaster({title: "Meal Plan succesfully saved", status: "success"});
+                          toaster.create({title: "Meal Plan succesfully saved", type: "success"});
                         }
                         else if(data.msg == 'overlap'){
-                          toaster({title: "Meal Plan overlaps", status: "error"});
+                          toaster.create({title: "Meal Plan overlaps", type: "error"});
                         }
                         else{
-                          toaster({title: data.msg, status: "error"});
+                          toaster.create({title: data.msg, status: "error"});
                         }
                       });
                     }}
                   >
                     Save
                   </Button>
+                  </Dialog.ActionTrigger>
                 </Dialog.Footer>
               </Dialog.Content>
             </Dialog.Positioner>
           </Portal>
         </Dialog.Root>
+        {/* <Toaster /> */}
       </HStack>
     )
   }

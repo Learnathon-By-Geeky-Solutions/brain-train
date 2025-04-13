@@ -9,7 +9,6 @@ import {
   Heading,
   IconButton,
 } from '@chakra-ui/react';
-import { Toaster, toaster } from '../ui/toaster';
 import { LuArrowLeft, LuArrowRight } from 'react-icons/lu';
 import { useColorModeValue } from '../ui/color-mode';
 import MealPlanningSidebar from './SideNavBar';
@@ -19,6 +18,7 @@ import PlanController from './AddMealPlan';
 import { useSearchParams } from 'react-router-dom';
 import DailyMealPlan from './DailyMealPlan';
 import sampleMealData from './sampleMealData';
+import { Toaster, toaster } from '../ui/toaster'
 
 
 const MealPlanningCalendar = () => {
@@ -112,6 +112,8 @@ const MealPlanningCalendar = () => {
           {days.map((day,dayIndex) => {
             const dayKey = day.toLowerCase();
             const mealSize = mealData[dayKey]?.mealPlan?.meals?.length;
+            // console.log('condition');
+            // console.log(startDate >= getCurrentDateFormatted());
             return (
             <Box 
               key={day} 
@@ -123,7 +125,7 @@ const MealPlanningCalendar = () => {
             >
               <Text fontWeight="medium">{day}</Text>
               {
-                mealSize > 0 && (
+                !mealSize && startDate >= getCurrentDateFormatted() && (
                   <Flex h="100%" placeContent="center">
                     <PlanController  
                       currentDate={getOffsetDate(startDate,dayIndex)}
