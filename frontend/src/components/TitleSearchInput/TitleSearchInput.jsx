@@ -28,6 +28,10 @@ const TitleSearchInput = ({controller,handleSuggestionClick,containerClosed,setC
       }}
       onKeyDown={(e)=>{
         setKeyHandlerForSuggestion(e);
+        if(e.key === "Enter"){
+          handleChange(e.target.value);
+          handleSuggestionClick();
+        }
       }}
     />
     <SuggestionContainer type="title" query={query} 

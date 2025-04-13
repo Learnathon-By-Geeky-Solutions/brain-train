@@ -36,6 +36,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => 
     if(featureProps?.handleSuggestionClick == null) 
       featureProps.handleSuggestionClick = () => {
         handleSearch();
+        setContainerClosed(true); // newly added
       }
     
 
