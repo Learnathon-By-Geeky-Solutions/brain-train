@@ -5,7 +5,6 @@ import { Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-
 import { auth } from '@/services/firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import Header from '@/components/Header/Header';
-import recipes from './recipe';
 import PreloadedCards from '@/components/DasboardFeatures/PreloadedCards';
 import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
 import fetchData, { getFavoriteRecipes } from './api';
