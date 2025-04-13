@@ -5,7 +5,7 @@ const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000"
 const getRecentRecipes = async(noOfRecipes)=>{
   const auth = getAuth();
   let data = {status: "error", msg: ""};
-  const url = `${API_BASE_URL}/search/history`;
+  const url = `${API_BASE_URL}/search/history/${noOfRecipes}`;
   
   // Return a promise that resolves when auth state is ready
   return new Promise((resolve) => {
@@ -76,10 +76,10 @@ const getRecommendedRecipes = async()=>{
   });
 }
 
-const getTrendingRecipes = async()=>{
+const getTrendingRecipes = async(noOfRecipes)=>{
   const auth = getAuth();
   let data = {status: "error", msg: ""};
-  const url = `${API_BASE_URL}/trending/5`;
+  const url = `${API_BASE_URL}/trending/${noOfRecipes}`;
   
   // Return a promise that resolves when auth state is ready
   return new Promise((resolve) => {

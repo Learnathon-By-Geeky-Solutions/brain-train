@@ -9,7 +9,7 @@ import zero_results from '../../assets/zero_results.png';
 
 
 
-const RecipeCardContainer = ({recipe_prop,removeCard}) => {
+const RecipeCardContainer = ({recipe_prop,removeCard,containerType="default"}) => {
   const location = useLocation();
   const searchParams = useSearchParams()[0];
   const [cardsPerRow, setCardsPerRow] = useState(5);
@@ -18,7 +18,12 @@ const RecipeCardContainer = ({recipe_prop,removeCard}) => {
   useEffect(() => {
     function handleResize() {
       // For example, change layout based on window width
-      if (window.innerWidth < 600) {
+      if(containerType === "carousel"){
+        setCardsPerRow(recipe_prop.length); 
+        console.log('printing cards per row for carousel', recipe_prop.length);
+        setMaxRows(1);   
+      }
+      else if (window.innerWidth < 600) {
         setCardsPerRow(2); // Mobile: 2 card per row
         setMaxRows(15);    // But show more rows
       } else if (window.innerWidth < 960) {
