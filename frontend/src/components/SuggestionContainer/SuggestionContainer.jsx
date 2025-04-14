@@ -8,6 +8,7 @@ import {
   
 import PropTypes from 'prop-types';
 import { useState, useEffect } from "react";
+import { fetchSuggestions } from "./api";
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
@@ -29,33 +30,9 @@ const SuggestionContainer = ({ type, query, handleClick, keyHandler, containerCl
             setContainerClosed(false);
             return;
         }
-        
-        const fetchSuggestions = async () => {
-        setLoading(true);
-        setError(null);
-            try {
-                const response = await fetch(
-                `${API_BASE_URL}/search/${type}/autocomplete?query=${query}`,
-                );
-
-                if (!response.ok) {
-                throw new Error("Failed to fetch suggestions");
-                }
-
-                const data = await response.json();
-                if (query.trim() === ""){
-                    return;
-                }
-                setSuggestions(data || []);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
 
         const debounceFetch = setTimeout(() => {
-        fetchSuggestions();
+        fetchSuggestions(setLoading, setError, setSuggestions, type, query);
         }, 300); // Debounce API call
 
         return () => clearTimeout(debounceFetch);
