@@ -15,6 +15,9 @@ function generateMealPlanReqBody(startDate, plan) {
     if(plan.name){
       reqBody.title = plan.name;
     }
+    if(plan?.ignoreConflict){
+      reqBody.deleteOverlap = true;
+    }
     return reqBody;
 }
 

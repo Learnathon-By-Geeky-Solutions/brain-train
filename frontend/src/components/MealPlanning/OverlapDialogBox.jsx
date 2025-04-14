@@ -9,7 +9,7 @@ import {
     List,
     ListItem,
   } from "@chakra-ui/react"
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { IoMdAlert } from "react-icons/io";
 import { LuTriangleAlert } from "react-icons/lu";
   
@@ -17,6 +17,8 @@ import { LuTriangleAlert } from "react-icons/lu";
     const [isOpen, setIsOpen] = useState(false);
     const [dailyPlans, setDailyPlans] = useState([]);
     const [weeklyPlans, setWeeklyPlans] = useState([]);
+    const [deleteOverlap, setDeleteOverlap] = useState(false);
+    const saveButtonRef = useRef();
     return (
       <HStack wrap="wrap" gap="4">
         <Dialog.Root
@@ -29,7 +31,8 @@ import { LuTriangleAlert } from "react-icons/lu";
               asChild
             >
             <Button
-              onClick={()=>clickFn(setIsOpen, setDailyPlans, setWeeklyPlans)}
+              onClick={()=>clickFn(setIsOpen, setDailyPlans, setWeeklyPlans, deleteOverlap)}
+              ref={saveButtonRef}
             >
                 Save
             </Button>
@@ -83,7 +86,14 @@ import { LuTriangleAlert } from "react-icons/lu";
                 </Dialog.Body>
                 <Dialog.Footer>
                     <Dialog.ActionTrigger asChild>
-                        <Button variant="outline" bgColor="bg.error">
+                        <Button 
+                          variant="outline" 
+                          bgColor="bg.error"
+                          onClick={() => {
+                            setDeleteOverlap(true);
+                            saveButtonRef.current.click();
+                          }} 
+                        >
                             Yes
                         </Button>
                     </Dialog.ActionTrigger>

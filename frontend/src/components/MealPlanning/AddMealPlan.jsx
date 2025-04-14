@@ -12,7 +12,7 @@ import {
     Switch
   } from "@chakra-ui/react"
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import PropTypes from 'prop-types';
 import { FaSliders } from 'react-icons/fa6';
 import { MdClose } from "react-icons/md";
@@ -103,10 +103,14 @@ import Demo from "./OverlapDialogBox";
       setIsRangeFiltersActive(newIsRangeFiltersActive);
     }
 
-    function handleSaveMealPlan(setVisible,setDailyPlans,setWeeklyPlans){
+    function handleSaveMealPlan(setVisible,setDailyPlans,setWeeklyPlans,ignoreConflict=false){
       toaster.create({title: "Meal Plan is being saved. Please wait..", type: "loading"});
       setFiltersApplied(true);
       let newPlan = {...plan};
+
+      if(ignoreConflict)
+      newPlan.ignoreConflict = true;
+    
       newPlan.exclude = exclude;
       newPlan.name = planName;
       isRangeFiltersActive[0] ? newPlan.targetCalories = rangeFilters[0].value : newPlan.targetCalories = "";
@@ -355,39 +359,6 @@ import Demo from "./OverlapDialogBox";
                     </Button>
                   </Dialog.ActionTrigger>
                   <Dialog.ActionTrigger asChild>
-                  {/* <Button
-                    onClick={()=>{
-                      setFiltersApplied(true);
-                      let newPlan = {...plan};
-                      newPlan.exclude = exclude;
-                      isRangeFiltersActive[0] ? newPlan.targetCalories = rangeFilters[0].value : newPlan.targetCalories = "";
-                      for( const diet of dietFilters ){
-                        if( newPlan.diet.indexOf(diet) === -1 ){
-                          newPlan.diet.push(diet);
-                        }
-                      }
-                      newPlan.timeFrame = isWeekly ? "week" : "day";
-                      plan = newPlan;
-                      console.log("Meal Plan updated");
-                      console.log(plan);
-                      saveMealPlan(plan,currentDate).then((data) => {
-                        console.log("Meal Plan saving response");
-                        console.log(data);
-                        if(data.status !== 'error') {
-                          toggleReload()
-                          toaster.create({title: "Meal Plan succesfully saved", type: "success"});
-                        }
-                        else if(data.msg == 'overlap'){
-                          toaster.create({title: "Meal Plan overlaps", type: "error"});
-                        }
-                        else{
-                          toaster.create({title: data.msg, status: "error"});
-                        }
-                      });
-                    }}
-                  >
-                    Save
-                  </Button> */}
                   <Demo clickFn={handleSaveMealPlan}/>
                   </Dialog.ActionTrigger>
                 </Dialog.Footer>
