@@ -16,6 +16,12 @@ const SuggestionContainer = ({ type, query, handleClick, keyHandler, containerCl
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [ingContainerClosed, setIngContainerClosed] = useState(false);
+
+    if(type === "ingredients") {
+      containerClosed = ingContainerClosed;
+      setContainerClosed = setIngContainerClosed;
+    }
 
     useEffect(() => {
         if (query.trim() === "") {

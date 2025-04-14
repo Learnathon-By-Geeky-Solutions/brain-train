@@ -284,7 +284,7 @@ export const ensureFullRecipe = async (recipe) => {
 
   /**
  * Fetch recipes by IDs from Spoonacular, enrich them if missing, save to DB, and return all filtered.
- * @param {Array} recipeIds - Array of recipe IDs from Spoonacular
+ * @param {Array} recipeIds - Array of recipe IDs from Spoonacular,this is SourceId/SpoonacularId
  * @param {Object} filters - Optional filters to apply
  * @returns {Array} - Filtered enriched recipes (existing + new)
  */
@@ -309,16 +309,24 @@ export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
         const detailedRecipes = await fetchRecipeDetailsBulk(missingIds);
         console.log("📊 New Recipe Count:", detailedRecipes.length);
   
-        await Promise.all(
+        const enrichedRecipes=await Promise.all(
           detailedRecipes.map(async (recipe) => {
             const savedRecipe = await saveRecipeDetails(recipe);
             recipe.id = savedRecipe._id.toString();
             recipe.likes = savedRecipe.likes;
-            return recipe;
+            recipe.image = savedRecipe.image;
+            console.log("saved recipe sourceId",savedRecipe.sourceId);
+            console.log("saved recipe id",savedRecipe._id);
+            // return recipe;
+            return {
+              ...savedRecipe,
+              id: savedRecipe._id.toString(),          // for frontend use
+              sourceId: savedRecipe.sourceId.toString()   // ensure type safety
+            };
           })
         );
   
-        newRecipes = detailedRecipes;
+        newRecipes = enrichedRecipes;
       } catch (err) {
         console.error("❌ Error fetching/saving recipes:", err);
       }
@@ -334,9 +342,19 @@ export const fetchSaveFilterRecipes = async (recipeIds, filters = {}) => {
     // 5. Filter and return
     const filtered =await filterRecipes(allRecipes, filters);
     
-    console.log("all recipes after filtration",allRecipes);
     console.log("all recipes count",allRecipes.length);
     console.log("✅ Filtered Results:", filtered.length);
   
     return filtered;
   };
+  export const minimizeRecipeData = (recipes) => {
+    return recipes.map(recipe => ({
+      _id: recipe._id || recipe.id,
+      id: recipe._id || recipe.id,
+      title: recipe.title,
+      image: recipe.image,
+      summary: recipe.summary,
+      likes: recipe.likes
+    }));
+  };
+  

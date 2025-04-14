@@ -5,12 +5,12 @@ import { Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-
 import { auth } from '@/services/firebase';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import Header from '@/components/Header/Header';
-import recipes from './recipe';
 import PreloadedCards from '@/components/DasboardFeatures/PreloadedCards';
 import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
 import fetchData, { getFavoriteRecipes } from './api';
 import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
 import ShoppingList from '@/components/RecipeDetails/ShoppingList';
+import MealPlanningCalendar from '@/components/MealPlanning/MealPlan';
 
 
 
@@ -49,21 +49,6 @@ export default function Dashboard() {
     };
   }, [navigate,searchParams]);
 
-  useEffect(() => {
-    const handlePopState = () => {
-      // Clear search params when back button is pressed
-      if (location.pathname === '/dashboard' || location.pathname === '/dashboard/'){
-        setSearchParams({});
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-    
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
-
   const setupAuthStateListener = () => {
     return new Promise((resolve) => {
       unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -78,17 +63,31 @@ export default function Dashboard() {
   };
 
 
-  function loadCards( data ) {
-
+  function loadCards( data, clearCards = false) {
     const type = searchParams.get("type");
-    console.log("Type: ", type);
+
+    if(clearCards){
+      setCardData([]);
+      return;
+    }
+    
     if(!data && !type)
     return;
 
     if(data){
       console.log("setting search params");
       console.log(data);
-      setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)) });
+      setCardData([]);
+      if(location.pathname !== "/dashboard" && location.pathname !== "/dashboard/") {
+        console.log("Navigating to dashboard from loadCards");
+        navigate({
+          pathname: '/dashboard',
+          search: `?type=showResults&q=${encodeURIComponent(JSON.stringify(data))}`,
+        });
+      }
+      else{
+        setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)) });
+      }
       return;
     }
 
@@ -127,7 +126,7 @@ export default function Dashboard() {
 
   return (
     <Flex direction="column" width="100%" height="100%" minHeight="100vh" 
-    className="dashboard" gap={2}
+    className="dashboard" gap={0}
     >
       <Header
         photoUrl={photoURL}
@@ -142,17 +141,18 @@ export default function Dashboard() {
       {
         !searchParams.get("type") && pageLocation === 'dashboard' &&
         <Flex direction="column" width="100%" h="100%" className="dashboard">
-          <PreloadedCards txt="Recently Searched" cards={recipes} />
-          <PreloadedCards txt="Trending Recipes" cards={recipes} /> 
-          <PreloadedCards txt="Explore a cuisine" cards={recipes} />
-          <PreloadedCards txt="Recommended for You" cards={recipes} />
+          <PreloadedCards txt="Recently Searched" />
+          <PreloadedCards txt="Trending Recipes" /> 
+          <PreloadedCards txt="Explore a cuisine" showResults={loadCards} />
+          <PreloadedCards txt="Recommended for You" />
         </Flex>
       }
       { 
         searchParams.get("type") && pageLocation === 'dashboard' &&
-        <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} perRow={4} numRows={5} />
+        <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} />
       }
       <Routes>
+        <Route path="mealPlan" element={<MealPlanningCalendar/>} />
         <Route path="recipe/*" element={<RecipeDetails />} />
         <Route path="recipe/shoppingList" element={<ShoppingList />} />
       </Routes>

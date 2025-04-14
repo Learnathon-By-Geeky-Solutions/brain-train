@@ -1,4 +1,4 @@
-import { Box, Flex, IconButton, Image, Text, Button } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Image, Text, Button, Avatar } from "@chakra-ui/react";
 import PropTypes from 'prop-types';
 import logo from "../../assets/logo.png";
 import { MdLogout } from "react-icons/md";
@@ -51,7 +51,7 @@ const StickyHeader = ({
       const currentScrollY = window.scrollY;
       
       // If we're at the top (or very close to it), always show the second bar
-      if ((currentScrollY < 10) && (location.pathname === '/dashboard' || location.pathname === '/dashboard/')) {
+      if ((currentScrollY < 10) && (location.pathname !== '/dashboard/mealPlan')) {
         setShowSecondBar(true);
       } 
       // Otherwise hide it when scrolling down
@@ -74,6 +74,7 @@ const StickyHeader = ({
 
   const showFavouriteRecipes= () => {
     console.log("Fetching favourite recipes...");
+    showResults(null, true);
     if( location.pathname !== "/dashboard" && location.pathname !== "/dashboard/") {
       console.log("Navigating to dashboard");
       navigate({
@@ -166,14 +167,24 @@ const StickyHeader = ({
             >
               Pantry Match
             </Button>
+            <Button
+              variant="subtle"
+              borderRadius="3xl"
+              onClick={() => {
+                navigate('/dashboard/mealPlan');
+              }
+            }
+            >
+              Meal Plan
+            </Button>
           </Flex>)}
 
           {/* Icon Buttons */}
           <Flex gap={2}>
-            <FilterController 
+            {showSecondBar && (<FilterController 
               addFilter={addFilter} 
               clearFilters={clearFilters}
-            />
+            />)}
              <IconButton
               aria-label="User Profile"
               variant="ghost"
@@ -190,7 +201,11 @@ const StickyHeader = ({
                   >
                     <Flex direction="row" alignItems="center" justifyContent="space-around" h="12" gap={1}>
                       <LuMenu />
-                      <Image src={photoUrl} alt="DP" borderRadius="full" h="8" w="auto" ml="auto"/>
+                      {/* <Image src={photoUrl} alt="DP" borderRadius="full" h="8" w="auto" ml="auto"/> */}
+                      <Avatar.Root size="xs" variant="outline">
+                        <Avatar.Fallback name={userName} />
+                        <Avatar.Image src={photoUrl} />
+                      </Avatar.Root>
                     </Flex>
                   </IconButton>
                   {/* <Image src={photoUrl} alt="User Profile" borderRadius="full"/> */}
@@ -201,7 +216,9 @@ const StickyHeader = ({
                   </DrawerHeader>
                   <DrawerBody>
                     <Flex direction="column" mt={2}>
-                      <Button onClick={showFavouriteRecipes} variant="ghost">Favourite Recipes</Button>
+                      <DrawerActionTrigger asChild>
+                        <Button onClick={showFavouriteRecipes} variant="ghost">Favourite Recipes</Button>
+                      </DrawerActionTrigger>
                       <Button variant="ghost">Dummy</Button>
                     </Flex>
                   </DrawerBody>
