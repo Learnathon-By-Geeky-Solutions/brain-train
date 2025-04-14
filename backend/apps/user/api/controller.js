@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { findUserByUsername } from "../../../libraries/models/users.js";
 import { decodeFirebaseIdToken } from "../../../libraries/services/firebase.js";
 import { getSearchHistoryByUid, getRecipeInfoById } from "../../search/db.js";
@@ -80,7 +81,9 @@ const generateRecommendations = async (history, limit) => {
 };
 
 const handleSimilarRecipes = (similarIds, count, selectedRecipeIds) => {
-  const shuffled = similarIds.sort(() => 0.5 - Math.random());
+  const shuffled = similarIds.sort(() => {
+    return crypto.randomBytes(4).readUInt32LE(0) / 0xffffffff - 0.5;
+  });
   const selectedRecipeIdsForCurrentRecipe = [];
 
   // Process recipes and add them to selectedRecipeIdsForCurrentRecipe
@@ -140,8 +143,10 @@ const handleSpoonacularFallback = (recipeId, count, selectedRecipeIds) => {
     .then((recipesWithSpecificFields) => {
       // Shuffle and slice the recommendations to the desired count
       return recipesWithSpecificFields
-        .sort(() => 0.5 - Math.random())
-        .slice(0, count);
+      .sort(() => {
+        return crypto.randomBytes(4).readUInt32LE(0) / 0xffffffff - 0.5;
+      })
+      .slice(0, count);
     })
     .catch((error) => {
       console.error("Error in handleSpoonacularFallback:", error);
