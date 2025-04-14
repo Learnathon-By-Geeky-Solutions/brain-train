@@ -9,7 +9,7 @@ import { deletePlan } from './api';
 import { toaster } from '../ui/toaster';
 
 
-const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, setReload) =>
+const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, setReload, reload) =>
 {
     const hoverBg = useColorModeValue('gray.100', 'gray.700');
     const activeBg = useColorModeValue('green.50', 'green.900');

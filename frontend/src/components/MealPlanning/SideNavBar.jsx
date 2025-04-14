@@ -9,17 +9,14 @@ import {
   Separator,
   Collapsible,
   List,
-  Menu,
-  Portal,
 } from '@chakra-ui/react';
 
 import { useColorModeValue } from '../ui/color-mode';
 import { LuCalendar, LuClipboard, LuMenu } from 'react-icons/lu';
 import { MdDateRange } from 'react-icons/md';
-import { deletePlan, getMyPlans } from './api';
+import { getMyPlans } from './api';
 import { getCurrentDateFormatted } from './dateFormatter';
 import NavItem from './NavItem';
-import { toaster } from '../ui/toaster';
 import renderPlanList from './PlanList';
 
 
@@ -42,9 +39,9 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
       }
       else{
         console.log('Fetched plans from 1st useEffect: ');
-        console.log(data.plans);
-        setDailyPlanList(data.plans.daily);
-        setweeklyPlanList(data.plans.weekly);
+        console.log(data);
+        setDailyPlanList(data.dailyPlans);
+        setweeklyPlanList(data.weeklyPlans);
       }
     });
   }, [reload]);
@@ -52,9 +49,6 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
 
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
-  const hoverBg = useColorModeValue('gray.100', 'gray.700');
-  const activeBg = useColorModeValue('green.50', 'green.900');
-  const activeColor = useColorModeValue('green.700', 'green.200');
 
   return (
     <Box
@@ -122,8 +116,8 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
           </Collapsible.Trigger>
           <Collapsible.Content>
           <List.Root py="2" px="5" variant="plain" fontSize="sm" gap={2} alignItems="start">
-            {renderPlanList(dailyPlanList,setSearchParams,setIsActiveIdx,isActiveIdx,setReload)}
-            {renderPlanList(weeklyPlanList,setSearchParams,setIsActiveIdx,isActiveIdx,setReload)}
+            {renderPlanList(dailyPlanList,setSearchParams,setIsActiveIdx,isActiveIdx,setReload,reload)}
+            {renderPlanList(weeklyPlanList,setSearchParams,setIsActiveIdx,isActiveIdx,setReload,reload)}
           </List.Root>
           </Collapsible.Content>
         </Collapsible.Root>

@@ -132,7 +132,7 @@ import Demo from "./OverlapDialogBox";
           toaster.create({title: "Meal Plan succesfully saved", type: "success"});
 
         }
-        else if(data.msg == 'overlap'){
+        else if(data.msg === 'overlap'){
           toaster.dismiss();
           setVisible(true);
           setDailyPlans(data.res.existingPlans.dailyPlans);
