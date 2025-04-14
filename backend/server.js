@@ -4,6 +4,7 @@ import cors from "cors"; // Middleware for enabling CORS (Cross-Origin Resource 
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose'; // Database driver for MongoDB
+import { swaggerUi, swaggerSpec } from "./config/swagger.js";
 
 // Routes
 import signinRoute from './apps/signin/api/routes.js';
@@ -46,6 +47,7 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch(err => console.error("Failed to connect to MongoDB:", err));
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/signin", signinRoute);
 app.use("/signup", signupRoute);
 app.use('/search', searchRoutes);
@@ -63,4 +65,5 @@ app.use((req, res) => {
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(`Swagger docs at ${PORT} at /api-docs`);
 });
