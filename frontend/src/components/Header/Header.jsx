@@ -259,8 +259,8 @@ const StickyHeader = ({
   );
 };
 StickyHeader.propTypes = {
-  photoUrl: PropTypes.string.isRequired,
-  userName: PropTypes.string.isRequired,
+  photoUrl: PropTypes.string,
+  userName: PropTypes.string,
   handleLogout: PropTypes.func.isRequired,
   setSearchParams: PropTypes.func.isRequired,
   pageState: PropTypes.string.isRequired,

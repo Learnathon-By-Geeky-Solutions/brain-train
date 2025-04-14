@@ -20,6 +20,7 @@ import { deletePlan, getMyPlans } from './api';
 import { getCurrentDateFormatted } from './dateFormatter';
 import NavItem from './NavItem';
 import { toaster } from '../ui/toaster';
+import renderPlanList from './PlanList';
 
 
 
@@ -121,99 +122,8 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
           </Collapsible.Trigger>
           <Collapsible.Content>
           <List.Root py="2" px="5" variant="plain" fontSize="sm" gap={2} alignItems="start">
-            {dailyPlanList.map((plan,index) => (
-              <Menu.Root key={plan.startDate}>
-                <Menu.ContextTrigger>
-                  <List.Item
-                     bg={isActiveIdx === 20 + index ? activeBg : 'transparent'}
-                     color={isActiveIdx === 20 + index ? activeColor : undefined}
-                    _hover={{ bg: hoverBg, cursor: 'pointer' }}
-                    onClick={() => {
-                      setSearchParams({ time: 'day', date: plan.startDate });
-                      setIsActiveIdx(20+index);
-                    }}
-                  >
-                    {plan.title}
-                  </List.Item>
-                </Menu.ContextTrigger>
-              <Portal>
-                <Menu.Positioner>
-                  <Menu.Content>
-                    <Menu.Item
-                      onClick={() => {
-                        toaster.create({title: 'Deleting plan. Please wait...', type: 'loading'});
-                        deletePlan(plan._id,'day').then((data) => {
-                          if(data.status === 'error'){
-                            console.error('Failed to delete plan: ');
-                            console.log(data);
-                            toaster.dismiss();
-                            toaster.create({title: data.msg, type: 'error'});
-                          }
-                          else{
-                            console.log('Deleted plan: ');
-                            console.log(data);
-                            setReload(!reload);
-                            toaster.dismiss();
-                            toaster.create({title: 'Plan deleted successfully', type: 'success'});
-                          }
-                        }
-                        );
-                      }}
-                    >
-                      Delete
-                    </Menu.Item>
-                  </Menu.Content>
-                </Menu.Positioner>
-              </Portal>
-              </Menu.Root>
-            ))}
-            {weeklyPlanList.map((plan,index) => (
-              <Menu.Root key={plan.startDate}>
-                <Menu.ContextTrigger>
-                  <List.Item
-                    bg={isActiveIdx === 30 + index ? activeBg : 'transparent'}
-                    color={isActiveIdx === 30 + index ? activeColor : undefined}
-                    _hover={{ bg: hoverBg, cursor: 'pointer' }}
-                    onClick={() => {
-                      setStartDate(plan.startDate);
-                      setSearchParams({});
-                      setIsActiveIdx(30+index);
-                    }}
-                  >
-                    {plan.title}
-                  </List.Item>
-                </Menu.ContextTrigger>
-              <Portal>
-                <Menu.Positioner>
-                  <Menu.Content>
-                    <Menu.Item
-                      onClick={() => {
-                        toaster.create({title: 'Deleting plan. Please wait...', type: 'loading'});
-                        deletePlan(plan._id,'week').then((data) => {
-                          if(data.status === 'error'){
-                            console.error('Failed to delete plan: ');
-                            console.log(data);
-                            toaster.dismiss();
-                            toaster.create({title: data.msg, type: 'error'});
-                          }
-                          else{
-                            console.log('Deleted plan: ');
-                            console.log(data);
-                            setReload(!reload);
-                            toaster.dismiss();
-                            toaster.create({title: 'Plan deleted successfully', type: 'success'});
-                          }
-                        }
-                        );
-                      }}
-                    >
-                      Delete
-                    </Menu.Item>
-                  </Menu.Content>
-                </Menu.Positioner>
-              </Portal>
-              </Menu.Root>
-            ))}
+            {renderPlanList(dailyPlanList,setSearchParams,setIsActiveIdx,isActiveIdx,setReload)}
+            {renderPlanList(weeklyPlanList,setSearchParams,setIsActiveIdx,isActiveIdx,setReload)}
           </List.Root>
           </Collapsible.Content>
         </Collapsible.Root>
