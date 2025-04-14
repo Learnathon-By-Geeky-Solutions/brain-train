@@ -108,9 +108,12 @@ import Demo from "./OverlapDialogBox";
       setFiltersApplied(true);
       let newPlan = {...plan};
 
+      console.log('value of ignoreConflict');
+      console.log(ignoreConflict);
+
       if(ignoreConflict)
       newPlan.ignoreConflict = true;
-    
+
       newPlan.exclude = exclude;
       newPlan.name = planName;
       isRangeFiltersActive[0] ? newPlan.targetCalories = rangeFilters[0].value : newPlan.targetCalories = "";

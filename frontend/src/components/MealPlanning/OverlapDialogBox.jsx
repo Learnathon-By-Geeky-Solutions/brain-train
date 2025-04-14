@@ -17,7 +17,7 @@ import { LuTriangleAlert } from "react-icons/lu";
     const [isOpen, setIsOpen] = useState(false);
     const [dailyPlans, setDailyPlans] = useState([]);
     const [weeklyPlans, setWeeklyPlans] = useState([]);
-    const [deleteOverlap, setDeleteOverlap] = useState(false);
+    const deleteOverlap = useRef(false);
     const saveButtonRef = useRef();
     return (
       <HStack wrap="wrap" gap="4">
@@ -31,7 +31,7 @@ import { LuTriangleAlert } from "react-icons/lu";
               asChild
             >
             <Button
-              onClick={()=>clickFn(setIsOpen, setDailyPlans, setWeeklyPlans, deleteOverlap)}
+              onClick={()=>clickFn(setIsOpen, setDailyPlans, setWeeklyPlans, deleteOverlap.current)}
               ref={saveButtonRef}
             >
                 Save
@@ -90,7 +90,8 @@ import { LuTriangleAlert } from "react-icons/lu";
                           variant="outline" 
                           bgColor="bg.error"
                           onClick={() => {
-                            setDeleteOverlap(true);
+                            deleteOverlap.current = true;
+                            console.log('clicking save second time');
                             saveButtonRef.current.click();
                           }} 
                         >
