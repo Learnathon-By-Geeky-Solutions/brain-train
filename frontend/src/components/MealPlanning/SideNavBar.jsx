@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Box,
   VStack,
@@ -13,10 +14,10 @@ import {
 } from '@chakra-ui/react';
 
 import { useColorModeValue } from '../ui/color-mode';
-import { LuCalendar, LuClipboard, LuCog, LuMenu, LuPlus, LuRepeat, LuSearch, LuStar } from 'react-icons/lu';
+import { LuCalendar, LuClipboard, LuMenu } from 'react-icons/lu';
 import { MdDateRange } from 'react-icons/md';
 import { deletePlan, getMyPlans } from './api';
-import { formatDate, formatMealPlanDateRange, getCurrentDateFormatted } from './dateFormatter';
+import { getCurrentDateFormatted } from './dateFormatter';
 import NavItem from './NavItem';
 import { toaster } from '../ui/toaster';
 
@@ -27,25 +28,6 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
   const [dailyPlanList, setDailyPlanList] = useState([]);
   const [weeklyPlanList, setweeklyPlanList] = useState([]);
   const [isActiveIdx,setIsActiveIdx] = useState(0);
-
-  // useEffect(() => {
-  //   getMyPlans().then((data) => {
-  //     if(data.status === 'error'){
-  //       console.error('Failed to fetch plans in 1st useEffect: ');
-  //       console.log('Data: ');
-  //       console.log(data);
-  //       setDailyPlanList([]);
-  //       setweeklyPlanList([]);
-  //     }
-  //     else{
-  //       console.log('Fetched plans from 1st useEffect: ');
-  //       console.log(data.plans);
-  //       setDailyPlanList(data.plans.daily);
-  //       setweeklyPlanList(data.plans.weekly);
-  //     }
-  //   }
-  //   );
-  // },[]);
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan sidenavbar');
@@ -72,15 +54,6 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
   const hoverBg = useColorModeValue('gray.100', 'gray.700');
   const activeBg = useColorModeValue('green.50', 'green.900');
   const activeColor = useColorModeValue('green.700', 'green.200');
-
-  function getPlanString(plan){
-    if(plan?.time === 'week'){
-      return formatMealPlanDateRange(plan.startDate);
-    }
-    else{
-      return formatDate(plan.startDate);
-    }
-  }
 
   return (
     <Box
@@ -149,7 +122,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
           <Collapsible.Content>
           <List.Root py="2" px="5" variant="plain" fontSize="sm" gap={2} alignItems="start">
             {dailyPlanList.map((plan,index) => (
-              <Menu.Root>
+              <Menu.Root key={plan.startDate}>
                 <Menu.ContextTrigger>
                   <List.Item
                      bg={isActiveIdx === 20 + index ? activeBg : 'transparent'}
@@ -195,7 +168,7 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
               </Menu.Root>
             ))}
             {weeklyPlanList.map((plan,index) => (
-              <Menu.Root>
+              <Menu.Root key={plan.startDate}>
                 <Menu.ContextTrigger>
                   <List.Item
                     bg={isActiveIdx === 30 + index ? activeBg : 'transparent'}
@@ -247,6 +220,12 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
       </VStack>
     </Box>
   );
+};
+MealPlanningSidebar.propTypes = {
+  setStartDate: PropTypes.func.isRequired,
+  reload: PropTypes.bool.isRequired,
+  setSearchParams: PropTypes.func.isRequired,
+  setReload: PropTypes.func.isRequired,
 };
 
 export default MealPlanningSidebar;

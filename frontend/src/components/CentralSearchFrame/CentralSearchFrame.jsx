@@ -2,8 +2,6 @@ import { IconButton, Flex } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { LuSearch } from 'react-icons/lu';
 import PropTypes from 'prop-types';
-import DummySearchBar from '../RecipeSearchUtility/DummySearchBar';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => {

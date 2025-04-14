@@ -4,13 +4,10 @@ import {
     For,
     HStack,
     Portal,
-    Flex,
-    Text,
     List,
-    ListItem,
   } from "@chakra-ui/react"
 import { useState, useRef } from "react";
-import { IoMdAlert } from "react-icons/io";
+import PropTypes from "prop-types";
 import { LuTriangleAlert } from "react-icons/lu";
   
   const Demo = ({clickFn}) => {
@@ -111,5 +108,8 @@ import { LuTriangleAlert } from "react-icons/lu";
       </HStack>
     )
   }
+Demo.propTypes = {
+  clickFn: PropTypes.func.isRequired,
+};
 
 export default Demo;

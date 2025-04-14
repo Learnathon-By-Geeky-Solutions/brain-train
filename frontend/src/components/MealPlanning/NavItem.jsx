@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Button,
   Text,
@@ -22,7 +23,6 @@ const NavItem = ({ children, clickFn, idx, isActiveIdx, setIsActiveIdx }) => {
         py={3}
         px={4}
         borderRadius="md"
-        role="group"
         bg={isActiveIdx === idx ? activeBg : 'transparent'}
         color={isActiveIdx === idx ? activeColor : undefined}
         _hover={{ bg: isActiveIdx === idx ? activeBg : hoverBg }}
@@ -39,6 +39,13 @@ const NavItem = ({ children, clickFn, idx, isActiveIdx, setIsActiveIdx }) => {
         </Flex>
       </Button>
     );
+};
+NavItem.propTypes = {
+  children: PropTypes.node.isRequired,
+  clickFn: PropTypes.func,
+  idx: PropTypes.number.isRequired,
+  isActiveIdx: PropTypes.number.isRequired,
+  setIsActiveIdx: PropTypes.func.isRequired,
 };
 
 export default NavItem;

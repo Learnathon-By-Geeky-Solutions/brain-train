@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Box,
   Heading,
@@ -15,7 +16,6 @@ import {
 import { useColorModeValue } from '../ui/color-mode';
 import { getMealData } from './api';
 import { formatDate, getCurrentDateFormatted, getDay } from './dateFormatter';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import handleRecipeDetail from '../RecipeCard/api';
 
@@ -29,31 +29,7 @@ const DailyMealPlan = ({searchParams,reload}) => {
   const navigate = useNavigate();
   let isToday = dateStr === getCurrentDateFormatted();
 
-  // useEffect(() => {
-  //   getMealData(dateStr, 'day', id).then((data) => {
-  //     if(data.status === 'error'){
-  //       console.error('Failed to fetch meal data: ', data.msg);
-  //       console.log('Data: ');
-  //       console.log(data);
-  //       setMeals([]);
-  //       setNutrients({protein: "", carbohydrates: "", fat: "", calories: ""});
-  //     }
-  //     else{
-  //       console.log('Fetched meal data: ');
-  //       console.log(data);
-  //       const plan =  data.plan.dailyMealPlans[0].mealPlan;
-  //       setMeals(plan.meals);
-  //       let newNutrients = {protein: "", carbohydrates: "", fat: "", calories: ""};
-  //       for (const nutrient in plan.nutrients) {
-  //         newNutrients[nutrient.name] = nutrient.amount;
-  //       }
-  //       setNutrients(newNutrients);
-  //     }
-  //   });
-  // },[]);
-
   useEffect(() => {
-    // if(!reload) return;
     getMealData(dateStr, 'day').then((data) => {
       if(data.status === 'error'){
         console.error('Failed to fetch meal data from reload ', data.msg);
@@ -199,6 +175,12 @@ const DailyMealPlan = ({searchParams,reload}) => {
       </Card.Body>
     </Card.Root>
   );
+};
+DailyMealPlan.propTypes = {
+  searchParams: PropTypes.shape({
+    get: PropTypes.func.isRequired,
+  }).isRequired,
+  reload: PropTypes.any,
 };
 
 export default DailyMealPlan;

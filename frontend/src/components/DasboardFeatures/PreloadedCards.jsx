@@ -44,7 +44,7 @@ const PreloadedCards = ({txt,showResults = null}) => {
 }
 PreloadedCards.propTypes = {
     txt: PropTypes.string.isRequired,
-    cards: PropTypes.array.isRequired,
+    showResults: PropTypes.func, // Add validation for showResults
 };
 
 export default PreloadedCards;

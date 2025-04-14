@@ -1,4 +1,5 @@
 import { Box, Text, Flex, Image, useBreakpointValue } from '@chakra-ui/react';
+import PropTypes from 'prop-types';
 import english_cuisine from '@/assets/english_cuisine.jpg';
 import italian_cuisine from '@/assets/italian_cuisine.jpg';
 import french_cuisine from '@/assets/french_cuisine.jpg';
@@ -42,7 +43,7 @@ const ExploreCuisine = ({showResults}) => {
     >
     {cuisines.map((cuisine, index) => (
     <Box 
-      key={index} 
+      key={cuisine.name} 
       position="relative" 
       minW={imageSize} 
       h={imageSize} 
@@ -86,6 +87,9 @@ const ExploreCuisine = ({showResults}) => {
     ))}
     </Flex>
   );
+};
+ExploreCuisine.propTypes = {
+  showResults: PropTypes.func.isRequired,
 };
 
 export default ExploreCuisine;

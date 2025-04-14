@@ -5,9 +5,7 @@ import IngredientSearchForm from '@/components/IngredientSearchFormInput/Ingredi
 import './RecipeSearchUtility.css';
 import CentralSearchFrame from '@/components/CentralSearchFrame/CentralSearchFrame';
 import TitleSearchInput from '@/components/TitleSearchInput/TitleSearchInput';
-import DummySearchBar from './DummySearchBar';
-import { useRef } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 
 export default function RecipeSearchUtility(

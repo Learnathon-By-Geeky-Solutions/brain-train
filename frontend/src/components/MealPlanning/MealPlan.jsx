@@ -17,8 +17,7 @@ import { getMealData } from './api';
 import PlanController from './AddMealPlan';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import DailyMealPlan from './DailyMealPlan';
-import sampleMealData from './sampleMealData';
-import { Toaster, toaster } from '../ui/toaster'
+import { Toaster } from '../ui/toaster'
 import handleRecipeDetail from '../RecipeCard/api';
 
 
@@ -32,10 +31,7 @@ const MealPlanningCalendar = () => {
 
   useEffect(() => {
     console.log('reload in useEffect in mealplan');
-    // if(!reload) return;
     setDays(getDaysOfWeek(startDate));
-    // setMealData(getMealData(startDate, 'week'));
-    // setMealData(sampleMealData);
     getMealData(startDate, 'week').then((data) => {
       if(data.status !== 'error'){
         console.log('Fetched meal data: ');
@@ -43,7 +39,6 @@ const MealPlanningCalendar = () => {
         setMealData(data.plans);
       }
     });
-    // setReload(false);
   }, [reload]);
 
 
@@ -114,8 +109,6 @@ const MealPlanningCalendar = () => {
           {days.map((day,dayIndex) => {
             const dayKey = day.toLowerCase();
             const mealSize = mealData[dayKey]?.mealPlan?.meals?.length;
-            // console.log('condition');
-            // console.log(startDate >= getCurrentDateFormatted());
             return (
             <Box 
               key={day} 
@@ -220,18 +213,6 @@ const MealPlanningCalendar = () => {
                         </Box>
                       </Box>
                     )}
-
-                    {/* {
-                      !meal.title && (
-                        <Flex h="100%" placeContent="center">
-                          <PlanController  
-                            currentDate={getOffsetDate(startDate,dayIndex)}
-                            startDate={initialStartDate}
-                            setReload={setReload}
-                          />
-                        </Flex>
-                      )
-                    } */}
                   </Box>
                 );
               })}
@@ -264,7 +245,7 @@ const MealPlanningCalendar = () => {
             let newNutrients = {protein: 0, carbohydrates: 0, fat: 0, calories: 0};
             
             if(mealData[dayKey])
-            for (const nutrient of mealData[dayKey]?.mealPlan?.nutrients) {
+            for (const nutrient of mealData[dayKey]?.mealPlan?.nutrients ?? []) {
               newNutrients[nutrient.name] = nutrient.amount;
             }
             

@@ -12,13 +12,12 @@ import {
     Switch
   } from "@chakra-ui/react"
 
-import { useState, useRef } from "react";
-import PropTypes from 'prop-types';
-import { FaSliders } from 'react-icons/fa6';
+import { useState } from "react";
+import PropTypes from "prop-types";
 import { MdClose } from "react-icons/md";
-import { LuCirclePlus, LuPlus } from "react-icons/lu";
+import { LuCirclePlus } from "react-icons/lu";
 import { saveMealPlan } from "./api";
-import { Toaster, toaster } from '../ui/toaster';
+import { toaster } from '../ui/toaster';
 import Demo from "./OverlapDialogBox";
 
   
@@ -45,8 +44,6 @@ import Demo from "./OverlapDialogBox";
       setPlanName("");
       setDietFiltersToggled([false, false, false, false, false, false]);
       setDietFilters([]);
-      // setTimeFrameFiltersToggled([false, false]);
-      // setTimeFrameFilters([]);
       setIsWeekly(true);
       setRangeFilters(
         rangeFilterTypes.map((type) => ({type: type, value: 0}))
@@ -116,7 +113,7 @@ import Demo from "./OverlapDialogBox";
 
       newPlan.exclude = exclude;
       newPlan.name = planName;
-      isRangeFiltersActive[0] ? newPlan.targetCalories = rangeFilters[0].value : newPlan.targetCalories = "";
+      newPlan.targetCalories = isRangeFiltersActive[0] ? rangeFilters[0].value : "";
       for( const diet of dietFilters ){
         if( newPlan.diet.indexOf(diet) === -1 ){
           newPlan.diet.push(diet);
@@ -136,7 +133,6 @@ import Demo from "./OverlapDialogBox";
 
         }
         else if(data.msg == 'overlap'){
-          // toaster.create({title: "Meal Plan overlaps", type: "error"});
           toaster.dismiss();
           setVisible(true);
           setDailyPlans(data.res.existingPlans.dailyPlans);
@@ -373,9 +369,10 @@ import Demo from "./OverlapDialogBox";
       </HStack>
     )
   }
-// FilterController.propTypes = {
-//   addFilter: PropTypes.func.isRequired,
-//   clearFilters: PropTypes.func.isRequired,
-// };
+PlanController.propTypes = {
+  startDate: PropTypes.instanceOf(Date).isRequired,
+  currentDate: PropTypes.instanceOf(Date).isRequired,
+  toggleReload: PropTypes.func.isRequired,
+};
 
 export default PlanController;
