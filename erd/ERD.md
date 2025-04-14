@@ -16,6 +16,14 @@ UserFavourites
 	string firebaseUid FK
 	ArrayOfString recipeIds FK
 
+UserSearchHistory
+	string firebaseUid FK
+	ArrayOfSearch history FK
+
+Search
+	string recipeId FK
+	Date searchedAt
+
 Recipes
 	string recipeId PK
 	string sourceId FK
@@ -48,6 +56,7 @@ Ingredients
 Users {1}--{0..n} UserFavourites
 UserFavourites {1..n}--{1} Recipes
 Users {1}--{0..n} Recipes
+Users {1}--{0..n} UserSearchHistory
 ```
 
 ## Diagram

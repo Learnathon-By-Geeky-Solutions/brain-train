@@ -8,29 +8,45 @@ if (!admin.apps.length) {
 }
 
 /**
- * Decodes and verifies a Firebase ID token.
- * @param {string} authorizationHeader - The authorization header containing the ID token in the format 'Bearer <token>'.
- * @returns {Promise<Object>} A promise that resolves to an object containing user information (email, name, picture, uid).
- * @throws {Error} Throws an error if the token is invalid, missing, or verification fails.
+ * Decodes a Firebase ID token from the provided authorization header.
+ *
+ * @param {string} authorizationHeader - The authorization header containing the Bearer token.
+ * @returns {Promise<Object>} - A promise that resolves to the decoded token object.
  */
 export const decodeFirebaseIdToken = async (authorizationHeader) => {
-  if (!authorizationHeader?.startsWith('Bearer ')) {
-    throw new Error("No token provided or token format is incorrect");
-  }
+  const idToken = extractBearerToken(authorizationHeader);
+  console.log("idToken", idToken);
+  return verifyToken(idToken);
+};
 
-  const idToken = authorizationHeader.split(' ')[1];
+/**
+ * Extracts the Bearer token from an authorization header.
+ *
+ * @param {string} header - The authorization header containing the Bearer token.
+ * @returns {string} The extracted Bearer token.
+ * @throws {Error} If the header does not start with 'Bearer ' or if the token is missing.
+ */
+const extractBearerToken = (header) => {
+  if (!header?.startsWith('Bearer ')) throw new Error("Invalid authorization header");
+  const token = header.split(' ')[1];
+  if (!token) throw new Error("Token missing after 'Bearer '");
+  return token;
+};
 
-  if (!idToken) {
-    throw new Error("Token is missing after 'Bearer '");
-  }
-
+/**
+ * Verifies a Firebase authentication token and extracts user information.
+ *
+ * @param {string} token - The Firebase authentication token to verify.
+ * @returns {Promise<{email: string, name: string, picture: string, uid: string}>} 
+ * A promise that resolves to an object containing the user's email, name, picture, and uid.
+ * @throws {Error} If the token is invalid or expired.
+ */
+const verifyToken = async (token) => {
   try {
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
-    const { email, name, picture, uid } = decodedToken;
-    return { email, name, picture, uid };  // Return all required info
+    const { email, name, picture, uid } = await admin.auth().verifyIdToken(token);
+    return { email, name, picture, uid };
   } catch (error) {
     console.error("Error verifying Firebase token:", error.message);
     throw new Error("Invalid or expired authentication token");
   }
 };
-

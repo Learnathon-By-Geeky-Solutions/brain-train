@@ -21,7 +21,15 @@ async function getFavoriteRecipes() {
         const rawData = await response.json();
         data.recipes = rawData.recipes;
         data.status = "success";
-      } else {
+        if(data.recipes.length === 0) {
+          data.recipes.push({id: -1});
+        }
+      } 
+      else if(response.status === 404) {
+        data.recipes.push({id: -1});
+        data.status = "success";
+      }
+      else {
         data.msg = "Failed to fetch favorite recipes";
       }
     } else {
@@ -31,20 +39,82 @@ async function getFavoriteRecipes() {
 }
 
 function handleSearchByTitle (searchData) {
-    return `${API_BASE_URL}/search/recipes?query=${searchData.data}&fields=summary,likes,title,image`;
+  let url = handleFilters(
+    `${API_BASE_URL}/search/recipes?query=${searchData.data}&fields=summary,likes,title,image`,
+    searchData
+  );
+  return url;
 }
 
 const handleSearchByIngredients = (searchData) => {
-    console.log('searchData from function by ing'+searchData);
-    let ingredients = '';
-    let data = searchData.data;
-    data.fields.forEach((field) => {
-        ingredients += field.name + ',';
-    });
-    ingredients = ingredients.slice(0, -1);
-    console.log('url from function '+`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`);
-    return `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary`;
+  let ingredients = '';
+  let data = searchData.data;
+  data.fields.forEach((field) => {
+      ingredients += field.name + ',';
+  });
+  ingredients = ingredients.slice(0, -1);
+  return handleFilters(`${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`, searchData);
+};
+
+function handleSearchByCuisine(searchData) {
+  return `${API_BASE_URL}/search/recipes/cuisines?cuisine=${searchData.cuisine}`;
 }
+
+function handleFilters(url, searchData) {
+  if (!searchData.filters?.length) {
+    return url;
+  }
+
+  for (const filter of searchData.filters) {
+    url = appendCuisineFilter(url, filter);
+    url = appendDietFilters(url, filter);
+    url = appendRangeFilters(url, filter);
+  }
+  
+  return url;
+}
+
+function appendCuisineFilter(url, filter) {
+  if (filter.cuisine) {
+    url += `&cuisine=${filter.cuisine}`;
+  }
+  return url;
+}
+
+function appendDietFilters(url, filter) {
+  if (!filter.diet || filter.diet.length === 0) {
+    return url;
+  }
+  
+  const dietMappings = {
+    "Vegetarian": "vegetarian",
+    "Vegan": "vegan",
+    "Gluten Free": "glutenFree",
+    "Dairy Free": "dairyFree"
+  };
+  
+  for (const diet of filter.diet) {
+    const paramName = dietMappings[diet];
+    if (paramName) {
+      url += `&${paramName}=true`;
+    }
+  }
+  
+  return url;
+}
+
+function appendRangeFilters(url, filter) {
+  if (!filter.rangeFilters || filter.rangeFilters.length === 0) {
+    return url;
+  }
+  
+  for (const rangeFilter of filter.rangeFilters) {
+    url += `&min${rangeFilter.type}=${rangeFilter.min}&max${rangeFilter.type}=${rangeFilter.max}`;
+  }
+  
+  return url;
+}
+
 
 const fetchData = async (searchData) => {
 
@@ -52,8 +122,13 @@ const fetchData = async (searchData) => {
 
     if (searchData.type === "title") {
       url = handleSearchByTitle(searchData);
+      console.log('url from fetchData '+url);
     } else if (searchData.type === "ingredients") {
       url = handleSearchByIngredients(searchData);
+      console.log('url from fetchData '+url);
+    } else if (searchData.type === "cuisine") {
+      url = handleSearchByCuisine(searchData);
+      console.log('url from fetchData '+url);
     }
 
     try {
@@ -67,10 +142,13 @@ const fetchData = async (searchData) => {
           Authorization: `Bearer ${idToken}`,
         },
       });
+      console.log("response1 from fetchData", response);
       const data = await response.json();
 
     if (response.ok)
-    return data.results; 
+    return data.results;
+    if(response.status === 404)
+    return [{id: -1}];
     console.error("Failed to fetch recipes. Error code:", response.status);
       
     } catch (error) {

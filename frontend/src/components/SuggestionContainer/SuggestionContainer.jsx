@@ -11,12 +11,17 @@ import { useState, useEffect } from "react";
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
-const SuggestionContainer = ({ type, query, handleClick, keyHandler }) => {
+const SuggestionContainer = ({ type, query, handleClick, keyHandler, containerClosed, setContainerClosed }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [containerClosed, setContainerClosed] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [ingContainerClosed, setIngContainerClosed] = useState(false);
+
+    if(type === "ingredients") {
+      containerClosed = ingContainerClosed;
+      setContainerClosed = setIngContainerClosed;
+    }
 
     useEffect(() => {
         if (query.trim() === "") {
@@ -135,7 +140,9 @@ SuggestionContainer.propTypes = {
   type: PropTypes.string.isRequired,
   query: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
-  keyHandler: PropTypes.object
+  keyHandler: PropTypes.object,
+  containerClosed: PropTypes.bool.isRequired,
+  setContainerClosed: PropTypes.func.isRequired
 };
 
 export default SuggestionContainer;
