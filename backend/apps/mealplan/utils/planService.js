@@ -1,6 +1,7 @@
 import { spoonacularRequest } from '../../../libraries/services/spoonacular.js';
 import { saveDailyMealPlan, saveWeeklyMealPlan ,getDailyOverlaps,getWeeklyOverlaps,
-  getDailyPlansOnDateRange,getWeeklyPlansInRange
+  getDailyPlansOnDateRange,getWeeklyPlansInRange,
+  deleteDailyPlanById, deleteWeeklyPlanById 
  } from '../db.js';
 import { extractMatchingDailyPlansFromDaily, extractMatchingDailyPlansFromWeekly,groupPlansByDate,buildWeekIndexedPlans } from './dateHelper.js';
 
@@ -23,6 +24,8 @@ export const generateMealPlanAndSave = async (firebaseUid, body) => {
       timeFrame = 'day',
       startDate,
       title,
+      deleteOverlap=false,
+
       ...params
     } = body;
 
@@ -30,11 +33,16 @@ export const generateMealPlanAndSave = async (firebaseUid, body) => {
 
     const conflict = await checkConflicts(firebaseUid, timeFrame, parsedStartDate);
     if (hasConflicts(conflict)) {
-      return {
-        success: false,
-        existing: true,
-        existingPlans: conflict
-      };
+      if (deleteOverlap) {
+        await deleteOverlappingPlans(firebaseUid, conflict);//  continue with the plan generation after deletion of the overlapping plans
+      }
+      else {
+        return {
+          success: false,
+          existing: true,
+          existingPlans: conflict
+        };
+      }
     }
 
 
@@ -77,4 +85,18 @@ export const generateMealPlanAndSave = async (firebaseUid, body) => {
     }
   
     return buildWeekIndexedPlans(start, combinedMap);
+  };
+
+  export const deleteOverlappingPlans = async (firebaseUid, existingPlans) => {
+    const { dailyPlans, weeklyPlans } = existingPlans;
+    const dailyPromises = dailyPlans.map(plan =>
+      deleteDailyPlanById(plan._id, firebaseUid)
+    );
+    const weeklyPromises = weeklyPlans.map(plan =>
+      deleteWeeklyPlanById(plan._id, firebaseUid)
+    );
+    
+    await Promise.all([...dailyPromises, ...weeklyPromises]);
+    return { success: true, deleted: { daily: dailyPlans.length, weekly: weeklyPlans.length } };
+
   };
