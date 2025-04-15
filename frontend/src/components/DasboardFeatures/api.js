@@ -2,35 +2,41 @@ import { getAuth,onAuthStateChanged } from "firebase/auth";
 
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
-const getRecentRecipes = async(noOfRecipes)=>{
+async function makeRequest(url, method, body) {
   const auth = getAuth();
-  let data = {status: "error", msg: ""};
-  const url = `${API_BASE_URL}/search/history/${noOfRecipes}`;
-  
+  let data = { status: "error", msg: "" };
   // Return a promise that resolves when auth state is ready
   return new Promise((resolve) => {
     // This listener fires once when auth state is first determined
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       unsubscribe(); // Stop listening immediately after first auth state is determined
-      
       if (user) {
         const idToken = await user.getIdToken();
-        const response = await fetch(url, {
-          method: "GET",
+        const req = {
+          method: method,
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${idToken}`,
           },
-        });
-        
+        }
+        if(body){
+          req.body = JSON.stringify(body);
+        }
+        const response = await fetch(url, req);
         if (response.ok) {
           data = await response.json();
-          console.log("Data: from recent recipes");
+          console.log("res ok from makeRequest");
           console.log(data);
-        } else {
-          data.msg = "Failed to get recent recipes";
-          console.log("Data: from recent recipes when failed");
+        }
+        else if(response.status === 409){
+          data.msg = "overlap";
+          data.res = await response.json();
+          console.log("overlap from makeRequest");
           console.log(data);
+        }
+        else {
+          console.log("res not ok from makeRequest");
+          data.msg = "Failed to make request";
         }
       } else {
         data.msg = "User not logged in";
@@ -38,76 +44,22 @@ const getRecentRecipes = async(noOfRecipes)=>{
       resolve(data);
     });
   });
+}
+
+const getRecentRecipes = async(noOfRecipes)=>{
+  const url = `${API_BASE_URL}/search/history/${noOfRecipes}`;
+  return makeRequest(url, "GET", null);
 }
 
 const getRecommendedRecipes = async()=>{
-    console.log("Getting recommended recipes");
-  const auth = getAuth();
-  let data = {status: "error", msg: ""};
+  console.log("Getting recommended recipes");
   const url = `${API_BASE_URL}/user/recommended`;
-  
-  // Return a promise that resolves when auth state is ready
-  return new Promise((resolve) => {
-    // This listener fires once when auth state is first determined
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      unsubscribe(); // Stop listening immediately after first auth state is determined
-      
-      if (user) {
-        const idToken = await user.getIdToken();
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
-        
-        if (response.ok) {
-          data = await response.json();
-        } else {
-          data.msg = "Failed to get recommended recipes";
-        }
-      } else {
-        data.msg = "User not logged in";
-      }
-      console.log("Data: ", data);
-      resolve(data);
-    });
-  });
+  return makeRequest(url, "GET", null);
 }
 
 const getTrendingRecipes = async(noOfRecipes)=>{
-  const auth = getAuth();
-  let data = {status: "error", msg: ""};
   const url = `${API_BASE_URL}/trending/${noOfRecipes}`;
-  
-  // Return a promise that resolves when auth state is ready
-  return new Promise((resolve) => {
-    // This listener fires once when auth state is first determined
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      unsubscribe(); // Stop listening immediately after first auth state is determined
-      
-      if (user) {
-        const idToken = await user.getIdToken();
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
-        
-        if (response.ok) {
-          data = await response.json();
-        } else {
-          data.msg = "Failed to get trending recipes";
-        }
-      } else {
-        data.msg = "User not logged in";
-      }
-      resolve(data);
-    });
-  });
+  return makeRequest(url, "GET", null);
 }
 
 
