@@ -64,7 +64,6 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => 
 
 CentralSearchFrame.defaultProps = {
   featureProps: {},
-  currentBadges: [],
 };
 
 CentralSearchFrame.propTypes = {
