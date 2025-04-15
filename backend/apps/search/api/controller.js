@@ -13,7 +13,7 @@ import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { 
     fetchSaveFilterRecipes,
     minimizeRecipeData
-} from '../util/recipehelper.js';
+} from '../util/fetchHelper.js';
 
 import {
     filterRecipes
@@ -417,7 +417,8 @@ export const getRecipesByCuisine = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error.' });
       }
 
-};export const numericValidator = (n) => {
+};
+export const numericValidator = (n) => {
     n = Number(n.toString());
     return Number.isInteger(n) && n > 0;
 };
