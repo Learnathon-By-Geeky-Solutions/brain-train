@@ -5,6 +5,7 @@ import {
     HStack,
     Portal,
     List,
+    Text
   } from "@chakra-ui/react"
 import { useState, useRef } from "react";
 import PropTypes from "prop-types";
@@ -63,20 +64,20 @@ import { LuTriangleAlert } from "react-icons/lu";
                 <Dialog.Body>
                     <Text fontWeight="bold" fontSize="xl">The plan you tried to save has conflicts with the following plans</Text>
                     <List.Root spacing={3} my={4}>
-                    <For each={dailyPlans}>
+                    {dailyPlans.length > 0 && (<For each={dailyPlans}>
                         {(plan) => (
                             <List.Item color="blue.500" fontSize="lg">
-                                {plan.title}
+                                {plan?.title}
                             </List.Item>
                         )}
-                    </For>
-                    <For each={weeklyPlans}>
+                    </For>)}
+                    {weeklyPlans.length > 0 && (<For each={weeklyPlans}>
                         {(plan) => (
                             <List.Item color="blue.500" fontSize="lg">
-                                {plan.title}
+                                {plan?.title}
                             </List.Item>
                         )}
-                    </For>
+                    </For>)}
                     </List.Root>
                     <Text fontWeight="bold" fontSize="lg">Do you want to overwrite the existing plans?</Text>
                     <Text color="GrayText">Note: This action cannot be undone.</Text>

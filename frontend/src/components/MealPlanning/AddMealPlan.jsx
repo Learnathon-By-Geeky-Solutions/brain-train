@@ -219,7 +219,7 @@ import Demo from "./OverlapDialogBox";
                             }
                           }}
                           bgColor={
-                            (fieldName === "Diet" && dietFiltersToggled[index]) || isWeekly === ( item === "Week" ) ? "Highlight" : "none"
+                            (fieldName === "Diet" && dietFiltersToggled[index]) || (fieldName === "Time Frame" && (isWeekly === ( item === "Week" ))) ? "Highlight" : "none"
                           }
                           borderRadius="3xl"
                           borderWidth="2px"

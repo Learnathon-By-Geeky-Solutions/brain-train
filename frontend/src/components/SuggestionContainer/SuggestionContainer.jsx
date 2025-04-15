@@ -10,8 +10,6 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from "react";
 import { fetchSuggestions } from "./api";
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
-
 const SuggestionContainer = ({ type, query, handleClick, keyHandler, containerClosed, setContainerClosed }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [loading, setLoading] = useState(false);
