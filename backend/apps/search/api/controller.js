@@ -247,23 +247,21 @@ export const autoCompleteRecipes = (req, res) => {
       });
   };
   
-// 🍏 Autocomplete Ingredients
-export const autoCompleteIngredients = async (req, res) => {
-    try {
-        const { query, number = 5 } = req.query;
-
-        if (!query) {
-            return res.status(400).json({ error: "Query parameter is required." });
-        }
-
-        // Request Spoonacular API
-        const data = await spoonacularRequest('/food/ingredients/autocomplete', { query, number });
-
-        return  res.status(200).json(data);
-    } catch (error) {
-        return  res.status(500).json({ error: error.message });
+  export const autoCompleteIngredients = (req, res) => {
+    const { query, number = 5 } = req.query;
+  
+    if (!query) {
+      return res.status(400).json({ error: "Query parameter is required." });
     }
-};
+  
+    spoonacularRequest('/food/ingredients/autocomplete', { query, number })
+      .then((data) => res.status(200).json(data))
+      .catch((error) => {
+        console.error(" Error in autoCompleteIngredients:", error);
+        return res.status(500).json({ error: error.message });
+      });
+  };
+  
 
 export const getSearchesFromHistory = (req, res) => {
     let { n } = req.params;
