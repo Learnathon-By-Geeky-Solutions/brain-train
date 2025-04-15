@@ -23,6 +23,11 @@ import {
     mergeAndLimitResults,
 } from '../util/formatter.js';
 
+import{
+    getDbSuggestions,
+    getApiSuggestions
+} from '../util/autoCompleteHelper.js';
+
 
 
 import {
@@ -189,81 +194,59 @@ export const getRecipeSummary = async (req, res) => {
 };
 
 // Controller: Get Similar Recipes
-export const getSimilarRecipes = async (req, res) => {
-    try {
-        let { id } = req.params;
-        const { number = 10} = req.query;
-
-        const data=await getRecipeInfoById(id,"_id sourceId");
-        
-        const recipesData = await spoonacularRequest(`/recipes/${data.sourceId}/similar`, { number });
-
-        const recipeIds = recipesData.map(recipe => recipe.id);
-
-        const completeApiResults = await fetchSaveFilterRecipes(recipeIds, {});
-        
-
-        // Return only selected fields
-        const filteredFields = completeApiResults.map(recipe => ({
-            id: recipe.id,
-            title: recipe.title,
-            summary: recipe.summary,
-            likes: recipe.likes
-        }));
-    
-        return res.status(200).json({
-            results: filteredFields,
-            totalResults: filteredFields.length
-        });
-
-        
-
-    } catch (error) {
-        return  res.status(500).json({ error: error.message });
-    }
-};
+export const getSimilarRecipes = (req, res) => {
+    const { id } = req.params;
+    const { number = 20 } = req.query;
+  
+    getRecipeInfoById(id, "_id sourceId")
+      .then(recipe => {
+        if (!recipe?.sourceId) {
+          return res.status(404).json({ error: "Recipe not found or missing sourceId." });
+        }
+  
+        return spoonacularRequest(`/recipes/${recipe.sourceId}/similar`, { number });
+      })
+      .then(similarRecipes => {
+        if (!similarRecipes || similarRecipes.length === 0) {
+          return res.status(404).json({ results: [], totalResults: 0 });
+        }
+  
+        const ids = similarRecipes.map(r => r.id);
+        console.log(" Similar Spoonacular IDs:", ids);
+  
+        return fetchSaveFilterRecipes(ids, {});
+      })
+      .then(recipes => respondWithResults(res, recipes))
+      .catch(error => {
+        console.error(" Error in getSimilarRecipes:", error);
+        return res.status(500).json({ error: error.message });
+      });
+  };
+  
 
 // 🔍 Autocomplete Recipes
-export const autoCompleteRecipes = async (req, res) => {
-            try {
-                const { query, number = 5 } = req.query;
-
-                if (!query) {
-                    return res.status(400).json({ error: "Query parameter is required." });
-                }
-                // Step 1: Search from DB with regex (LIKE 'query%')
-                const dbResults = await getRecipeFieldsByTitle(query, ['_id','title'], number, true); // true = regex autocomplete mode
-                let suggestions = dbResults.map(recipe => ({
-                    id: recipe.id,
-                    title: recipe.title
-                }));
-                console.log("🔍 DB Suggestions:", suggestions);
-                // Step 2: If enough suggestions, return
-                if (suggestions.length >= number) {
-                    return res.status(200).json(suggestions.slice(0, number));
-                }
-
-                const apiData = await spoonacularRequest('/recipes/autocomplete', { query, number });
-                const apiIds = apiData.map(recipe => recipe.id);
-                console.log("api ids",apiIds);
-                const seenTitles = new Set(suggestions.map(s => s.title.toLowerCase()));
-                const newApiRecipes = apiData.filter(recipe => !seenTitles.has(recipe.title.toLowerCase()));
-
-      
-            
-        
-                const savedApiResults = await fetchSaveFilterRecipes(apiIds, {});
-                console.log("api results saved",savedApiResults.length);
-
-                suggestions = suggestions.concat(newApiRecipes).slice(0, number);
-            
-
-                return res.status(200).json(suggestions);
-                } catch (error) {
-                    return res.status(500).json({ error: error.message });
-                }
-};
-
+export const autoCompleteRecipes = (req, res) => {
+    const { query, number = 5 } = req.query;
+  
+    if (!query) {
+      return res.status(400).json({ error: "Query parameter is required." });
+    }
+  
+    getDbSuggestions(query, number)
+      .then((suggestions) => {
+        if (suggestions.length >= number) {
+          return res.status(200).json(suggestions.slice(0, number));
+        }
+  
+        return getApiSuggestions(query, number, suggestions)
+          .then((finalSuggestions) => res.status(200).json(finalSuggestions.slice(0, number)));
+      })
+      .catch((error) => {
+        console.error(" Error in autoCompleteRecipes:", error);
+        return res.status(500).json({ error: error.message });
+      });
+  };
+  
 // 🍏 Autocomplete Ingredients
 export const autoCompleteIngredients = async (req, res) => {
     try {
@@ -293,7 +276,7 @@ export const getSearchesFromHistory = (req, res) => {
             return getSearchHistoryByUid(uid);
         })
         .then(searchHistory => {
-            if (!searchHistory || searchHistory.history.length === 0) {
+            if (!searchHistory?.history?.length) {
                 return res.status(200).json({ results: [] });
             }
 
