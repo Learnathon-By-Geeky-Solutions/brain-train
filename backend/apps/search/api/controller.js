@@ -319,7 +319,7 @@ const getUniqueRecentHistoryWithRecipeInfo = (history, n) => {
 const updateUserSearchHistory = (uid, recipeId) => {
     return getSearchHistoryByUid(uid)
         .then(searchHistory => {
-            if (searchHistory && searchHistory.history) {
+            if ( searchHistory?.history) {
                 searchHistory.history.unshift({
                     recipeId: recipeId,
                     searchedAt: Date.now()

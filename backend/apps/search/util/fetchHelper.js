@@ -107,7 +107,7 @@ export const fetchSaveFilterRecipes = (recipeIds, filters = {}) => {
       return spoonacularRequest('/recipes/complexSearch', { number, query, ...filters })
         .then(apiResponse => {
           const ids = (apiResponse?.results || []).map(r => r.id);
-          if (ids.length === 0) return [];
+          if (ids.length === 0) return Promise.resolve([]);
           return fetchSaveFilterRecipes(ids, filters);
         })
         .catch(err => {
@@ -120,7 +120,7 @@ export const fetchSaveFilterRecipes = (recipeIds, filters = {}) => {
       spoonacularRequest('/recipes/findByIngredients', { number, ingredients })
         .then((apiResults) => {
           const recipeIds = (apiResults || []).map((r) => r.id);
-          if (recipeIds.length === 0) return [];
+          if (recipeIds.length === 0) return Promise.resolve([]);
           return fetchSaveFilterRecipes(recipeIds, filters);
         })
         .catch((err) => {
