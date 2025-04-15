@@ -17,7 +17,7 @@ import {
 
 import {
     filterRecipes
-} from '../util/filter.js';
+} from '../util/filtering.js';
 
 import {
     generateShoppingList
