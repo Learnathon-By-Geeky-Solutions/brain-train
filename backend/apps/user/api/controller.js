@@ -5,7 +5,7 @@ import { getSearchHistoryByUid, getRecipeInfoById } from "../../search/db.js";
 import { getSimilarRecipesById, createNewSimilarRecipeEntry } from "../db.js";
 import { findRecipesByIds } from "../../favourite/db.js";
 import { spoonacularRequest } from "../../../libraries/services/spoonacular.js";
-import { fetchSaveFilterRecipes } from "../../search/helper.js";
+import { fetchSaveFilterRecipes } from "../../search/util/helper.js";
 
 export const usernameValidator = (req, res) => {
   let { username } = req.body;

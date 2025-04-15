@@ -1,58 +1,8 @@
-import { spoonacularRequest } from '../../libraries/services/spoonacular.js';
-import { stripHtml } from 'string-strip-html'; 
-import{ saveRecipeDetails,getRecipeBySourceId, getRecipeInfoById } from './db.js';
+import { spoonacularRequest } from '../../../libraries/services/spoonacular.js';
+import{ saveRecipeDetails,getRecipeBySourceId, getRecipeInfoById } from '../db.js';
 
 
-/**
- * Fetches additional fields for each recipe dynamically.
- * @param {Array} recipes - List of recipe objects with IDs.
- * @param {Array} fields - List of fields to fetch (e.g., ["summary", "nutrition", "likes"]).
- * @returns {Array} - Recipes enriched with the requested fields.
- */
-export const enrichRecipesWithFields = async (recipes, fields = []) => {
 
-    if (!recipes || recipes.length === 0 || fields.length === 0) return recipes;
-
-    // Define which endpoint to use for each requested field
-    const fieldEndpoints = {
-        summary: (id) => `/recipes/${id}/summary`,
-        likes: (id) => `/recipes/${id}/information`, // Likes come from "aggregateLikes" in this response
-    };
-
-    try {
-        // Fetch all requested fields for each recipe
-        const detailsFetchers = recipes.map(async (recipe) => {
-
-            let enrichedRecipe = { ...recipe };
-
-            for (const field of fields) {
-                if (!fieldEndpoints[field]) continue; // Skip if field is not recognized
-
-                try {
-                    const fieldData = await spoonacularRequest(fieldEndpoints[field](recipe.id));
-
-                    // Process data differently based on field type
-                    if (field === "summary") {
-                        enrichedRecipe.summary = stripHtml(fieldData.summary).result || "No summary available";
-                    } else if (field === "likes") {
-                        enrichedRecipe.likes = fieldData.aggregateLikes || 0;
-                    } 
-                } catch (error) {
-                    console.error(`Error fetching ${field} for recipe ${recipe.id}:`, error);
-                }
-            }
-
-            return enrichedRecipe;
-        });
-
-        // Resolve all fetchers in parallel
-        return await Promise.all(detailsFetchers);
-
-    } catch (error) {
-        console.error("Error enriching recipes with additional fields:", error);
-        return recipes.map(recipe => ({ ...recipe, error: "Failed to fetch additional details" }));
-    }
-};
 
 
 /**
@@ -206,39 +156,7 @@ export const filterRecipes = async (recipes, filters) => {
 
 
 
-export const generateShoppingList = (recipe, requestedServings) => {
-    const originalServings = recipe.servings || 1;
-    const scaleFactor = requestedServings / originalServings;
-  
-    const discreteUnits = [
-      "clove", "cloves", "slice", "slices", "piece", "pieces", "servings",
-      "egg", "eggs", "can", "cans", "handful", "glass", "dash", "pinch",
-      "sprig", "sprigs", "bunch", "packet", "packets", "jar", "bottle"
-    ];
-  
-    const merged = {};
-  
-    for (const ing of recipe.ingredients) {
-      const titleKey = ing.title.trim().toLowerCase(); // case-insensitive title key
-      const unit = ing.unit?.toLowerCase().trim() || "";
-  
-      const isDiscrete = discreteUnits.includes(unit);
-      const scaledAmount = ing.amount * scaleFactor;
-      const finalAmount = isDiscrete ? Math.ceil(scaledAmount) : parseFloat(scaledAmount.toFixed(2));
-  
-      if (!merged[titleKey]) {
-        merged[titleKey] = {
-          title: ing.title,
-          unit: ing.unit,
-          image: ing.image,
-          amount: finalAmount
-        };
-      } 
-    }
-  
-    return Object.values(merged);
-  };
-  
+
 
 /**
  * Ensure the recipe object includes all fields needed by filterRecipes.

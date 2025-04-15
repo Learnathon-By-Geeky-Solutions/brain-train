@@ -11,12 +11,14 @@ import {
 import { findRecipesByIds } from '../../favourite/db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { 
-    enrichRecipesWithFields,
     filterRecipes,
     fetchSaveFilterRecipes,
-    generateShoppingList,
     minimizeRecipeData
-} from '../helper.js';
+} from '../util/helper.js';
+
+import {
+    generateShoppingList
+} from '../util/shoppingList.js';
 
 import mongoose from 'mongoose';
 
@@ -138,22 +140,6 @@ export const searchRecipesByIngredients = async (req, res) => {
 
 
 
-// Controller: Search Recipes by Nutrients
-export const searchRecipesByNutrients = async (req, res) => {
-    try {
-        const {  number = 10 ,fields = "", ...params} = req.query;
-        
-        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
-
-        const recipesData = await spoonacularRequest('/recipes/findByNutrients', { number, ...params });
-        const enrichedRecipes = await enrichRecipesWithFields(recipesData, fieldsArray);
-
-        return  res.status(200).json({ results: minimizeRecipeData(enrichedRecipes), totalResults: recipesData.totalResults });
-
-    } catch (error) {
-        return  res.status(500).json({ error: error.message });
-    }
-};
 
 // Controller: Get Recipe Information
 export const getRecipeInformation = (req, res) => {
