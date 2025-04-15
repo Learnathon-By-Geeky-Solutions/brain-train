@@ -1,3 +1,4 @@
+import escapeRegex from "escape-string-regexp";
 import Recipe from "../../libraries/models/recipes.js";
 import UserSearchHistory from "../../libraries/models/userSearchHistory.js"
 
@@ -5,10 +6,11 @@ export const getRecipeFieldsByTitle = async (title, fields, number,isAutoComplet
   const conditions = {};
 
   if (title) {
-  
+    const escapedTitle = escapeRegex(title);
+
     conditions.title = isAutoComplete?
-     { $regex: new RegExp(`\\b${title}`, "i") }
-  : { $regex: title, $options: "i" };
+     { $regex: new RegExp(`\\b${escapedTitle}`, "i") }
+  : { $regex: escapedTitle, $options: "i" };
 
   }
 
@@ -53,7 +55,7 @@ export const getRecipesByIngredients = async (ingredientTitles = [], fields = []
 
     //  Case-insensitive regex match
     const ingredientConditions = ingredientTitles.map((title) => ({
-      "ingredients.title": { $regex: new RegExp(title, "i") },
+      "ingredients.title": { $regex: new RegExp(escapeRegex(title), "i") },
     }));
 
 
@@ -167,7 +169,7 @@ export const searchRecipesByCuisine = async (cuisine, limit = 10) => {
       $match: {
         cuisines: {
           $elemMatch: {
-            $regex: new RegExp(cuisine, 'i') // partial & case-insensitive
+            $regex: new RegExp(escapeRegex(cuisine), 'i') // partial & case-insensitive
           }
         }
       }
