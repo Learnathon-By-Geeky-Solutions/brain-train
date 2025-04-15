@@ -184,84 +184,58 @@ import Demo from "./OverlapDialogBox";
                 </Dialog.Header>
                 <Dialog.Body>
                   <Flex direction="column" gap="4" w="100%">
-                  <div>
-                    <Text fontSize="lg" fontWeight="semibold">
-                      Give a name to your plan
-                    </Text>
-                    <Input placeholder="Example: My Great Vegeterian week!" 
-                      value={planName}
-                      onChange={(e)=>{
-                        setPlanName(e.target.value);
-                      }}
-                      bgColor={"var(--text-input)"}
-                      borderRadius="3xl"
-                      color="var(--text)"
-                    />
-                  </div>
-                  <div>
-                    <Text fontSize="lg" fontWeight="semibold">
-                      Exclude
-                    </Text>
-                    <Input placeholder="Example: Shellfish, Olives" 
-                      value={exclude}
-                      onChange={(e)=>{
-                        setExclude(e.target.value.toLowerCase());
-                      }}
-                      bgColor={"var(--text-input)"}
-                      borderRadius="3xl"
-                      color="var(--text)"
-                    />
-                  </div>
-                  <div>
+                    {["name","exclude"].map((fieldName) => (
+                      <div>
+                        <Text fontSize="lg" fontWeight="semibold">
+                        {fieldName === "name" ? "Give a name to your plan" : "Exclude"}
+                        </Text>
+                        <Input placeholder={`Example: ${fieldName === "name" ? "My Great Vegetarian week!" : "Shellfish, Olives"}`}
+                          value={fieldName === "name" ? planName : exclude}
+                          onChange={(e)=>{
+                            fieldName === "name" ? setPlanName(e.target.value) : setExclude(e.target.value.toLowerCase());
+                          }}
+                          bgColor={"var(--text-input)"}
+                          borderRadius="3xl"
+                          color="var(--text)"
+                        />
+                      </div>
+                    ))}
+                  {["Diet","Time Frame"].map((fieldName)=>
+                    (<div>
                     <Text fontSize="lg" fontWeight="semibold" mb="2">
-                      Diet
+                      {fieldName}
                     </Text>
                     <Flex wrap="wrap" gap="3">
-                    {dietFilterTypes.map((diet,index) => (
+                    {
+                      ( fieldName === "Diet" ? dietFilterTypes : timeFrameFilterTypes ).map((item,index) => (
                         <Button 
                           variant="outline"
                           onClick={()=>{
-                            toggleDietFilter(index,diet);
+                            if(fieldName === "Diet"){
+                              toggleDietFilter(index,item);
+                            }
+                            else{
+                              toggleTimeFrameFilter(item);
+                            }
                           }}
-                          bgColor={dietFiltersToggled[index] ? "Highlight" : "none"}
+                          bgColor={
+                            fieldName === "Diet" ? 
+                            dietFiltersToggled[index] ? "Highlight" : "none" : 
+                            isWeekly === ( item === "Week" ) ? "Highlight" : "none"
+                          }
                           borderRadius="3xl"
                           borderWidth="2px"
                           _hover={{
                             borderColor: "Highlight" 
                           }}
-                          key={diet}
+                          key={item}
                         >
-                          {diet}
+                          {item}
                         </Button>
                       ))
                     }
                     </Flex>
-                  </div>
-                  <div>
-                    <Text fontSize="lg" fontWeight="semibold" mb="2">
-                      Time Frame
-                    </Text>
-                    <Flex wrap="wrap" gap="3">
-                    {timeFrameFilterTypes.map((time) => (
-                        <Button 
-                          variant="outline"
-                          onClick={()=>{
-                            toggleTimeFrameFilter(time);
-                          }}
-                          bgColor={isWeekly === ( time === "Week" ) ? "Highlight" : "none"}
-                          borderRadius="3xl"
-                          borderWidth="2px"
-                          _hover={{
-                            borderColor: "Highlight" 
-                          }}
-                          key={time}
-                        >
-                          {time}
-                        </Button>
-                      ))
-                    }
-                    </Flex>
-                  </div>
+                  </div>))}
                   <Accordion.Root multiple display="flex" flexDirection="column">
                   {rangeFilterTypes.map((type,index) => (
                     <Accordion.Item key={type} value={index}>
@@ -306,36 +280,25 @@ import Demo from "./OverlapDialogBox";
                             <Slider.Thumb index={0}>
                               <Slider.HiddenInput />
                             </Slider.Thumb>
-                            {/* <Slider.Thumb index={1}>
-                              <Slider.HiddenInput />
-                            </Slider.Thumb> */}
                           </Slider.Control>
                          <Flex direction="row" justifyContent="center" mt="2">
-                            {/* {["Minimum", "Maximum"].map((label,index) => (
-                                <VStack w="1/6" gap="0" p="0" key={label}>
-                                  <Text fontSize="sm">
-                                    {label}
-                                  </Text> */}
-                                  <HStack p="0" gap="0">
-                                  <Input
-                                    value={getRangeFilter(type)}
-                                    onChange={(e)=>{
-                                      addRangeFilter(type,e.target.value);
-                                    }}
-                                    bgColor={"var(--text-input)"}
-                                    borderRadius="3xl"
-                                    color="var(--text)"
-                                    w="20"
-                                    textAlign="center"
-                                    mr="2"
-                                  />
-                                  <Text fontSize="sm">
-                                    kcal
-                                  </Text>
-                                </HStack>
-                                {/* // </VStack>
-                              ))
-                            } */}
+                            <HStack p="0" gap="0">
+                              <Input
+                                value={getRangeFilter(type)}
+                                onChange={(e)=>{
+                                  addRangeFilter(type,e.target.value);
+                                }}
+                                bgColor={"var(--text-input)"}
+                                borderRadius="3xl"
+                                color="var(--text)"
+                                w="20"
+                                textAlign="center"
+                                mr="2"
+                              />
+                              <Text fontSize="sm">
+                                kcal
+                              </Text>
+                            </HStack>
                           </Flex>
                           </Slider.Root>)}
                         </Accordion.ItemBody>
@@ -365,7 +328,6 @@ import Demo from "./OverlapDialogBox";
             </Dialog.Positioner>
           </Portal>
         </Dialog.Root>
-        {/* <Toaster /> */}
       </HStack>
     )
   }
