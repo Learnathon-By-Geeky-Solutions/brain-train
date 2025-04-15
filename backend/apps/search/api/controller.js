@@ -12,8 +12,18 @@ import { findRecipesByIds } from '../../favourite/db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { 
     fetchSaveFilterRecipes,
-    minimizeRecipeData
+    fetchByTitleSaveFilter,
+    fetchByIngredientSaveFilter
+    
 } from '../util/fetchHelper.js';
+
+import {
+    minimizeRecipeData,
+    respondWithResults,
+    mergeAndLimitResults,
+} from '../util/formatter.js';
+
+
 
 import {
     filterRecipes
@@ -31,57 +41,44 @@ import mongoose from 'mongoose';
  * @param {*} res 
  * @returns 
  */
+
 export const searchRecipes = async (req, res) => {
     try {
-        await decodeFirebaseIdToken(req.headers.authorization);
-        const { number = 10, fields = "" , ...params } = req.query;
-        const { query,...filters } = params;
+      await decodeFirebaseIdToken(req.headers.authorization);
+  
+      const { number = 60, fields = "", ...params } = req.query;
+      const { query, ...filters } = params;
+      const fieldsArray = fields.split(',').map(f => f.trim()).filter(Boolean);
+  
+      getRecipeFieldsByTitle(query, fieldsArray, number)
+        .then(dbResults => filterRecipes(dbResults, filters)
+          .then(filteredDbResults => {
+            const threshold = Math.ceil(number * 0.5);
+            if (filteredDbResults.length >= threshold) {
+                console.log("DB results are sufficient:", filteredDbResults.length);
 
-        // Convert "fields" query string into an array (e.g., "summary,likes,nutrition")
-        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
-    
-        
-        // Query db with params, fields and limit
-        let dbResults = await  getRecipeFieldsByTitle(query, fieldsArray, number);
-        
-        console.log("🔍 DB Results length Before Filtering:", dbResults.length);
-
-        //  Apply Filters to DB Results
-        dbResults =await filterRecipes(dbResults, filters);
-
-
-        console.log(" DB Results After Filtering:", dbResults.length);
-        if (dbResults.length > 0) {
-            console.log(" DB Results Found to return :", dbResults.length);
-            return res.status(200).json({ results: minimizeRecipeData(dbResults), totalResults: dbResults.length });
-        }
-
-        // Fetch recipes
-        console.log(" Fetching from Spoonacular API...", params);
-        const apiResults = await spoonacularRequest('/recipes/complexSearch', {number, ...params });
-
-        
-
-
-        if (!apiResults.results || apiResults.results.length === 0) {
-            console.log(" No results found in Spoonacular API either.");
-            return res.status(404).json({ results: [], totalResults: 0 });
-        }
-
-        
-
-        //  Fetch additional fields in bulk using Spoonacular API
-        const recipeIds = apiResults.results.map(recipe => recipe.id);
-
-
-        const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
-        
-
-        return res.status(200).json({ results: minimizeRecipeData( filteredApiResults), totalResults: filteredApiResults.length });
+              return respondWithResults(res, filteredDbResults);
+            }
+            
+  
+            return fetchByTitleSaveFilter(query, number, filters)
+              .then(filteredApiResults => {
+                const combined = mergeAndLimitResults(filteredDbResults, filteredApiResults, number);
+                return respondWithResults(res, combined);
+              });
+          }))
+        .catch(err => {
+          console.error("Error in searchRecipes:", err);
+          return res.status(500).json({ error: err.message });
+        });
+  
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+      console.error("Auth or input error:", error);
+      return res.status(401).json({ error: error.message });
     }
-};
+  };
+  
+
 
 // Controller: Search Recipes by Ingredients
 export const searchRecipesByIngredients = async (req, res) => {

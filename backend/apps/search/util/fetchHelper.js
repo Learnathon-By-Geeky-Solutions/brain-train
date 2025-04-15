@@ -1,6 +1,7 @@
 import { spoonacularRequest } from '../../../libraries/services/spoonacular.js';
 import{ saveRecipeDetails,getRecipeBySourceId } from '../db.js';
 import { filterRecipes } from './filtering.js';
+import { normalizeIds } from './formatter.js';
 
 
 
@@ -65,6 +66,7 @@ export const fetchSaveFilterRecipes = (recipeIds, filters = {}) => {
     const existingIds = new Set(existing.map(r => String(r.sourceId)));
     const missingIds = recipeIds.filter(id => !existingIds.has(String(id)));
 
+    console.log("Missing IDs:", missingIds.length);
   
     if (missingIds.length === 0) {
       return Promise.resolve({ all: normalizeIds(existing) });
@@ -102,34 +104,27 @@ export const fetchSaveFilterRecipes = (recipeIds, filters = {}) => {
       )
     ).then((results) => results.filter(Boolean));
   
-  /**
-   * Normalize recipe IDs for frontend compatibility.
-   * @param {Object[]} recipes - List of DB recipes.
-   * @returns {Object[]} - Recipes with stringified `id`.
-   */
-  const normalizeIds = (recipes) =>
-    recipes.map((r) => ({
-      ...r,
-      id: r._id?.toString() || r.id
-    }));
-  
+    export const fetchByTitleSaveFilter = (query, number, filters) => {
+      return spoonacularRequest('/recipes/complexSearch', { number, query, ...filters })
+        .then(apiResponse => {
+          const ids = (apiResponse?.results || []).map(r => r.id);
+          if (ids.length === 0) return [];
+          return fetchSaveFilterRecipes(ids, filters);
+        })
+        .catch(err => {
+          console.error("Error from Spoonacular API:", err);
+          return [];
+        });
+    };
 
-
-
-  
-
-
-
-
-
-  export const minimizeRecipeData = (recipes) => {
-    return recipes.map(recipe => ({
-      _id: recipe._id || recipe.id,
-      id: recipe._id || recipe.id,
-      title: recipe.title,
-      image: recipe.image,
-      summary: recipe.summary,
-      likes: recipe.likes
-    }));
-  };
-  
+    export const fetchByIngredientSaveFilter = (ingredients, number, filters) =>
+      spoonacularRequest('/recipes/findByIngredients', { number, ingredients })
+        .then((apiResults) => {
+          const recipeIds = (apiResults || []).map((r) => r.id);
+          if (recipeIds.length === 0) return [];
+          return fetchSaveFilterRecipes(recipeIds, filters);
+        })
+        .catch((err) => {
+          console.error("Error from Spoonacular API:", err);
+          return [];
+        });
