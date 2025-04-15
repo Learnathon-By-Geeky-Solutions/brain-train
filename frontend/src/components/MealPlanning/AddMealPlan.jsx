@@ -185,7 +185,7 @@ import Demo from "./OverlapDialogBox";
                 <Dialog.Body>
                   <Flex direction="column" gap="4" w="100%">
                     {["name","exclude"].map((fieldName) => (
-                      <div>
+                      <div key={fieldName}>
                         <Text fontSize="lg" fontWeight="semibold">
                         {fieldName === "name" ? "Give a name to your plan" : "Exclude"}
                         </Text>
@@ -201,7 +201,7 @@ import Demo from "./OverlapDialogBox";
                       </div>
                     ))}
                   {["Diet","Time Frame"].map((fieldName)=>
-                    (<div>
+                    (<div key={fieldName}>
                     <Text fontSize="lg" fontWeight="semibold" mb="2">
                       {fieldName}
                     </Text>
