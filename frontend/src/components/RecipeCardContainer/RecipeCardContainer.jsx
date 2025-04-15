@@ -99,7 +99,7 @@ const RecipeCardContainer = ({recipe_prop,removeCard,containerType="default"}) =
       >
         { (!recipe_prop || recipe_prop.length === 0) ?
           Array.from({ length: 7 }).map((_, index) => (
-            <GridItem w="fit-content" key={index}>
+            <GridItem w="fit-content" key={Math.random()}>
               <Skeleton height="72" width="72" bgColor="gray.950" />
             </GridItem>
           ))
