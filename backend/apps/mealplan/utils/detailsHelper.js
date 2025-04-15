@@ -1,4 +1,4 @@
-import { fetchSaveFilterRecipes }  from '../../search/util/helper.js';
+import { fetchSaveFilterRecipes }  from '../../search/util/recipehelper.js';
 export const mapSpoonacularMeal = (meal, recipe = null) => ({
     sourceId: String(meal.id),
     recipeId: recipe?._id?.toString() || '',

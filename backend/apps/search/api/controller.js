@@ -11,10 +11,13 @@ import {
 import { findRecipesByIds } from '../../favourite/db.js';
 import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { 
-    filterRecipes,
     fetchSaveFilterRecipes,
     minimizeRecipeData
-} from '../util/helper.js';
+} from '../util/recipehelper.js';
+
+import {
+    filterRecipes
+} from '../util/filter.js';
 
 import {
     generateShoppingList
