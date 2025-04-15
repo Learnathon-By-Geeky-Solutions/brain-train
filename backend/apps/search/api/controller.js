@@ -18,7 +18,7 @@ import {
 } from '../util/fetchHelper.js';
 
 import {
-    minimizeRecipeData,
+    
     respondWithResults,
     mergeAndLimitResults,
 } from '../util/formatter.js';
