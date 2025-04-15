@@ -6,11 +6,10 @@ export const getRecipeFieldsByTitle = async (title, fields, number,isAutoComplet
   const conditions = {};
 
   if (title) {
-    const escapedTitle = escapeRegex(title);
-
+    
     conditions.title = isAutoComplete?
-     { $regex: new RegExp(`\\b${escapedTitle}`, "i") }
-  : { $regex: escapedTitle, $options: "i" };
+     { $regex: new RegExp(`\\b${escapeRegex(title)}`, "i") }
+  : { $regex: escapeRegex(title), $options: "i" };
 
   }
 
