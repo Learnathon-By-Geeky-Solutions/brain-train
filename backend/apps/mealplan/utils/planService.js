@@ -30,7 +30,6 @@ export const generateMealPlanAndSave = async (firebaseUid, body) => {
     } = body;
 
     const parsedStartDate = startDate ? new Date(startDate) : new Date();
-
     const conflict = await checkConflicts(firebaseUid, timeFrame, parsedStartDate);
     if (hasConflicts(conflict)) {
       if (deleteOverlap) {
@@ -44,8 +43,6 @@ export const generateMealPlanAndSave = async (firebaseUid, body) => {
         };
       }
     }
-
-
     const generated = await spoonacularRequest('/mealplanner/generate', {
       timeFrame,
       ...params
