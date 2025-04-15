@@ -5,8 +5,7 @@ import UserSearchHistory from "../../libraries/models/userSearchHistory.js"
 export const getRecipeFieldsByTitle = async (title, fields, number,isAutoComplete=false) => {
   const conditions = {};
 
-  if (title) {
-    
+  if (typeof title === "string" && title.trim() !== "") {    
     conditions.title = isAutoComplete?
      { $regex: new RegExp(`\\b${escapeRegex(title)}`, "i") }
   : { $regex: escapeRegex(title), $options: "i" };
