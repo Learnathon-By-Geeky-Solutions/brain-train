@@ -363,36 +363,38 @@ export const getShoppingList = (req, res) => {
   };
   
 
-export const getRecipesByCuisine = async (req, res) => {
-    try {
-        const { cuisine, number  } = req.query;
-        console.log("cuisine search got called ",cuisine, number);
-    
-        if (!cuisine) {
-          return res.status(400).json({
-            success: false,
-            message: 'Cuisine name is required.'
-          });
+  export const getRecipesByCuisine = (req, res) => {
+    const { cuisine, number } = req.query;
+    const limit = parseInt(number, 10) || 60;
+  
+    if (!cuisine) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cuisine name is required.'
+      });
+    }
+  
+    searchRecipesByCuisine(cuisine, limit)
+      .then((dbResults) => {
+        if (dbResults.length >= limit) {
+          return dbResults.slice(0, limit);
         }
-    
-        let results = await searchRecipesByCuisine(cuisine, number || 60);
-        const limit = parseInt(number) || 60;
-        console.log("cuisine search db results length",results.length);
-        if(results.length < limit) {
-            const apiResults = await spoonacularRequest('/recipes/complexSearch', { cuisine, number: limit });
-            const recipeIds = apiResults.results.map(recipe => recipe.id);
-            const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, {});
-            results = results.concat(filteredApiResults);
+  
+        return spoonacularRequest('/recipes/complexSearch', { cuisine, number: limit })
+          .then((apiResponse) => {
+            const ids = (apiResponse.results || []).map((r) => r.id);
+            return fetchSaveFilterRecipes(ids, {});
+          })
+          .then((apiResults) => mergeAndLimitResults(dbResults, apiResults, limit));
+      })
+      .then((finalResults) => respondWithResults(res, finalResults))
+      .catch((err) => {
+        return res.status(500).json({ success: false, message: 'Server error.' });
+      });
+  };
+  
 
 
-        }
-        res.status(200).json({ success: true, results: minimizeRecipeData(results), total: results.length });
-      } catch (err) {
-        console.error('[getRecipesByCuisine] Error:', err.message);
-        res.status(500).json({ success: false, message: 'Server error.' });
-      }
-
-};
 export const numericValidator = (n) => {
     n = Number(n.toString());
     return Number.isInteger(n) && n > 0;
