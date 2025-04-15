@@ -82,11 +82,11 @@ export default function Dashboard() {
         console.log("Navigating to dashboard from loadCards");
         navigate({
           pathname: '/dashboard',
-          search: `?type=showResults&q=${encodeURIComponent(JSON.stringify(data))}`,
+          search: `?type=showResults&q=${encodeURIComponent(JSON.stringify(data))}&t=${Date.now()}`,
         });
       }
       else{
-        setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)) });
+        setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)), t: Date.now() });
       }
       return;
     }

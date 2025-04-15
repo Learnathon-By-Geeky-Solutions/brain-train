@@ -2,14 +2,15 @@ import { IconButton, Flex } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { LuSearch } from 'react-icons/lu';
 import PropTypes from 'prop-types';
+import { useSearchParams } from 'react-router-dom';
 
 
-const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => {
+const CentralSearchFrame = ({ feature, featureProps, filters, showResults, setForceOpenSecondBar }) => {
 
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({type:'', data:{}});
   const [containerClosed, setContainerClosed] = useState(false);
-
+  
   const handleSearch = () => {
     console.log("Triggering form submission...");
     if(ref.current)
@@ -33,6 +34,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => 
     if(featureProps?.ref == null) featureProps.ref = ref;
     if(featureProps?.handleSuggestionClick == null) 
       featureProps.handleSuggestionClick = () => {
+        setForceOpenSecondBar(false);
         handleSearch();
         setContainerClosed(true); // newly added
       }
@@ -54,6 +56,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => 
           onClick={()=>{
             handleSearch();
             setContainerClosed(true);
+            setForceOpenSecondBar(false);
           }}
         >
           <LuSearch />
@@ -71,6 +74,7 @@ CentralSearchFrame.propTypes = {
   featureProps: PropTypes.object,
   showResults: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
+  setForceOpenSecondBar: PropTypes.func.isRequired,
 };
 
 export default CentralSearchFrame;

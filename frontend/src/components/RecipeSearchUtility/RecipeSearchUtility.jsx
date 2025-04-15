@@ -9,9 +9,10 @@ import { useLocation } from "react-router-dom";
 
 
 export default function RecipeSearchUtility(
-  { pageState, setPageState, pageLocation, 
+  { pageState, setPageState, 
     showResults, setSearchParams,
-    filters, setShowSecondBar, showSecondBar
+    filters, setShowSecondBar, showSecondBar,
+    setForceOpenSecondBar
   }
 ) {
 
@@ -26,17 +27,19 @@ export default function RecipeSearchUtility(
     <Flex direction="column" width="100%" minHeight="16" alignItems="center" mb="6">
 
       { ( pageState === 'init' || !showSecondBar )  && location.pathname !== '/dashboard/mealPlan' && (
-          <Flex direction="row" h="100%" gap={2} onClick={() => setShowSecondBar(true)}>
+          <Flex direction="row" h="100%" gap={2} 
+            onClick={() => {
+              setForceOpenSecondBar(true);
+              setShowSecondBar(true);
+            }}
+          >
             <CentralSearchFrame 
               feature={TitleSearchInput} 
               featureProps={{ handleSuggestionClick: null }}
               filters={filters}
               showResults={showResults}
+              setForceOpenSecondBar={setForceOpenSecondBar}
             />
-            {/* <FilterController 
-              addFilter={addFilter} 
-              clearFilters={clearFilters}
-            /> */}
           </Flex>
         )
       }
@@ -48,6 +51,7 @@ export default function RecipeSearchUtility(
             featureProps={{ prevState: () => { changePageState('init') }, ref: null }}
             filters={filters}
             showResults={showResults}
+            setForceOpenSecondBar={setForceOpenSecondBar}
           />
         )
       }
@@ -65,4 +69,5 @@ RecipeSearchUtility.propTypes = {
   filters: PropTypes.array.isRequired,
   showSecondBar: PropTypes.bool.isRequired,
   setShowSecondBar: PropTypes.func.isRequired,
+  setForceOpenSecondBar: PropTypes.func.isRequired,
 };
