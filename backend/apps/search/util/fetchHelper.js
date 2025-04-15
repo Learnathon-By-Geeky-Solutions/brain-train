@@ -51,7 +51,6 @@ export const fetchSaveFilterRecipes = (recipeIds, filters = {}) => {
       .then((existing) => enrichMissingRecipes(recipeIds, existing))   //getRecipeBySourceId will return the recipes already in DB, and enrichMissingRecipes will fetch the missing ones from Spoonacular and save them to DB
       .then(({ all }) => filterRecipes(all, filters))   // all will be the combined list of existing and newly fetched recipes returned by enrichMissingRecipes
       .then((filtered) => {
-        console.log("✅ Filtered Recipes:", filtered.length);
         return filtered;
       });
   };

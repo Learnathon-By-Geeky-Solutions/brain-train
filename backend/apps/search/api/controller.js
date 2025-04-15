@@ -81,60 +81,53 @@ export const searchRecipes = async (req, res) => {
 
 
 // Controller: Search Recipes by Ingredients
+
+
 export const searchRecipesByIngredients = async (req, res) => {
     try {
-        await decodeFirebaseIdToken(req.headers.authorization);
-        
-        //  Extract required and optional parameters
-        const { number = 20, ingredients, fields = "", ...filters } = req.query;
-        
-        if (!ingredients) {
-            return res.status(400).json({ error: "'ingredients' parameter is required." });
-        }
-
-        const fieldsArray = fields ? fields.split(',').map(field => field.trim()) : [];
-
-
-        //  Fetch recipes from DB
-        let dbResults = await getRecipesByIngredients(ingredients, fieldsArray, number, filters);
-        
-
-        console.log("🔍 DB Results Before Filtering:", dbResults.length);
-
-        //  Apply Filters to DB Results
-        dbResults =await filterRecipes(dbResults, filters);
-
-        console.log(" DB Results After Filtering:", dbResults.length);
-
-        if (dbResults.length > 0) {
-            return res.status(200).json({ results: minimizeRecipeData(dbResults), totalResults: dbResults.length });
-        }
-
-        //  No results from DB? Fetch from Spoonacular API
-        console.log(" Fetching from Spoonacular API...");
-        const apiResults = await spoonacularRequest('/recipes/findByIngredients', { number, ingredients });
-
-        if (!apiResults || apiResults.length === 0) {
-            console.log(" No results found in Spoonacular API either.");
-            return res.status(404).json({ results: [], totalResults: 0 });
-        }
-
-        console.log(" API Results Before Enrichment:", apiResults.length);
-
-        //  Fetch additional fields in bulk using Spoonacular API
-        const recipeIds = apiResults.map(recipe => recipe.id);
-
-        const filteredApiResults = await fetchSaveFilterRecipes(recipeIds, filters);
-
-        return res.status(200).json({ results: minimizeRecipeData( filteredApiResults), totalResults: filteredApiResults.length });
-
+      await decodeFirebaseIdToken(req.headers.authorization);
+  
+      const { number = 60, ingredients, fields = "", ...filters } = req.query;
+  
+      if (!ingredients) {
+        return res.status(400).json({ error: "'ingredients' parameter is required." });
+      }
+  
+      const fieldsArray = fields.split(',').map(f => f.trim()).filter(Boolean);
+  
+      // Step 1: Search in DB
+      getRecipesByIngredients(ingredients, fieldsArray, number, filters)
+        .then(dbResults => {
+          console.log("🔍 DB Results Before Filtering:", dbResults.length);
+          return filterRecipes(dbResults, filters);
+        })
+        .then(filteredDbResults => {
+          console.log("🔎 DB Results After Filtering:", filteredDbResults.length);
+  
+          const threshold = Math.ceil(number * 0.5);
+  
+          if (filteredDbResults.length >= threshold) {
+            return respondWithResults(res, filteredDbResults);
+          }
+  
+          // Step 2: Fallback to API
+          return fetchByIngredientSaveFilter(ingredients, number, filters)
+            .then(filteredApiResults => {
+              const combined = mergeAndLimitResults(filteredDbResults, filteredApiResults, number);
+              return respondWithResults(res, combined);
+            });
+        })
+        .catch(err => {
+          console.error("❌ DB or filter error:", err);
+          return res.status(500).json({ error: err.message });
+        });
+  
     } catch (error) {
-        console.error(" Error in searchRecipesByIngredients:", error);
-        return res.status(500).json({ error: error.message });
+      console.error("❌ Auth or input error:", error);
+      return res.status(401).json({ error: error.message });
     }
-};
-
-
+  };
+  
 
 
 
