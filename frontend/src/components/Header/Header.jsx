@@ -64,23 +64,6 @@ const StickyHeader = ({
   };
 
   useEffect(() => {
-    // const controlSecondBar = () => {
-    //   // Get current scroll position
-    //   const currentScrollY = window.scrollY;
-      
-    //   // If we're at the top (or very close to it), always show the second bar
-    //   if ((currentScrollY < 10) && (location.pathname !== '/dashboard/mealPlan')) {
-    //     console.log("making second bar true");
-    //     setShowSecondBar(true);
-    //   } 
-    //   // Otherwise hide it when scrolling down
-    //   else if ((currentScrollY > lastScrollY) && containerClosed) {
-    //     console.log("making second bar false");
-    //     setShowSecondBar(false);
-    //   }
-    //   // Update the last scroll position
-    //   setLastScrollY(currentScrollY);
-    // };
     if(containerClosed)
       window.addEventListener('scroll', controlSecondBar);
     else
