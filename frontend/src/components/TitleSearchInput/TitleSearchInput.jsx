@@ -13,7 +13,7 @@ const TitleSearchInput = ({controller,handleSuggestionClick,containerClosed,setC
 
   function handleChange(title){
     setQuery(title);
-    const data = {type: 'title', data: title};
+    const data = {type: 'title', data: query};
     controller(data);
   }
 
@@ -28,10 +28,11 @@ const TitleSearchInput = ({controller,handleSuggestionClick,containerClosed,setC
       }}
       onKeyDown={(e)=>{
         setKeyHandlerForSuggestion(e);
-        if(e.key === "Enter"){
-          handleChange(e.target.value);
-          handleSuggestionClick();
-        }
+        // if(e.key === "Enter"){
+        //   handleChange(query);
+        //   handleSuggestionClick();
+        // }
+        // }
       }}
     />
     <SuggestionContainer type="title" query={query} 

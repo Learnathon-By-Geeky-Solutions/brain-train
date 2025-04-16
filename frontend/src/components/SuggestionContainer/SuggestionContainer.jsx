@@ -46,8 +46,11 @@ const SuggestionContainer = ({ type, query, handleClick, keyHandler, containerCl
         );
       } else if (keyHandler.key === "ArrowUp") {
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-      } else if (keyHandler.key === "Enter" && selectedIndex !== -1) {
+      } else if (keyHandler.key === "Enter") {
+        if (selectedIndex !== -1) 
         handleClick(suggestions[selectedIndex][`${property}`]);
+        else 
+        handleClick(query);
         setSelectedIndex(-2);
         setContainerClosed(true);
       } else if (keyHandler.key === "Escape") {

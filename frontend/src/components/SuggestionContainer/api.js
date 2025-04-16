@@ -18,8 +18,8 @@ setError(null);
             return;
         }
         if(data.length > 0)
-        // setContainerClosed(false);
         setSuggestions(data || []);
+        
     } catch (err) {
         setError(err.message);
     } finally {
