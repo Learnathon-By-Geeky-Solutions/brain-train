@@ -9,7 +9,7 @@ import { deletePlan } from './api';
 import { toaster } from '../ui/toaster';
 
 
-const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, setReload, reload) =>
+const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, setReload, reload, type, setStartDate=null ) =>
 {
     const hoverBg = useColorModeValue('gray.100', 'gray.700');
     const activeBg = useColorModeValue('green.50', 'green.900');
@@ -23,7 +23,13 @@ const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, 
            color={isActiveIdx === 20 + index ? activeColor : undefined}
           _hover={{ bg: hoverBg, cursor: 'pointer' }}
           onClick={() => {
-            setSearchParams({ time: 'day', date: plan.startDate });
+            if(type === 'day'){
+              setSearchParams({ time: 'day', date: plan.startDate });
+            }
+            else{
+              setSearchParams({});
+              setStartDate(plan.startDate);
+            }
             setIsActiveIdx(20+index);
           }}
         >
@@ -36,7 +42,7 @@ const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, 
           <Menu.Item
             onClick={() => {
               toaster.create({title: 'Deleting plan. Please wait...', type: 'loading'});
-              deletePlan(plan._id,'day').then((data) => {
+              deletePlan(plan._id,type).then((data) => {
                 if(data.status === 'error'){
                   console.error('Failed to delete plan: ');
                   console.log(data);
@@ -62,4 +68,4 @@ const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, 
     </Menu.Root>
 ))}
 
-export default renderPlanList;
+export {renderPlanList};
