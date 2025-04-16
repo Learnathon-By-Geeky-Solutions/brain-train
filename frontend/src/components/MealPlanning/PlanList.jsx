@@ -12,7 +12,7 @@ import { useSearchParams } from 'react-router-dom';
 
 const renderPlanList = (planList, setIsActiveIdx, isActiveIdx, setReload, reload, type, setStartDate=null ) =>
 {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const setSearchParams = useSearchParams()[1];
     const hoverBg = useColorModeValue('gray.100', 'gray.700');
     const activeBg = useColorModeValue('green.50', 'green.900');
     const activeColor = useColorModeValue('green.700', 'green.200');

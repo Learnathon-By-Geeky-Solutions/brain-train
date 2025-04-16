@@ -98,11 +98,6 @@ const RecipeCardContainer = ({recipe_prop,removeCard,containerType="default"}) =
         gap={4}
       >
         { (!recipe_prop || recipe_prop.length === 0) ?
-          // Array.from({ length: 7 }).map((_, index) => (
-          //   <GridItem w="fit-content">
-          //     <Skeleton height="72" width="72" bgColor="gray.950" />
-          //   </GridItem>
-          // ))
           <For each={Array.from({ length: 7 })}>
             {
               (_, index) => (
