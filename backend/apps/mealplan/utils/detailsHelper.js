@@ -1,4 +1,4 @@
-import { fetchSaveFilterRecipes }  from '../../search/helper.js';
+import { fetchSaveFilterRecipes }  from '../../search/util/fetchHelper.js';
 export const mapSpoonacularMeal = (meal, recipe = null) => ({
     sourceId: String(meal.id),
     recipeId: recipe?._id?.toString() || '',
@@ -11,24 +11,21 @@ export const mapSpoonacularMeal = (meal, recipe = null) => ({
   
   
  
-  export const enrichMealsWithRecipeIds = async (meals) => {
+export const enrichMealsWithRecipeIds = (meals) => {
     const sourceIds = meals.map(m => String(m.id));
-    const enrichedRecipes = await fetchSaveFilterRecipes(sourceIds); //// using with no filter,it will fetch and save details if not in db and return the details of the recipes
-  
-    console.log("Enriched Recipes Returned:", enrichedRecipes.map(r => ({
-        sourceId: r.sourceId,
-        _id: r._id,
-        id: r.id
-      })));
-      
-    const recipeMap = new Map(enrichedRecipes.map(recipe => [String(recipe.sourceId), recipe]));
-  
+    return fetchSaveFilterRecipes(sourceIds) // Using with no filter, it will fetch and save details if not in DB and return the details of the recipes
+        .then(enrichedRecipes => {
+            console.log("Enriched Recipes Returned:", enrichedRecipes.map(r => ({
+                sourceId: r.sourceId,
+                _id: r._id,
+                id: r.id
+            })));
 
-    return meals.map(meal => {
-        const matchedRecipe = recipeMap.get(String(meal.id));
+            const recipeMap = new Map(enrichedRecipes.map(recipe => [String(recipe.sourceId), recipe]));
 
-      
-        return mapSpoonacularMeal(meal, matchedRecipe);
-      });
-      
-  };
+            return meals.map(meal => {
+                const matchedRecipe = recipeMap.get(String(meal.id));
+                return mapSpoonacularMeal(meal, matchedRecipe);
+            });
+        });
+};
