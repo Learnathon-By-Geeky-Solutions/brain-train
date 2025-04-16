@@ -7,7 +7,6 @@ import {
     Input,
     Text,
     Slider,
-    VStack,
     Accordion,
     Flex,
     Switch
@@ -185,7 +184,6 @@ import { MdClose } from "react-icons/md";
                             value={getRangeFilter(type).map((v)=> v / (type === "Calories" ? 100 : 1))}
                             onValueChange={(e)=>{
                               const multiplyingFactor = (type === "Calories") ? 100 : 1;
-                              // const newValue = e.map((v) => v * multiplyingFactor);
                               addRangeFilter(type,e.value[0]*multiplyingFactor,e.value[1]*multiplyingFactor);
                             }}
                             w="100%"
@@ -204,7 +202,7 @@ import { MdClose } from "react-icons/md";
                           </Slider.Control>
                          <Flex direction="row" mt="2" justifyContent="space-between">
                             {["Minimum", "Maximum"].map((label,index) => (
-                              <Flex mx="2">
+                              <Flex mx="2" key={label}>
                                 <Flex direction="column" 
                                   w={type === "Calories" ? "36" : "20"}
                                   key={label}
@@ -269,11 +267,7 @@ import { MdClose } from "react-icons/md";
                       let activeRangeFilters = [];
                       for (let i = 0; i < isRangeFiltersActive.length; i++) {
                         if(isRangeFiltersActive[i]){
-                          // if(rangeFilters[i].type === "Calories"){
-                          //   activeRangeFilters.push({type: rangeFilters[i].type, min: rangeFilters[i].min*100, max: rangeFilters[i].max*100});
-                          // }else{
-                            activeRangeFilters.push(rangeFilters[i]);
-                          //}
+                          activeRangeFilters.push(rangeFilters[i]);
                         }
                       }
                       addFilter(

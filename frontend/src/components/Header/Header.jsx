@@ -19,7 +19,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import { LuMenu } from "react-icons/lu";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import FilterController from "../RecipeSearchUtility/filter";
 
 const StickyHeader = ({
@@ -40,11 +40,7 @@ const StickyHeader = ({
   const [lastScrollY, setLastScrollY] = useState(0);
   const [containerClosed, setContainerClosed] = useState(true);
 
-  // useEffect(() => {
-  //   if(location.pathname != '/dashboard' && location.pathname != '/dashboard/') {
-  //     setShowSecondBar(false);
-  //   }
-  // }, [location.pathname]);
+  
   const controlSecondBar = () => {
     // Get current scroll position
     const currentScrollY = window.scrollY;

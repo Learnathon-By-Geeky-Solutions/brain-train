@@ -64,7 +64,6 @@ export default function RecipeSearchUtility(
 RecipeSearchUtility.propTypes = {
   pageState: PropTypes.string.isRequired,
   setPageState: PropTypes.func.isRequired,
-  pageLocation: PropTypes.string.isRequired,
   showResults: PropTypes.func.isRequired,
   setSearchParams: PropTypes.func.isRequired,
   filters: PropTypes.array.isRequired,

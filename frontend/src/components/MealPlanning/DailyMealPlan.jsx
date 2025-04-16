@@ -21,8 +21,7 @@ import handleRecipeDetail from '../RecipeCard/api';
 
 
 const DailyMealPlan = ({searchParams,reload}) => {
-
-  // let dateStr = searchParams.get('date');
+  
   let day = getDay(searchParams.get('date'));
   const [meals, setMeals] = useState([]);
   const [nutrients, setNutrients] = useState({});
