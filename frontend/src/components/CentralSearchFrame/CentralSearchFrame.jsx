@@ -2,10 +2,9 @@ import { IconButton, Flex } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { LuSearch } from 'react-icons/lu';
 import PropTypes from 'prop-types';
-import { useSearchParams } from 'react-router-dom';
 
 
-const CentralSearchFrame = ({ feature, featureProps, filters, showResults, containerClosed, setContainerClosed }) => {
+const CentralSearchFrame = ({ feature, featureProps, filters, showResults, containerClosed, setContainerClosed, controlSecondBar }) => {
 
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({type:'', data:{}});
@@ -36,6 +35,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults, conta
       featureProps.handleSuggestionClick = () => {
         handleSearch();
         setContainerClosed(true); // newly added
+        // window.addEventListener('scroll', controlSecondBar);
       }
     
 
@@ -55,6 +55,7 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults, conta
           onClick={()=>{
             handleSearch();
             setContainerClosed(true);
+            // window.addEventListener('scroll', controlSecondBar);
           }}
         >
           <LuSearch />
@@ -74,6 +75,7 @@ CentralSearchFrame.propTypes = {
   filters: PropTypes.object.isRequired,
   containerClosed: PropTypes.bool.isRequired,
   setContainerClosed: PropTypes.func.isRequired,
+  controlSecondBar: PropTypes.func.isRequired,
 };
 
 export default CentralSearchFrame;

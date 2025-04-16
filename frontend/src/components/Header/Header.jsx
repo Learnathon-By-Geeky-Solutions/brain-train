@@ -82,9 +82,9 @@ const StickyHeader = ({
     //   setLastScrollY(currentScrollY);
     // };
     if(containerClosed)
-        window.addEventListener('scroll', controlSecondBar);
+      window.addEventListener('scroll', controlSecondBar);
     else
-        setShowSecondBar(true);
+      setShowSecondBar(true);
     // Cleanup function to remove the event listener
     return () => {
       window.removeEventListener('scroll', controlSecondBar);

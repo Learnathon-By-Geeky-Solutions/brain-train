@@ -18,7 +18,7 @@ setError(null);
             return;
         }
         if(data.length > 0)
-        setContainerClosed(false);
+        // setContainerClosed(false);
         setSuggestions(data || []);
     } catch (err) {
         setError(err.message);

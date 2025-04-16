@@ -30,7 +30,9 @@ export default function RecipeSearchUtility(
           <Flex direction="row" h="100%" gap={2} 
             onClick={() => {
               setShowSecondBar(true);
-              window.removeEventListener('scroll', controlSecondBar);
+              // if(!containerClosed) {
+              //   window.removeEventListener('scroll', controlSecondBar);
+              // }
             }}
           >
             <CentralSearchFrame 
@@ -40,19 +42,22 @@ export default function RecipeSearchUtility(
               showResults={showResults}
               containerClosed={containerClosed}
               setContainerClosed={setContainerClosed}
+              controlSecondBar={controlSecondBar}
             />
           </Flex>
         )
       }
 
       {
-        pageState === 'ingSearch'  && showSecondBar && (
+        pageState === 'ingSearch' && showSecondBar && (
           <CentralSearchFrame
             feature={IngredientSearchForm}
             featureProps={{ prevState: () => { changePageState('init') }, ref: null }}
             filters={filters}
             showResults={showResults}
-            setForceOpenSecondBar={setForceOpenSecondBar}
+            containerClosed={containerClosed}
+            setContainerClosed={setContainerClosed}
+            controlSecondBar={controlSecondBar}
           />
         )
       }

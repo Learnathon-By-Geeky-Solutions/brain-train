@@ -28,7 +28,7 @@ const SuggestionContainer = ({ type, query, handleClick, keyHandler, containerCl
             setContainerClosed(true);
             return;
         }
-
+        setContainerClosed(false);
         const debounceFetch = setTimeout(() => {
         fetchSuggestions(setLoading, setError, setSuggestions, type, query, setContainerClosed);
         }, 300); // Debounce API call
