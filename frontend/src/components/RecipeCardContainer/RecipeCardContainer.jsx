@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, Skeleton, Flex, Image, Heading } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Skeleton, Flex, Image, Heading, For } from '@chakra-ui/react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import RecipeCard from '../RecipeCard/RecipeCard';
 import PropTypes from 'prop-types';
@@ -98,11 +98,20 @@ const RecipeCardContainer = ({recipe_prop,removeCard,containerType="default"}) =
         gap={4}
       >
         { (!recipe_prop || recipe_prop.length === 0) ?
-          Array.from({ length: 7 }).map((_, index) => (
-            <GridItem w="fit-content">
-              <Skeleton height="72" width="72" bgColor="gray.950" />
-            </GridItem>
-          ))
+          // Array.from({ length: 7 }).map((_, index) => (
+          //   <GridItem w="fit-content">
+          //     <Skeleton height="72" width="72" bgColor="gray.950" />
+          //   </GridItem>
+          // ))
+          <For each={Array.from({ length: 7 })}>
+            {
+              (_, index) => (
+                <GridItem w="fit-content">
+                  <Skeleton height="72" width="72" bgColor="gray.950" />
+                </GridItem>
+              )
+            }
+          </For> 
           :
           visibleRecipes.map((recipe, index) => {
             // Only display items that fit within the grid dimensions

@@ -116,8 +116,8 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
           </Collapsible.Trigger>
           <Collapsible.Content>
           <List.Root py="2" px="5" variant="plain" fontSize="sm" gap={2} alignItems="start">
-            {renderPlanList(dailyPlanList,setSearchParams,setIsActiveIdx,isActiveIdx,setReload,reload,"day")}
-            {renderPlanList(weeklyPlanList,setSearchParams,setIsActiveIdx,isActiveIdx,setReload,reload,"week",setStartDate)}
+            {renderPlanList(dailyPlanList,setIsActiveIdx,isActiveIdx,setReload,reload,"day")}
+            {renderPlanList(weeklyPlanList,setIsActiveIdx,isActiveIdx,setReload,reload,"week",setStartDate)}
           </List.Root>
           </Collapsible.Content>
         </Collapsible.Root>
