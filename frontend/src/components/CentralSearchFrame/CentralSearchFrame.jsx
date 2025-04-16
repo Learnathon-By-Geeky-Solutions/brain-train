@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 import { useSearchParams } from 'react-router-dom';
 
 
-const CentralSearchFrame = ({ feature, featureProps, filters, showResults, setForceOpenSecondBar }) => {
+const CentralSearchFrame = ({ feature, featureProps, filters, showResults, containerClosed, setContainerClosed }) => {
 
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({type:'', data:{}});
-  const [containerClosed, setContainerClosed] = useState(false);
+  // const [containerClosed, setContainerClosed] = useState(false);
   
   const handleSearch = () => {
     console.log("Triggering form submission...");
@@ -34,7 +34,6 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults, setFo
     if(featureProps?.ref == null) featureProps.ref = ref;
     if(featureProps?.handleSuggestionClick == null) 
       featureProps.handleSuggestionClick = () => {
-        setForceOpenSecondBar(false);
         handleSearch();
         setContainerClosed(true); // newly added
       }
@@ -56,7 +55,6 @@ const CentralSearchFrame = ({ feature, featureProps, filters, showResults, setFo
           onClick={()=>{
             handleSearch();
             setContainerClosed(true);
-            setForceOpenSecondBar(false);
           }}
         >
           <LuSearch />
@@ -74,7 +72,8 @@ CentralSearchFrame.propTypes = {
   featureProps: PropTypes.object,
   showResults: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
-  setForceOpenSecondBar: PropTypes.func.isRequired,
+  containerClosed: PropTypes.bool.isRequired,
+  setContainerClosed: PropTypes.func.isRequired,
 };
 
 export default CentralSearchFrame;

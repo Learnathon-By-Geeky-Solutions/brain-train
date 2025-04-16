@@ -12,7 +12,7 @@ export default function RecipeSearchUtility(
   { pageState, setPageState, 
     showResults, setSearchParams,
     filters, setShowSecondBar, showSecondBar,
-    setForceOpenSecondBar
+    containerClosed, setContainerClosed, controlSecondBar
   }
 ) {
 
@@ -29,8 +29,8 @@ export default function RecipeSearchUtility(
       { ( pageState === 'init' || !showSecondBar )  && location.pathname !== '/dashboard/mealPlan' && (
           <Flex direction="row" h="100%" gap={2} 
             onClick={() => {
-              setForceOpenSecondBar(true);
               setShowSecondBar(true);
+              window.removeEventListener('scroll', controlSecondBar);
             }}
           >
             <CentralSearchFrame 
@@ -38,7 +38,8 @@ export default function RecipeSearchUtility(
               featureProps={{ handleSuggestionClick: null }}
               filters={filters}
               showResults={showResults}
-              setForceOpenSecondBar={setForceOpenSecondBar}
+              containerClosed={containerClosed}
+              setContainerClosed={setContainerClosed}
             />
           </Flex>
         )
@@ -69,5 +70,6 @@ RecipeSearchUtility.propTypes = {
   filters: PropTypes.array.isRequired,
   showSecondBar: PropTypes.bool.isRequired,
   setShowSecondBar: PropTypes.func.isRequired,
-  setForceOpenSecondBar: PropTypes.func.isRequired,
+  containerClosed: PropTypes.bool.isRequired,
+  setContainerClosed: PropTypes.func.isRequired,
 };

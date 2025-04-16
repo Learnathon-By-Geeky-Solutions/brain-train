@@ -38,55 +38,58 @@ const StickyHeader = ({
   const [filters, setFilters] = useState([{cuisine: ''}, {diet: null}, {rangeFilters: null}]);
   const [showSecondBar, setShowSecondBar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [forceOpenSecondBar, setForceOpenSecondBar] = useState(false);
-  const forceOpenRef = useRef(forceOpenSecondBar);
-  const [listenerAdded, setListenerAdded] = useState(false);
+  const [containerClosed, setContainerClosed] = useState(true);
 
   // useEffect(() => {
   //   if(location.pathname != '/dashboard' && location.pathname != '/dashboard/') {
   //     setShowSecondBar(false);
   //   }
   // }, [location.pathname]);
-
-  // useEffect(() => {
-  //   forceOpenRef.current = forceOpenSecondBar;
-  // }, [forceOpenSecondBar]);
+  const controlSecondBar = () => {
+    // Get current scroll position
+    const currentScrollY = window.scrollY;
+    
+    // If we're at the top (or very close to it), always show the second bar
+    if ((currentScrollY < 10) && (location.pathname !== '/dashboard/mealPlan')) {
+      console.log("making second bar true");
+      setShowSecondBar(true);
+    } 
+    // Otherwise hide it when scrolling down
+    else if ((currentScrollY > lastScrollY) && containerClosed) {
+      console.log("making second bar false");
+      setShowSecondBar(false);
+    }
+    // Update the last scroll position
+    setLastScrollY(currentScrollY);
+  };
 
   useEffect(() => {
-    const controlSecondBar = () => {
-      // Get current scroll position
-      const currentScrollY = window.scrollY;
+    // const controlSecondBar = () => {
+    //   // Get current scroll position
+    //   const currentScrollY = window.scrollY;
       
-      // If we're at the top (or very close to it), always show the second bar
-      if ((currentScrollY < 10) && (location.pathname !== '/dashboard/mealPlan')) {
-        console.log("making second bar true");
-        setShowSecondBar(true);
-      } 
-      // Otherwise hide it when scrolling down
-      else if ((currentScrollY > lastScrollY)) {
-        console.log("making second bar false");
-        setShowSecondBar(false);
-      }
-      console.log("value of the ref");
-        console.log(forceOpenRef.current);
-      // Update the last scroll position
-      setLastScrollY(currentScrollY);
-    };
-
-    if(forceOpenSecondBar){
-      if(!showSecondBar)
-      setShowSecondBar(true);
-    }else{
-      
+    //   // If we're at the top (or very close to it), always show the second bar
+    //   if ((currentScrollY < 10) && (location.pathname !== '/dashboard/mealPlan')) {
+    //     console.log("making second bar true");
+    //     setShowSecondBar(true);
+    //   } 
+    //   // Otherwise hide it when scrolling down
+    //   else if ((currentScrollY > lastScrollY) && containerClosed) {
+    //     console.log("making second bar false");
+    //     setShowSecondBar(false);
+    //   }
+    //   // Update the last scroll position
+    //   setLastScrollY(currentScrollY);
+    // };
+    if(containerClosed)
         window.addEventListener('scroll', controlSecondBar);
-        
-    }
-
+    else
+        setShowSecondBar(true);
     // Cleanup function to remove the event listener
     return () => {
       window.removeEventListener('scroll', controlSecondBar);
     };
-  }, [lastScrollY,forceOpenSecondBar]); // Only re-run the effect if lastScrollY changes
+  }, [lastScrollY,containerClosed]); // Only re-run the effect if lastScrollY changes
 
   const showFavouriteRecipes= () => {
     console.log("Fetching favourite recipes...");
@@ -268,7 +271,9 @@ const StickyHeader = ({
           filters={filters}
           setShowSecondBar={setShowSecondBar}
           showSecondBar={showSecondBar}
-          setForceOpenSecondBar={setForceOpenSecondBar}
+          setContainerClosed={setContainerClosed}
+          containerClosed={containerClosed}
+          controlSecondBar={controlSecondBar}
         />
         </Box>
       </Flex>
