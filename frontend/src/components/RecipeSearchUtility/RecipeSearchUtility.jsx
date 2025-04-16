@@ -12,7 +12,7 @@ export default function RecipeSearchUtility(
   { pageState, setPageState, 
     showResults, setSearchParams,
     filters, setShowSecondBar, showSecondBar,
-    containerClosed, setContainerClosed, controlSecondBar
+    containerClosed, setContainerClosed
   }
 ) {
 
@@ -30,9 +30,6 @@ export default function RecipeSearchUtility(
           <Flex direction="row" h="100%" gap={2} 
             onClick={() => {
               setShowSecondBar(true);
-              // if(!containerClosed) {
-              //   window.removeEventListener('scroll', controlSecondBar);
-              // }
             }}
           >
             <CentralSearchFrame 
@@ -42,7 +39,6 @@ export default function RecipeSearchUtility(
               showResults={showResults}
               containerClosed={containerClosed}
               setContainerClosed={setContainerClosed}
-              controlSecondBar={controlSecondBar}
             />
           </Flex>
         )
@@ -57,7 +53,6 @@ export default function RecipeSearchUtility(
             showResults={showResults}
             containerClosed={containerClosed}
             setContainerClosed={setContainerClosed}
-            controlSecondBar={controlSecondBar}
           />
         )
       }

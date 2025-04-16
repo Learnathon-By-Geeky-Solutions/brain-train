@@ -210,7 +210,7 @@ import { MdClose } from "react-icons/md";
                                     value={(type === "Calories") ? (getRangeFilter(type)[index]*100) : getRangeFilter(type)[index]}
                                     onChange={(e)=>{
                                       const value = getRangeFilter(type);
-                                      value[index] = e.target.value;
+                                      value[index] = (e.target.value / (type === "Calories" ? 100 : 1));
                                       addRangeFilter(type,value[0],value[1]);
                                     }}
                                     bgColor={"var(--text-input)"}
