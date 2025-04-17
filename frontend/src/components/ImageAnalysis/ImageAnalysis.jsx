@@ -17,12 +17,8 @@ const FoodImageAnalysis = () => {
   const [isAnalysing, setIsAnalyzing] = useState(false);
 
   const resetComponent = () => {
-    setFile(null);
     setImagePreview(null);
-    setUploadProgress(0);
     setAnalysisResult(null);
-    setIsUploading(false);
-    setIsAnalyzing(false);
   };
 
   return (

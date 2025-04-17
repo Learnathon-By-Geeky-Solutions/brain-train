@@ -128,7 +128,12 @@ const PreAnalysis = ({
             isUploading={isUploading} 
             uploadProgress={uploadProgress} 
             handleUpload={handleUpload} 
-            resetComponent={resetComponent}
+            resetComponent={()=>{
+                resetComponent()
+                setFile(null);
+                setUploadProgress(0);
+                setIsUploading(false);
+            }}
             file={file}
         />
         </Box>
