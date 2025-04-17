@@ -5,7 +5,6 @@ import {
     getSearchHistoryByUid,
     createUserEntryInUserSearchHistory,
     getRecipeFieldsByTitle,
-    getRecipesByIngredients,
     searchRecipesByCuisine
 } from '../db.js';
 import { findRecipesByIds } from '../../favourite/db.js';
@@ -13,9 +12,12 @@ import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { 
     fetchSaveFilterRecipes,
     fetchByTitleSaveFilter,
-    fetchByIngredientSaveFilter
     
 } from '../util/fetchHelper.js';
+
+import {
+  RecipesByIngredientsHelper
+} from '../util/searchHelper.js';
 
 import {
     
@@ -88,50 +90,20 @@ export const searchRecipes = async (req, res) => {
 // Controller: Search Recipes by Ingredients
 
 
-export const searchRecipesByIngredients = async (req, res) => {
-    try {
-      await decodeFirebaseIdToken(req.headers.authorization);
-  
-      const { number = 60, ingredients, fields = "", ...filters } = req.query;
-  
-      if (!ingredients) {
-        return res.status(400).json({ error: "'ingredients' parameter is required." });
-      }
-  
-      const fieldsArray = fields.split(',').map(f => f.trim()).filter(Boolean);
-  
-      // Step 1: Search in DB
-      getRecipesByIngredients(ingredients, fieldsArray, number, filters)
-        .then(dbResults => {
-          console.log("🔍 DB Results Before Filtering:", dbResults.length);
-          return filterRecipes(dbResults, filters);
-        })
-        .then(filteredDbResults => {
-          console.log("🔎 DB Results After Filtering:", filteredDbResults.length);
-  
-          const threshold = Math.ceil(number * 0.5);
-  
-          if (filteredDbResults.length >= threshold) {
-            return respondWithResults(res, filteredDbResults);
-          }
-  
-          // Step 2: Fallback to API
-          return fetchByIngredientSaveFilter(ingredients, number, filters)
-            .then(filteredApiResults => {
-              const combined = mergeAndLimitResults(filteredDbResults, filteredApiResults, number);
-              return respondWithResults(res, combined);
-            });
-        })
-        .catch(err => {
-          console.error("❌ DB or filter error:", err);
-          return res.status(500).json({ error: err.message });
-        });
-  
-    } catch (error) {
-      console.error("❌ Auth or input error:", error);
-      return res.status(401).json({ error: error.message });
-    }
-  };
+export const searchRecipesByIngredients = (req, res) => {
+  decodeFirebaseIdToken(req.headers.authorization)
+    .then(() => {
+      return RecipesByIngredientsHelper(req.query);
+    })
+    .then(results => {
+      return respondWithResults(res, results);
+    })
+    .catch(error => {
+      console.error('❌ Recipe Search Error:', error.message);
+      const status = error.message.includes('authorization') ? 401 : 500;
+      return res.status(status).json({ error: error.message });
+    });
+};
   
 
 
