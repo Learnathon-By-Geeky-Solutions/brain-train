@@ -22,6 +22,7 @@ export const filterRecipes = async (recipes, filters) => {
     }
   
     const normalized = normalizeFilters(filters);
+    console.log("filters provided is", filters);
 
 
     if (isFilterEmpty(normalized)) {

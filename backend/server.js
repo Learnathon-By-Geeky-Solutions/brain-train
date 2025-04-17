@@ -13,6 +13,7 @@ import planRoutes from './apps/mealplan/api/routes.js';
 import userRoutes from './apps/user/api/routes.js';
 import favouritesRoutes from './apps/favourite/api/routes.js';
 import trendingRoutes from './apps/trending/api/routes.js';
+import  aiRoutes from './apps/ai-assistance/api/routes.js';
 
 dotenv.config();
 
@@ -37,7 +38,10 @@ const corsOptions = {
 
 // Middleware
 app.use(helmet());
-app.use(express.json()); // Parse JSON request bodies
+
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser()); // Parse cookies in incoming requests
 app.use(cors(corsOptions));
 
@@ -53,6 +57,7 @@ app.use('/plan', planRoutes);
 app.use('/user', userRoutes);
 app.use('/favourites', favouritesRoutes);
 app.use('/trending', trendingRoutes);
+app.use('/ai', aiRoutes);
 
 // Catch-all route for unmatched requests
 app.use((req, res) => {
