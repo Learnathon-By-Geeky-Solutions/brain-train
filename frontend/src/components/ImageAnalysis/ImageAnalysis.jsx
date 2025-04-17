@@ -14,6 +14,7 @@ import Analysis from './Analysis';
 const FoodImageAnalysis = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [isAnalysing, setIsAnalyzing] = useState(false);
 
   const resetComponent = () => {
     setFile(null);
