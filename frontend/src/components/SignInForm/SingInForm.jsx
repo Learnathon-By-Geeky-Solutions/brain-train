@@ -82,6 +82,7 @@ export default function SignInForm() {
             setSuccessMessage('Password reset email sent! Check your inbox.');
             setError(false);
         } catch (err) {
+            console.error('Error sending password reset email:', err);
             setError(true);
             setErrorMessage('Failed to send password reset email. Please try again.');
         }
