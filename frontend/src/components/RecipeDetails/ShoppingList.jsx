@@ -26,10 +26,8 @@ const ShoppingList = () => {
   const servingSize = location.state?.servingSize;
 
   useEffect(() => {
-    console.log("in useEffect of shopping list");
     getShoppingList(servingSize, id).then((data) => {
       setData(data);
-      console.log(data);
     });
   }, []);
 
