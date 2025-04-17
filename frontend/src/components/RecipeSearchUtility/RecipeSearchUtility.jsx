@@ -26,7 +26,7 @@ export default function RecipeSearchUtility(
   return (
     <Flex direction="column" width="100%" minHeight="16" alignItems="center" mb="6">
 
-      { ( pageState === 'init' || !showSecondBar )  && location.pathname !== '/dashboard/mealPlan' && (
+      { ( pageState === 'init' || !showSecondBar )  && location.pathname !== '/dashboard/mealPlan' && location.pathname !== '/dashboard/chat' && (
           <Flex direction="row" h="100%" gap={2} 
             onClick={() => {
               setShowSecondBar(true);

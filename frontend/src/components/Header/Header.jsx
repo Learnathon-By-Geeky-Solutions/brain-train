@@ -46,18 +46,22 @@ const StickyHeader = ({
     const currentScrollY = window.scrollY;
     
     // If we're at the top (or very close to it), always show the second bar
-    if ((currentScrollY < 10) && (location.pathname !== '/dashboard/mealPlan')) {
-      console.log("making second bar true");
+    if ((currentScrollY < 5) && (Math.abs(currentScrollY-lastScrollY) > 5) && (location.pathname !== '/dashboard/mealPlan') && (location.pathname !== '/dashboard/chat')) {
       setShowSecondBar(true);
     } 
     // Otherwise hide it when scrolling down
-    else if ((currentScrollY > lastScrollY) && containerClosed) {
-      console.log("making second bar false");
+    else if ((currentScrollY > lastScrollY) && containerClosed && (Math.abs(currentScrollY-lastScrollY) > 5)) {
       setShowSecondBar(false);
     }
     // Update the last scroll position
     setLastScrollY(currentScrollY);
   };
+
+  useEffect(() => {
+    if((location.pathname === '/dashboard/mealPlan') || (location.pathname === '/dashboard/chat')){
+      setShowSecondBar(false);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     if(containerClosed)
@@ -174,6 +178,16 @@ const StickyHeader = ({
             }
             >
               Meal Plan
+            </Button>
+            <Button
+              variant="subtle"
+              borderRadius="3xl"
+              onClick={() => {
+                navigate('/dashboard/imageAnalysis');
+              }
+            }
+            >
+              Food Image Analysis
             </Button>
           </Flex>)}
 
