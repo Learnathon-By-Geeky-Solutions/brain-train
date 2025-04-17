@@ -89,7 +89,7 @@ export const analyzeImageRecipe = (req, res) => {
       });
     })
     .catch(err => {
-      console.error('🔥 analyzeImageRecipe Error:', err.message);
+      console.error(' analyzeImageRecipe Error:', err.message);
       res.status(500).json({ error: 'Image analysis failed' });
     });
 };
