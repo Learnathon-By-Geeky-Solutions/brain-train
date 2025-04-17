@@ -8,49 +8,29 @@ import {
   
 import PropTypes from 'prop-types';
 import { useState, useEffect } from "react";
+import { fetchSuggestions } from "./api";
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
-
-const SuggestionContainer = ({ type, query, handleClick, keyHandler }) => {
+const SuggestionContainer = ({ type, query, handleClick, keyHandler, containerClosed, setContainerClosed }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [containerClosed, setContainerClosed] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [ingContainerClosed, setIngContainerClosed] = useState(false);
+
+    if(type === "ingredients") {
+      containerClosed = ingContainerClosed;
+      setContainerClosed = setIngContainerClosed;
+    }
 
     useEffect(() => {
         if (query.trim() === "") {
             setSuggestions([]);
-            setContainerClosed(false);
+            setContainerClosed(true);
             return;
         }
-        
-        const fetchSuggestions = async () => {
-        setLoading(true);
-        setError(null);
-            try {
-                const response = await fetch(
-                `${API_BASE_URL}/search/${type}/autocomplete?query=${query}`,
-                );
-
-                if (!response.ok) {
-                throw new Error("Failed to fetch suggestions");
-                }
-
-                const data = await response.json();
-                if (query.trim() === ""){
-                    return;
-                }
-                setSuggestions(data || []);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
+        setContainerClosed(false);
         const debounceFetch = setTimeout(() => {
-        fetchSuggestions();
+        fetchSuggestions(setLoading, setError, setSuggestions, type, query, setContainerClosed);
         }, 300); // Debounce API call
 
         return () => clearTimeout(debounceFetch);
@@ -66,8 +46,11 @@ const SuggestionContainer = ({ type, query, handleClick, keyHandler }) => {
         );
       } else if (keyHandler.key === "ArrowUp") {
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-      } else if (keyHandler.key === "Enter" && selectedIndex !== -1) {
+      } else if (keyHandler.key === "Enter") {
+        if (selectedIndex !== -1) 
         handleClick(suggestions[selectedIndex][`${property}`]);
+        else 
+        handleClick(query);
         setSelectedIndex(-2);
         setContainerClosed(true);
       } else if (keyHandler.key === "Escape") {
@@ -135,7 +118,9 @@ SuggestionContainer.propTypes = {
   type: PropTypes.string.isRequired,
   query: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
-  keyHandler: PropTypes.object
+  keyHandler: PropTypes.object,
+  containerClosed: PropTypes.bool.isRequired,
+  setContainerClosed: PropTypes.func.isRequired
 };
 
 export default SuggestionContainer;

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import ingredientSchema from "./ingredients.js";
+import { nutritionSchema } from "./nutrition.js";
 
 const recipeSchema = new mongoose.Schema({
   /**
@@ -8,7 +9,8 @@ const recipeSchema = new mongoose.Schema({
    */
   sourceId: {
     type: String, 
-    required: true
+    required: true,
+    unique: true
   },
   isUploaded: {
     type: Boolean,
@@ -78,14 +80,18 @@ const recipeSchema = new mongoose.Schema({
     type: [String],
     required: true
   },
-  ingredients: [ingredientSchema]
+  ingredients: [ingredientSchema],
+  nutrition: nutritionSchema
 });
+
+recipeSchema.statics.getTopLikedRecipes = function (n) {
+  return this.find().sort({ likes: -1 }).limit(n);
+};
 
 const Recipe = mongoose.model("Recipe", recipeSchema);
 
 export default Recipe;
 
 export const findRecipeById = async (recipeId) => {
-  return await Recipe.findOne({ _id: recipeId });
+  return await Recipe.findOne({ _id: { $eq: recipeId.toString() } }, null, { sanitizeFilter: true });
 };
-
