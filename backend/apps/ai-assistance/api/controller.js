@@ -7,8 +7,7 @@ import { recipesByIngredientsHelper } from '../../search/util/searchHelper.js';
 import { fetchSaveFilterRecipes } from '../../search/util/fetchHelper.js';
 
 import { spoonacularRequest } from '../../../libraries/services/spoonacular.js';
-import { BiCategory } from 'react-icons/bi';
-import { nutrientSchema } from '../../../libraries/models/nutrition.js';
+
 
 export const analyzeImageIngredients = (req, res) => {
   decodeFirebaseIdToken(req.headers.authorization)
@@ -55,32 +54,7 @@ export const analyzeImageIngredients = (req, res) => {
     });
 };
 
-// export const analyzeImageRecipe = (req, res) => {
-//   if (!req.file) {
-//     return res.status(400).json({ error: 'Image file is required' });
-//   }
 
-//   decodeFirebaseIdToken(req.headers.authorization)
-//     .then(({ uid }) => {
-//       return uploadToFirebase(req.file).then(imageUrl => ({ uid, imageUrl }));
-//     })
-//     .then(({ uid, imageUrl }) => {
-//       return spoonacularRequest('/food/images/analyze', { imageUrl }).then(spoonacularData => ({
-//         uid,
-//         imageUrl,
-//         spoonacularData
-//       }));
-//     })
-//     .then(({ uid, imageUrl, spoonacularData }) => {
-//       return logUserImageUpload(uid, imageUrl).then(() => {
-//         res.status(200).json({ imageUrl, spoonacularData });
-//       });
-//     })
-//     .catch(err => {
-//       console.error('🔥 analyzeImageRecipe error:', err.message);
-//       res.status(500).json({ error: 'Image analysis failed' });
-//     });
-// };
 
 export const analyzeImageRecipe = (req, res) => {
   decodeFirebaseIdToken(req.headers.authorization)
