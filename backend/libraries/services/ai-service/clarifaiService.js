@@ -39,6 +39,11 @@ export class ClarifaiVisionService extends BaseAIService {
     });
 
     const concepts = response.outputs?.[0]?.data?.concepts || [];
-    return concepts.map(c => c.name.toLowerCase());
-  }
+    return concepts.map(c => ({
+      name: c.name.toLowerCase(),
+      confidence: c.value, // Clarifai returns a float between 0 and 1
+    }))
+    // .filter(c => c.confidence > 0.1) // Filter out low-confidence results
+    ;
+    }
 }
