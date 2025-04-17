@@ -12,6 +12,7 @@ import searchRoutes from "./apps/search/api/routes.js";
 import planRoutes from "./apps/mealplan/api/routes.js";
 import userRoutes from "./apps/user/api/routes.js";
 import favouritesRoutes from "./apps/favourite/api/routes.js";
+import trendingRoutes from "./apps/trending/api/routes.js";
 
 dotenv.config();
 
@@ -49,6 +50,7 @@ app.use("/search", searchRoutes);
 app.use("/plan", planRoutes);
 app.use("/user", userRoutes);
 app.use("/favourites", favouritesRoutes);
+app.use("/trending", trendingRoutes);
 
 // Catch-all route
 app.use((req, res) => {

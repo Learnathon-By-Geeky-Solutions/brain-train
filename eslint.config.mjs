@@ -17,10 +17,43 @@ export default defineConfig([
         process: "readonly"
       },
       parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
         ecmaFeatures: {
           jsx: true,
         },
       },
+    },
+  },
+  {
+    files: ["**/*.jsx"],
+    plugins: {
+      react: pluginReact,
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
+      'import/resolver': {
+        alias: {
+          map: [
+            ['@', './src']
+          ],
+          extensions: ['.js', '.jsx', '.json']
+        }
+      }
+    },
+    rules: {
+      ...pluginReact.configs.recommended.rules,
+      "react/jsx-uses-vars": "error",  // This is crucial - ensures JSX components are recognized as used
+      "react/jsx-uses-react": "error", // Ensures React is recognized as used when JSX is used
     },
   },
   {
@@ -62,6 +95,14 @@ export default defineConfig([
       },
       jest: {
         version: "detect",
+      },
+      'import/resolver': {
+        alias: {
+          map: [
+            ['@', './src']
+          ],
+          extensions: ['.js', '.jsx', '.json']
+        }
       }
     },
   }

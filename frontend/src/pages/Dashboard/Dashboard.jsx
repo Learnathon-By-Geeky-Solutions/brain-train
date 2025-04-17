@@ -11,12 +11,12 @@ import {
 import { auth } from "@/services/firebase";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import Header from "@/components/Header/Header";
-import recipes from "./recipe";
 import PreloadedCards from "@/components/DasboardFeatures/PreloadedCards";
 import RecipeCardContainer from "@/components/RecipeCardContainer/RecipeCardContainer";
 import fetchData, { getFavoriteRecipes } from "./api";
 import RecipeDetails from "@/components/RecipeDetails/RecipeDetails";
 import ShoppingList from "@/components/RecipeDetails/ShoppingList";
+import MealPlanningCalendar from "@/components/MealPlanning/MealPlan";
 
 export default function Dashboard() {
   const [pageLocation, setPageLocation] = useState("dashboard");
@@ -42,7 +42,6 @@ export default function Dashboard() {
     }
 
     setupAuthStateListener().then((currentUser) => {
-      console.log("Auth state listener setup");
       if (currentUser) {
         setUser(currentUser);
         setPhotoURL(currentUser.photoURL);
@@ -53,24 +52,6 @@ export default function Dashboard() {
       if (unsubscribe) unsubscribe();
     };
   }, [navigate, searchParams]);
-
-  useEffect(() => {
-    const handlePopState = () => {
-      // Clear search params when back button is pressed
-      if (
-        location.pathname === "/dashboard" ||
-        location.pathname === "/dashboard/"
-      ) {
-        setSearchParams({});
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
 
   const setupAuthStateListener = () => {
     return new Promise((resolve) => {
@@ -85,26 +66,42 @@ export default function Dashboard() {
     });
   };
 
-  function loadCards(data) {
+  function loadCards(data, clearCards = false) {
     const type = searchParams.get("type");
-    console.log("Type: ", type);
+
+    if (clearCards) {
+      setCardData([]);
+      return;
+    }
+
     if (!data && !type) return;
 
     if (data) {
-      console.log("setting search params");
-      console.log(data);
-      setSearchParams({
-        type: "showResults",
-        q: encodeURIComponent(JSON.stringify(data)),
-      });
+      setCardData([]);
+      if (
+        location.pathname !== "/dashboard" &&
+        location.pathname !== "/dashboard/"
+      ) {
+        navigate({
+          pathname: "/dashboard",
+          search: `?type=showResults&q=${encodeURIComponent(JSON.stringify(data))}&t=${Date.now()}`,
+        });
+      } else {
+        setSearchParams({
+          type: "showResults",
+          q: encodeURIComponent(JSON.stringify(data)),
+          t: Date.now(),
+        });
+      }
       return;
     }
 
     if (type === "favourites") {
-      console.log("Fetching favourite recipes from loop");
       getFavoriteRecipes().then((result) => {
         if (result.status === "success") setCardData(result.recipes);
-        else console.error(result.msg);
+        else
+          // eslint-disable-next-line no-console
+          console.error(result.msg);
       });
       return;
     }
@@ -126,6 +123,7 @@ export default function Dashboard() {
       await signOut(auth);
       navigate("/"); // Redirect to the home page after logging out
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Error logging out:", error);
     }
   };
@@ -137,7 +135,7 @@ export default function Dashboard() {
       height="100%"
       minHeight="100vh"
       className="dashboard"
-      gap={2}
+      gap={0}
     >
       <Header
         photoUrl={photoURL}
@@ -151,21 +149,17 @@ export default function Dashboard() {
       />
       {!searchParams.get("type") && pageLocation === "dashboard" && (
         <Flex direction="column" width="100%" h="100%" className="dashboard">
-          <PreloadedCards txt="Recently Searched" cards={recipes} />
-          <PreloadedCards txt="Trending Recipes" cards={recipes} />
-          <PreloadedCards txt="Explore a cuisine" cards={recipes} />
-          <PreloadedCards txt="Recommended for You" cards={recipes} />
+          <PreloadedCards txt="Recently Searched" />
+          <PreloadedCards txt="Trending Recipes" />
+          <PreloadedCards txt="Explore a cuisine" showResults={loadCards} />
+          <PreloadedCards txt="Recommended for You" />
         </Flex>
       )}
       {searchParams.get("type") && pageLocation === "dashboard" && (
-        <RecipeCardContainer
-          recipe_prop={cardData}
-          removeCard={removeCard}
-          perRow={4}
-          numRows={5}
-        />
+        <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} />
       )}
       <Routes>
+        <Route path="mealPlan" element={<MealPlanningCalendar />} />
         <Route path="recipe/*" element={<RecipeDetails />} />
         <Route path="recipe/shoppingList" element={<ShoppingList />} />
       </Routes>

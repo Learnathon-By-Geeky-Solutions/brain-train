@@ -1,4 +1,12 @@
-import { Box, Flex, IconButton, Image, Text, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  IconButton,
+  Image,
+  Text,
+  Button,
+  Avatar,
+} from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import logo from "../../assets/logo.png";
 import { MdLogout } from "react-icons/md";
@@ -40,60 +48,44 @@ const StickyHeader = ({
   ]);
   const [showSecondBar, setShowSecondBar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [containerClosed, setContainerClosed] = useState(true);
 
-  useEffect(() => {
-    if (
-      location.pathname != "/dashboard" &&
-      location.pathname != "/dashboard/"
-    ) {
+  const controlSecondBar = () => {
+    // Get current scroll position
+    const currentScrollY = window.scrollY;
+
+    // If we're at the top (or very close to it), always show the second bar
+    if (currentScrollY < 10 && location.pathname !== "/dashboard/mealPlan") {
+      setShowSecondBar(true);
+    }
+    // Otherwise hide it when scrolling down
+    else if (currentScrollY > lastScrollY && containerClosed) {
       setShowSecondBar(false);
     }
-  }, [location.pathname]);
+    // Update the last scroll position
+    setLastScrollY(currentScrollY);
+  };
 
   useEffect(() => {
-    const controlSecondBar = () => {
-      // Get current scroll position
-      const currentScrollY = window.scrollY;
-
-      // If we're at the top (or very close to it), always show the second bar
-      if (
-        currentScrollY < 10 &&
-        (location.pathname === "/dashboard" ||
-          location.pathname === "/dashboard/")
-      ) {
-        setShowSecondBar(true);
-      }
-      // Otherwise hide it when scrolling down
-      else if (currentScrollY > lastScrollY) {
-        setShowSecondBar(false);
-      }
-
-      // Update the last scroll position
-      setLastScrollY(currentScrollY);
-    };
-
-    // Add scroll event listener
-    window.addEventListener("scroll", controlSecondBar);
-
+    if (containerClosed) window.addEventListener("scroll", controlSecondBar);
+    else setShowSecondBar(true);
     // Cleanup function to remove the event listener
     return () => {
       window.removeEventListener("scroll", controlSecondBar);
     };
-  }, [lastScrollY]); // Only re-run the effect if lastScrollY changes
+  }, [lastScrollY, containerClosed]); // Only re-run the effect if lastScrollY changes
 
   const showFavouriteRecipes = () => {
-    console.log("Fetching favourite recipes...");
+    showResults(null, true);
     if (
       location.pathname !== "/dashboard" &&
       location.pathname !== "/dashboard/"
     ) {
-      console.log("Navigating to dashboard");
       navigate({
         pathname: "/dashboard",
         search: `?type=favourites`,
       });
     } else {
-      console.log("Just loading the cards");
       setSearchParams({ type: "favourites" });
     }
   };
@@ -172,15 +164,26 @@ const StickyHeader = ({
               >
                 Pantry Match
               </Button>
+              <Button
+                variant="subtle"
+                borderRadius="3xl"
+                onClick={() => {
+                  navigate("/dashboard/mealPlan");
+                }}
+              >
+                Meal Plan
+              </Button>
             </Flex>
           )}
 
           {/* Icon Buttons */}
           <Flex gap={2}>
-            <FilterController
-              addFilter={addFilter}
-              clearFilters={clearFilters}
-            />
+            {showSecondBar && (
+              <FilterController
+                addFilter={addFilter}
+                clearFilters={clearFilters}
+              />
+            )}
             <IconButton aria-label="User Profile" variant="ghost" h="auto">
               <DrawerRoot>
                 <DrawerBackdrop />
@@ -201,14 +204,11 @@ const StickyHeader = ({
                       gap={1}
                     >
                       <LuMenu />
-                      <Image
-                        src={photoUrl}
-                        alt="DP"
-                        borderRadius="full"
-                        h="8"
-                        w="auto"
-                        ml="auto"
-                      />
+                      {/* <Image src={photoUrl} alt="DP" borderRadius="full" h="8" w="auto" ml="auto"/> */}
+                      <Avatar.Root size="xs" variant="outline">
+                        <Avatar.Fallback name={userName} />
+                        <Avatar.Image src={photoUrl} />
+                      </Avatar.Root>
                     </Flex>
                   </IconButton>
                   {/* <Image src={photoUrl} alt="User Profile" borderRadius="full"/> */}
@@ -219,9 +219,11 @@ const StickyHeader = ({
                   </DrawerHeader>
                   <DrawerBody>
                     <Flex direction="column" mt={2}>
-                      <Button onClick={showFavouriteRecipes} variant="ghost">
-                        Favourite Recipes
-                      </Button>
+                      <DrawerActionTrigger asChild>
+                        <Button onClick={showFavouriteRecipes} variant="ghost">
+                          Favourite Recipes
+                        </Button>
+                      </DrawerActionTrigger>
                       <Button variant="ghost">Dummy</Button>
                     </Flex>
                   </DrawerBody>
@@ -257,6 +259,9 @@ const StickyHeader = ({
             filters={filters}
             setShowSecondBar={setShowSecondBar}
             showSecondBar={showSecondBar}
+            setContainerClosed={setContainerClosed}
+            containerClosed={containerClosed}
+            controlSecondBar={controlSecondBar}
           />
         </Box>
       </Flex>
@@ -264,8 +269,8 @@ const StickyHeader = ({
   );
 };
 StickyHeader.propTypes = {
-  photoUrl: PropTypes.string.isRequired,
-  userName: PropTypes.string.isRequired,
+  photoUrl: PropTypes.string,
+  userName: PropTypes.string,
   handleLogout: PropTypes.func.isRequired,
   setSearchParams: PropTypes.func.isRequired,
   pageState: PropTypes.string.isRequired,

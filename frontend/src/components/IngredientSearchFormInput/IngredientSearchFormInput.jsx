@@ -1,7 +1,7 @@
 import React, { forwardRef, useState } from "react";
 import PropTypes from "prop-types";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { Input, Flex, IconButton, VStack } from "@chakra-ui/react";
+import { Input, Flex, IconButton, VStack, Separator } from "@chakra-ui/react";
 import { MdAdd, MdArrowBack } from "react-icons/md";
 import { Field } from "../ui/field";
 import { LuDelete } from "react-icons/lu";
@@ -26,7 +26,6 @@ const IngredientSearchFormInput = forwardRef(
     });
 
     const onSubmit = (data) => {
-      console.log(data);
       const submitData = { type: "ingredients", data: data };
       controller(submitData);
     };
@@ -49,7 +48,7 @@ const IngredientSearchFormInput = forwardRef(
     };
 
     return (
-      <Flex direction="column">
+      <Flex direction="column" maxWidth="450px">
         <form
           ref={ref}
           onSubmit={handleSubmit(onSubmit)}
@@ -59,7 +58,7 @@ const IngredientSearchFormInput = forwardRef(
             "background-color": "var(--text-input)",
           }}
         >
-          <VStack alignItems="center" margin="none" maxWidth="450px">
+          <VStack alignItems="center" margin="none">
             {fields.map((field, index) => (
               <Flex
                 key={field.id}
@@ -68,7 +67,6 @@ const IngredientSearchFormInput = forwardRef(
                 direction="row"
                 alignItems="center"
                 backgroundColor="var(--dark-light-text-input1)"
-                padding="5px"
                 borderRadius="2xl"
               >
                 <Flex direction="row" alignItems="center">
@@ -119,9 +117,10 @@ const IngredientSearchFormInput = forwardRef(
                 <IconButton
                   marginLeft="auto"
                   aria-label="Delete field"
-                  variant="solid"
-                  borderRadius="lg"
-                  size="sm"
+                  variant="ghost"
+                  borderLeftRadius="none"
+                  borderRightRadius="2xl"
+                  h="16"
                   onClick={() => {
                     remove(index);
                     const newStates = [...amountStates];
@@ -141,18 +140,25 @@ const IngredientSearchFormInput = forwardRef(
             marginTop="10px"
           >
             <IconButton
-              size="sm"
-              borderRadius="lg"
+              size="lg"
+              w="50%"
+              variant="subtle"
               onClick={() => {
                 prevState();
               }}
+              borderLeftRadius="2xl"
+              borderRightRadius="none"
             >
               <MdArrowBack />
             </IconButton>
+            <Separator orientation="vertical" height="auto" />
             <IconButton
-              size="sm"
-              borderRadius="lg"
+              variant="subtle"
+              size="lg"
               marginLeft="auto"
+              w="50%"
+              borderLeftRadius="none"
+              borderRightRadius="2xl"
               onClick={() => {
                 append({ name: "", amount: "", unit: "" });
                 handleIngredientChange("default", "default");
@@ -166,6 +172,9 @@ const IngredientSearchFormInput = forwardRef(
     );
   },
 );
+
+IngredientSearchFormInput.displayName = "IngredientSearchFormInput";
+
 IngredientSearchFormInput.propTypes = {
   prevState: PropTypes.func.isRequired,
   controller: PropTypes.func.isRequired,

@@ -22,6 +22,12 @@ async function getFavoriteRecipes() {
       const rawData = await response.json();
       data.recipes = rawData.recipes;
       data.status = "success";
+      if (data.recipes.length === 0) {
+        data.recipes.push({ id: -1 });
+      }
+    } else if (response.status === 404) {
+      data.recipes.push({ id: -1 });
+      data.status = "success";
     } else {
       data.msg = "Failed to fetch favorite recipes";
     }
@@ -37,6 +43,23 @@ function handleSearchByTitle(searchData) {
     searchData,
   );
   return url;
+}
+
+const handleSearchByIngredients = (searchData) => {
+  let ingredients = "";
+  let data = searchData.data;
+  data.fields.forEach((field) => {
+    ingredients += field.name + ",";
+  });
+  ingredients = ingredients.slice(0, -1);
+  return handleFilters(
+    `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`,
+    searchData,
+  );
+};
+
+function handleSearchByCuisine(searchData) {
+  return `${API_BASE_URL}/search/recipes/cuisines?cuisine=${searchData.cuisine}`;
 }
 
 function handleFilters(url, searchData) {
@@ -94,28 +117,15 @@ function appendRangeFilters(url, filter) {
   return url;
 }
 
-const handleSearchByIngredients = (searchData) => {
-  let ingredients = "";
-  let data = searchData.data;
-  data.fields.forEach((field) => {
-    ingredients += field.name + ",";
-  });
-  ingredients = ingredients.slice(0, -1);
-  return handleFilters(
-    `${API_BASE_URL}/search/recipes/ingredients?ingredients=${ingredients}&fields=summary,likes,title,image`,
-    searchData,
-  );
-};
-
 const fetchData = async (searchData) => {
   let url = "";
 
   if (searchData.type === "title") {
     url = handleSearchByTitle(searchData);
-    console.log("url from fetchData " + url);
   } else if (searchData.type === "ingredients") {
     url = handleSearchByIngredients(searchData);
-    console.log("url from fetchData " + url);
+  } else if (searchData.type === "cuisine") {
+    url = handleSearchByCuisine(searchData);
   }
 
   try {
@@ -132,8 +142,11 @@ const fetchData = async (searchData) => {
     const data = await response.json();
 
     if (response.ok) return data.results;
+    if (response.status === 404) return [{ id: -1 }];
+    // eslint-disable-next-line no-console
     console.error("Failed to fetch recipes. Error code:", response.status);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error fetching data:", error.message);
   }
 };

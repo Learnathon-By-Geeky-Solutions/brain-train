@@ -1,3 +1,4 @@
+import escapeRegex from "escape-string-regexp";
 import Recipe from "../../libraries/models/recipes.js";
 import UserSearchHistory from "../../libraries/models/userSearchHistory.js";
 
@@ -9,10 +10,10 @@ export const getRecipeFieldsByTitle = async (
 ) => {
   const conditions = {};
 
-  if (title) {
+  if (typeof title === "string" && title.trim() !== "") {
     conditions.title = isAutoComplete
-      ? { $regex: new RegExp(`\\b${title}`, "i") }
-      : { $regex: title, $options: "i" };
+      ? { $regex: new RegExp(`\\b${escapeRegex(title)}`, "i") }
+      : { $regex: escapeRegex(title), $options: "i" };
   }
 
   const recipes = await Recipe.find(conditions)
@@ -56,7 +57,7 @@ export const getRecipesByIngredients = async (
 
     //  Case-insensitive regex match
     const ingredientConditions = ingredientTitles.map((title) => ({
-      "ingredients.title": { $regex: new RegExp(title, "i") },
+      "ingredients.title": { $regex: new RegExp(escapeRegex(title), "i") },
     }));
 
     if (!ingredientConditions.length) {
@@ -155,6 +156,33 @@ export const getRecipeBySourceId = async (sourceIds = [], fields = null) => {
 
 export const getRecipeInfoById = async (id, fields = null) => {
   return await Recipe.findById(id).select(fields).lean();
+};
+
+export const searchRecipesByCuisine = async (cuisine, limit = 10) => {
+  const pipeline = [
+    {
+      $match: {
+        cuisines: {
+          $elemMatch: {
+            $regex: new RegExp(escapeRegex(cuisine), "i"), // partial & case-insensitive
+          },
+        },
+      },
+    },
+    { $sample: { size: parseInt(limit) } },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        image: 1,
+        summary: 1,
+        likes: 1,
+      },
+    },
+  ];
+
+  const results = await Recipe.aggregate(pipeline);
+  return results;
 };
 
 export const getSearchHistoryByUid = async (uid) => {

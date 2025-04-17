@@ -3,37 +3,10 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import recipe_default from "../../assets/recipe_default.jpg";
 import { FaHeart } from "react-icons/fa";
-import { getAuth } from "firebase/auth";
+import handleRecipeDetail from "./api";
 
-const API_BASE_URL =
-  import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 const RecipeCard = ({ recipe, changeVisibility, type }) => {
   const navigate = useNavigate();
-
-  const handleRecipeDetail = async (e) => {
-    try {
-      const idToken = await getAuth().currentUser.getIdToken(true);
-      const response = await fetch(
-        `${API_BASE_URL}/search/recipes/${recipe.id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${idToken}`,
-          },
-        },
-      );
-
-      const data = await response.json();
-      if (response.ok) {
-        navigate("/dashboard/recipe", { state: { recipe: data } });
-      } else {
-        console.error("Failed to fetch recipes. Error code:", response.status);
-      }
-    } catch (err) {
-      console.error("Error from central search frame", err.message);
-    }
-  };
 
   return (
     <Card.Root
@@ -42,7 +15,7 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
       overflow="hidden"
       _hover={{ transform: "scale(1.05)", transition: "all 0.3s ease-in-out" }}
       onClick={() => {
-        handleRecipeDetail();
+        handleRecipeDetail(recipe.id, navigate);
       }}
     >
       <Image
@@ -85,10 +58,10 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
         ></Card.Description>
       </Card.Body>
       {type === "favourites" && (
-        <Card.Footer gap="1">
+        <Card.Footer>
           <Button
             size="sm"
-            variant="ghost"
+            variant="outline"
             onClick={(e) => {
               e.stopPropagation();
               changeVisibility();

@@ -8,15 +8,14 @@ const CentralSearchFrame = ({
   featureProps,
   filters,
   showResults,
+  containerClosed,
+  setContainerClosed,
 }) => {
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({ type: "", data: {} });
-  const [containerClosed, setContainerClosed] = useState(false);
 
   const handleSearch = () => {
-    console.log("Triggering form submission...");
     if (ref.current) ref.current.requestSubmit(); // Trigger form submission
-    console.log(searchData);
     setShouldFetch(true); // Indicate that we should proceed once state updates
   };
 
@@ -35,6 +34,7 @@ const CentralSearchFrame = ({
   if (featureProps?.handleSuggestionClick == null)
     featureProps.handleSuggestionClick = () => {
       handleSearch();
+      setContainerClosed(true); // newly added
     };
 
   return (
@@ -74,16 +74,15 @@ const CentralSearchFrame = ({
 
 CentralSearchFrame.defaultProps = {
   featureProps: {},
-  currentBadges: [],
 };
 
 CentralSearchFrame.propTypes = {
   feature: PropTypes.elementType.isRequired,
   featureProps: PropTypes.object,
-  currentBadges: PropTypes.array,
-  changeBadges: PropTypes.func.isRequired,
   showResults: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
+  containerClosed: PropTypes.bool.isRequired,
+  setContainerClosed: PropTypes.func.isRequired,
 };
 
 export default CentralSearchFrame;

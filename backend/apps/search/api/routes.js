@@ -2,7 +2,7 @@ import express from "express";
 import {
   searchRecipes,
   searchRecipesByIngredients,
-  searchRecipesByNutrients,
+  getRecipesByCuisine,
   getRecipeInformation,
   getRecipeSummary,
   getSimilarRecipes,
@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.get("/recipes", searchRecipes);
 router.get("/recipes/ingredients", searchRecipesByIngredients);
-router.get("/recipes/nutrients", searchRecipesByNutrients);
+router.get("/recipes/cuisines", getRecipesByCuisine);
 router.get("/recipes/:id", getRecipeInformation);
 router.get("/recipes/:id/summary", getRecipeSummary);
 router.get("/recipes/:id/similar", getSimilarRecipes);

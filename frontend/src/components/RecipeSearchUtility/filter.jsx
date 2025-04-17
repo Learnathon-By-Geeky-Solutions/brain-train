@@ -8,7 +8,6 @@ import {
   Input,
   Text,
   Slider,
-  VStack,
   Accordion,
   Flex,
   Switch,
@@ -212,11 +211,20 @@ const FilterController = ({ addFilter, clearFilters }) => {
                             </Flex>
                             {isRangeFiltersActive[index] && (
                               <Slider.Root
-                                value={getRangeFilter(type)}
+                                value={getRangeFilter(type).map(
+                                  (v) => v / (type === "Calories" ? 100 : 1),
+                                )}
                                 onValueChange={(e) => {
-                                  addRangeFilter(type, e.value[0], e.value[1]);
+                                  const multiplyingFactor =
+                                    type === "Calories" ? 100 : 1;
+                                  addRangeFilter(
+                                    type,
+                                    e.value[0] * multiplyingFactor,
+                                    e.value[1] * multiplyingFactor,
+                                  );
                                 }}
                                 w="100%"
+                                px="2"
                               >
                                 <Slider.Control>
                                   <Slider.Track>
@@ -231,21 +239,21 @@ const FilterController = ({ addFilter, clearFilters }) => {
                                 </Slider.Control>
                                 <Flex
                                   direction="row"
-                                  justifyContent="space-between"
                                   mt="2"
+                                  justifyContent="space-between"
                                 >
                                   {["Minimum", "Maximum"].map(
                                     (label, index) => (
-                                      <VStack w="1/6" gap="0" p="0" key={label}>
-                                        <Text fontSize="sm">{label}</Text>
-                                        <HStack p="0" gap="0">
+                                      <Flex mx="2" key={label}>
+                                        <Flex
+                                          direction="column"
+                                          w={type === "Calories" ? "36" : "20"}
+                                          key={label}
+                                          alignItems="center"
+                                        >
+                                          <Text fontSize="sm">{label}</Text>
                                           <Input
-                                            value={
-                                              type === "Calories"
-                                                ? getRangeFilter(type)[index] *
-                                                  100
-                                                : getRangeFilter(type)[index]
-                                            }
+                                            value={getRangeFilter(type)[index]}
                                             onChange={(e) => {
                                               const value =
                                                 getRangeFilter(type);
@@ -260,12 +268,18 @@ const FilterController = ({ addFilter, clearFilters }) => {
                                             borderRadius="3xl"
                                             color="var(--text)"
                                             w="90%"
+                                            textAlign="center"
                                           />
-                                          <Text fontSize="sm">
-                                            {type === "Calories" ? "cal" : "g"}
-                                          </Text>
-                                        </HStack>
-                                      </VStack>
+                                        </Flex>
+                                        <Text
+                                          fontSize="sm"
+                                          alignSelf="center"
+                                          justifySelf="center"
+                                          mt="4"
+                                        >
+                                          {type === "Calories" ? "cal" : "g"}
+                                        </Text>
+                                      </Flex>
                                     ),
                                   )}
                                 </Flex>
@@ -279,43 +293,36 @@ const FilterController = ({ addFilter, clearFilters }) => {
                 </Flex>
               </Dialog.Body>
               <Dialog.Footer>
-                <Dialog.ActionTrigger asChild>
+                <Dialog.ActionTrigger>
                   <Button
                     variant="outline"
                     onClick={() => {
                       clearFiltersWithState();
                     }}
+                    mr="1"
                   >
                     Clear
                   </Button>
-                </Dialog.ActionTrigger>
-                <Button
-                  onClick={() => {
-                    console.log(isRangeFiltersActive);
-                    setFiltersApplied(true);
-                    let activeRangeFilters = [];
-                    for (let i = 0; i < isRangeFiltersActive.length; i++) {
-                      if (isRangeFiltersActive[i]) {
-                        if (rangeFilters[i].type === "Calories") {
-                          activeRangeFilters.push({
-                            type: rangeFilters[i].type,
-                            min: rangeFilters[i].min * 100,
-                            max: rangeFilters[i].max * 100,
-                          });
-                        } else {
+                  {/* </Dialog.ActionTrigger> */}
+                  <Button
+                    onClick={() => {
+                      setFiltersApplied(true);
+                      let activeRangeFilters = [];
+                      for (let i = 0; i < isRangeFiltersActive.length; i++) {
+                        if (isRangeFiltersActive[i]) {
                           activeRangeFilters.push(rangeFilters[i]);
                         }
                       }
-                    }
-                    addFilter([
-                      { cuisine: cuisine },
-                      { diet: dietFilters },
-                      { rangeFilters: activeRangeFilters },
-                    ]);
-                  }}
-                >
-                  Apply
-                </Button>
+                      addFilter([
+                        { cuisine: cuisine },
+                        { diet: dietFilters },
+                        { rangeFilters: activeRangeFilters },
+                      ]);
+                    }}
+                  >
+                    Apply
+                  </Button>
+                </Dialog.ActionTrigger>
               </Dialog.Footer>
             </Dialog.Content>
           </Dialog.Positioner>
