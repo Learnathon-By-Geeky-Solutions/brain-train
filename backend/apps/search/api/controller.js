@@ -55,7 +55,7 @@ export const searchRecipes = (req, res) => {
       return respondWithResults(res, results);
     })
     .catch(error => {
-      console.error("❌ searchRecipes Error:", error.message);
+      console.error(" searchRecipes Error:", error.message);
       const status = error.message.includes('authorization') ? 401 : 500;
       return res.status(status).json({ error: error.message });
     });
@@ -75,7 +75,7 @@ export const searchRecipesByIngredients = (req, res) => {
       return respondWithResults(res, results);
     })
     .catch(error => {
-      console.error('❌ Recipe Search Error:', error.message);
+      console.error(' Recipe Search Error:', error.message);
       const status = error.message.includes('authorization') ? 401 : 500;
       return res.status(status).json({ error: error.message });
     });
