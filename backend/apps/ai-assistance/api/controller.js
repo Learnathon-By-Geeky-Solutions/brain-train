@@ -6,9 +6,7 @@ import { formatRecipes } from '../../search/util/formatter.js';
 import { recipesByIngredientsHelper } from '../../search/util/searchHelper.js';
 
 export const analyzeImageIngredients = (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'Image file is required' });
-  }
+
 
   decodeFirebaseIdToken(req.headers.authorization)
     .then(({ uid }) => {

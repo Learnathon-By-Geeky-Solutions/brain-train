@@ -1,10 +1,18 @@
 import express from 'express';
-import multer from 'multer';
+import { upload,handleMulterErrors } from '../middleware/multerUpload.js';
+import { validateImageUpload } from '../middleware/validateUpload.js';
 import { analyzeImageIngredients } from './controller.js';
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
 
 
-router.post('/analyze', upload.single('image'), analyzeImageIngredients);
+router.post(
+    '/analyze/ingredients',
+    handleMulterErrors(upload.single('image')),
+    validateImageUpload,
+    analyzeImageIngredients
+);
+
+
+
 export default router;
