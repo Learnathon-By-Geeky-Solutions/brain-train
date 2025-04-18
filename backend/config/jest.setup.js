@@ -27,7 +27,6 @@ beforeAll(async () => {
     );
 
     global.__TEST_TOKEN__ = response.data.idToken;
-    console.log("✅ Test User Logged In - Token Retrieved");
   } catch (error) {
     console.error(
       "🔥 Firebase Login Failed:",

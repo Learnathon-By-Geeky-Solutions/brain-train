@@ -63,7 +63,7 @@ export const favouriteRecipesAdder = (req, res) => {
       return userFavourites
         .save()
         .then(() =>
-          res.status(200).json({ message: "Recipe added to favourites" }),
+          res.status(201).json({ message: "Recipe added to favourites" }),
         );
     })
     .catch((error) => {
