@@ -1,6 +1,6 @@
 import { ClarifaiVisionService } from './clarifaiService.js';
 
-export class AIFactory {
+export class VisionFactory {
     /**
      * Return the desired AI vision service instance.
      * @param {string} type - 'clarifai' or 'google'

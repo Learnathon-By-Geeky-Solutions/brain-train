@@ -1,7 +1,12 @@
-import { AIFactory } from '../../../libraries/services/ai-service/aiFactory.js';
+import { VisionFactory } from '../../../libraries/services/vision-service/visionFactory.js';
 
 import { uploadToFirebase,decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
-import { logUserImageUpload } from '../db.js';
+import { logUserImageUpload,
+ } from '../db.js';
+
+import { handleUserMessage, generateAssistantResponse ,saveChatAndRespond} from '../util/chatHelper.js';
+
+
 import { formatRecipes } from '../../search/util/formatter.js';
 import { recipesByIngredientsHelper } from '../../search/util/searchHelper.js';
 import { fetchSaveFilterRecipes } from '../../search/util/fetchHelper.js';
@@ -16,7 +21,7 @@ export const analyzeImageIngredients = (req, res) => {
     })
     .then(({ uid, imageUrl }) => {
       const base64 = req.file.buffer.toString('base64').replace(/^data:image\/\w+;base64,/, '');
-      const aiService = AIFactory.create('clarifai');
+      const aiService = VisionFactory.create('clarifai');
       return aiService.analyzeImage(base64).then(ingredients => ({ uid, imageUrl, ingredients }));
     })
     .then(({ uid, imageUrl, ingredients }) => {
@@ -91,5 +96,21 @@ export const analyzeImageRecipe = (req, res) => {
     .catch(err => {
       console.error(' analyzeImageRecipe Error:', err.message);
       res.status(500).json({ error: 'Image analysis failed' });
+    });
+};
+
+
+export const sendChatMessage = (req, res) => {
+  decodeFirebaseIdToken(req.headers.authorization)
+    .then(({ uid }) => handleUserMessage(req, uid))
+    .then(({ chatId, userMessage, uid }) =>
+      generateAssistantResponse(userMessage)
+        .then(({ assistantMessage }) =>
+          saveChatAndRespond(res, chatId, uid, userMessage, assistantMessage)
+        )
+    )
+    .catch(err => {
+      console.error(" LLM Chat Error:", err.message);
+      res.status(500).json({ error: "Chat failed" });
     });
 };

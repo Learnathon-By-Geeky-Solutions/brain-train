@@ -1,7 +1,7 @@
-import { BaseAIService } from './baseAIService.js';
+import { BaseVisionService } from './baseVisionService.js';
 import { ClarifaiStub, grpc } from 'clarifai-nodejs-grpc';
 
-export class ClarifaiVisionService extends BaseAIService {
+export class ClarifaiVisionService extends BaseVisionService {
   constructor(apiKey) {
     super();
     this.stub = ClarifaiStub.grpc();
