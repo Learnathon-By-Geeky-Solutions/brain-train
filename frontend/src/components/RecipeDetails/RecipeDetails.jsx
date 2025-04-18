@@ -7,14 +7,13 @@ import {
   HStack,
   Separator,
   Button,
-} from '@chakra-ui/react';
-import { LuClock, LuHeart, LuUtensils } from 'react-icons/lu';
-import { useLocation, useNavigate } from 'react-router-dom';
-import addToFavourites from './api';
-import { Toaster, toaster } from '../ui/toaster';
-import DialogForShoppingList from './DialogForShoppingList';
-import { useState } from 'react';
-
+} from "@chakra-ui/react";
+import { LuClock, LuHeart, LuUtensils } from "react-icons/lu";
+import { useLocation, useNavigate } from "react-router-dom";
+import addToFavourites from "./api";
+import { Toaster, toaster } from "../ui/toaster";
+import DialogForShoppingList from "./DialogForShoppingList";
+import { useState } from "react";
 
 const RecipeDetails = () => {
   const location = useLocation();
@@ -24,7 +23,14 @@ const RecipeDetails = () => {
   const navigate = useNavigate();
 
   return (
-    <Box maxWidth="900px" mx="auto" p={6} borderWidth="2px" borderRadius="lg" borderColor="gray.400">
+    <Box
+      maxWidth="900px"
+      mx="auto"
+      p={6}
+      borderWidth="2px"
+      borderRadius="lg"
+      borderColor="gray.400"
+    >
       <Image
         src={recipe.image}
         alt={recipe.title}
@@ -58,7 +64,7 @@ const RecipeDetails = () => {
       {/* <Text fontSize="lg" mb={4} lineHeight="tall">
         {recipe.summary}
       </Text> */}
-      <div dangerouslySetInnerHTML={{__html:recipe.summary}}></div>
+      <div dangerouslySetInnerHTML={{ __html: recipe.summary }}></div>
       <Separator size="lg" mb={4} />
 
       {/* Ingredients Section */}
@@ -78,28 +84,28 @@ const RecipeDetails = () => {
       </Heading>
       <VStack align="start" spacing={3} mb={4}>
         <Text>
-            <strong>{recipe.instructions}</strong> 
+          <strong>{recipe.instructions}</strong>
         </Text>
       </VStack>
-      <Separator size="lg" mb="4" /> 
+      <Separator size="lg" mb="4" />
 
       {/* Footer */}
       <HStack justify="space-between" mt={4}>
-        <Button colorScheme="teal" size="lg"
+        <Button
+          colorScheme="teal"
+          size="lg"
           onClick={() => {
             let toasterText = "Could not add recipe to favourites";
-            let toasterType = "error"; 
+            let toasterType = "error";
             addToFavourites(recipe).then((result) => {
-              if(result.status === 'success'){
+              if (result.status === "success") {
                 toasterText = "Recipe added to favourites";
                 toasterType = "success";
               }
-              toaster.create(
-                {
-                  title: toasterText,
-                  type: toasterType,
-                }
-              );
+              toaster.create({
+                title: toasterText,
+                type: toasterType,
+              });
             });
           }}
         >
@@ -108,7 +114,9 @@ const RecipeDetails = () => {
         <DialogForShoppingList
           handleDone={() => {
             console.log("in handleDone");
-            navigate('/dashboard/recipe/shoppingList', { state: { id: id, servingSize: servingSize } });
+            navigate("/dashboard/recipe/shoppingList", {
+              state: { id: id, servingSize: servingSize },
+            });
           }}
           setServingSize={setServingSize}
           servingSize={servingSize}
