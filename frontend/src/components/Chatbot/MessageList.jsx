@@ -13,8 +13,16 @@ const MessageList = ({ messages, isLoading, photoURL }) => {
   }, [messages]);
 
   return (
-    <Box flex={1} w="full" overflowY="auto" p={3} borderRadius="md" bg="none">
-      <VStack spacing={4} align="stretch">
+    <Flex direction="column" w="80%" overflowY="auto" borderRadius="md" bg="none" alignItems={"center"} pb="25vh">
+      <Flex direction="column" w="100%"
+        css={{
+            "&::-webkit-scrollbar": {
+              display: "none", 
+            },
+            "-ms-overflow-style": "none",
+            "scrollbar-width": "none", 
+          }}
+      >
         {messages.map(message => (
           <MessageItem key={message.id} message={message} isUser={message.isUser} photoURL={photoURL} />
         ))}
@@ -35,8 +43,8 @@ const MessageList = ({ messages, isLoading, photoURL }) => {
           </Flex>
         )}
         <div ref={messagesEndRef} />
-      </VStack>
-    </Box>
+      </Flex>
+    </Flex>
   );
 };
 

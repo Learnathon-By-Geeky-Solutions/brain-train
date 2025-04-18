@@ -14,20 +14,20 @@ const MessageInput = ({ input, setInput, handleSendMessage, isLoading, clearChat
   };
 
   return (
-    <HStack w="full" spacing={2}>
+    <Flex w="80%" position="absolute" top="75vh" bg="var(--dark-bg)" h="20vh">
     <Flex 
         background="var(--text-input)" 
         alignItems="center" 
         justifyContent="space-between"
         borderRadius="2xl" 
-        w="95%"
+        w="100%"
+        h="fit-content"
     >
         <Input
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyPress}
         placeholder="Type your message..."
-        size="md"
         flex={1}
         background="none"
         disabled={isLoading}
@@ -46,17 +46,17 @@ const MessageInput = ({ input, setInput, handleSendMessage, isLoading, clearChat
         >
         <LuSend />
         </IconButton>
-        </Flex>
         <IconButton
         aria-label="Clear chat"
         onClick={clearChat}
         variant="subtle"
         borderRadius="xl"
-        w="5%"
+        mr="2"
         >
         <LuRefreshCcw size={18} />
         </IconButton>
-    </HStack>
+        </Flex>
+    </Flex>
   );
 };
 

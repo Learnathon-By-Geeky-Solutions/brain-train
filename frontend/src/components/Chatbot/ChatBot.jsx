@@ -1,14 +1,20 @@
 // components/ChatBot.jsx
 import React, { useState } from 'react';
 import {
+    Flex,
   VStack,
+  Box,
+  useDisclosure
 } from '@chakra-ui/react';
 import { Toaster, toaster } from '../ui/toaster';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import { fetchAIResponse } from './api';
+import CollapsibleSideBar from '../CollapsibleSideBar/CollapsibleSideBar';
+import { calcLength } from 'framer-motion';
 
 const ChatBot = ({photoURL}) => {
+  const { open, onToggle } = useDisclosure({ defaultIsOpen: true });
   const [messages, setMessages] = useState([
     { id: 1, text: "Hello! I'm your AI assistant. How can I help you today?", isUser: false }
   ]);
@@ -56,17 +62,30 @@ const ChatBot = ({photoURL}) => {
   };
 
   return (
-    <VStack h="90vh" spacing={4} top="10vh" py="4" px="6" bg="none">
-    <MessageList messages={messages} isLoading={isLoading} photoURL={photoURL} />
-    <MessageInput
-        input={input}
-        setInput={setInput}
-        handleSendMessage={handleSendMessage}
-        isLoading={isLoading}
-        clearChat={clearChat}
-    />
-    <Toaster />
-    </VStack>
+    <Flex w="100vw">
+    <CollapsibleSideBar open={open} onToggle={onToggle}/>
+    <Flex 
+        direction="column" 
+        area-label="boka-choda"
+        bg="none" 
+        position="fixed" 
+        left={open ? "25vw" : "5vw"} 
+        h="100%" 
+        alignItems="center"
+        justifyContent="center"
+        w={open ? "75vw" : "95vw"}
+    >
+        <MessageList messages={messages} isLoading={isLoading} photoURL={photoURL} />
+        <MessageInput
+            input={input}
+            setInput={setInput}
+            handleSendMessage={handleSendMessage}
+            isLoading={isLoading}
+            clearChat={clearChat}
+        />
+        <Toaster />
+    </Flex>
+    </Flex>
   );
 };
 
