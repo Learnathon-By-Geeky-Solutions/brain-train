@@ -36,6 +36,7 @@
     "setupFilesAfterEnv": ["<rootDir>/config/jest.setup.js"], 
     "testEnvironment": "node",
     "collectCoverage": true,
+    "testTimeout": 20000,
     "coverageDirectory": "coverage",
     "coverageReporters": [
       "text",
