@@ -28,7 +28,6 @@
     return res.status(200).json({ results: minimized, totalResults: minimized.length });
   };
   export const formatRecipes = (data) => {
-    console.log("Formatting Recipes:", data);
     const normalized = normalizeIds(data);
     const minimized = minimizeRecipeData(normalized);
     return minimized;
