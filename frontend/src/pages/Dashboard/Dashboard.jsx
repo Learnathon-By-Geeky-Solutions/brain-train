@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Flex, IconButton } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import './Dashboard.css';
 import { Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -11,6 +11,9 @@ import fetchData, { getFavoriteRecipes } from './api';
 import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
 import ShoppingList from '@/components/RecipeDetails/ShoppingList';
 import MealPlanningCalendar from '@/components/MealPlanning/MealPlan';
+import { LuMessageCircle } from 'react-icons/lu';
+import ChatBot from '@/components/Chatbot/Chatbot';
+import FoodImageAnalysis from '@/components/ImageAnalysis/ImageAnalysis';
 
 
 
@@ -82,11 +85,11 @@ export default function Dashboard() {
         console.log("Navigating to dashboard from loadCards");
         navigate({
           pathname: '/dashboard',
-          search: `?type=showResults&q=${encodeURIComponent(JSON.stringify(data))}`,
+          search: `?type=showResults&q=${encodeURIComponent(JSON.stringify(data))}&t=${Date.now()}`,
         });
       }
       else{
-        setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)) });
+        setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)), t: Date.now() });
       }
       return;
     }
@@ -151,10 +154,21 @@ export default function Dashboard() {
         searchParams.get("type") && pageLocation === 'dashboard' &&
         <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} />
       }
+      {location.pathname !== '/dashboard/chat' && (
+        <IconButton 
+        borderRadius="full" position="fixed" bottom="4" right="4" size="xl" zIndex="1010"
+        onClick={() => {
+          navigate('/dashboard/chat');
+        }}
+      >
+        <LuMessageCircle/>
+      </IconButton>)}
       <Routes>
         <Route path="mealPlan" element={<MealPlanningCalendar/>} />
         <Route path="recipe/*" element={<RecipeDetails />} />
         <Route path="recipe/shoppingList" element={<ShoppingList />} />
+        <Route path="chat" element={<ChatBot photoURL={photoURL}/>} />
+        <Route path='imageAnalysis' element={<FoodImageAnalysis />} />
       </Routes>
     </Flex>
   );

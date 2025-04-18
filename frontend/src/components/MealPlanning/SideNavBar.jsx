@@ -17,7 +17,7 @@ import { MdDateRange } from 'react-icons/md';
 import { getMyPlans } from './api';
 import { getCurrentDateFormatted } from './dateFormatter';
 import NavItem from './NavItem';
-import renderPlanList from './PlanList';
+import {renderPlanList} from './PlanList';
 
 
 
@@ -116,8 +116,8 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
           </Collapsible.Trigger>
           <Collapsible.Content>
           <List.Root py="2" px="5" variant="plain" fontSize="sm" gap={2} alignItems="start">
-            {renderPlanList(dailyPlanList,setSearchParams,setIsActiveIdx,isActiveIdx,setReload,reload)}
-            {renderPlanList(weeklyPlanList,setSearchParams,setIsActiveIdx,isActiveIdx,setReload,reload)}
+            {renderPlanList(dailyPlanList,setIsActiveIdx,isActiveIdx,setReload,reload,"day")}
+            {renderPlanList(weeklyPlanList,setIsActiveIdx,isActiveIdx,setReload,reload,"week",setStartDate)}
           </List.Root>
           </Collapsible.Content>
         </Collapsible.Root>

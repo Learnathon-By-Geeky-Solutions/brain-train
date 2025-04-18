@@ -4,12 +4,11 @@ import { LuSearch } from 'react-icons/lu';
 import PropTypes from 'prop-types';
 
 
-const CentralSearchFrame = ({ feature, featureProps, filters, showResults }) => {
+const CentralSearchFrame = ({ feature, featureProps, filters, showResults, containerClosed, setContainerClosed }) => {
 
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({type:'', data:{}});
-  const [containerClosed, setContainerClosed] = useState(false);
-
+  
   const handleSearch = () => {
     console.log("Triggering form submission...");
     if(ref.current)
@@ -71,6 +70,8 @@ CentralSearchFrame.propTypes = {
   featureProps: PropTypes.object,
   showResults: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
+  containerClosed: PropTypes.bool.isRequired,
+  setContainerClosed: PropTypes.func.isRequired,
 };
 
 export default CentralSearchFrame;

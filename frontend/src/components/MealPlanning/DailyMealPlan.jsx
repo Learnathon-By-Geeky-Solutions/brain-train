@@ -21,16 +21,15 @@ import handleRecipeDetail from '../RecipeCard/api';
 
 
 const DailyMealPlan = ({searchParams,reload}) => {
-
-  let dateStr = searchParams.get('date');
-  let day = getDay(dateStr);
+  
+  let day = getDay(searchParams.get('date'));
   const [meals, setMeals] = useState([]);
   const [nutrients, setNutrients] = useState({});
   const navigate = useNavigate();
-  let isToday = dateStr === getCurrentDateFormatted();
+  let isToday = searchParams.get('date') === getCurrentDateFormatted();
 
   useEffect(() => {
-    getMealData(dateStr, 'day').then((data) => {
+    getMealData(searchParams.get('date'), 'day').then((data) => {
       if(data.status === 'error'){
         console.error('Failed to fetch meal data from reload ', data.msg);
         console.log('Data: ');
@@ -41,16 +40,17 @@ const DailyMealPlan = ({searchParams,reload}) => {
       else{
         console.log('Fetched meal data from reload ');
         console.log(data);
-        const plan =  data.plans[0].mealPlan;
-        setMeals(plan.meals);
+        const plan =  data.plans?.[0]?.mealPlan;
+        setMeals(plan?.meals || []);
         let newNutrients = {protein: "", carbohydrates: "", fat: "", calories: ""};
+        if(plan)
         for (const nutrient of plan.nutrients) {
           newNutrients[nutrient.name] = nutrient.amount;
         }
         setNutrients(newNutrients);
       }
     });
-  }, [reload]);
+  }, [searchParams,reload]);
 
   // Colors based on light/dark mode
   const cardBg = useColorModeValue('white', 'gray.800');
@@ -85,7 +85,7 @@ const DailyMealPlan = ({searchParams,reload}) => {
         <HStack justifyContent="space-between" alignItems="center">
           <VStack alignItems="flex-start" spacing={0}>
             <Heading size="md">{day}</Heading>
-            {dateStr && <Text fontSize="sm" color="gray.500">{formatDate(dateStr)}</Text>}
+            {searchParams.get('date') && <Text fontSize="sm" color="gray.500">{formatDate(searchParams.get('date'))}</Text>}
           </VStack>
           {isToday && (
             <Badge 
@@ -180,7 +180,7 @@ DailyMealPlan.propTypes = {
   searchParams: PropTypes.shape({
     get: PropTypes.func.isRequired,
   }).isRequired,
-  reload: PropTypes.any,
+  reload: PropTypes.bool.isRequired,
 };
 
 export default DailyMealPlan;

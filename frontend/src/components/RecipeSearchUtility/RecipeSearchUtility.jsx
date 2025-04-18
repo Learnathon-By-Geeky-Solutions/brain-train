@@ -9,9 +9,10 @@ import { useLocation } from "react-router-dom";
 
 
 export default function RecipeSearchUtility(
-  { pageState, setPageState, pageLocation, 
+  { pageState, setPageState, 
     showResults, setSearchParams,
-    filters, setShowSecondBar, showSecondBar
+    filters, setShowSecondBar, showSecondBar,
+    containerClosed, setContainerClosed
   }
 ) {
 
@@ -25,29 +26,33 @@ export default function RecipeSearchUtility(
   return (
     <Flex direction="column" width="100%" minHeight="16" alignItems="center" mb="6">
 
-      { ( pageState === 'init' || !showSecondBar )  && location.pathname !== '/dashboard/mealPlan' && (
-          <Flex direction="row" h="100%" gap={2} onClick={() => setShowSecondBar(true)}>
+      { ( pageState === 'init' || !showSecondBar )  && location.pathname !== '/dashboard/mealPlan' && location.pathname !== '/dashboard/chat' && (
+          <Flex direction="row" h="100%" gap={2} 
+            onClick={() => {
+              setShowSecondBar(true);
+            }}
+          >
             <CentralSearchFrame 
               feature={TitleSearchInput} 
               featureProps={{ handleSuggestionClick: null }}
               filters={filters}
               showResults={showResults}
+              containerClosed={containerClosed}
+              setContainerClosed={setContainerClosed}
             />
-            {/* <FilterController 
-              addFilter={addFilter} 
-              clearFilters={clearFilters}
-            /> */}
           </Flex>
         )
       }
 
       {
-        pageState === 'ingSearch'  && showSecondBar && (
+        pageState === 'ingSearch' && showSecondBar && (
           <CentralSearchFrame
             feature={IngredientSearchForm}
             featureProps={{ prevState: () => { changePageState('init') }, ref: null }}
             filters={filters}
             showResults={showResults}
+            containerClosed={containerClosed}
+            setContainerClosed={setContainerClosed}
           />
         )
       }
@@ -59,10 +64,11 @@ export default function RecipeSearchUtility(
 RecipeSearchUtility.propTypes = {
   pageState: PropTypes.string.isRequired,
   setPageState: PropTypes.func.isRequired,
-  pageLocation: PropTypes.string.isRequired,
   showResults: PropTypes.func.isRequired,
   setSearchParams: PropTypes.func.isRequired,
   filters: PropTypes.array.isRequired,
   showSecondBar: PropTypes.bool.isRequired,
   setShowSecondBar: PropTypes.func.isRequired,
+  containerClosed: PropTypes.bool.isRequired,
+  setContainerClosed: PropTypes.func.isRequired,
 };

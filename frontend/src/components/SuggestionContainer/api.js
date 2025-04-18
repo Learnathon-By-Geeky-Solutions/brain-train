@@ -1,6 +1,6 @@
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
-const fetchSuggestions = async (setLoading,setError,setSuggestions,type,query) => {
+const fetchSuggestions = async (setLoading,setError,setSuggestions,type,query,setContainerClosed) => {
 setLoading(true);
 setError(null);
     try {
@@ -14,9 +14,12 @@ setError(null);
 
         const data = await response.json();
         if (query.trim() === ""){
+            setContainerClosed(true);
             return;
         }
+        if(data.length > 0)
         setSuggestions(data || []);
+        
     } catch (err) {
         setError(err.message);
     } finally {

@@ -7,10 +7,12 @@ import {
 import { useColorModeValue } from '../ui/color-mode';
 import { deletePlan } from './api';
 import { toaster } from '../ui/toaster';
+import { useSearchParams } from 'react-router-dom';
 
 
-const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, setReload, reload) =>
+const renderPlanList = (planList, setIsActiveIdx, isActiveIdx, setReload, reload, type, setStartDate=null ) =>
 {
+    const setSearchParams = useSearchParams()[1];
     const hoverBg = useColorModeValue('gray.100', 'gray.700');
     const activeBg = useColorModeValue('green.50', 'green.900');
     const activeColor = useColorModeValue('green.700', 'green.200');
@@ -23,7 +25,13 @@ const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, 
            color={isActiveIdx === 20 + index ? activeColor : undefined}
           _hover={{ bg: hoverBg, cursor: 'pointer' }}
           onClick={() => {
-            setSearchParams({ time: 'day', date: plan.startDate });
+            if(type === 'day'){
+              setSearchParams({ time: 'day', date: plan.startDate });
+            }
+            else{
+              setSearchParams({});
+              setStartDate(plan.startDate);
+            }
             setIsActiveIdx(20+index);
           }}
         >
@@ -36,7 +44,7 @@ const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, 
           <Menu.Item
             onClick={() => {
               toaster.create({title: 'Deleting plan. Please wait...', type: 'loading'});
-              deletePlan(plan._id,'day').then((data) => {
+              deletePlan(plan._id,type).then((data) => {
                 if(data.status === 'error'){
                   console.error('Failed to delete plan: ');
                   console.log(data);
@@ -62,4 +70,4 @@ const renderPlanList = (planList, setSearchParams, setIsActiveIdx, isActiveIdx, 
     </Menu.Root>
 ))}
 
-export default renderPlanList;
+export {renderPlanList};
