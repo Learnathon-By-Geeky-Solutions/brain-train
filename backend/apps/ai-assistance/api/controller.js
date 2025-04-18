@@ -1,14 +1,11 @@
 import { VisionFactory } from '../../../libraries/services/vision-service/visionFactory.js';
-import { ChatFactory } from '../../../libraries/services/chat-service/chatFactory.js';
 
 import { uploadToFirebase,decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { logUserImageUpload,
-  saveNewChat,
-  appendMessagesToChat
-
  } from '../db.js';
 
- import { getDefaultChatName } from '../util/chatHelper.js';
+import { handleUserMessage, generateAssistantResponse ,saveChatAndRespond} from '../util/chatHelper.js';
+
 
 import { formatRecipes } from '../../search/util/formatter.js';
 import { recipesByIngredientsHelper } from '../../search/util/searchHelper.js';
@@ -105,33 +102,15 @@ export const analyzeImageRecipe = (req, res) => {
 
 export const sendChatMessage = (req, res) => {
   decodeFirebaseIdToken(req.headers.authorization)
-    .then(({ uid }) => {
-      const { text, chatId } = req.body;
-      const role = 'user';
-
-      const filePromise = req.file
-        ? uploadToFirebase(req.file).then(url => [url])
-        : Promise.resolve([]);
-
-      return filePromise.then((fileUrls) => {
-        const userMessage = { role, text, files: fileUrls };
-        const llm = ChatFactory.create('gemini');
-
-        return llm.sendMessage([userMessage]).then(responseText => {
-          const assistantMessage = { role: 'assistant', text: responseText, files: [] };
-
-          const dbAction = chatId
-            ? appendMessagesToChat(chatId, userMessage, assistantMessage)
-            : saveNewChat(uid, getDefaultChatName(), userMessage, assistantMessage);
-
-          return dbAction.then(chat => {
-            return res.status(200).json({ chatId: chat._id, messages: chat.messages });
-          });
-        });
-      });
-    })
+    .then(({ uid }) => handleUserMessage(req, uid))
+    .then(({ chatId, userMessage, uid }) =>
+      generateAssistantResponse(userMessage)
+        .then(({ assistantMessage }) =>
+          saveChatAndRespond(res, chatId, uid, userMessage, assistantMessage)
+        )
+    )
     .catch(err => {
-      console.error("LLM Chat Error:", err.message);
+      console.error(" LLM Chat Error:", err.message);
       res.status(500).json({ error: "Chat failed" });
     });
 };
