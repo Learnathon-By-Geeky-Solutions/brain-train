@@ -1,49 +1,94 @@
-import genAI from '@google/genai';
+// /libraries/llms/implementations/GeminiService.js
+import { GoogleGenAI } from '@google/genai';
 import { BaseChatService } from './baseChatService.js';
-import mime from 'mime';
-const { GoogleGenAI, toFile } = genAI;
-
 
 export class GeminiService extends BaseChatService {
-  constructor(apiKey) {
+  constructor() {
     super();
-    this.ai = new GoogleGenAI({ apiKey });
-    this.model = this.ai.getGenerativeModel({
-      model: 'gemini-1.5-pro-latest',
-      systemInstruction: `You are an AI cooking assistant specializing in food, recipes, ingredients, nutrients, and meal planning. 
-Do not chat on unrelated topics.
-1) If image is of food, provide meal type, cuisine, ingredients, nutrients.
-2) If image contains ingredients, list them and suggest recipes.`
-    });
+    console.log('GeminiService: Initializing GoogleGenAI with default credentials...');
+    this.ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
+    this.modelName = process.env.GEMINI_MODEL || 'gemini-pro';
+    console.log('GeminiService: Model name set to:', this.modelName);
   }
 
   async sendMessage(messages) {
-    const formatted = await this.#convertToGeminiFormat(messages);
-    const response = await this.model.generateContent({
-      contents: formatted,
-    });
-    return response.response.text();
+    const contents = await this.#convertToGeminiFormat(messages);
+    console.log('GeminiService: Gemini contents:', JSON.stringify(contents));
+    const config = {
+      responseMimeType: 'text/plain',
+      systemInstruction: [
+        {
+          text: `You are an AI cooking assistant specializing in food,recipes,ingredients,nutrients and meal plan. Do not chat on unrelated topic and images.
+    When user uploads an image without any text instructions,
+    1)If the image is about food or recipe,say some details about its name,meal type,cuisine,diet,ready time,serving size,ingredients and nutrition(guess value for calorie,carbs,fat,protein,vitamin,minerals etc).
+    (2) If the image contains raw ingredients(like rice,fish,meat etc) ,list all the ingredients and suggest some recipes with these ingredients`,
+        }
+      ],
+    };
+    const model = this.modelName;
+    console.log('GeminiService: Gemini model:', model);
+
+    try {
+      console.log('GeminiService: Sending request to Gemini...');
+      const response = await this.ai.models.generateContentStream({
+        model,
+        config,
+        contents,
+      });
+      console.log('GeminiService: Gemini response received (stream started):', JSON.stringify(response));
+
+      let finalResponse = '';
+      for await (const chunk of response) {
+        if (chunk && chunk.candidates && chunk.candidates[0] && chunk.candidates[0].content && chunk.candidates[0].content.parts && chunk.candidates[0].content.parts[0] && chunk.candidates[0].content.parts[0].text) {
+          const textPart = chunk.candidates[0].content.parts[0].text;
+          finalResponse += textPart;
+          console.log('GeminiService: Received chunk:', textPart);
+        } else {
+          console.log('GeminiService: Received chunk (no text):', chunk);
+        }
+      }
+      
+      console.log('GeminiService: Final response:', finalResponse);
+      return finalResponse;
+
+    } catch (error) {
+      console.error('GeminiService: Error during sendMessage:', error);
+      throw error; // Re-throw the error to be handled by the caller
+    }
   }
 
   async #convertToGeminiFormat(messages) {
-    return Promise.all(messages.map(async (msg) => {
-      const parts = [];
-      if (msg.text) parts.push({ text: msg.text });
+    return Promise.all(
+      messages.map(async ({ role, text, files }) => {
+        const parts = [];
 
-      if (msg.files && msg.files.length > 0) {
-        const imageUrl = msg.files[0];
-        const fileExt = imageUrl.split('.').pop();
-        const mimeType = mime.getType(fileExt);
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-        const file = await toFile(blob, 'image.' + fileExt, { type: mimeType });
-        parts.push({ inlineData: { data: await file.arrayBuffer(), mimeType } });
-      }
+        if (text) parts.push({ text });
 
-      return {
-        role: msg.role,
-        parts,
-      };
-    }));
+        if (files?.length) {
+          for (const url of files) {
+            const base64 = await this.#fetchImageAsBase64(url);
+            parts.push({
+              inlineData: {
+                mimeType: 'image/png', // or dynamic if known
+                data: base64,
+              },
+            });
+          }
+        }
+
+        return { role, parts };
+      })
+    );
+  }
+
+  async #fetchImageAsBase64(url) {
+    try {
+      const response = await fetch(url);
+      const buffer = await response.arrayBuffer();
+      return Buffer.from(buffer).toString('base64');
+    } catch (error) {
+      console.error('GeminiService: Error fetching image:', error);
+      throw error;
+    }
   }
 }
