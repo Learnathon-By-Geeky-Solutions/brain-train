@@ -6,7 +6,7 @@
     "start": "concurrently \"cd backend && nodemon\" \"cd frontend && npm start\"",
     "prepare": "husky",
     "test": "cd backend && npm test",
-    "test:security": "snyk test"
+    "test:security": "snyk test --all-projects"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
