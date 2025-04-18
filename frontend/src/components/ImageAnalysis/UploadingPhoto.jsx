@@ -10,7 +10,7 @@ const UploadingPhoto = ({ show, uploadProgress }) => {
     }
     return (
         <Box w="100%">
-            <Progress.Root size="lg" value={uploadProgress}>
+            <Progress.Root size="lg" value={uploadProgress} colorPalette="teal">
                 <Progress.Track>
                 <Progress.Range />
                 </Progress.Track>

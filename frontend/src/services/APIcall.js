@@ -10,15 +10,16 @@ async function makeRequest(url, method, body) {
       unsubscribe(); // Stop listening immediately after first auth state is determined
       if (user) {
         const idToken = await user.getIdToken();
+        const isFormData = body instanceof FormData;
         const req = {
           method: method,
           headers: {
-            "Content-Type": "application/json",
+            ...(isFormData ? {} : { "Content-Type": "application/json" }),
             Authorization: `Bearer ${idToken}`,
           },
         }
         if(body){
-          req.body = JSON.stringify(body);
+          req.body = isFormData? body : JSON.stringify(body);
         }
         const response = await fetch(url, req);
         if (response.ok) {

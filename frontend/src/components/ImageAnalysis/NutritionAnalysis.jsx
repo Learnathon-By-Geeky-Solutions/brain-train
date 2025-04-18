@@ -10,31 +10,22 @@ import NutritionCard from './NutritionCard';
 const NutritionAnalysis = ({ analysisResult }) => {
     return (
         <div>
-        <SimpleGrid columns={{ base: 2, md: 5 }} spacing={4} mt={4}>
+        <SimpleGrid columns={{ base: 2, md: 5 }} spacing={4} mt={4} gap={4}>
         <NutritionCard 
             label="Calories" 
-            value={analysisResult.nutritionFacts.calories} 
-            unit="kcal" 
+            obj={analysisResult.nutrition.calories}
         />
         <NutritionCard 
             label="Protein" 
-            value={analysisResult.nutritionFacts.protein} 
-            unit="g"
+            obj={analysisResult.nutrition.protein}
         />
         <NutritionCard 
             label="Carbs" 
-            value={analysisResult.nutritionFacts.carbs} 
-            unit="g"
+            obj={analysisResult.nutrition.carbs}
         />
         <NutritionCard 
             label="Fat" 
-            value={analysisResult.nutritionFacts.fat} 
-            unit="g"
-        />
-        <NutritionCard 
-            label="Fiber" 
-            value={analysisResult.nutritionFacts.fiber} 
-            unit="g"
+            obj={analysisResult.nutrition.fat}
         />
         </SimpleGrid>
         

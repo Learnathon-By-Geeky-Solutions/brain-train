@@ -1,11 +1,13 @@
 import {
   Box,
   Button,
+  Collapsible,
   Flex,
   Heading,
   Image,
   Tabs,
   Text,
+  VStack,
 } from '@chakra-ui/react';
 import { LuCheck, LuCircleAlert } from 'react-icons/lu';
 import IngredientItem from './IngredientItem';
@@ -18,7 +20,18 @@ const Analysis = ({ show, imagePreview, analysisResult, resetComponent }) => {
     if (!show) {
         return null;
     }
+
+    function initCap(str) {
+        return str
+          .toLowerCase()
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+    }
+      
     const type = analysisResult.type ;
+    const buttonName = type === 'nutrition' ? 'View Similar Food Recipes' : 'View Recipes with Detected Ingredients';
+
     return  (
         <Box>
         <Flex 
@@ -42,34 +55,30 @@ const Analysis = ({ show, imagePreview, analysisResult, resetComponent }) => {
             </Box>
             
             <Box flex="2">
-            <Heading as="h2" size="md" mb={2}>
-                {type === 'nutrition' ? analysisResult.foodName : 'Detected Ingreients'}
+            <Heading size="2xl" mb={2}>
+                {type === 'nutrition' ? initCap(analysisResult.category.name) : 'Ingredient Detection Result'}
             </Heading>
             
-            {/* <Flex align="center" my={3}>
-                <Box 
-                borderRadius="full" 
-                bg="green.100" 
-                color="green.700" 
-                p={2} 
-                mr={3}
-                >
-                <LuCheck size={18} />
-                </Box>
-                <Text fontSize="lg" fontWeight="medium" color="green.700">
-                {analysisResult.healthScore}/100 Health Score
-                </Text>
-            </Flex>
-            
-            <Text mb={2}>
-                <Text as="span" fontWeight="bold">Preparation: </Text>
-                {analysisResult.preparationMethod}
-            </Text>
-            
-            <Text>
-                <Text as="span" fontWeight="bold">Cuisine: </Text>
-                {analysisResult.cuisineOrigin}
-            </Text> */}
+            { type === 'nutrition' && ( 
+                <Flex align="center" my={3}>
+                    <Box 
+                        borderRadius="full" 
+                        bg={analysisResult.category.probability * 100 > 50 ? "green.100" : "red.100"} 
+                        color="green.700" 
+                        p={2} 
+                        mr={3}
+                    >
+                        <LuCheck size={18} />
+                    </Box>
+                    <Text 
+                        fontSize="lg" 
+                        fontWeight="medium" 
+                        color={analysisResult.category.probability * 100 > 50 ? "green.700" : "red.700"}
+                    >
+                    {analysisResult.category.probability.toFixed(4) * 100}% Probability
+                    </Text>
+                </Flex>
+            )}
             
             <Button 
                 colorScheme="blue" 
@@ -86,14 +95,14 @@ const Analysis = ({ show, imagePreview, analysisResult, resetComponent }) => {
         ) : (
             <div>
             <Box borderWidth="1px" borderRadius="md" overflow="hidden" mt={4}>
-            <Box bg="gray.50" p={3} borderBottomWidth="1px">
+            <Box bg="gray.400" borderBottomWidth="1px" p="4">
                 <Flex justify="space-between">
                 <Text fontWeight="bold">Ingredient</Text>
                 <Text fontWeight="bold">Confidence</Text>
                 </Flex>
             </Box>
-            <Box>
-                {analysisResult.ingredients.map((ingredient, index) => (
+            <Box bg="gray.700" boxShadow="md" p={4}>
+                {analysisResult.ingredients.map((ingredient) => (
                 <IngredientItem
                     key={ingredient.name}
                     name={ingredient.name}
@@ -116,20 +125,18 @@ const Analysis = ({ show, imagePreview, analysisResult, resetComponent }) => {
             </Box>
             </div>
         )}
-        <Tabs.Root colorScheme="teal" variant="enclosed">
-            <Tabs.List>
-            <Tabs.Trigger value={type}>
-                <Button>
-                    Load Recipes
+        {/* <Flex direction="column" alignItems="center" justifyContent="center" my={6}> */}
+        <Collapsible.Root colorPalette="teal">
+            <Collapsible.Trigger value={type}>
+                <Button my="6">
+                    {buttonName}
                 </Button>
-            </Tabs.Trigger>
-            </Tabs.List>
-            
-            {/* Nutrition Tab */}
-            <Tabs.Content value={type}>
+            </Collapsible.Trigger>
+            <Collapsible.Content value={type} mx="-2">
                 <RecipeCardContainer recipe_prop={analysisResult.results} />
-            </Tabs.Content>
-        </Tabs.Root>
+            </Collapsible.Content>
+        </Collapsible.Root>
+        {/* </Flex> */}
         </Box>
     );
 };

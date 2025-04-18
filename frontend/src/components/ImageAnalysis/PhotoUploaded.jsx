@@ -9,19 +9,21 @@ const PhotoUploaded = ({ show, handleUpload, resetComponent }) => {
         return null;
     }
     return (
-        <Stack direction="row" spacing={4}>
-            <Button 
-                colorScheme="teal" 
-                onClick={()=>handleUpload('ingredient')}
-            >
-                Detect Ingredients
-            </Button>
-            <Button 
-                colorScheme="teal" 
-                onClick={()=>handleUpload('nutrition')}
-            >
-                Analyze Nutrition
-            </Button>
+        <Stack direction="column" spacing={2}>
+            <Stack direction="row" spacing={4}>
+                <Button 
+                    colorPalette="teal" 
+                    onClick={()=>handleUpload('ingredient')}
+                >
+                    Detect Ingredients
+                </Button>
+                <Button 
+                    colorPalette="teal" 
+                    onClick={()=>handleUpload('nutrition')}
+                >
+                    Analyze Nutrition
+                </Button>
+            </Stack>
             <Button 
                 variant="outline" 
                 onClick={resetComponent}

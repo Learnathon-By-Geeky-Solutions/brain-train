@@ -24,12 +24,12 @@ const FoodImageAnalysis = () => {
   return (
     <Container maxW="container.md" pb={8} top="8">
       <VStack spacing={6} align="stretch">
-        <Box textAlign="center">
-          <Heading as="h1" size="lg" mb={2}>Food Image Analysis</Heading>
+        <Box textAlign="center" mb="4">
+          <Heading size="3xl" mb={2}>Food Image Analysis</Heading>
           <Text color="gray.500">Upload a food photo to discover its ingredients and nutritional information</Text>
         </Box>
         
-        <Separator />
+        <Separator size="lg"/>
 
         <PreAnalysis 
           show={analysisResult ? false : true} 
