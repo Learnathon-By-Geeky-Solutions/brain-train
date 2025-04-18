@@ -28,7 +28,7 @@ export const favouriteRecipesFinder = (req, res) => {
 
 export const favouriteRecipesAdder = (req, res) => {
   const { recipeId } = req.body;
-  const id = recipeId.toString();
+  const id = recipeId?.toString();
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ error: "Invalid recipe ID" });
@@ -36,12 +36,15 @@ export const favouriteRecipesAdder = (req, res) => {
 
   decodeFirebaseIdToken(req.headers.authorization)
     .then(({ uid }) => {
-      return findRecipeById(id).then((recipe) => ({ uid, id, recipe }));
+      return findRecipeById(id).then((recipe) => {
+        if (!recipe) {
+          res.status(404).json({ error: "Recipe not found" });
+          throw new Error("RECIPE_NOT_FOUND");
+        }
+        return { uid, id };
+      });
     })
-    .then(({ uid, id, recipe }) => {
-      if (!recipe) {
-        return res.status(404).json({ error: "Recipe not found" });
-      }
+    .then(({ uid, id }) => {
       return findFavouriteRecipeIdsByUid(uid).then((userFavourites) => ({
         uid,
         id,
@@ -67,8 +70,12 @@ export const favouriteRecipesAdder = (req, res) => {
         );
     })
     .catch((error) => {
+      if (error.message === "RECIPE_NOT_FOUND") return;
+
       console.error("Add favourite recipe error:", error.message);
-      res.status(500).json({ error: "Internal server error" });
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Internal server error" });
+      }
     });
 };
 
