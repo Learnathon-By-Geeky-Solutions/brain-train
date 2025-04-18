@@ -51,6 +51,7 @@ jobs:
           echo "SPOONACULAR_API_KEY=${{ secrets.SPOONACULAR_API_KEY }}" >> .env
           echo "TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }}" >> .env
           echo "TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }}" >> .env
+          echo "PORT=8000" >> .env
         shell: bash
       
       - name: Run unit tests with Jest
