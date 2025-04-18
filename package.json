@@ -10,18 +10,18 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
+    "clarifai-nodejs-grpc": "^11.3.1",
     "concurrently": "^9.1.2",
+    "escape-string-regexp": "^5.0.0",
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
-    "clarifai-nodejs-grpc": "^11.3.1",
-    "escape-string-regexp": "^5.0.0",
     "eslint-plugin-jest": "^28.11.0",
-    "multer": "^1.4.5-lts.2",
     "eslint-plugin-prettier": "^5.2.5",
     "eslint-plugin-react": "^7.37.4",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0",
+    "multer": "^1.4.5-lts.2",
     "prettier": "^3.5.3",
     "snyk": "^1.1296.1"
   },
@@ -30,5 +30,8 @@
       "eslint --fix --cache",
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "readable-stream": "^4.7.0"
   }
 }
