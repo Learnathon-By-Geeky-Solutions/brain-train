@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import axios from "axios";
+import https from "https";
+import http from "http";
+
+const httpsAgent = new https.Agent({ keepAlive: false });
+const httpAgent = new http.Agent({ keepAlive: false });
 
 dotenv.config();
 
@@ -14,6 +19,10 @@ beforeAll(async () => {
         email: process.env.TEST_USER_EMAIL,
         password: process.env.TEST_USER_PASSWORD,
         returnSecureToken: true,
+      },
+      {
+        httpsAgent,
+        httpAgent,
       },
     );
 
