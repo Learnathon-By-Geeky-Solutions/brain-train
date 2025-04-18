@@ -6,7 +6,7 @@ import axios from 'axios';
  * @returns {Promise<Array>} Gemini-compatible content array
  */
 export const convertToGeminiFormat = async (messages) => {
-    console.log('convertToGeminiFormat got task', messages);
+    
   return Promise.all(
     messages.map(async ({ role, text, files }) => {
       const parts = [];
