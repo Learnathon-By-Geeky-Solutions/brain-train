@@ -18,8 +18,11 @@ export const filterRecipes = async (recipes, filters) => {
   }
 
   const normalized = normalizeFilters(filters);
+  // eslint-disable-next-line no-console
+  console.log("filters provided is", filters);
 
   if (isFilterEmpty(normalized)) {
+    // eslint-disable-next-line no-console
     console.debug("All filter fields are empty. Returning original recipes.");
     return recipes.map((r) => ({ ...r, id: r._id?.toString() || r.id }));
   }

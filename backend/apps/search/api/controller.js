@@ -4,26 +4,23 @@ import {
   getRecipeInfoById,
   getSearchHistoryByUid,
   createUserEntryInUserSearchHistory,
-  getRecipeFieldsByTitle,
-  getRecipesByIngredients,
   searchRecipesByCuisine,
 } from "../db.js";
 import { findRecipesByIds } from "../../favourite/db.js";
 import { decodeFirebaseIdToken } from "../../../libraries/services/firebase.js";
-import {
-  fetchSaveFilterRecipes,
-  fetchByTitleSaveFilter,
-  fetchByIngredientSaveFilter,
-} from "../util/fetchHelper.js";
+import { fetchSaveFilterRecipes } from "../util/fetchHelper.js";
 
-import { respondWithResults, mergeAndLimitResults } from "../util/formatter.js";
+import {
+  recipesByIngredientsHelper,
+  recipesByTitleHelper,
+} from "../util/searchHelper.js";
 
 import {
   getDbSuggestions,
   getApiSuggestions,
 } from "../util/autoCompleteHelper.js";
 
-import { filterRecipes } from "../util/filtering.js";
+import { respondWithResults, mergeAndLimitResults } from "../util/formatter.js";
 
 import { generateShoppingList } from "../util/shoppingList.js";
 
@@ -36,111 +33,40 @@ import mongoose from "mongoose";
  * @returns
  */
 
-export const searchRecipes = async (req, res) => {
-  try {
-    await decodeFirebaseIdToken(req.headers.authorization);
-
-    const { number = 60, fields = "", ...params } = req.query;
-    const { query, ...filters } = params;
-    const fieldsArray = fields
-      .split(",")
-      .map((f) => f.trim())
-      .filter(Boolean);
-
-    getRecipeFieldsByTitle(query, fieldsArray, number)
-      .then((dbResults) =>
-        filterRecipes(dbResults, filters).then((filteredDbResults) => {
-          const threshold = Math.ceil(number * 0.5);
-          if (filteredDbResults.length >= threshold) {
-            console.log("DB results are sufficient:", filteredDbResults.length);
-
-            return respondWithResults(res, filteredDbResults);
-          }
-
-          return fetchByTitleSaveFilter(query, number, filters).then(
-            (filteredApiResults) => {
-              const combined = mergeAndLimitResults(
-                filteredDbResults,
-                filteredApiResults,
-                number,
-              );
-              return respondWithResults(res, combined);
-            },
-          );
-        }),
-      )
-      .catch((err) => {
-        console.error("Error in searchRecipes:", err);
-        return res.status(500).json({ error: err.message });
-      });
-  } catch (error) {
-    console.error("Auth or input error:", error);
-    return res.status(401).json({ error: error.message });
-  }
+export const searchRecipes = (req, res) => {
+  decodeFirebaseIdToken(req.headers.authorization)
+    .then(() => {
+      return recipesByTitleHelper(req.query);
+    })
+    .then((results) => {
+      return respondWithResults(res, results);
+    })
+    .catch((error) => {
+      const status = error.message.includes("authorization") ? 401 : 500;
+      return res.status(status).json({ error: error.message });
+    });
 };
 
 // Controller: Search Recipes by Ingredients
 
-export const searchRecipesByIngredients = async (req, res) => {
-  try {
-    await decodeFirebaseIdToken(req.headers.authorization);
-
-    const { number = 60, ingredients, fields = "", ...filters } = req.query;
-
-    if (!ingredients) {
-      return res
-        .status(400)
-        .json({ error: "'ingredients' parameter is required." });
-    }
-
-    const fieldsArray = fields
-      .split(",")
-      .map((f) => f.trim())
-      .filter(Boolean);
-
-    // Step 1: Search in DB
-    getRecipesByIngredients(ingredients, fieldsArray, number, filters)
-      .then((dbResults) => {
-        console.log("🔍 DB Results Before Filtering:", dbResults.length);
-        return filterRecipes(dbResults, filters);
-      })
-      .then((filteredDbResults) => {
-        console.log("🔎 DB Results After Filtering:", filteredDbResults.length);
-
-        const threshold = Math.ceil(number * 0.5);
-
-        if (filteredDbResults.length >= threshold) {
-          return respondWithResults(res, filteredDbResults);
-        }
-
-        // Step 2: Fallback to API
-        return fetchByIngredientSaveFilter(ingredients, number, filters).then(
-          (filteredApiResults) => {
-            const combined = mergeAndLimitResults(
-              filteredDbResults,
-              filteredApiResults,
-              number,
-            );
-            return respondWithResults(res, combined);
-          },
-        );
-      })
-      .catch((err) => {
-        console.error("❌ DB or filter error:", err);
-        return res.status(500).json({ error: err.message });
-      });
-  } catch (error) {
-    console.error("❌ Auth or input error:", error);
-    return res.status(401).json({ error: error.message });
-  }
+export const searchRecipesByIngredients = (req, res) => {
+  decodeFirebaseIdToken(req.headers.authorization)
+    .then(() => {
+      return recipesByIngredientsHelper(req.query);
+    })
+    .then((results) => {
+      return respondWithResults(res, results);
+    })
+    .catch((error) => {
+      const status = error.message.includes("authorization") ? 401 : 500;
+      return res.status(status).json({ error: error.message });
+    });
 };
 
 // Controller: Get Recipe Information
 export const getRecipeInformation = (req, res) => {
   const id = req.params.id.toString();
-  // console.log("Information",id);
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    // console.log("Invalid Recipe id");
     return res.status(400).json({ error: "Invalid recipe" });
   }
 
@@ -209,13 +135,11 @@ export const getSimilarRecipes = (req, res) => {
       }
 
       const ids = similarRecipes.map((r) => r.id);
-      console.log(" Similar Spoonacular IDs:", ids);
 
       return fetchSaveFilterRecipes(ids, {});
     })
     .then((recipes) => respondWithResults(res, recipes))
     .catch((error) => {
-      console.error(" Error in getSimilarRecipes:", error);
       return res.status(500).json({ error: error.message });
     });
 };
@@ -240,6 +164,7 @@ export const autoCompleteRecipes = (req, res) => {
       );
     })
     .catch((error) => {
+      // eslint-disable-next-line no-console
       console.error(" Error in autoCompleteRecipes:", error);
       return res.status(500).json({ error: error.message });
     });
@@ -255,6 +180,7 @@ export const autoCompleteIngredients = (req, res) => {
   spoonacularRequest("/food/ingredients/autocomplete", { query, number })
     .then((data) => res.status(200).json(data))
     .catch((error) => {
+      // eslint-disable-next-line no-console
       console.error(" Error in autoCompleteIngredients:", error);
       return res.status(500).json({ error: error.message });
     });
@@ -352,7 +278,6 @@ export const getShoppingList = (req, res) => {
   getRecipeInfoById(id)
     .then((recipe) => {
       if (!recipe) {
-        console.warn(" Recipe not found:", id);
         return res.status(404).json({ error: "Recipe not found." });
       }
 
@@ -367,7 +292,6 @@ export const getShoppingList = (req, res) => {
       });
     })
     .catch((error) => {
-      console.error(" Error generating shopping list:", error);
       return res.status(500).json({ error: error.message });
     });
 };
@@ -402,7 +326,7 @@ export const getRecipesByCuisine = (req, res) => {
         );
     })
     .then((finalResults) => respondWithResults(res, finalResults))
-    .catch((err) => {
+    .catch(() => {
       return res.status(500).json({ success: false, message: "Server error." });
     });
 };

@@ -21,11 +21,15 @@ export const minimizeRecipeData = (recipes) => {
 };
 
 export const respondWithResults = (res, data) => {
-  const normalized = normalizeIds(data);
-  const minimized = minimizeRecipeData(normalized);
+  const minimized = formatRecipes(data);
   return res
     .status(200)
     .json({ results: minimized, totalResults: minimized.length });
+};
+export const formatRecipes = (data) => {
+  const normalized = normalizeIds(data);
+  const minimized = minimizeRecipeData(normalized);
+  return minimized;
 };
 
 export const mergeAndLimitResults = (dbResults, apiResults, limit) => {

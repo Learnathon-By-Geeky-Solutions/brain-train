@@ -11,9 +11,10 @@ export const getRecipeFieldsByTitle = async (
   const conditions = {};
 
   if (typeof title === "string" && title.trim() !== "") {
+    const sanitizedTitle = escapeRegex(title.trim()); // Sanitize user input
     conditions.title = isAutoComplete
-      ? { $regex: new RegExp(`\\b${escapeRegex(title)}`, "i") }
-      : { $regex: escapeRegex(title), $options: "i" };
+      ? { $regex: new RegExp(`\\b${sanitizedTitle}`, "i") }
+      : { $regex: sanitizedTitle, $options: "i" };
   }
 
   const recipes = await Recipe.find(conditions)
@@ -34,7 +35,7 @@ export const getRecipeFieldsByTitle = async (
  * @param {Array} ingredientTitles - List of ingredient names (e.g., ["tomato", "cheese"])
  * @param {Array} fields - Fields to select (e.g., ["title", "image", "dairyFree"])
  * @param {Number} number - Max number of results to return
- * @param {Object} filters - Additional filters (boolean flags, cuisine, diet)
+ * @param {Object} _filters - Additional filters (boolean flags, cuisine, diet)
  * @returns {Array} - Filtered recipes
  */
 
@@ -42,7 +43,7 @@ export const getRecipesByIngredients = async (
   ingredientTitles = [],
   fields = [],
   number = 10,
-  filters = {},
+  _filters = {},
 ) => {
   try {
     //  Ensure ingredientTitles is ALWAYS an array
@@ -51,7 +52,6 @@ export const getRecipesByIngredients = async (
     }
 
     if (!Array.isArray(ingredientTitles) || ingredientTitles.length === 0) {
-      console.error(" No valid ingredients provided. Exiting early...");
       return [];
     }
 
@@ -61,18 +61,14 @@ export const getRecipesByIngredients = async (
     }));
 
     if (!ingredientConditions.length) {
-      console.error(" ingredientConditions is empty. Exiting...");
       return [];
     }
 
-    console.log("fieldsarray", fields);
     //  Ensure fields include necessary details
     const selectedFields = fields.length
       ? fields.join(" ")
       : "title image summary likes";
-    console.log(" Selected Fields:", selectedFields);
 
-    console.log(" Executing MongoDB Query...");
     const rawRecipes = await Recipe.find({ $or: ingredientConditions })
       .select(selectedFields)
       .limit(number * 3)
@@ -85,6 +81,7 @@ export const getRecipesByIngredients = async (
       return recipe;
     });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(" Error in getRecipesByIngredients:", error);
     return [];
   }
@@ -185,14 +182,8 @@ export const searchRecipesByCuisine = async (cuisine, limit = 10) => {
   return results;
 };
 
-export const getSearchHistoryByUid = async (uid) => {
-  try {
-    return await UserSearchHistory.findOne({ firebaseUid: uid });
-  } catch (error) {
-    console.error("Find user search history error:", error.message);
-    return null;
-  }
-};
+export const getSearchHistoryByUid = async (uid) =>
+  UserSearchHistory.findOne({ firebaseUid: uid }).catch(() => null);
 
 export const createUserEntryInUserSearchHistory = async (uid, recipeId) => {
   const userSearchHistory = new UserSearchHistory({

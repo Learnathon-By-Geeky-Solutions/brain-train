@@ -4,8 +4,11 @@ import { serverConfig } from "../../config/ServerConfig.js";
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serverConfig.serviceAccount),
+    storageBucket: serverConfig.storageBucket,
   });
 }
+
+const firebaseBucket = admin.storage().bucket();
 
 /**
  * Decodes a Firebase ID token from the provided authorization header.
@@ -48,7 +51,29 @@ const verifyToken = async (token) => {
       .verifyIdToken(token);
     return { email, name, picture, uid };
   } catch (error) {
-    console.error("Error verifying Firebase token:", error.message);
-    throw new Error("Invalid or expired authentication token");
+    throw new Error(
+      `Invalid or expired authentication token: ${error.message}`,
+    );
   }
+};
+
+/**
+ * Uploads a file to Firebase Storage and returns its public URL.
+ * @param {Object} file - The file object from multer (buffer, mimetype, originalname).
+ * @param {string} folder - The folder to store the file in (default = 'uploads').
+ * @returns {Promise<string>} Public image URL.
+ */
+export const uploadToFirebase = async (file, folder = "uploads") => {
+  const fileName = `${folder}/${Date.now()}_${file.originalname}`;
+  const blob = firebaseBucket.file(fileName);
+
+  await new Promise((resolve, reject) => {
+    const blobStream = blob.createWriteStream({
+      metadata: { contentType: file.mimetype },
+    });
+
+    blobStream.on("error", reject).on("finish", resolve).end(file.buffer);
+  });
+
+  return `https://firebasestorage.googleapis.com/v0/b/${firebaseBucket.name}/o/${encodeURIComponent(fileName)}?alt=media`;
 };
