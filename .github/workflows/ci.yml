@@ -1,6 +1,5 @@
 name: CI Pipeline
 
-# Trigger the workflow on push or pull_request events to the main branch
 on:
   push:
     branches:
@@ -9,15 +8,17 @@ on:
   pull_request:
     branches:
       - main
-      - develop
+    types: [reopened, synchronize, opened]
 
 jobs:
-  build:
+  sonarqube:
     runs-on: ubuntu-latest  # OS to run the CI pipeline
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Ensure full history is available
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -33,30 +34,32 @@ jobs:
       - name: Frontend dependencies
         run: cd frontend && npm install
 
-      - name: Run unit tests with Jest
-        run: npm test
-      
       - name: Run Snyk security test
-        run: snyk test
+        run: snyk test --all-projects
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      
+      - name: Create backend/.env file
+        run: |
+          cd backend
+          touch .env
+          echo "FIREBASE_ADMIN_CLIENT_EMAIL=${{ secrets.FIREBASE_ADMIN_CLIENT_EMAIL }}" >> .env
+          echo "FIREBASE_ADMIN_PRIVATE_KEY=${{ secrets.FIREBASE_ADMIN_PRIVATE_KEY }}" >> .env
+          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
+          echo "FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> .env
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+          echo "SPOONACULAR_API_KEY=${{ secrets.SPOONACULAR_API_KEY }}" >> .env
+          echo "TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }}" >> .env
+          echo "TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }}" >> .env
+        shell: bash
+      
+      - name: Run unit tests with Jest
+        run: npm test
 
       - name: Run lint-staged
         run: npx lint-staged
 
-  sonarcloud:
-    name: SonarCloud Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: .  # Change if your project is not in root
-          args: >
-            -Dsonar.projectKey=your-project-key
-            -Dsonar.organization=your-org
+        uses: SonarSource/sonarcloud-github-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
