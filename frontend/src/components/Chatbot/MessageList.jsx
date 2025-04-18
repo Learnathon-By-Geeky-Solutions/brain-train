@@ -13,7 +13,7 @@ const MessageList = ({ messages, isLoading, photoURL }) => {
   }, [messages]);
 
   return (
-    <Flex direction="column" w="80%" overflowY="auto" borderRadius="md" bg="none" alignItems={"center"} pb="25vh">
+    <Flex direction="column" w="80%" overflowY="auto" borderRadius="md" bg="none" alignItems={"center"} pb="30vh" pt="6">
       <Flex direction="column" w="100%"
         css={{
             "&::-webkit-scrollbar": {

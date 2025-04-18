@@ -9,9 +9,6 @@ import {
   Avatar,
   Spinner,
   IconButton,
-  Container,
-  Heading,
-  Separator,
 } from '@chakra-ui/react';
 import { Toaster, toaster } from '../ui/toaster';
 import { useColorModeValue } from '../ui/color-mode';

@@ -60,11 +60,7 @@ const PreAnalysis = ({
     
     const handleUpload = async (type) => {
       if (!file) return;
-      // console.log("file is not null");
-      // console.log(file);
       setIsUploading(true);
-      // setUploadProgress(0);
-      // Read in chunks and store the full Blob/File
       readRawFile(
         file,
         (progress) => setUploadProgress(progress),
@@ -72,8 +68,6 @@ const PreAnalysis = ({
       ).then((completeFile)=>{
          try {
           const Fn = (type === "ingredient") ? uploadImageWithProgressIngredients : uploadImageWithProgressNutrition;
-        // Upload the image and track progress
-        // if (type === "ingredient"){
           console.log("completeFile");
           console.log(completeFile);
           Fn(completeFile).then((response) => {
@@ -97,13 +91,6 @@ const PreAnalysis = ({
               });
             }
           });
-        // } 
-        
-        // else
-        //   result = await uploadImageWithProgressNutrition(file, (progress) => {
-        //   setUploadProgress(progress);
-        // });
-        
       } catch (error) {
         toaster.create({
           title: "Upload failed",

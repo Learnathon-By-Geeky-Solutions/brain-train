@@ -1,9 +1,7 @@
 // components/ChatBot.jsx
 import React, { useState } from 'react';
 import {
-    Flex,
-  VStack,
-  Box,
+  Flex,
   useDisclosure
 } from '@chakra-ui/react';
 import { Toaster, toaster } from '../ui/toaster';
@@ -11,36 +9,63 @@ import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import { fetchAIResponse } from './api';
 import CollapsibleSideBar from '../CollapsibleSideBar/CollapsibleSideBar';
-import { calcLength } from 'framer-motion';
 
 const ChatBot = ({photoURL}) => {
   const { open, onToggle } = useDisclosure({ defaultIsOpen: true });
   const [messages, setMessages] = useState([
-    { id: 1, text: "Hello! I'm your AI assistant. How can I help you today?", isUser: false }
+    { chatId:null, id: 1, text: "Hello! I'm your AI assistant. How can I help you today?", isUser: false, image: null, imagePreview: null }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [fileBlob, setFileBlob] = useState(null);
+  const imagePreviewState = useState(null);
+  const [imagePreview, setImagePreview] = imagePreviewState;
 
   const handleSendMessage = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() && !fileBlob) return;
 
-    const userMessage = { id: messages.length + 1, text: input, isUser: true };
+    const userMessage = { chatId:messages[0].chatId, id: messages.length + 1, text: input, isUser: true, image: fileBlob, imagePreview: imagePreview };
+    setFileBlob(null);
+    setImagePreview(null);
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
-      const response = await fetchAIResponse(input);
-      setMessages(prev => [
-        ...prev,
-        { id: prev.length + 1, text: response.content, isUser: false }
-      ]);
+      const response = await fetchAIResponse(input,messages[0].chatId, fileBlob);
+      if (response){
+        if(response.status == 'error') {
+          toaster.create({
+            title: 'Error',
+            description: response.message,
+            type: 'error',
+            duration: 3000,
+            isClosable: true,
+          });
+          return;
+        }
+        else{
+            const chatId = response.chatId;
+            if(!messages[0].chatId){
+                setMessages(prev => {
+                    const updatedMessages = [...prev];
+                    updatedMessages[0].chatId = chatId;
+                    return updatedMessages;
+                });
+            }
+            setMessages(prev => [
+                ...prev,
+                { chatId:chatId, id: prev.length + 1, text: response.messages[response.messages.length-1].text, isUser: false, image: null, imagePreview:response.messages[response.messages.length-1].files?.[0]  }
+            ]);
+        }
+    }
+      
     } catch (error) {
       console.error('Error fetching AI response:', error);
       toaster.create({
         title: 'Error',
         description: 'Failed to get response. Please try again.',
-        status: 'error',
+        type: 'error',
         duration: 3000,
         isClosable: true,
       });
@@ -51,7 +76,7 @@ const ChatBot = ({photoURL}) => {
 
   const clearChat = () => {
     setMessages([
-      { id: 1, text: "Hello! I'm your AI assistant. How can I help you today?", isUser: false }
+      { chatId:null, id: 1, text: "Hello! I'm your AI assistant. How can I help you today?", isUser: false, image: null, imagePreview: null }
     ]);
     toaster.create({
       title: 'Chat cleared',
@@ -66,7 +91,6 @@ const ChatBot = ({photoURL}) => {
     <CollapsibleSideBar open={open} onToggle={onToggle}/>
     <Flex 
         direction="column" 
-        area-label="boka-choda"
         bg="none" 
         position="fixed" 
         left={open ? "25vw" : "5vw"} 
@@ -82,6 +106,8 @@ const ChatBot = ({photoURL}) => {
             handleSendMessage={handleSendMessage}
             isLoading={isLoading}
             clearChat={clearChat}
+            setFileBlob={setFileBlob}
+            imagePreviewState={imagePreviewState}
         />
         <Toaster />
     </Flex>

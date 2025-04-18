@@ -1,6 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
-import fetchData from "@/pages/Dashboard/api";
 import makeRequest from "@/services/APIcall";
 
 // Mock API function to simulate image upload with progress

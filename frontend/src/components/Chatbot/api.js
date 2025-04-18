@@ -1,6 +1,16 @@
-export const fetchAIResponse = async (message) => {
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  return {
-    content: `This is a simulated response to your message: "${message}". In a real implementation, this would be replaced with an actual AI response from Anthropic's API or another AI service.`
-  };
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+
+import makeRequest from "@/services/APIcall";
+
+export const fetchAIResponse = async (message,chatId,image=null) => {
+  const url = `${API_BASE_URL}/ai/chat`;
+  const reqBody = new FormData();
+  reqBody.append("text", message);
+  if(chatId){
+    reqBody.append("chatId", chatId);
+  }
+  if(image){
+    reqBody.append("image", image);
+  }
+  return makeRequest(url, "POST", reqBody);
 };
