@@ -4,7 +4,7 @@ import { uploadToFirebase,decodeFirebaseIdToken } from '../../../libraries/servi
 import { logUserImageUpload,
  } from '../db.js';
 
-import { handleUserMessage, generateAssistantResponse ,saveChatAndRespond} from '../util/chatHelper.js';
+import { handleUserMessage, generateAssistantResponse ,saveChatAndRespond } from '../util/chatHelper.js';
 
 
 import { formatRecipes } from '../../search/util/formatter.js';
@@ -104,7 +104,7 @@ export const sendChatMessage = (req, res) => {
   decodeFirebaseIdToken(req.headers.authorization)
     .then(({ uid }) => handleUserMessage(req, uid))
     .then(({ chatId, userMessage, uid }) =>
-      generateAssistantResponse(userMessage)
+      generateAssistantResponse(chatId,userMessage)
         .then(({ assistantMessage }) =>
           saveChatAndRespond(res, chatId, uid, userMessage, assistantMessage)
         )

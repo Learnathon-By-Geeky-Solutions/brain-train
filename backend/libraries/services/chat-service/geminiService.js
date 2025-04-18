@@ -2,6 +2,9 @@
 import { GoogleGenAI } from '@google/genai';
 import { BaseChatService } from './baseChatService.js';
 
+
+
+
 export class GeminiService extends BaseChatService {
   constructor(GEMINI_API_KEY) {
     super();
@@ -9,8 +12,9 @@ export class GeminiService extends BaseChatService {
     this.modelName = process.env.GEMINI_MODEL || 'gemini-pro';
   }
 
-  async sendMessage(messages) {
-    const contents = await this.#convertToGeminiFormat(messages);
+  async sendMessage(contents) {
+    
+
     const config = {
       responseMimeType: 'text/plain',
       systemInstruction: [
@@ -48,38 +52,5 @@ export class GeminiService extends BaseChatService {
     }
   }
 
-  async #convertToGeminiFormat(messages) {
-    return Promise.all(
-      messages.map(async ({ role, text, files }) => {
-        const parts = [];
 
-        if (text) parts.push({ text });
-
-        if (files?.length) {
-          for (const url of files) {
-            const base64 = await this.#fetchImageAsBase64(url);
-            parts.push({
-              inlineData: {
-                mimeType: 'image/png', // or dynamic if known
-                data: base64,
-              },
-            });
-          }
-        }
-
-        return { role, parts };
-      })
-    );
-  }
-
-  async #fetchImageAsBase64(url) {
-    try {
-      const response = await fetch(url);
-      const buffer = await response.arrayBuffer();
-      return Buffer.from(buffer).toString('base64');
-    } catch (error) {
-      console.error('GeminiService: Error fetching image:', error);
-      throw error;
-    }
-  }
 }
