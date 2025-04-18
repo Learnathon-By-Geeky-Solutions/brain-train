@@ -4,13 +4,14 @@ import {
 import ImagePreview from './ImagePreview';
 import { useColorModeValue } from '../ui/color-mode';
 import UploadPhoto from './UploadPhoto';
-import { uploadImageWithProgress } from './api';
+import { uploadImageWithProgressIngredients, uploadImageWithProgressNutrition } from './api';
 import { useState, useRef } from 'react';
 import { toaster } from '../ui/toaster';
 
 const PreAnalysis = ({
     show,imagePreview,
-    resetComponent,setImagePreview,setAnalysisResult,setIsAnalyzing
+    resetComponent,setImagePreview,
+    setAnalysisResult,setIsAnalyzing
 }) => {
     const [isUploading, setIsUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -55,15 +56,21 @@ const PreAnalysis = ({
         }
       };
     
-      const handleUpload = async () => {
+      const handleUpload = async (type) => {
         if (!file) return;
         
         setIsUploading(true);
         setUploadProgress(0);
         
         try {
+          let result;
           // Upload the image and track progress
-          const result = await uploadImageWithProgress(file, (progress) => {
+          if (type === "ingredient") 
+          result = await uploadImageWithProgressIngredients(file, (progress) => {
+            setUploadProgress(progress);
+          });
+          else
+            result = await uploadImageWithProgressNutrition(file, (progress) => {
             setUploadProgress(progress);
           });
           

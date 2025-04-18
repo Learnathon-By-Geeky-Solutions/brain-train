@@ -12,9 +12,15 @@ const PhotoUploaded = ({ show, handleUpload, resetComponent }) => {
         <Stack direction="row" spacing={4}>
             <Button 
                 colorScheme="teal" 
-                onClick={handleUpload}
+                onClick={()=>handleUpload('ingredient')}
             >
-                Analyze Food
+                Detect Ingredients
+            </Button>
+            <Button 
+                colorScheme="teal" 
+                onClick={()=>handleUpload('nutrition')}
+            >
+                Analyze Nutrition
             </Button>
             <Button 
                 variant="outline" 

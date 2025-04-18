@@ -1,22 +1,24 @@
-import React, { useState, useRef } from 'react';
 import {
   Box,
   Button,
   Flex,
   Heading,
   Image,
-  SimpleGrid,
   Tabs,
   Text,
 } from '@chakra-ui/react';
-import { LuCheck, LuCircleAlert, LuInfo, LuLeaf } from 'react-icons/lu';
+import { LuCheck, LuCircleAlert } from 'react-icons/lu';
 import IngredientItem from './IngredientItem';
-import NutritionCard from './NutritionCard';
+import NutritionAnalysis from './NutritionAnalysis';
+import { useState } from 'react';
+import fetchData from '@/pages/Dashboard/api';
+import RecipeCardContainer from '../RecipeCardContainer/RecipeCardContainer';
 
 const Analysis = ({ show, imagePreview, analysisResult, resetComponent }) => {
     if (!show) {
         return null;
     }
+    const type = analysisResult.type ;
     return  (
         <Box>
         <Flex 
@@ -79,86 +81,53 @@ const Analysis = ({ show, imagePreview, analysisResult, resetComponent }) => {
             </Button>
             </Box>
         </Flex>
-        
+        { type === 'nutrition' ? (
+            <NutritionAnalysis analysisResult={analysisResult} />
+        ) : (
+            <div>
+            <Box borderWidth="1px" borderRadius="md" overflow="hidden" mt={4}>
+            <Box bg="gray.50" p={3} borderBottomWidth="1px">
+                <Flex justify="space-between">
+                <Text fontWeight="bold">Ingredient</Text>
+                <Text fontWeight="bold">Confidence</Text>
+                </Flex>
+            </Box>
+            <Box>
+                {analysisResult.ingredients.map((ingredient, index) => (
+                <IngredientItem
+                    key={index}
+                    name={ingredient.name}
+                    confidence={ingredient.confidence}
+                />
+                ))}
+            </Box>
+            </Box>
+            
+            <Box mt={6} p={4} bg="blue.50" borderRadius="md">
+            <Flex align="center" mb={2}>
+                <LuCircleAlert size={18} color="blue" style={{ marginRight: '8px' }} />
+                <Text fontWeight="bold" color="blue.700">Ingredient Detection</Text>
+            </Flex>
+            <Text fontSize="sm" color="blue.700">
+                Ingredients are detected using computer vision and may not capture all components,
+                especially spices and smaller ingredients. Higher confidence percentages indicate 
+                more reliable detection.
+            </Text>
+            </Box>
+            </div>
+        )}
         <Tabs.Root colorScheme="teal" variant="enclosed">
             <Tabs.List>
-            <Tabs.Trigger value='nutrition'><Box mr={2}><LuInfo size={16} /></Box> Nutrition Facts</Tabs.Trigger>
-            <Tabs.Trigger value='ingredient'><Box mr={2}><LuLeaf size={16} /></Box> Ingredients</Tabs.Trigger>
+            <Tabs.Trigger value={type}>
+                <Button>
+                    Load Recipes
+                </Button>
+            </Tabs.Trigger>
             </Tabs.List>
             
             {/* Nutrition Tab */}
-            <Tabs.Content value='nutrition'>
-                <SimpleGrid columns={{ base: 2, md: 5 }} spacing={4} mt={4}>
-                <NutritionCard 
-                    label="Calories" 
-                    value={analysisResult.nutritionFacts.calories} 
-                    unit="kcal" 
-                />
-                <NutritionCard 
-                    label="Protein" 
-                    value={analysisResult.nutritionFacts.protein} 
-                    unit="g"
-                />
-                <NutritionCard 
-                    label="Carbs" 
-                    value={analysisResult.nutritionFacts.carbs} 
-                    unit="g"
-                />
-                <NutritionCard 
-                    label="Fat" 
-                    value={analysisResult.nutritionFacts.fat} 
-                    unit="g"
-                />
-                <NutritionCard 
-                    label="Fiber" 
-                    value={analysisResult.nutritionFacts.fiber} 
-                    unit="g"
-                />
-                </SimpleGrid>
-                
-                <Box mt={6} p={4} bg="blue.50" borderRadius="md">
-                <Flex align="center" mb={2}>
-                    <LuCircleAlert size={18} color="blue" style={{ marginRight: '8px' }} />
-                    <Text fontWeight="bold" color="blue.700">Important Note</Text>
-                </Flex>
-                <Text fontSize="sm" color="blue.700">
-                    Nutritional information is estimated based on image analysis and may vary.
-                    For precise dietary information, please consult nutrition labels or a dietary professional.
-                </Text>
-                </Box>
-            </Tabs.Content>
-            
-            {/* Ingredients Tab */}
-            <Tabs.Content value='ingredient'>
-                <Box borderWidth="1px" borderRadius="md" overflow="hidden" mt={4}>
-                <Box bg="gray.50" p={3} borderBottomWidth="1px">
-                    <Flex justify="space-between">
-                    <Text fontWeight="bold">Ingredient</Text>
-                    <Text fontWeight="bold">Confidence</Text>
-                    </Flex>
-                </Box>
-                <Box>
-                    {analysisResult.ingredients.map((ingredient, index) => (
-                    <IngredientItem
-                        key={index}
-                        name={ingredient.name}
-                        confidence={ingredient.confidence}
-                    />
-                    ))}
-                </Box>
-                </Box>
-                
-                <Box mt={6} p={4} bg="blue.50" borderRadius="md">
-                <Flex align="center" mb={2}>
-                    <LuCircleAlert size={18} color="blue" style={{ marginRight: '8px' }} />
-                    <Text fontWeight="bold" color="blue.700">Ingredient Detection</Text>
-                </Flex>
-                <Text fontSize="sm" color="blue.700">
-                    Ingredients are detected using computer vision and may not capture all components,
-                    especially spices and smaller ingredients. Higher confidence percentages indicate 
-                    more reliable detection.
-                </Text>
-                </Box>
+            <Tabs.Content value={type}>
+                <RecipeCardContainer recipe_prop={analysisResult.recipes} />
             </Tabs.Content>
         </Tabs.Root>
         </Box>
