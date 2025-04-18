@@ -3,17 +3,14 @@ import { GoogleGenAI } from '@google/genai';
 import { BaseChatService } from './baseChatService.js';
 
 export class GeminiService extends BaseChatService {
-  constructor() {
+  constructor(GEMINI_API_KEY) {
     super();
-    console.log('GeminiService: Initializing GoogleGenAI with default credentials...');
-    this.ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY});
+    this.ai = new GoogleGenAI({apiKey: GEMINI_API_KEY});
     this.modelName = process.env.GEMINI_MODEL || 'gemini-pro';
-    console.log('GeminiService: Model name set to:', this.modelName);
   }
 
   async sendMessage(messages) {
     const contents = await this.#convertToGeminiFormat(messages);
-    console.log('GeminiService: Gemini contents:', JSON.stringify(contents));
     const config = {
       responseMimeType: 'text/plain',
       systemInstruction: [
@@ -26,29 +23,23 @@ export class GeminiService extends BaseChatService {
       ],
     };
     const model = this.modelName;
-    console.log('GeminiService: Gemini model:', model);
 
     try {
-      console.log('GeminiService: Sending request to Gemini...');
       const response = await this.ai.models.generateContentStream({
         model,
         config,
         contents,
       });
-      console.log('GeminiService: Gemini response received (stream started):', JSON.stringify(response));
 
       let finalResponse = '';
       for await (const chunk of response) {
-        if (chunk && chunk.candidates && chunk.candidates[0] && chunk.candidates[0].content && chunk.candidates[0].content.parts && chunk.candidates[0].content.parts[0] && chunk.candidates[0].content.parts[0].text) {
-          const textPart = chunk.candidates[0].content.parts[0].text;
+        const textPart = chunk?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (textPart) {
           finalResponse += textPart;
-          console.log('GeminiService: Received chunk:', textPart);
-        } else {
-          console.log('GeminiService: Received chunk (no text):', chunk);
         }
       }
       
-      console.log('GeminiService: Final response:', finalResponse);
+      
       return finalResponse;
 
     } catch (error) {
