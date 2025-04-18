@@ -35,7 +35,7 @@ jobs:
         run: cd frontend && npm install
 
       - name: Run Snyk security test
-        run: snyk test --all-projects
+        run: npm run test:security
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       
