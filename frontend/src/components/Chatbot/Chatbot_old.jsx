@@ -22,7 +22,7 @@ import logo from "../../assets/logo.png";
 
 
 
-const ChatBot = ({photoURL}) => {
+const ChatBot_old = ({photoURL}) => {
   const [messages, setMessages] = useState([
     { id: 1, text: "Hello! I'm your AI assistant. How can I help you today?", isUser: false }
   ]);
@@ -185,4 +185,4 @@ const ChatBot = ({photoURL}) => {
   );
 };
 
-export default ChatBot;
+export default ChatBot_old;

@@ -3,12 +3,9 @@ import {
   Box,
   Flex,
   Text,
-  HStack,
   Avatar,
-  IconButton,
 } from '@chakra-ui/react';
 import { useColorModeValue } from '../ui/color-mode';
-import { LuThumbsDown, LuThumbsUp } from 'react-icons/lu';
 import logo from "../../assets/logo.png";
 
 const MessageItem = ({ message, isUser, photoURL }) => {
@@ -38,27 +35,6 @@ const MessageItem = ({ message, isUser, photoURL }) => {
         boxShadow="md"
       >
         <Text color={textColor}>{message.text}</Text>
-        
-        {!isUser && (
-          <HStack mt={2} justify="flex-end" spacing={1}>
-            <IconButton
-              aria-label="Thumbs Up"
-              size="xs"
-              variant="ghost"
-              onClick={() => alert('Feedback: Thumbs Up')}
-            >
-              <LuThumbsUp size={16} />
-            </IconButton>
-            <IconButton
-              aria-label="Thumbs Down"
-              size="xs"
-              variant="ghost"
-              onClick={() => alert('Feedback: Thumbs Down')}
-            >
-                <LuThumbsDown size={16} />
-            </IconButton>
-          </HStack>
-        )}
       </Box>
       {isUser && (
         <Avatar.Root 

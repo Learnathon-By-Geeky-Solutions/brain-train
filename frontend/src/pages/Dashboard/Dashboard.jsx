@@ -12,8 +12,8 @@ import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
 import ShoppingList from '@/components/RecipeDetails/ShoppingList';
 import MealPlanningCalendar from '@/components/MealPlanning/MealPlan';
 import { LuMessageCircle } from 'react-icons/lu';
-import ChatBot from '@/components/Chatbot/Chatbot';
 import FoodImageAnalysis from '@/components/ImageAnalysis/ImageAnalysis';
+import ChatBot from '@/components/Chatbot/ChatBot';
 
 
 
