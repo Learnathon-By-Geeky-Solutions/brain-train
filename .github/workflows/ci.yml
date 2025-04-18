@@ -52,8 +52,8 @@ jobs:
           echo "TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }}" >> .env
           echo "TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }}" >> .env
           echo "CLARIFAI_API_KEY=${{ secrets.CLARIFAI_API_KEY }}" >> .env
-          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}"
-          echo "FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}"
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+          echo "FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> .env
           echo "PORT=8000" >> .env
           echo ""
         shell: bash
