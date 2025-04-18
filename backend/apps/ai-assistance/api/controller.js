@@ -1,4 +1,4 @@
-import { AIFactory } from '../../../libraries/services/ai-service/aiFactory.js';
+import { VisionFactory } from '../../../libraries/services/vision-service/visionFactory.js';
 
 import { uploadToFirebase,decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
 import { logUserImageUpload } from '../db.js';
@@ -16,7 +16,7 @@ export const analyzeImageIngredients = (req, res) => {
     })
     .then(({ uid, imageUrl }) => {
       const base64 = req.file.buffer.toString('base64').replace(/^data:image\/\w+;base64,/, '');
-      const aiService = AIFactory.create('clarifai');
+      const aiService = VisionFactory.create('clarifai');
       return aiService.analyzeImage(base64).then(ingredients => ({ uid, imageUrl, ingredients }));
     })
     .then(({ uid, imageUrl, ingredients }) => {
