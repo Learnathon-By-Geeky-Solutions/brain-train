@@ -65,20 +65,27 @@ const PreAnalysis = ({
         try {
           let result;
           // Upload the image and track progress
-          if (type === "ingredient") 
-          result = await uploadImageWithProgressIngredients(file, (progress) => {
-            setUploadProgress(progress);
-          });
+          if (type === "ingredient"){
+            uploadImageWithProgressIngredients.then((response) => {
+              if(response?.status == 'error'){
+                result = null;
+              }
+              else{
+                result = response;
+              }
+            });
+          } 
+          
           else
             result = await uploadImageWithProgressNutrition(file, (progress) => {
             setUploadProgress(progress);
           });
           
-          if (result.success) {
+          if (result) {
             setIsAnalyzing(true);
-            
+            result.type = type;
             // After upload is complete, simulate analysis
-            setAnalysisResult(result.imageData);
+            setAnalysisResult(result);
             
             toaster.create({
               title: "Analysis complete",

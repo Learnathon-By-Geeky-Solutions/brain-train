@@ -43,10 +43,10 @@ const Analysis = ({ show, imagePreview, analysisResult, resetComponent }) => {
             
             <Box flex="2">
             <Heading as="h2" size="md" mb={2}>
-                {analysisResult.foodName}
+                {type === 'nutrition' ? analysisResult.foodName : 'Detected Ingreients'}
             </Heading>
             
-            <Flex align="center" my={3}>
+            {/* <Flex align="center" my={3}>
                 <Box 
                 borderRadius="full" 
                 bg="green.100" 
@@ -69,7 +69,7 @@ const Analysis = ({ show, imagePreview, analysisResult, resetComponent }) => {
             <Text>
                 <Text as="span" fontWeight="bold">Cuisine: </Text>
                 {analysisResult.cuisineOrigin}
-            </Text>
+            </Text> */}
             
             <Button 
                 colorScheme="blue" 
@@ -95,7 +95,7 @@ const Analysis = ({ show, imagePreview, analysisResult, resetComponent }) => {
             <Box>
                 {analysisResult.ingredients.map((ingredient, index) => (
                 <IngredientItem
-                    key={index}
+                    key={ingredient.name}
                     name={ingredient.name}
                     confidence={ingredient.confidence}
                 />
@@ -127,7 +127,7 @@ const Analysis = ({ show, imagePreview, analysisResult, resetComponent }) => {
             
             {/* Nutrition Tab */}
             <Tabs.Content value={type}>
-                <RecipeCardContainer recipe_prop={analysisResult.recipes} />
+                <RecipeCardContainer recipe_prop={analysisResult.results} />
             </Tabs.Content>
         </Tabs.Root>
         </Box>
