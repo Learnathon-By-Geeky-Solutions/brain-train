@@ -39,3 +39,26 @@ export const getUserImageUploads = async (userId) => {
     return await UserImageLog.find({ userId }).sort({ uploadedAt: -1 }).lean();
 };
   
+/**
+ * Returns all chats for a user (just _id and name).
+ * @param {string} userId - Firebase UID of the user.
+ * @returns {Promise<Array<{ _id: string, name: string }>>}
+ */
+export const getUserAllChatsSummary = (userId) => {
+  return Chat.find({ userId }, { _id: 1, name: 1 }).sort({ updatedAt: -1 });
+};
+
+export const renameChatInDb = (chatId, userId, newName) => {
+  return Chat.findOneAndUpdate(
+    { _id: chatId, userId },
+    { name: newName },
+    { new: true, projection: { _id: 1, name: 1 } }
+  );
+};
+
+export const deleteChatById = (chatId, userId) => {
+  return Chat.findOneAndDelete({ _id: chatId, userId });
+};
+
+
+
