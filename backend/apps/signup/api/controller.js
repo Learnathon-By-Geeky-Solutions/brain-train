@@ -14,7 +14,6 @@ export const signupController = async (req, res) => {
     await createUser(userInfo);
     return res.status(201).json({ message: "User created" });
   } catch (error) {
-    console.error("Signup error:", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: `Signup error: ${error.message}` });
   }
 };
