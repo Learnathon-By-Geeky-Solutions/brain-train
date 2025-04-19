@@ -129,12 +129,10 @@ export const deleteMealPlanById = (req, res) => {
     })
     .then((result) => {
       if (!result || result.deletedCount === 0) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: "Meal plan not found or not yours.",
-          });
+        return res.status(404).json({
+          success: false,
+          message: "Meal plan not found or not yours.",
+        });
       }
       return res
         .status(200)

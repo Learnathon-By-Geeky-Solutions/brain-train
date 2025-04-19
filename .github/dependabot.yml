@@ -1,19 +1,19 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"  # For Node.js projects
-    directory: "/"  # Root package.json
+  - package-ecosystem: "npm" # For Node.js projects
+    directory: "/" # Root package.json
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
 
   - package-ecosystem: "npm"
-    directory: "/backend"  # Backend dependencies
+    directory: "/backend" # Backend dependencies
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
 
   - package-ecosystem: "npm"
-    directory: "/frontend"  # Frontend dependencies
+    directory: "/frontend" # Frontend dependencies
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
