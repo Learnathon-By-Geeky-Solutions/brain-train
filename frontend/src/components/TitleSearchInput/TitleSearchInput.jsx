@@ -15,7 +15,7 @@ const TitleSearchInput = ({
 
   function handleChange(title) {
     setQuery(title);
-    const data = { type: "title", data: query };
+    const data = { type: "title", data: title };
     controller(data);
   }
 

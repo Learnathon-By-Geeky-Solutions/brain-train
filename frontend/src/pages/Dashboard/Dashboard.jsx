@@ -110,6 +110,8 @@ export default function Dashboard() {
     }
 
     data = JSON.parse(decodeURIComponent(searchParams.get("q")));
+    console.log("Printing data from loadcards of dashboard");
+    console.log(data);
     fetchData(data).then((result) => {
       setCardData(result);
     });

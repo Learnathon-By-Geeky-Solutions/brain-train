@@ -3,6 +3,7 @@ import { Box, VStack, Spinner, Text, List } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { fetchSuggestions } from "./api";
+import { set } from "react-hook-form";
 
 const SuggestionContainer = ({
   type,
@@ -17,6 +18,9 @@ const SuggestionContainer = ({
   const [error, setError] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [ingContainerClosed, setIngContainerClosed] = useState(false);
+  const [forceStopSuggestionContainer, setForceStopSuggestionContainer] =
+    useState(false);
+  const [complete, setComplete] = useState(false);
 
   if (type === "ingredients") {
     containerClosed = ingContainerClosed;
@@ -24,12 +28,16 @@ const SuggestionContainer = ({
   }
 
   useEffect(() => {
+    // setComplete(false);
     if (query.trim() === "") {
       setSuggestions([]);
       setContainerClosed(true);
       return;
     }
-    setContainerClosed(false);
+    if (!forceStopSuggestionContainer) {
+      setContainerClosed(false);
+      setComplete(false);
+    }
     const debounceFetch = setTimeout(() => {
       fetchSuggestions(
         setLoading,
@@ -38,6 +46,7 @@ const SuggestionContainer = ({
         type,
         query,
         setContainerClosed,
+        setForceStopSuggestionContainer,
       );
     }, 300); // Debounce API call
 
@@ -45,9 +54,9 @@ const SuggestionContainer = ({
   }, [query]);
 
   useEffect(() => {
+    if (complete) return;
     if (keyHandler === null) return;
     if (suggestions.length === 0) return;
-    if (selectedIndex === -2) return;
     if (keyHandler.key === "ArrowDown") {
       setSelectedIndex((prev) =>
         prev < suggestions.length - 1 ? prev + 1 : prev,
@@ -55,13 +64,19 @@ const SuggestionContainer = ({
     } else if (keyHandler.key === "ArrowUp") {
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
     } else if (keyHandler.key === "Enter") {
+      setLoading(false);
+      setForceStopSuggestionContainer(true);
       if (selectedIndex !== -1)
         handleClick(suggestions[selectedIndex][`${property}`]);
       else handleClick(query);
-      setSelectedIndex(-2);
+      setSelectedIndex(-1);
       setContainerClosed(true);
+      setComplete(true);
     } else if (keyHandler.key === "Escape") {
+      setLoading(false);
       setContainerClosed(true);
+      setSelectedIndex(-1);
+      setComplete(true);
     }
   }, [keyHandler]);
 
@@ -96,9 +111,12 @@ const SuggestionContainer = ({
                 bg={selectedIndex === index ? "gray.400" : "none"}
                 _hover={{ bg: "gray.400", cursor: "pointer" }}
                 onClick={() => {
+                  setLoading(false);
+                  setForceStopSuggestionContainer(true);
                   handleClick(suggestion[`${property}`]);
+                  setSelectedIndex(-1);
                   setContainerClosed(true);
-                  setSelectedIndex(-2);
+                  setComplete(true);
                 }}
               >
                 {suggestion[`${property}`]}
