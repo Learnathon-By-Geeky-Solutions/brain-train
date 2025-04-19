@@ -8,7 +8,6 @@ import {
 } from '@chakra-ui/react';
 import { useColorModeValue } from '../ui/color-mode';
 import logo from "../../assets/logo.png";
-import ImagePreviewWithProgress from './ImagePreviewWithProgress';
 
 const MessageItem = ({ message, isUser, photoURL }) => {
   const bgColor = useColorModeValue(

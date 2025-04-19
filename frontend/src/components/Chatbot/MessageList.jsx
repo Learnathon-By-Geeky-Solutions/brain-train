@@ -13,16 +13,16 @@ const MessageList = ({ messages, isLoading, photoURL }) => {
   }, [messages]);
 
   return (
-    <Flex direction="column" w="80%" overflowY="auto" borderRadius="md" bg="none" alignItems={"center"} pb="30vh" pt="6">
-      <Flex direction="column" w="100%"
-        css={{
-            "&::-webkit-scrollbar": {
-              display: "none", 
-            },
-            "-ms-overflow-style": "none",
-            "scrollbar-width": "none", 
-          }}
-      >
+    <Flex direction="column" w="80%" overflowY="auto" borderRadius="md" bg="none" alignItems={"center"} pb="30vh" pt="6"
+      css={{
+        "&::-webkit-scrollbar": {
+          display: "none", 
+        },
+        "-ms-overflow-style": "none",
+        "scrollbar-width": "none", 
+      }}
+    >
+      <Flex direction="column" w="100%">
         {messages.map(message => (
           <MessageItem key={message.id} message={message} isUser={message.isUser} photoURL={photoURL} />
         ))}

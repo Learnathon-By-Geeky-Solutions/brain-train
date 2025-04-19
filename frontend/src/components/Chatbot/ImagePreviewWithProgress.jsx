@@ -17,21 +17,22 @@ const ImagePreviewWithProgress = ({ base64Image, currentProgress, cancelImage })
   return (
     <Box
       position="relative"
-      width="12"
-      height="12"
+      width="24"
+      height="24"
       borderRadius="md"
       overflow="hidden"
       boxShadow="md"
       border="1px solid"
       borderColor={borderColor}
       bg={bg}
+      zIndex={1}
     >
        <IconButton
         aria-label="Cancel upload"
         size="xs"
         position="absolute"
-        top={0}
-        left={4}
+        top="0"
+        left="16"
         colorPalette="red"
         variant="subtle"
         borderRadius="full"
@@ -47,24 +48,24 @@ const ImagePreviewWithProgress = ({ base64Image, currentProgress, cancelImage })
         w="100%"
         h="100%"
       />
-      <ProgressCircle.Root 
-        size="xs"
+      { currentProgress < 100 && (
+        <ProgressCircle.Root 
+        size="md"
         value={currentProgress}
-        thickness="6px"
         position="absolute"
         top="50%"
         left="50%"
         transform="translate(-50%, -50%)"
-        color="purple.400"
+        color="white.800"
       >
-            <ProgressCircle.Circle>
+            <ProgressCircle.Circle css={{ "--thickness": "4px" }}>
               <ProgressCircle.Track />
               <ProgressCircle.Range />
             </ProgressCircle.Circle>
             <AbsoluteCenter>
-              <ProgressCircle.ValueText fontSize="sm" fontWeight="bold"/>
+              <ProgressCircle.ValueText fontSize="xs" fontWeight="bold"/>
             </AbsoluteCenter>
-          </ProgressCircle.Root>
+      </ProgressCircle.Root>)}
     </Box>
   );
 };

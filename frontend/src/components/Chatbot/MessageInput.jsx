@@ -36,7 +36,7 @@ const MessageInput = ({ input, setInput, handleSendMessage, isLoading, clearChat
   };
 
   return (
-    <Flex w="80%" direction="column" position="absolute" bottom="17vh" bg="var(--dark-bg)">
+    <Flex w="80%" direction="column" position="absolute" bottom="0" bg="var(--dark-bg)" h="20vh">
     <input
         type="file"
         accept="image/*"
@@ -55,7 +55,11 @@ const MessageInput = ({ input, setInput, handleSendMessage, isLoading, clearChat
                 const selectedFile = selectedFiles[i];
                 readRawFile(
                     selectedFile,
-                    (progress) => setProgress((prev) => [...prev, progress]),
+                    (progress) => setProgress((prev) => {
+                        const newProgress = [...prev];
+                        newProgress[i] = progress;
+                        return newProgress;
+                    }),
                     null
                 ).then((fileBlob) => {
                     setFileBlob((prev) => [...prev, fileBlob]);
@@ -72,17 +76,20 @@ const MessageInput = ({ input, setInput, handleSendMessage, isLoading, clearChat
         borderRadius="2xl" 
         w="100%"
         h="fit-content"
+        position="absolute" bottom="17vh"
     >
-        <Flex direction="column" w="100%" alignItems="center" justifyContent="center">
+        <Flex direction="column" w="100%"  justifyContent="center">
+            <Flex alignItems="center">
             {showImagePreview.map((show,index) => {
                 if(show) return (
                 <ImagePreviewWithProgress
-                    key={index}
+                    key={imagePreview[index]}
                     base64Image={imagePreview[index]}
                     currentProgress={progress[index]}
                     cancelImage={() => cancelImageUpload(index)}
                 />)
             })}
+            </Flex>
             <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -97,7 +104,7 @@ const MessageInput = ({ input, setInput, handleSendMessage, isLoading, clearChat
                 color="white"
             />
         </Flex>
-        <Flex>
+        <Flex alignSelf="flex-end" mb="2.5">
         <IconButton
         onClick={()=>{
             handleSendMessage();
