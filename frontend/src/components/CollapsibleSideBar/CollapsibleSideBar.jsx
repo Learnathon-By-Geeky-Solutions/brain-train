@@ -20,6 +20,7 @@ import {
   User,
   Settings
 } from 'lucide-react';
+import SideBarContent from './SideBarContent';
 
 const MotionBox = motion(Box);
 
@@ -29,51 +30,51 @@ const navItems = [
   { label: 'Settings', icon: <Settings size={18} /> }
 ];
 
-const SidebarContent = ({ isOpen, onToggle, isMobile }) => {
-  return (
-    // <Flex 
-    //     direction="column"
-    // >
-    <MotionBox
-      w={isOpen ? "25vw" : "5vw"}
-      bg="purple.600"
-      color="white"
-      transition="width 0.3s"
-      overflow="hidden"
-      h="full"
-      position="fixed"
-      top="10vh"
-      p={3}
-    >
-      <IconButton
-        aria-label="Toggle sidebar"
-        icon={isOpen ? <ArrowLeft size={18} /> : <ArrowRight size={18} />}
-        onClick={onToggle}
-        size="sm"
-        mb={6}
-        bg="purple.500"
-        _hover={{ bg: 'purple.400' }}
-      />
+// const SidebarContent = ({ isOpen, onToggle, isMobile }) => {
+//   return (
+//     // <Flex 
+//     //     direction="column"
+//     // >
+//     <MotionBox
+//       w={isOpen ? "25vw" : "5vw"}
+//       bg="purple.600"
+//       color="white"
+//       transition="width 0.3s"
+//       overflow="hidden"
+//       h="full"
+//       position="fixed"
+//       top="10vh"
+//       p={3}
+//     >
+//       <IconButton
+//         aria-label="Toggle sidebar"
+//         icon={isOpen ? <ArrowLeft size={18} /> : <ArrowRight size={18} />}
+//         onClick={onToggle}
+//         size="sm"
+//         mb={6}
+//         bg="purple.500"
+//         _hover={{ bg: 'purple.400' }}
+//       />
 
-      <VStack spacing={4} align="stretch">
-        {navItems.map((item, idx) => (
-            <Box
-              display="flex"
-              alignItems="center"
-              px={2}
-              py={2}
-              _hover={{ bg: 'purple.500', cursor: 'pointer' }}
-              borderRadius="md"
-            >
-              {item.icon}
-              {isOpen && <Text ml={3}>{item.label}</Text>}
-            </Box>
-        ))}
-      </VStack>
-    </MotionBox>
-    // </Flex>
-  );
-};
+//       <VStack spacing={4} align="stretch">
+//         {navItems.map((item, idx) => (
+//             <Box
+//               display="flex"
+//               alignItems="center"
+//               px={2}
+//               py={2}
+//               _hover={{ bg: 'purple.500', cursor: 'pointer' }}
+//               borderRadius="md"
+//             >
+//               {item.icon}
+//               {isOpen && <Text ml={3}>{item.label}</Text>}
+//             </Box>
+//         ))}
+//       </VStack>
+//     </MotionBox>
+//     // </Flex>
+//   );
+// };
 
 const CollapsibleSideBar = ({ open, onToggle }) => {
   const drawerDisclosure = useDisclosure();
@@ -104,13 +105,13 @@ const CollapsibleSideBar = ({ open, onToggle }) => {
             <Drawer.Backdrop />
             <Drawer.Content>
               <Drawer.Body p={0}>
-                <SidebarContent isOpen={true} onToggle={drawerDisclosure.onClose} isMobile />
+                <SideBarContent isOpen={true} onToggle={drawerDisclosure.onClose} isMobile={true} navItems={navItems} />
               </Drawer.Body>
             </Drawer.Content>
           </Drawer.Root>
         </>
       ) : (
-        <SidebarContent isOpen={open} onToggle={onToggle} />
+        <SideBarContent isOpen={open} onToggle={onToggle} navItems={navItems} />
       )}
     </>
   );
