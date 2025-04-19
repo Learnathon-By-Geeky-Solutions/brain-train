@@ -33,7 +33,9 @@
   },
   "jest": {
     "transform": {},
-    "setupFilesAfterEnv": ["<rootDir>/config/jest.setup.js"], 
+    "setupFilesAfterEnv": [
+      "<rootDir>/config/jest.setup.js"
+    ],
     "testEnvironment": "node",
     "collectCoverage": true,
     "testTimeout": 20000,
