@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import {
   Box,
   VStack,
@@ -9,46 +9,40 @@ import {
   Separator,
   Collapsible,
   List,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
-import { useColorModeValue } from '../ui/color-mode';
-import { LuCalendar, LuClipboard, LuMenu } from 'react-icons/lu';
-import { MdDateRange } from 'react-icons/md';
-import { getMyPlans } from './api';
-import { getCurrentDateFormatted } from './dateFormatter';
-import NavItem from './NavItem';
-import {renderPlanList} from './PlanList';
+import { useColorModeValue } from "../ui/color-mode";
+import { LuCalendar, LuClipboard, LuMenu } from "react-icons/lu";
+import { MdDateRange } from "react-icons/md";
+import { getMyPlans } from "./api";
+import { getCurrentDateFormatted } from "./dateFormatter";
+import NavItem from "./NavItem";
+import { renderPlanList } from "./PlanList";
 
-
-
-const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) => {
-
+const MealPlanningSidebar = ({
+  setStartDate,
+  reload,
+  setSearchParams,
+  setReload,
+}) => {
   const [dailyPlanList, setDailyPlanList] = useState([]);
   const [weeklyPlanList, setweeklyPlanList] = useState([]);
-  const [isActiveIdx,setIsActiveIdx] = useState(0);
+  const [isActiveIdx, setIsActiveIdx] = useState(0);
 
   useEffect(() => {
-    console.log('reload in useEffect in mealplan sidenavbar');
     getMyPlans().then((data) => {
-      if(data.status === 'error'){
-        console.error('Failed to fetch plans in 1st useEffect: ');
-        console.log('Data: ');
-        console.log(data);
+      if (data.status === "error") {
         setDailyPlanList([]);
         setweeklyPlanList([]);
-      }
-      else{
-        console.log('Fetched plans from 1st useEffect: ');
-        console.log(data);
+      } else {
         setDailyPlanList(data.dailyPlans);
         setweeklyPlanList(data.weeklyPlans);
       }
     });
   }, [reload]);
 
-
-  const bgColor = useColorModeValue('white', 'gray.800');
-  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const bgColor = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
 
   return (
     <Box
@@ -64,8 +58,13 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
     >
       {/* Header/Logo */}
       <Flex mb={6} align="center">
-        <Avatar.Root bg="green.500"> <LuMenu fontSize="1.2rem" color="white" /> </Avatar.Root>
-        <Heading size="md" ml={3}>Meal Planner</Heading>
+        <Avatar.Root bg="green.500">
+          {" "}
+          <LuMenu fontSize="1.2rem" color="white" />{" "}
+        </Avatar.Root>
+        <Heading size="md" ml={3}>
+          Meal Planner
+        </Heading>
       </Flex>
 
       <Separator mb={3} />
@@ -91,34 +90,55 @@ const MealPlanningSidebar = ({setStartDate,reload,setSearchParams,setReload}) =>
           isActiveIdx={isActiveIdx}
           setIsActiveIdx={setIsActiveIdx}
           clickFn={() => {
-            setSearchParams({ time: 'day', date: getCurrentDateFormatted() });
-          }
-        }
+            setSearchParams({ time: "day", date: getCurrentDateFormatted() });
+          }}
         >
           <Flex gap={1}>
             <MdDateRange />
-            Today's Plan
+            Today&apos;s Plan
           </Flex>
         </NavItem>
-        
+
         <Collapsible.Root>
           <Collapsible.Trigger w="100%">
-          <NavItem
-            idx={2}
-            isActiveIdx={isActiveIdx}
-            setIsActiveIdx={setIsActiveIdx}
-          >
-          <Flex gap={1}>
-            <LuClipboard />
-            My Plans
-          </Flex>
-          </NavItem>
+            <NavItem
+              idx={2}
+              isActiveIdx={isActiveIdx}
+              setIsActiveIdx={setIsActiveIdx}
+            >
+              <Flex gap={1}>
+                <LuClipboard />
+                My Plans
+              </Flex>
+            </NavItem>
           </Collapsible.Trigger>
           <Collapsible.Content>
-          <List.Root py="2" px="5" variant="plain" fontSize="sm" gap={2} alignItems="start">
-            {renderPlanList(dailyPlanList,setIsActiveIdx,isActiveIdx,setReload,reload,"day")}
-            {renderPlanList(weeklyPlanList,setIsActiveIdx,isActiveIdx,setReload,reload,"week",setStartDate)}
-          </List.Root>
+            <List.Root
+              py="2"
+              px="5"
+              variant="plain"
+              fontSize="sm"
+              gap={2}
+              alignItems="start"
+            >
+              {renderPlanList(
+                dailyPlanList,
+                setIsActiveIdx,
+                isActiveIdx,
+                setReload,
+                reload,
+                "day",
+              )}
+              {renderPlanList(
+                weeklyPlanList,
+                setIsActiveIdx,
+                isActiveIdx,
+                setReload,
+                reload,
+                "week",
+                setStartDate,
+              )}
+            </List.Root>
           </Collapsible.Content>
         </Collapsible.Root>
       </VStack>

@@ -1,25 +1,29 @@
-import { Flex, IconButton } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import './Dashboard.css';
-import { Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { auth } from '@/services/firebase';
-import { signOut, onAuthStateChanged } from 'firebase/auth';
-import Header from '@/components/Header/Header';
-import PreloadedCards from '@/components/DasboardFeatures/PreloadedCards';
-import RecipeCardContainer from '@/components/RecipeCardContainer/RecipeCardContainer';
-import fetchData, { getFavoriteRecipes } from './api';
-import RecipeDetails from '@/components/RecipeDetails/RecipeDetails';
-import ShoppingList from '@/components/RecipeDetails/ShoppingList';
-import MealPlanningCalendar from '@/components/MealPlanning/MealPlan';
-import { LuMessageCircle } from 'react-icons/lu';
-import ChatBot from '@/components/Chatbot/Chatbot';
-import FoodImageAnalysis from '@/components/ImageAnalysis/ImageAnalysis';
-
-
+import { Flex, IconButton } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import "./Dashboard.css";
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import { auth } from "@/services/firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import Header from "@/components/Header/Header";
+import PreloadedCards from "@/components/DasboardFeatures/PreloadedCards";
+import RecipeCardContainer from "@/components/RecipeCardContainer/RecipeCardContainer";
+import fetchData, { getFavoriteRecipes } from "./api";
+import RecipeDetails from "@/components/RecipeDetails/RecipeDetails";
+import ShoppingList from "@/components/RecipeDetails/ShoppingList";
+import MealPlanningCalendar from "@/components/MealPlanning/MealPlan";
+import { LuMessageCircle } from "react-icons/lu";
+import ChatBot from "@/components/Chatbot/ChatBot";
+import FoodImageAnalysis from "@/components/ImageAnalysis/ImageAnalysis";
 
 export default function Dashboard() {
-  const [pageLocation, setPageLocation] = useState('dashboard');
-  const [pageState, setPageState] = useState('init');
+  const [pageLocation, setPageLocation] = useState("dashboard");
+  const [pageState, setPageState] = useState("init");
   const [cardData, setCardData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
@@ -31,81 +35,81 @@ export default function Dashboard() {
   let unsubscribe;
 
   useEffect(() => {
-    if (location.pathname === '/dashboard' || location.pathname === '/dashboard/') {
-      setPageLocation('dashboard');
-    }
-    else {
-      setPageLocation('newValue');
+    if (
+      location.pathname === "/dashboard" ||
+      location.pathname === "/dashboard/"
+    ) {
+      setPageLocation("dashboard");
+    } else {
+      setPageLocation("newValue");
     }
 
     setupAuthStateListener().then((currentUser) => {
-      console.log('Auth state listener setup');
-      if(currentUser){
+      if (currentUser) {
         setUser(currentUser);
         setPhotoURL(currentUser.photoURL);
         loadCards("");
       }
     });
     return () => {
-      if (unsubscribe)
-        unsubscribe();
+      if (unsubscribe) unsubscribe();
     };
-  }, [navigate,searchParams]);
+  }, [navigate, searchParams]);
 
   const setupAuthStateListener = () => {
     return new Promise((resolve) => {
       unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
-          resolve(currentUser);  // Resolve with the user
+          resolve(currentUser); // Resolve with the user
         } else {
-          navigate('/');
+          navigate("/");
           resolve(null);
         }
       });
     });
   };
 
-
-  function loadCards( data, clearCards = false) {
+  function loadCards(data, clearCards = false) {
     const type = searchParams.get("type");
 
-    if(clearCards){
+    if (clearCards) {
       setCardData([]);
       return;
     }
-    
-    if(!data && !type)
-    return;
 
-    if(data){
-      console.log("setting search params");
-      console.log(data);
+    if (!data && !type) return;
+
+    if (data) {
       setCardData([]);
-      if(location.pathname !== "/dashboard" && location.pathname !== "/dashboard/") {
-        console.log("Navigating to dashboard from loadCards");
+      if (
+        location.pathname !== "/dashboard" &&
+        location.pathname !== "/dashboard/"
+      ) {
         navigate({
-          pathname: '/dashboard',
+          pathname: "/dashboard",
           search: `?type=showResults&q=${encodeURIComponent(JSON.stringify(data))}&t=${Date.now()}`,
         });
-      }
-      else{
-        setSearchParams({ type : "showResults" , q : encodeURIComponent(JSON.stringify(data)), t: Date.now() });
+      } else {
+        setSearchParams({
+          type: "showResults",
+          q: encodeURIComponent(JSON.stringify(data)),
+          t: Date.now(),
+        });
       }
       return;
     }
 
-    if(type === "favourites"){
-      console.log("Fetching favourite recipes from loop");
+    if (type === "favourites") {
       getFavoriteRecipes().then((result) => {
-        if(result.status === "success")
-          setCardData(result.recipes);
+        if (result.status === "success") setCardData(result.recipes);
         else
+          // eslint-disable-next-line no-console
           console.error(result.msg);
       });
       return;
     }
-    
-    data = JSON.parse(decodeURIComponent(searchParams.get("q"))); 
+
+    data = JSON.parse(decodeURIComponent(searchParams.get("q")));
     fetchData(data).then((result) => {
       setCardData(result);
     });
@@ -120,16 +124,21 @@ export default function Dashboard() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate('/'); // Redirect to the home page after logging out
+      navigate("/"); // Redirect to the home page after logging out
     } catch (error) {
-      console.error('Error logging out:', error);
+      // eslint-disable-next-line no-console
+      console.error("Error logging out:", error);
     }
   };
 
-
   return (
-    <Flex direction="column" width="100%" height="100%" minHeight="100vh" 
-    className="dashboard" gap={0}
+    <Flex
+      direction="column"
+      width="100%"
+      height="100%"
+      minHeight="100vh"
+      className="dashboard"
+      gap={0}
     >
       <Header
         photoUrl={photoURL}
@@ -141,35 +150,39 @@ export default function Dashboard() {
         setPageState={setPageState}
         showResults={loadCards}
       />
-      {
-        !searchParams.get("type") && pageLocation === 'dashboard' &&
+      {!searchParams.get("type") && pageLocation === "dashboard" && (
         <Flex direction="column" width="100%" h="100%" className="dashboard">
           <PreloadedCards txt="Recently Searched" />
-          <PreloadedCards txt="Trending Recipes" /> 
+          <PreloadedCards txt="Trending Recipes" />
           <PreloadedCards txt="Explore a cuisine" showResults={loadCards} />
           <PreloadedCards txt="Recommended for You" />
         </Flex>
-      }
-      { 
-        searchParams.get("type") && pageLocation === 'dashboard' &&
+      )}
+      {searchParams.get("type") && pageLocation === "dashboard" && (
         <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} />
-      }
-      {location.pathname !== '/dashboard/chat' && (
-        <IconButton 
-        borderRadius="full" position="fixed" bottom="4" right="4" size="xl" zIndex="1010"
-        onClick={() => {
-          navigate('/dashboard/chat');
-        }}
-      >
-        <LuMessageCircle/>
-      </IconButton>)}
+      )}
+      {location.pathname !== "/dashboard/chat" && (
+        <IconButton
+          borderRadius="full"
+          position="fixed"
+          bottom="4"
+          right="4"
+          size="xl"
+          zIndex="1010"
+          onClick={() => {
+            navigate("/dashboard/chat");
+          }}
+        >
+          <LuMessageCircle />
+        </IconButton>
+      )}
       <Routes>
-        <Route path="mealPlan" element={<MealPlanningCalendar/>} />
+        <Route path="mealPlan" element={<MealPlanningCalendar />} />
         <Route path="recipe/*" element={<RecipeDetails />} />
         <Route path="recipe/shoppingList" element={<ShoppingList />} />
-        <Route path="chat" element={<ChatBot photoURL={photoURL}/>} />
-        <Route path='imageAnalysis' element={<FoodImageAnalysis />} />
+        <Route path="chat" element={<ChatBot photoURL={photoURL} />} />
+        <Route path="imageAnalysis" element={<FoodImageAnalysis />} />
       </Routes>
     </Flex>
   );
-};
+}
