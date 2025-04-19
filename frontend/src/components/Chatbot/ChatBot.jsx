@@ -13,20 +13,20 @@ import CollapsibleSideBar from '../CollapsibleSideBar/CollapsibleSideBar';
 const ChatBot = ({photoURL}) => {
   const { open, onToggle } = useDisclosure({ defaultIsOpen: true });
   const [messages, setMessages] = useState([
-    { chatId:null, id: 1, text: "Hello! I'm your AI assistant. How can I help you today?", isUser: false, image: null, imagePreview: null }
+    { chatId:null, id: 1, text: "Hello! I'm your AI assistant. How can I help you today?", isUser: false, image: [], imagePreview: [] }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [fileBlob, setFileBlob] = useState(null);
-  const imagePreviewState = useState(null);
+  const [fileBlob, setFileBlob] = useState([]);
+  const imagePreviewState = useState([]);
   const [imagePreview, setImagePreview] = imagePreviewState;
 
   const handleSendMessage = async () => {
-    if (!input.trim() && !fileBlob) return;
+    if (!input.trim() && fileBlob.length > 0) return;
 
     const userMessage = { chatId:messages[0].chatId, id: messages.length + 1, text: input, isUser: true, image: fileBlob, imagePreview: imagePreview };
-    setFileBlob(null);
-    setImagePreview(null);
+    setFileBlob([]);
+    setImagePreview([]);
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
@@ -55,7 +55,7 @@ const ChatBot = ({photoURL}) => {
             }
             setMessages(prev => [
                 ...prev,
-                { chatId:chatId, id: prev.length + 1, text: response.messages[response.messages.length-1].text, isUser: false, image: null, imagePreview:response.messages[response.messages.length-1].files?.[0]  }
+                { chatId:chatId, id: prev.length + 1, text: response.messages[response.messages.length-1].text, isUser: false, image: [], imagePreview:response.messages[response.messages.length-1].files  }
             ]);
         }
     }
@@ -76,11 +76,11 @@ const ChatBot = ({photoURL}) => {
 
   const clearChat = () => {
     setMessages([
-      { chatId:null, id: 1, text: "Hello! I'm your AI assistant. How can I help you today?", isUser: false, image: null, imagePreview: null }
+      { chatId:null, id: 1, text: "Hello! I'm your AI assistant. How can I help you today?", isUser: false, image: [], imagePreview: [] }
     ]);
     toaster.create({
       title: 'Chat cleared',
-      status: 'info',
+      type: 'info',
       duration: 2000,
       isClosable: true,
     });

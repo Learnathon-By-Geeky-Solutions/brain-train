@@ -31,9 +31,12 @@ const MessageItem = ({ message, isUser, photoURL }) => {
             <Avatar.Image src={logo} />
         </Avatar.Root>
       )}
-      <Flex direction="column">
+      <Flex 
+        direction="column"
+        alignItems={isUser ? "flex-end" : "flex-start"}
+      >
         <Box
-          maxW="70%"
+          maxW="80%"
           bg={bgColor}
           p={3}
           borderRadius="lg"
@@ -41,7 +44,7 @@ const MessageItem = ({ message, isUser, photoURL }) => {
         >
           <Text color={textColor}>{message.text}</Text>
         </Box>
-        { message.imagePreview && (
+        { message.imagePreview.map((image) =>(
           <Box
             position="relative"
             width="28"
@@ -52,22 +55,23 @@ const MessageItem = ({ message, isUser, photoURL }) => {
             border="1px solid"
             borderColor={borderColor}
             bg={bg}
+            key={image}
           >
             <Image
-              src={message.imagePreview}
+              src={image}
               alt="Image Preview"
               objectFit="cover"
               w="100%"
               h="100%"
             />
           </Box>
-        )}
+        ))}
       </Flex>
       {isUser && (
         <Avatar.Root 
             size="sm" 
-            ml={2} 
             bg="blue.500" 
+            ml="2"
         >
             <Avatar.Fallback name="User" />
             <Avatar.Image src={photoURL} />

@@ -1,44 +1,68 @@
-const handleFileChange = (e,setFile,setImagePreview,toaster=null) => {
-    if (e.target.files && e.target.files[0]) {
-        const selectedFile = e.target.files[0];
-        
+const handleFileChange = (e,setFile,setImagePreview,toaster=null,allowMultiple=true) => {
+  if (e.target.files) {
+    let selectedFileArray = [];
+    let imagePreviewArray = [];
+    for(let i=0; i<e.target.files.length; i++){
+      const selectedFile = e.target.files[i];
+      if(selectedFile){
+        let returnFlag = false;
         // Check if the file is an image
         if (!selectedFile.type.match('image.*')) {
-            if (toaster) {
-                toaster.create({
-                    title: "Invalid file type",
-                    description: "Please upload an image file (JPEG, PNG, etc.)",
-                    type: "error",
-                    duration: 3000,
-                    isClosable: true,
-                });
-            }
-            return -1;
+          if (toaster) {
+            toaster.create({
+                title: "Invalid file type",
+                description: "Please upload an image file (JPEG, PNG, etc.)",
+                type: "error",
+                duration: 3000,
+                isClosable: true,
+            });
+          }
+          returnFlag = true;
         }
-        
+      
         // Check if the file size is below 5MB
         if (selectedFile.size > 5 * 1024 * 1024) {
-            if (toaster) {
-                toaster.create({
-                    title: "File too large",
-                    description: "Please upload an image smaller than 5MB",
-                    type: "error",
-                    duration: 3000,
-                    isClosable: true,
-                });
-            }
-            return -1;
+          if (toaster) {
+              toaster.create({
+                  title: "File too large",
+                  description: "Please upload an image smaller than 5MB",
+                  type: "error",
+                  duration: 3000,
+                  isClosable: true,
+              });
+          }
+          returnFlag = true;
         }
-        
-        setFile(selectedFile);
-        
-        // Create image preview
-        const reader = new FileReader();
-        reader.onload = (e) => {
-        setImagePreview(e.target.result);
-        };
-        reader.readAsDataURL(selectedFile);
+
+        if(!returnFlag){
+          selectedFileArray.push(selectedFile);
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            imagePreviewArray.push(e.target.result);
+          };
+          reader.readAsDataURL(selectedFile);
+        }
+      } 
     }
+    if(selectedFileArray.length > 0){
+      if(allowMultiple){
+        setFile(selectedFileArray);
+        setImagePreview(imagePreviewArray);
+      }
+      else{
+        setFile(selectedFileArray[0]);
+        setImagePreview(imagePreviewArray[0]);
+      }
+      return;
+    }
+    return -1;
+    // // Create image preview
+    // const reader = new FileReader();
+    // reader.onload = (e) => {
+    // setImagePreview(e.target.result);
+    // };
+    // reader.readAsDataURL(selectedFile);
+  }
 };
 
 const readRawFile = (file, onProgress, onComplete) => {

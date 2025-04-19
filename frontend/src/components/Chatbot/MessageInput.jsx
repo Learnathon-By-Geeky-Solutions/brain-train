@@ -1,51 +1,66 @@
 // components/MessageInput.jsx
 import React, { useState } from 'react';
-import { HStack, Input, IconButton, Flex } from '@chakra-ui/react';
+import { Input, IconButton, Flex } from '@chakra-ui/react';
 import { LuImageUp, LuSend } from 'react-icons/lu';
 import { LuRefreshCcw } from 'react-icons/lu';
 import { toaster } from '../ui/toaster';
 import { handleFileChange, readRawFile } from '@/services/fileHandler';
-import { set } from 'react-hook-form';
 import ImagePreviewWithProgress from './ImagePreviewWithProgress';
 
 
 const MessageInput = ({ input, setInput, handleSendMessage, isLoading, clearChat, setFileBlob, imagePreviewState }) => {
-  const [file, setFile] = useState(null);
-  const [progress, setProgress] = useState(0);
+  const [file, setFile] = useState([]);
+  const [progress, setProgress] = useState([]);
   const [imagePreview, setImagePreview] = imagePreviewState;
-  const [showImagePreview, setShowImagePreview] = useState(false);
+  const [showImagePreview, setShowImagePreview] = useState([]);
   const fileInputRef = React.useRef(null);
-  const cancelImageUpload = () => {
-    setFile(null);
-    setImagePreview(null);
-    setProgress(0);
-    setShowImagePreview(false);
-    setFileBlob(null);
+
+  const cancelImageUpload = (index) => {
+    if (index !== undefined) {
+      setFile((prev) => prev.filter((_, i) => i !== index));
+      setImagePreview((prev) => prev.filter((_, i) => i !== index));
+      setProgress((prev) => prev.filter((_, i) => i !== index));
+      setShowImagePreview((prev) => prev.filter((_, i) => i !== index));
+      setFileBlob((prev) => prev.filter((_, i) => i !== index));
+    }
   };
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      cancelImageUpload();
+    imagePreview.forEach((_, index) => {
+        cancelImageUpload(index);
+    });
       e.preventDefault();
       handleSendMessage();
     }
   };
 
   return (
-    <Flex w="80%" direction="column" position="absolute" bottom="17vh" bg="var(--dark-bg)" h="15vh">
+    <Flex w="80%" direction="column" position="absolute" bottom="17vh" bg="var(--dark-bg)">
     <input
         type="file"
         accept="image/*"
+        multiple
         onChange={(e)=>{
-            const selectedFile = e.target.files[0];
-            setShowImagePreview(true);
+            const selectedFiles = e.target.files;
+            setProgress(Array(selectedFiles.length).fill(0));
+            setShowImagePreview(Array(selectedFiles.length).fill(false));
             handleFileChange(e, setFile, setImagePreview, toaster);
-            readRawFile(
-                selectedFile,
-                (progress) => setProgress(progress),
-                null
-            ).then((fileBlob) => {
-                setFileBlob(fileBlob);
-            });
+            for( let i = 0; i < selectedFiles.length; i++ ){
+                setShowImagePreview((prev) => {
+                    const newShowImagePreview = [...prev];
+                    newShowImagePreview[i] = true;
+                    return newShowImagePreview;
+                });
+                const selectedFile = selectedFiles[i];
+                readRawFile(
+                    selectedFile,
+                    (progress) => setProgress((prev) => [...prev, progress]),
+                    null
+                ).then((fileBlob) => {
+                    setFileBlob((prev) => [...prev, fileBlob]);
+                });
+            }
         }}
         ref={fileInputRef}
         style={{ display: 'none' }}
@@ -59,9 +74,15 @@ const MessageInput = ({ input, setInput, handleSendMessage, isLoading, clearChat
         h="fit-content"
     >
         <Flex direction="column" w="100%" alignItems="center" justifyContent="center">
-            {showImagePreview && (
-                <ImagePreviewWithProgress base64Image={imagePreview} currentProgress={progress} cancelImage={cancelImageUpload}/>
-            )}
+            {showImagePreview.map((show,index) => {
+                if(show) return (
+                <ImagePreviewWithProgress
+                    key={index}
+                    base64Image={imagePreview[index]}
+                    currentProgress={progress[index]}
+                    cancelImage={() => cancelImageUpload(index)}
+                />)
+            })}
             <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -80,7 +101,9 @@ const MessageInput = ({ input, setInput, handleSendMessage, isLoading, clearChat
         <IconButton
         onClick={()=>{
             handleSendMessage();
-            cancelImageUpload();
+            imagePreview.forEach((_, index) => {
+                cancelImageUpload(index);
+            });
         }}
         isLoading={isLoading}
         disabled={!input.trim() || isLoading}

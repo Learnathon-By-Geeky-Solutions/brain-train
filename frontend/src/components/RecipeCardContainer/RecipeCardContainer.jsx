@@ -47,7 +47,7 @@ const RecipeCardContainer = ({recipe_prop,removeCard,containerType="default"}) =
     
     // Clean up
     return () => window.removeEventListener('resize', handleResize);
-  }, [recipe_prop.length]);
+  }, [recipe_prop?.length]);
   
 
   let type = location.state?.type || searchParams.get("type");
