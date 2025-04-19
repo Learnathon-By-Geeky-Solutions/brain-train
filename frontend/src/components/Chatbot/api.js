@@ -1,15 +1,27 @@
-// This is where we would implement the actual API call to an AI service
-const fetchAIResponse = async (message) => {
-  // In a real implementation, this would be replaced with an actual API call
-  // Example: return await fetch('https://api.anthropic.com/v1/messages', {...})
-  
-  // Simulating API delay
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  
-  // Returning a mock response for demonstration
-  return {
-    content: `This is a simulated response to your message: "${message}". In a real implementation, this would be replaced with an actual AI response from Anthropic's API or another AI service.`
-  };
+const API_BASE_URL =
+  import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+
+import makeRequest from "@/services/APIcall";
+
+export const fetchAIResponse = async (message, chatId, image = []) => {
+  const url = `${API_BASE_URL}/ai/chat`;
+  const reqBody = new FormData();
+  reqBody.append("text", message);
+  if (chatId) {
+    reqBody.append("chatId", chatId);
+  }
+  if (image.length > 0) {
+    reqBody.append("image", image[0]);
+  }
+  return makeRequest(url, "POST", reqBody);
 };
 
-export {fetchAIResponse};
+export const fetchChatList = async () => {
+  const url = `${API_BASE_URL}/ai/chat/list`;
+  return makeRequest(url, "GET", null);
+};
+
+export const fetchChatDetails = async (chatId) => {
+  const url = `${API_BASE_URL}/ai/chat/${chatId}`;
+  return makeRequest(url, "GET", null);
+};
