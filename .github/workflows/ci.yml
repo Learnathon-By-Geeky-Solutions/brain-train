@@ -12,7 +12,7 @@ on:
 
 jobs:
   sonarqube:
-    runs-on: ubuntu-latest  # OS to run the CI pipeline
+    runs-on: ubuntu-latest # OS to run the CI pipeline
 
     steps:
       - name: Checkout code
@@ -23,14 +23,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: "20.x"
 
       - name: Root dependencies
         run: npm install
 
       - name: Backend dependencies
         run: cd backend && npm install
-      
+
       - name: Frontend dependencies
         run: cd frontend && npm install
 
@@ -38,7 +38,7 @@ jobs:
         run: npm run test:security
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      
+
       - name: Create backend/.env file
         run: |
           cd backend
@@ -58,12 +58,12 @@ jobs:
           echo "PORT=8000" >> .env
           echo ""
         shell: bash
-      
+
       - name: Run unit tests with Jest
         run: npm test
 
-      - name: Run lint-staged
-        run: npx lint-staged
+      - name: Run Prettier check
+        run: npx prettier --check "**/*.{js,jsx,ts,tsx}"
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v5
