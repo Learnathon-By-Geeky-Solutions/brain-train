@@ -1,5 +1,5 @@
 // components/ChatBot.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Flex,
   useDisclosure
@@ -7,8 +7,9 @@ import {
 import { Toaster, toaster } from '../ui/toaster';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
-import { fetchAIResponse } from './api';
+import { fetchAIResponse, fetchChatList } from './api';
 import CollapsibleSideBar from '../CollapsibleSideBar/CollapsibleSideBar';
+import SideBarContent from '../CollapsibleSideBar/SideBarContent';
 
 const ChatBot = ({photoURL}) => {
   const { open, onToggle } = useDisclosure({ defaultIsOpen: true });
@@ -20,6 +21,33 @@ const ChatBot = ({photoURL}) => {
   const [fileBlob, setFileBlob] = useState([]);
   const imagePreviewState = useState([]);
   const [imagePreview, setImagePreview] = imagePreviewState;
+  const [chatList, setChatList] = useState([]);
+
+  useEffect(() => {
+    fetchChatList().then((response) => {
+      if (response.status == 'error') {
+        toaster.create({
+          title: 'Error',
+          description: response.message,
+          type: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
+      setChatList(response.chat);
+    }).catch((error) => {
+      console.error('Error fetching chat list:', error);
+      toaster.create({
+        title: 'Error',
+        description: 'Failed to fetch chat list. Please try again.',
+        type: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    });
+
+  },[]);
 
   const handleSendMessage = async () => {
     if (!input.trim() && fileBlob.length > 0) return;
@@ -88,7 +116,7 @@ const ChatBot = ({photoURL}) => {
 
   return (
     <Flex w="100vw">
-    <CollapsibleSideBar open={open} onToggle={onToggle}/>
+    <CollapsibleSideBar open={open} onToggle={onToggle} navItems={chatList}/>
     <Flex 
         direction="column" 
         bg="none" 

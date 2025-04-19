@@ -24,11 +24,11 @@ import SideBarContent from './SideBarContent';
 
 const MotionBox = motion(Box);
 
-const navItems = [
-  { label: 'Home', icon: <Home size={18} /> },
-  { label: 'Profile', icon: <User size={18} /> },
-  { label: 'Settings', icon: <Settings size={18} /> }
-];
+// const navItems = [
+//   { label: 'Home', icon: <Home size={18} /> },
+//   { label: 'Profile', icon: <User size={18} /> },
+//   { label: 'Settings', icon: <Settings size={18} /> }
+// ];
 
 // const SidebarContent = ({ isOpen, onToggle, isMobile }) => {
 //   return (
@@ -76,7 +76,7 @@ const navItems = [
 //   );
 // };
 
-const CollapsibleSideBar = ({ open, onToggle }) => {
+const CollapsibleSideBar = ({ open, onToggle, navItems }) => {
   const drawerDisclosure = useDisclosure();
 
   const isMobile = useBreakpointValue({ base: true, md: false });

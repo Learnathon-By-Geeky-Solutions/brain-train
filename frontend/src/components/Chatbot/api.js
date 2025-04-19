@@ -14,3 +14,8 @@ export const fetchAIResponse = async (message,chatId,image=[]) => {
   }
   return makeRequest(url, "POST", reqBody);
 };
+
+export const fetchChatList = async () => {
+  const url = `${API_BASE_URL}/ai/chat/list`;
+  return makeRequest(url, "GET", null);
+};

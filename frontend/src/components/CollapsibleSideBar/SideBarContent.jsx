@@ -47,8 +47,7 @@ const SideBarContent = ({ isOpen, onToggle, isMobile, navItems }) => {
               _hover={{ bg: 'purple.500', cursor: 'pointer' }}
               borderRadius="md"
             >
-              {item.icon}
-              {isOpen && <Text ml={3}>{item.label}</Text>}
+              {isOpen && <Text ml={3}>{item.name}</Text>}
             </Box>
         ))}
       </VStack>
