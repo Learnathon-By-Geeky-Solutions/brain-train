@@ -18,7 +18,7 @@ export const recipesByIngredientsHelper = (query) => {
     .map((f) => f.trim())
     .filter(Boolean);
 
-  return getRecipesByIngredients(ingredients, fieldsArray, number, filters)
+  return getRecipesByIngredients(ingredients, fieldsArray, number)
     .then((dbResults) => {
       console.log("🔍 DB Results Before Filtering:", dbResults.length);
       return filterRecipes(dbResults, filters);

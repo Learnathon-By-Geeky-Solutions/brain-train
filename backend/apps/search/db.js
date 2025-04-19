@@ -43,7 +43,6 @@ export const getRecipesByIngredients = async (
   ingredientTitles = [],
   fields = [],
   number = 10,
-  _filters = {},
 ) => {
   try {
     //  Ensure ingredientTitles is ALWAYS an array
