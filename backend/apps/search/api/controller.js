@@ -310,7 +310,7 @@ export const getRecipesByCuisine = (req, res) => {
   searchRecipesByCuisine(cuisine, limit)
     .then((dbResults) => {
       if (dbResults.length >= limit) {
-        return dbResults.slice(0, limit);
+        return Promise.resolve(dbResults.slice(0, limit));
       }
 
       return spoonacularRequest("/recipes/complexSearch", {
