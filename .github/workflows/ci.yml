@@ -59,11 +59,11 @@ jobs:
           echo ""
         shell: bash
 
-      - name: Run unit tests with Jest
-        run: npm test
-
       - name: Run Prettier check
         run: npx prettier --check "**/*.{js,jsx,ts,tsx}"
+
+      - name: Run unit tests with Jest
+        run: npm test
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v5
