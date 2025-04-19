@@ -1,17 +1,16 @@
 .dashboard {
-    background-color: var(--dark-bg);
+  background-color: var(--dark-bg);
 }
 
 .dashboard-header {
-    margin-top: 110px;
+  margin-top: 110px;
 }
 
 .welcome-message {
-    font-family: 'Inter', sans-serif; /* Clean, modern font */
-    font-size: 3rem; /* Adjust size for prominence */
-    font-weight: 500; /* Medium weight for emphasis */
-    color: #FFFFFF; /* Pure white text for dark backgrounds */
-    text-align: center; /* Center-align the text */
-    line-height: 1.6; /* Comfortable line spacing */
-  }
-  
+  font-family: "Inter", sans-serif; /* Clean, modern font */
+  font-size: 3rem; /* Adjust size for prominence */
+  font-weight: 500; /* Medium weight for emphasis */
+  color: #ffffff; /* Pure white text for dark backgrounds */
+  text-align: center; /* Center-align the text */
+  line-height: 1.6; /* Comfortable line spacing */
+}

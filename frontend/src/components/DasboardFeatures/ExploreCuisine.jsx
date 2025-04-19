@@ -1,10 +1,10 @@
-import { Box, Text, Flex, Image, useBreakpointValue } from '@chakra-ui/react';
-import PropTypes from 'prop-types';
-import english_cuisine from '@/assets/english_cuisine.jpg';
-import italian_cuisine from '@/assets/italian_cuisine.jpg';
-import french_cuisine from '@/assets/french_cuisine.jpg';
-import arabic_cuisine from '@/assets/arabic_cuisine.jpg';
-import indian_cuisine from '@/assets/indian_cuisine.jpg';
+import { Box, Text, Flex, Image, useBreakpointValue } from "@chakra-ui/react";
+import PropTypes from "prop-types";
+import english_cuisine from "@/assets/english_cuisine.jpg";
+import italian_cuisine from "@/assets/italian_cuisine.jpg";
+import french_cuisine from "@/assets/french_cuisine.jpg";
+import arabic_cuisine from "@/assets/arabic_cuisine.jpg";
+import indian_cuisine from "@/assets/indian_cuisine.jpg";
 
 // Usage example:
 const cuisines = [
@@ -15,57 +15,61 @@ const cuisines = [
   { name: "indian", imageUrl: indian_cuisine },
 ];
 
-const ExploreCuisine = ({showResults}) => {
+const ExploreCuisine = ({ showResults }) => {
   // Responsive settings
-  const imageSize = useBreakpointValue({ base: '150px', md: '200px', lg: '250px' });
+  const imageSize = useBreakpointValue({
+    base: "150px",
+    md: "200px",
+    lg: "250px",
+  });
   const spacing = useBreakpointValue({ base: 2, md: 4, lg: 6 });
-  
+
   // Function to capitalize the first letter of each word
   const capitalizeWords = (str) => {
     return str
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   return (
     <Flex
-    overflowX="auto"
-    gap={spacing}
-    p={4}
-    css={{
+      overflowX="auto"
+      gap={spacing}
+      p={4}
+      css={{
         "&::-webkit-scrollbar": {
-            display: "none", 
+          display: "none",
         },
         "-ms-overflow-style": "none",
-        "scrollbar-width": "none", 
-    }}
-    >
-    {cuisines.map((cuisine, index) => (
-    <Box 
-      key={cuisine.name} 
-      position="relative" 
-      minW={imageSize} 
-      h={imageSize} 
-      borderRadius="lg" 
-      overflow="hidden"
-      transition="transform 0.3s ease"
-      _hover={{ 
-          transform: 'scale(1.05)',
-          cursor: 'pointer'
-      }}
-      onClick={() => {
-         showResults({type:'cuisine', cuisine: cuisine.name});
+        "scrollbar-width": "none",
       }}
     >
-        <Image
+      {cuisines.map((cuisine) => (
+        <Box
+          key={cuisine.name}
+          position="relative"
+          minW={imageSize}
+          h={imageSize}
+          borderRadius="lg"
+          overflow="hidden"
+          transition="transform 0.3s ease"
+          _hover={{
+            transform: "scale(1.05)",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            showResults({ type: "cuisine", cuisine: cuisine.name });
+          }}
+        >
+          <Image
             src={cuisine.imageUrl}
             alt={cuisine.name}
             w="100%"
             h="100%"
             objectFit="cover"
-        />
-        <Box
+          />
+          <Box
             position="absolute"
             bottom={0}
             left={0}
@@ -73,18 +77,18 @@ const ExploreCuisine = ({showResults}) => {
             bg="rgba(0, 0, 0, 0.6)"
             p={3}
             backdropFilter="blur(3px)"
-        >
+          >
             <Text
-            color="white"
-            fontWeight="bold"
-            fontSize={{ base: "sm", md: "md" }}
-            textAlign="center"
+              color="white"
+              fontWeight="bold"
+              fontSize={{ base: "sm", md: "md" }}
+              textAlign="center"
             >
-            {capitalizeWords(cuisine.name)}
+              {capitalizeWords(cuisine.name)}
             </Text>
+          </Box>
         </Box>
-    </Box>
-    ))}
+      ))}
     </Flex>
   );
 };
@@ -93,4 +97,3 @@ ExploreCuisine.propTypes = {
 };
 
 export default ExploreCuisine;
-

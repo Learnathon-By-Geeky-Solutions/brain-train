@@ -1,111 +1,112 @@
 .app {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .nav-bar {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    height: 15vh;
-    padding: 10px;
-    z-index: 1;
-    background-color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 15vh;
+  padding: 10px;
+  z-index: 1;
+  background-color: white;
 }
 
-.logo , .title {
-    height: 50px;
-    display: flex;
-    align-items: center;
-    place-content: center;
+.logo,
+.title {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  place-content: center;
 }
 
 .logo {
-    width: 60px;
+  width: 60px;
 }
 
 .logo img {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 .title {
-    padding-top: 15px;
-    margin-right: 1rem;
-    font-family: "Mustard Medium", sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--title-color);
+  padding-top: 15px;
+  margin-right: 1rem;
+  font-family: "Mustard Medium", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--title-color);
 }
 
 .title-second-part {
-    color: var(--title-second-part-color);
+  color: var(--title-second-part-color);
 }
 
 .bg-video {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    place-content: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  place-content: center;
 }
 
 .bg-cover {
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    place-content: center;
-    justify-content: center;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  place-content: center;
+  justify-content: center;
 }
 
 .main-motto {
-    font-family: "Mustard Medium", sans-serif;
-    font-size: 3rem;
-    color: white;
-    margin-bottom: 1rem;
-    max-width: 80%;
-    text-align: center;
+  font-family: "Mustard Medium", sans-serif;
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 1rem;
+  max-width: 80%;
+  text-align: center;
 }
 
 .sub-motto {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: white;
-    max-width: 80%;
-    text-align: center;
-    margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+  max-width: 80%;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .menu-button {
-    width: 45px;
-    height: 45px;
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    place-content: center;
-    justify-content: center;
-    background-color: var(--brown-variant);
-    border-radius: 5% 33% 5% 33%;
+  width: 45px;
+  height: 45px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  place-content: center;
+  justify-content: center;
+  background-color: var(--brown-variant);
+  border-radius: 5% 33% 5% 33%;
 }
-
 
 .login-button {
-    width: 175px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    place-content: center;
-    justify-content: center;
-    background-color: white;
-    border-radius: 3px 33px 3px 33px;
-    color: var(--faded-text-color);
+  width: 175px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  place-content: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 3px 33px 3px 33px;
+  color: var(--faded-text-color);
 }
 
-.menu-button:hover , .login-button:hover {
-    background-color: var(--darkest-green);
-    color: white;
+.menu-button:hover,
+.login-button:hover {
+  background-color: var(--darkest-green);
+  color: white;
 }

@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const mealSchema = new mongoose.Schema({
   sourceId: {
-    type: String, 
+    type: String,
     required: true,
     // unique: true
   },
@@ -13,24 +13,24 @@ const mealSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: ""
+    default: "",
   },
   imageType: {
     type: String,
-    default: ""
+    default: "",
   },
   title: {
     type: String,
-    default: ""
+    default: "",
   },
   readyInMinutes: {
     type: Number,
-    default: 0
+    default: 0,
   },
   servings: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 });
 
 const mealPlanSchema = new mongoose.Schema({
@@ -43,95 +43,90 @@ const mealPlanSchema = new mongoose.Schema({
       },
       amount: {
         type: Number,
-        default: 0
+        default: 0,
       },
-      unit: { 
-        type: String, 
-        default: "" 
-      }  
-
-    }
-  ]
+      unit: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
 });
 
 const dailyMealSchema = new mongoose.Schema({
   firebaseUid: {
-    type: String, 
-    required: true
+    type: String,
+    required: true,
   },
   dailyMealPlans: [
     {
       title: {
         type: String,
-        default: "Daily Meal Plan#"
+        default: "Daily Meal Plan#",
       },
       mealPlan: mealPlanSchema,
       savedAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
       },
       startDate: {
         type: Date,
-        default: Date.now
+        default: Date.now,
       },
-    }
-  ]
+    },
+  ],
 });
 
 const weeklyPlanSchema = new mongoose.Schema({
   firebaseUid: {
-    type: String, 
-    required: true
+    type: String,
+    required: true,
   },
   weeklyMealPlans: [
     {
       title: {
         type: String,
-        default: "Weekly Meal Plan#"
+        default: "Weekly Meal Plan#",
       },
       // dailyMealPlans: [mealPlanSchema],
       dailyMealPlans: [
         {
           title: {
             type: String,
-            default: "Daily Meal Plan#"
+            default: "Daily Meal Plan#",
           },
           mealPlan: mealPlanSchema,
           startDate: {
             type: Date,
-            default: Date.now
+            default: Date.now,
           },
           savedAt: {
             type: Date,
-            default: Date.now
-          }
-        }
+            default: Date.now,
+          },
+        },
       ],
       savedAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
       },
       startDate: {
         type: Date,
         //required: true,
-        default: Date.now
+        default: Date.now,
       },
       endDate: {
         type: Date,
         //required: true
-      }
-    }
-  ]
+      },
+    },
+  ],
 });
 
 dailyMealSchema.index({ firebaseUid: 1 });
 weeklyPlanSchema.index({ firebaseUid: 1 });
 
+const DailyMealPlan = mongoose.model("DailyMealPlan", dailyMealSchema);
+const WeeklyMealPlan = mongoose.model("WeeklyMealPlan", weeklyPlanSchema);
 
-const DailyMealPlan = mongoose.model('DailyMealPlan', dailyMealSchema);
-const WeeklyMealPlan = mongoose.model('WeeklyMealPlan', weeklyPlanSchema);
-
-export {
-  DailyMealPlan,
-  WeeklyMealPlan
-};
+export { DailyMealPlan, WeeklyMealPlan };

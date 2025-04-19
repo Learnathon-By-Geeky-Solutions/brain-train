@@ -3,12 +3,12 @@ import mongoose from "mongoose";
 const searchSchema = new mongoose.Schema({
   recipeId: {
     type: String,
-    required: true
+    required: true,
   },
   searchedAt: {
     type: Date,
-    default: Date.now()
-  }
+    default: Date.now(),
+  },
 });
 
 export default searchSchema;

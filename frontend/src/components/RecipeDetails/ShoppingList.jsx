@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Heading,
@@ -12,12 +12,12 @@ import {
   Flex,
   IconButton,
   List,
-  Separator
-} from '@chakra-ui/react';
-import { getShoppingList } from './api';
-import { useLocation } from 'react-router-dom';
-import { useColorModeValue } from '../ui/color-mode';
-import { LuPrinter } from 'react-icons/lu';
+  Separator,
+} from "@chakra-ui/react";
+import { getShoppingList } from "./api";
+import { useLocation } from "react-router-dom";
+import { useColorModeValue } from "../ui/color-mode";
+import { LuPrinter } from "react-icons/lu";
 
 const ShoppingList = () => {
   const [data, setData] = useState(null);
@@ -26,23 +26,21 @@ const ShoppingList = () => {
   const servingSize = location.state?.servingSize;
 
   useEffect(() => {
-    console.log('in useEffect of shopping list');
-    getShoppingList(servingSize,id).then(data => {
+    getShoppingList(servingSize, id).then((data) => {
       setData(data);
-      console.log(data);
     });
   }, []);
 
-  const bgColor = useColorModeValue('white', 'gray.800');
-  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const bgColor = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
 
   if (!data || data.status === "error") {
     return <Text>Loading...</Text>;
   }
-  
+
   // Group items by title to avoid duplicates with different units
   const groupedItems = {};
-  data.shoppingList.forEach(item => {
+  data.shoppingList.forEach((item) => {
     if (!groupedItems[item.title]) {
       groupedItems[item.title] = [];
     }
@@ -55,12 +53,18 @@ const ShoppingList = () => {
         <Flex justify="space-between" align="center">
           <Heading size="lg">Shopping List</Heading>
           <HStack>
-            <Badge colorScheme="green" fontSize="md" px={2} py={1} borderRadius="md">
+            <Badge
+              colorScheme="green"
+              fontSize="md"
+              px={2}
+              py={1}
+              borderRadius="md"
+            >
               {data.servings} Servings
             </Badge>
-            <IconButton 
-              aria-label="Print shopping list" 
-              size="sm" 
+            <IconButton
+              aria-label="Print shopping list"
+              size="sm"
               colorScheme="blue"
               variant="outline"
               onClick={() => window.print()}
@@ -69,29 +73,29 @@ const ShoppingList = () => {
             </IconButton>
           </HStack>
         </Flex>
-        
+
         <Separator size="lg" />
-        
+
         <List.Root gap={4} variant="plain">
           {Object.entries(groupedItems).map(([title, items]) => (
             <List.Item key={title}>
-              <Card.Root 
+              <Card.Root
                 variant="outline"
                 bg={bgColor}
-                borderColor={borderColor} 
+                borderColor={borderColor}
                 borderWidth="1px"
                 borderRadius="md"
                 overflow="hidden"
                 boxShadow="sm"
-                _hover={{ boxShadow: 'md' }}
+                _hover={{ boxShadow: "md" }}
                 transition="box-shadow 0.2s"
                 w="100%"
               >
                 <Card.Body p={0}>
                   <Flex>
                     <Box w="80px" h="80px" overflow="hidden">
-                      <Image 
-                        src={items[0].image} 
+                      <Image
+                        src={items[0].image}
                         alt={title}
                         objectFit="cover"
                         w="100%"

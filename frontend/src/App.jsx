@@ -1,7 +1,7 @@
 import "./App.css";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 import { Button, IconButton, Theme } from "@chakra-ui/react";
 import logo from "./assets/logo.png";
@@ -22,8 +22,8 @@ export default function App() {
     const setupAuthListener = async () => {
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
-          navigate('/dashboard');
-        } 
+          navigate("/dashboard");
+        }
       });
 
       // Cleanup the listener when the component unmounts
@@ -35,28 +35,30 @@ export default function App() {
 
   return (
     <Theme appearance="light">
-    <div className="app">
-      <nav className="nav-bar">
-        <div className="logo">
-          <img src={logo} alt="logo" />
+      <div className="app">
+        <nav className="nav-bar">
+          <div className="logo">
+            <img src={logo} alt="logo" />
+          </div>
+          <div className="title">
+            Geeky <span className="title-second-part">Chef</span>
+          </div>
+          <IconButton aria-label="menu" color="white" className="menu-button">
+            <LuMenu />
+          </IconButton>
+        </nav>
+        <div className="bg-video">
+          <VideoPlayer />
+          <div className="bg-cover">
+            <div className="main-motto">Lorem Ipsum Lorem Ipsum</div>
+            <div className="sub-motto">Dolor simit dlor simit</div>
+            <Button onClick={openModal} className="login-button">
+              Login
+            </Button>
+          </div>
         </div>
-        <div className="title">
-          Geeky <span className="title-second-part">Chef</span>
-        </div>
-        <IconButton aria-label="menu" color="white" className="menu-button">
-          <LuMenu />
-        </IconButton> 
-      </nav>
-      <div className="bg-video">
-        <VideoPlayer />
-        <div className="bg-cover">
-          <div className="main-motto">Lorem Ipsum Lorem Ipsum</div>
-          <div className="sub-motto">Dolor simit dlor simit</div>
-          <Button onClick={openModal} className="login-button">Login</Button>
-        </div>
+        <AuthModal isOpen={isAuthModalOpen} onClose={closeModal} />
       </div>
-      <AuthModal isOpen={isAuthModalOpen} onClose={closeModal} />
-    </div>
     </Theme>
-  )
+  );
 }

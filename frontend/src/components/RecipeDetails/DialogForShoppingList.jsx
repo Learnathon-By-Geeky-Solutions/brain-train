@@ -1,8 +1,8 @@
-import { Button, Dialog, Portal, NumberInput, Flex } from "@chakra-ui/react"
-import { CloseButton } from "../ui/close-button"
-import PropTypes from 'prop-types'
+import { Button, Dialog, Portal, NumberInput, Flex } from "@chakra-ui/react";
+import { CloseButton } from "../ui/close-button";
+import PropTypes from "prop-types";
 
-const DialogForShoppingList = ({handleDone,setServingSize,servingSize}) => {
+const DialogForShoppingList = ({ handleDone, setServingSize, servingSize }) => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -23,19 +23,19 @@ const DialogForShoppingList = ({handleDone,setServingSize,servingSize}) => {
               </Flex>
             </Dialog.Header>
             <Dialog.Body>
-            <NumberInput.Root
-              value={servingSize}
-              onValueChange={(e) => setServingSize(e.value)}
-              size="lg"
-              step={1}
-              textEmphasis="none"
-            >
-              <NumberInput.Control>
-                <NumberInput.IncrementTrigger />
-                <NumberInput.DecrementTrigger />
-              </NumberInput.Control>
-              <NumberInput.Input/>
-            </NumberInput.Root>
+              <NumberInput.Root
+                value={servingSize}
+                onValueChange={(e) => setServingSize(e.value)}
+                size="lg"
+                step={1}
+                textEmphasis="none"
+              >
+                <NumberInput.Control>
+                  <NumberInput.IncrementTrigger />
+                  <NumberInput.DecrementTrigger />
+                </NumberInput.Control>
+                <NumberInput.Input />
+              </NumberInput.Root>
             </Dialog.Body>
             <Dialog.Footer>
               <Dialog.ActionTrigger asChild>
@@ -47,13 +47,12 @@ const DialogForShoppingList = ({handleDone,setServingSize,servingSize}) => {
         </Dialog.Positioner>
       </Portal>
     </Dialog.Root>
-  )
-}
+  );
+};
 DialogForShoppingList.propTypes = {
   handleDone: PropTypes.func.isRequired,
   setServingSize: PropTypes.func.isRequired,
   servingSize: PropTypes.number.isRequired,
-}
+};
 
-
-export default DialogForShoppingList
+export default DialogForShoppingList;

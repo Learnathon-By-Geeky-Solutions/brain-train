@@ -1,20 +1,22 @@
-import { body } from 'express-validator';
-import { handleValidationErrors } from '../../../libraries/errorHandler.js';
+import { body } from "express-validator";
+import { handleValidationErrors } from "../../../libraries/util/errorHandler.js";
 
 export const validateAddRecipe = [
-  body('recipeId')
+  body("recipeId")
+    .exists({ checkFalsy: true })
+    .withMessage("recipeId is required")
+    .bail()
     .isString()
-    .notEmpty()
-    .withMessage('recipeId is required'),
-
-  handleValidationErrors
+    .withMessage("recipeId must be a string"),
+  handleValidationErrors,
 ];
 
 export const validateRemoveRecipe = [
-  body('recipeId')
+  body("recipeId")
+    .exists({ checkFalsy: true })
+    .withMessage("recipeId is required")
+    .bail()
     .isString()
-    .notEmpty()
-    .withMessage('recipeId is required'),
-
-  handleValidationErrors
+    .withMessage("recipeId must be a string"),
+  handleValidationErrors,
 ];

@@ -4,21 +4,21 @@ import { nutrientSchema } from "./nutrition.js";
 const ingredientSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   image: {
     type: String,
-    default: ""
+    default: "",
   },
   amount: {
     type: Number,
-    required: true
+    required: true,
   },
   unit: {
     type: String,
-    default: ""
+    default: "",
   },
-  nutrients: [nutrientSchema]
+  nutrients: [nutrientSchema],
 });
 
 export default ingredientSchema;

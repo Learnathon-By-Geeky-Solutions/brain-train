@@ -8,80 +8,80 @@ const recipeSchema = new mongoose.Schema({
    * or firebaseUid of the user uploading the recipe
    */
   sourceId: {
-    type: String, 
+    type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   isUploaded: {
     type: Boolean,
-    default: false
+    default: false,
   },
   title: {
     type: String,
-    required: true
+    required: true,
   },
   image: {
     type: String,
-    default: ""
+    default: "",
   },
   summary: {
     type: String,
-    required: true
+    required: true,
   },
   vegetarian: {
     type: Boolean,
-    default: false
+    default: false,
   },
   vegan: {
     type: Boolean,
-    default: false
+    default: false,
   },
   glutenFree: {
     type: Boolean,
-    default: false
+    default: false,
   },
   dairyFree: {
     type: Boolean,
-    default: false
+    default: false,
   },
   preparationMinutes: {
     type: Number,
-    default: 0
+    default: 0,
   },
   cookingMinutes: {
     type: Number,
-    default: 0
+    default: 0,
   },
   readyInMinutes: {
     type: Number,
-    default: 0
+    default: 0,
   },
   likes: {
     type: Number,
-    default: 0
+    default: 0,
   },
   servings: {
     type: Number,
-    required: true
+    required: true,
   },
   cuisines: {
     type: [String],
-    default: []
+    default: [],
   },
   dishTypes: {
     type: [String],
-    default: []
+    default: [],
   },
   diets: {
     type: [String],
-    default: []
+    default: [],
   },
   instructions: {
     type: [String],
-    required: true
+    required: true,
   },
   ingredients: [ingredientSchema],
-  nutrition: nutritionSchema
+  nutrition: nutritionSchema,
 });
 
 recipeSchema.statics.getTopLikedRecipes = function (n) {
@@ -93,5 +93,7 @@ const Recipe = mongoose.model("Recipe", recipeSchema);
 export default Recipe;
 
 export const findRecipeById = async (recipeId) => {
-  return await Recipe.findOne({ _id: { $eq: recipeId.toString() } }, null, { sanitizeFilter: true });
+  return await Recipe.findOne({ _id: { $eq: recipeId.toString() } }, null, {
+    sanitizeFilter: true,
+  });
 };

@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from "crypto";
 import { findUserByUsername } from "../../../libraries/models/users.js";
 import { decodeFirebaseIdToken } from "../../../libraries/services/firebase.js";
 import { getSearchHistoryByUid, getRecipeInfoById } from "../../search/db.js";
@@ -44,7 +44,7 @@ export const recipeRecommender = async (req, res) => {
 
     const recommendations = await generateRecommendations(
       searchHistory.history,
-      RECOMMENDATION_LIMIT
+      RECOMMENDATION_LIMIT,
     );
     return res.status(200).json({ results: recommendations });
   } catch (error) {
@@ -66,12 +66,16 @@ const generateRecommendations = async (history, limit) => {
         ...(await handleSimilarRecipes(
           similarRecipes.similarIds,
           count,
-          selectedRecipeIds
-        ))
+          selectedRecipeIds,
+        )),
       );
     } else {
       recommendations.push(
-        ...(await handleSpoonacularFallback(recipeId, count, selectedRecipeIds))
+        ...(await handleSpoonacularFallback(
+          recipeId,
+          count,
+          selectedRecipeIds,
+        )),
       );
     }
   }
@@ -130,23 +134,23 @@ const handleSpoonacularFallback = (recipeId, count, selectedRecipeIds) => {
       if (similarRecipeIds.length === 0) return { detailedRecipes: [] }; // No similar recipes found
 
       return fetchSaveFilterRecipes(similarRecipeIds, {}).then(
-        (detailedRecipes) => ({ detailedRecipes, similarRecipeIds })
+        (detailedRecipes) => ({ detailedRecipes, similarRecipeIds }),
       );
     })
     .then(({ detailedRecipes }) => {
       const recipesWithSpecificFields = mapDetailedRecipes(detailedRecipes);
       const similarRecipeIds = detailedRecipes.map((recipe) => recipe.id);
       return createNewSimilarRecipeEntry(recipeId, similarRecipeIds).then(
-        () => recipesWithSpecificFields
+        () => recipesWithSpecificFields,
       );
     })
     .then((recipesWithSpecificFields) => {
       // Shuffle and slice the recommendations to the desired count
       return recipesWithSpecificFields
-      .sort(() => {
-        return crypto.randomBytes(4).readUInt32LE(0) / 0xffffffff - 0.5;
-      })
-      .slice(0, count);
+        .sort(() => {
+          return crypto.randomBytes(4).readUInt32LE(0) / 0xffffffff - 0.5;
+        })
+        .slice(0, count);
     })
     .catch((error) => {
       console.error("Error in handleSpoonacularFallback:", error);
@@ -187,7 +191,7 @@ const extractUniqueRecipeCounts = (history) => {
 const calculateRecipeProportions = (uniqueRecipeMap) => {
   const totalSearches = Array.from(uniqueRecipeMap.values()).reduce(
     (sum, count) => sum + count,
-    0
+    0,
   );
   const RECOMMENDATION_LIMIT = 10;
   const proportionMap = new Map();
@@ -199,7 +203,7 @@ const calculateRecipeProportions = (uniqueRecipeMap) => {
   for (let i = 0; i < entries.length - 1; i++) {
     const [recipeId, count] = entries[i];
     const proportion = Math.floor(
-      (count / totalSearches) * RECOMMENDATION_LIMIT
+      (count / totalSearches) * RECOMMENDATION_LIMIT,
     );
     proportionMap.set(recipeId, proportion);
     remaining -= proportion;

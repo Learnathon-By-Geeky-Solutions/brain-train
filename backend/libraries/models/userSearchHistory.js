@@ -4,11 +4,14 @@ import searchSchema from "./searches.js";
 const userSearhHistorySchema = new mongoose.Schema({
   firebaseUid: {
     type: String,
-    required: true
+    required: true,
   },
-  history: [searchSchema]
+  history: [searchSchema],
 });
 
-const UserSearchHistory = mongoose.model("UserSearchHistory", userSearhHistorySchema);
+const UserSearchHistory = mongoose.model(
+  "UserSearchHistory",
+  userSearhHistorySchema,
+);
 
 export default UserSearchHistory;
