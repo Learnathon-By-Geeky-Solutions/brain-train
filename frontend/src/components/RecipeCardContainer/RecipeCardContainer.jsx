@@ -56,9 +56,8 @@ const RecipeCardContainer = ({
     window.addEventListener("resize", handleResize);
 
     // Clean up
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [recipe_prop?.length]);
-  
 
   let type = location.state?.type || searchParams.get("type");
 
