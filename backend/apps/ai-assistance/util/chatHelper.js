@@ -57,7 +57,7 @@ export const saveChatAndRespond = (res, chatId, uid, userMessage, assistantMessa
 
   return dbAction.then(chat => {
     if (!chat) throw new Error('Chat not found or failed to save');
-    res.status(200).json({ chatId: chat._id, messages: chat.messages });
+    res.status(200).json({ chatId: chat._id, messages: [assistantMessage] });
   });
 };
 
