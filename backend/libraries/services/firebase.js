@@ -10,7 +10,6 @@ if (!admin.apps.length) {
 
 const firebaseBucket = admin.storage().bucket();
 
-
 /**
  * Decodes a Firebase ID token from the provided authorization header.
  *
@@ -30,8 +29,9 @@ export const decodeFirebaseIdToken = async (authorizationHeader) => {
  * @throws {Error} If the header does not start with 'Bearer ' or if the token is missing.
  */
 const extractBearerToken = (header) => {
-  if (!header?.startsWith('Bearer ')) throw new Error("Invalid authorization header");
-  const token = header.split(' ')[1];
+  if (!header?.startsWith("Bearer "))
+    throw new Error("Invalid authorization header");
+  const token = header.split(" ")[1];
   if (!token) throw new Error("Token missing after 'Bearer '");
   return token;
 };
@@ -40,20 +40,22 @@ const extractBearerToken = (header) => {
  * Verifies a Firebase authentication token and extracts user information.
  *
  * @param {string} token - The Firebase authentication token to verify.
- * @returns {Promise<{email: string, name: string, picture: string, uid: string}>} 
+ * @returns {Promise<{email: string, name: string, picture: string, uid: string}>}
  * A promise that resolves to an object containing the user's email, name, picture, and uid.
  * @throws {Error} If the token is invalid or expired.
  */
 const verifyToken = async (token) => {
   try {
-    const { email, name, picture, uid } = await admin.auth().verifyIdToken(token);
+    const { email, name, picture, uid } = await admin
+      .auth()
+      .verifyIdToken(token);
     return { email, name, picture, uid };
   } catch (error) {
-    console.error("Error verifying Firebase token:", error.message);
-    throw new Error("Invalid or expired authentication token");
+    throw new Error(
+      `Invalid or expired authentication token: ${error.message}`,
+    );
   }
 };
-
 
 /**
  * Uploads a file to Firebase Storage and returns its public URL.
@@ -70,7 +72,7 @@ export const uploadToFirebase = async (file, folder = "uploads") => {
       metadata: { contentType: file.mimetype },
     });
 
-    blobStream.on('error', reject).on('finish', resolve).end(file.buffer);
+    blobStream.on("error", reject).on("finish", resolve).end(file.buffer);
   });
 
   return `https://firebasestorage.googleapis.com/v0/b/${firebaseBucket.name}/o/${encodeURIComponent(fileName)}?alt=media`;

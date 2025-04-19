@@ -1,4 +1,4 @@
-import { getAuth,onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 async function makeRequest(url, method, body) {
   const auth = getAuth();
@@ -16,24 +16,17 @@ async function makeRequest(url, method, body) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${idToken}`,
           },
-        }
-        if(body){
+        };
+        if (body) {
           req.body = JSON.stringify(body);
         }
         const response = await fetch(url, req);
         if (response.ok) {
           data = await response.json();
-          console.log("res ok from makeRequest");
-          console.log(data);
-        }
-        else if(response.status === 409){
+        } else if (response.status === 409) {
           data.msg = "overlap";
           data.res = await response.json();
-          console.log("overlap from makeRequest");
-          console.log(data);
-        }
-        else {
-          console.log("res not ok from makeRequest");
+        } else {
           data.msg = "Failed to make request";
         }
       } else {
