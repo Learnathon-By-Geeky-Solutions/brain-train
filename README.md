@@ -17,6 +17,7 @@ Brain Train
 ## Project Description
 
 Geeky Chef is a web application that helps users discover recipes based on customizable preferences and dietary restrictions. Key features include:
+
 - AI-powered recipe recommendation engine
 - Detailed nutrition analysis and insights
 - Personalized meal planning system
