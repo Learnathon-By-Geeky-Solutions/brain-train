@@ -26,57 +26,42 @@ export const favouriteRecipesFinder = (req, res) => {
     });
 };
 
-export const favouriteRecipesAdder = (req, res) => {
-  const { recipeId } = req.body;
-  const id = recipeId?.toString();
+export const favouriteRecipesAdder = async (req, res) => {
+  try {
+    const { recipeId } = req.body;
+    const id = recipeId?.toString();
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "Invalid recipe ID" });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid recipe ID" });
+    }
+
+    const { uid } = await decodeFirebaseIdToken(req.headers.authorization);
+    const recipe = await findRecipeById(id);
+
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    let userFavourites = await findFavouriteRecipeIdsByUid(uid);
+
+    if (!userFavourites) {
+      await createUserEntryInUserFavourites(uid, id);
+      return res.status(201).json({ message: "Recipe added to favourites" });
+    }
+
+    if (userFavourites.recipeIds.includes(id)) {
+      return res.status(409).json({ error: "Recipe already in favourites" });
+    }
+
+    userFavourites.recipeIds.push(id);
+    await userFavourites.save();
+    return res.status(201).json({ message: "Recipe added to favourites" });
+  } catch (error) {
+    console.error("Add favourite recipe error:", error.message);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Internal server error" });
+    }
   }
-
-  decodeFirebaseIdToken(req.headers.authorization)
-    .then(({ uid }) => {
-      return findRecipeById(id).then((recipe) => {
-        if (!recipe) {
-          res.status(404).json({ error: "Recipe not found" });
-          throw new Error("RECIPE_NOT_FOUND");
-        }
-        return { uid, id };
-      });
-    })
-    .then(({ uid, id }) => {
-      return findFavouriteRecipeIdsByUid(uid).then((userFavourites) => ({
-        uid,
-        id,
-        userFavourites,
-      }));
-    })
-    .then(({ uid, id, userFavourites }) => {
-      if (!userFavourites) {
-        return createUserEntryInUserFavourites(uid, id).then(() =>
-          res.status(201).json({ message: "Recipe added to favourites" }),
-        );
-      }
-
-      if (userFavourites.recipeIds.includes(id)) {
-        return res.status(409).json({ error: "Recipe already in favourites" });
-      }
-
-      userFavourites.recipeIds.push(id);
-      return userFavourites
-        .save()
-        .then(() =>
-          res.status(201).json({ message: "Recipe added to favourites" }),
-        );
-    })
-    .catch((error) => {
-      if (error.message === "RECIPE_NOT_FOUND") return;
-
-      console.error("Add favourite recipe error:", error.message);
-      if (!res.headersSent) {
-        res.status(500).json({ error: "Internal server error" });
-      }
-    });
 };
 
 export const favouriteRecipesRemover = (req, res) => {
