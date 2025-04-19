@@ -1,82 +1,24 @@
-'use client';
-import React from 'react';
+"use client";
+import React from "react";
 import {
-  Box,
   IconButton,
-  Text,
-  VStack,
   useBreakpointValue,
   Drawer,
   useDisclosure,
-  Tooltip,
-    Flex,
-} from '@chakra-ui/react';
-import { motion } from 'framer-motion';
-import {
-  Menu as MenuIcon,
-  ArrowLeft,
-  ArrowRight,
-  Home,
-  User,
-  Settings
-} from 'lucide-react';
-import SideBarContent from './SideBarContent';
+  Flex,
+} from "@chakra-ui/react";
+import { Menu as MenuIcon } from "lucide-react";
+import SideBarContent from "./SideBarContent";
+import PropType from "prop-types";
 
-const MotionBox = motion(Box);
-
-// const navItems = [
-//   { label: 'Home', icon: <Home size={18} /> },
-//   { label: 'Profile', icon: <User size={18} /> },
-//   { label: 'Settings', icon: <Settings size={18} /> }
-// ];
-
-// const SidebarContent = ({ isOpen, onToggle, isMobile }) => {
-//   return (
-//     // <Flex 
-//     //     direction="column"
-//     // >
-//     <MotionBox
-//       w={isOpen ? "25vw" : "5vw"}
-//       bg="purple.600"
-//       color="white"
-//       transition="width 0.3s"
-//       overflow="hidden"
-//       h="full"
-//       position="fixed"
-//       top="10vh"
-//       p={3}
-//     >
-//       <IconButton
-//         aria-label="Toggle sidebar"
-//         icon={isOpen ? <ArrowLeft size={18} /> : <ArrowRight size={18} />}
-//         onClick={onToggle}
-//         size="sm"
-//         mb={6}
-//         bg="purple.500"
-//         _hover={{ bg: 'purple.400' }}
-//       />
-
-//       <VStack spacing={4} align="stretch">
-//         {navItems.map((item, idx) => (
-//             <Box
-//               display="flex"
-//               alignItems="center"
-//               px={2}
-//               py={2}
-//               _hover={{ bg: 'purple.500', cursor: 'pointer' }}
-//               borderRadius="md"
-//             >
-//               {item.icon}
-//               {isOpen && <Text ml={3}>{item.label}</Text>}
-//             </Box>
-//         ))}
-//       </VStack>
-//     </MotionBox>
-//     // </Flex>
-//   );
-// };
-
-const CollapsibleSideBar = ({ open, onToggle, navItems }) => {
+const CollapsibleSideBar = ({
+  open,
+  onToggle,
+  navItems,
+  loadChat,
+  clearChat,
+  toggleRefresh,
+}) => {
   const drawerDisclosure = useDisclosure();
 
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -84,10 +26,9 @@ const CollapsibleSideBar = ({ open, onToggle, navItems }) => {
   return (
     <>
       {isMobile ? (
-        <>
+        <Flex>
           <IconButton
             aria-label="Open menu"
-            icon={<MenuIcon />}
             onClick={drawerDisclosure.onOpen}
             m={2}
             position="fixed"
@@ -95,7 +36,9 @@ const CollapsibleSideBar = ({ open, onToggle, navItems }) => {
             left={2}
             zIndex={999}
             colorScheme="purple"
-          />
+          >
+            <MenuIcon />
+          </IconButton>
 
           <Drawer.Root
             isOpen={drawerDisclosure.open}
@@ -105,16 +48,39 @@ const CollapsibleSideBar = ({ open, onToggle, navItems }) => {
             <Drawer.Backdrop />
             <Drawer.Content>
               <Drawer.Body p={0}>
-                <SideBarContent isOpen={true} onToggle={drawerDisclosure.onClose} isMobile={true} navItems={navItems} />
+                <SideBarContent
+                  isOpen={true}
+                  onToggle={drawerDisclosure.onClose}
+                  navItems={navItems}
+                  loadChat={loadChat}
+                  clearChat={clearChat}
+                  toggleRefresh={toggleRefresh}
+                />
               </Drawer.Body>
             </Drawer.Content>
           </Drawer.Root>
-        </>
+        </Flex>
       ) : (
-        <SideBarContent isOpen={open} onToggle={onToggle} navItems={navItems} />
+        <SideBarContent
+          isOpen={open}
+          onToggle={onToggle}
+          navItems={navItems}
+          loadChat={loadChat}
+          clearChat={clearChat}
+          toggleRefresh={toggleRefresh}
+        />
       )}
     </>
   );
+};
+
+CollapsibleSideBar.propTypes = {
+  open: PropType.bool.isRequired,
+  onToggle: PropType.func.isRequired,
+  navItems: PropType.array.isRequired,
+  loadChat: PropType.func.isRequired,
+  clearChat: PropType.func.isRequired,
+  toggleRefresh: PropType.func.isRequired,
 };
 
 export default CollapsibleSideBar;

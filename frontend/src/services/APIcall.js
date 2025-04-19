@@ -19,10 +19,10 @@ async function makeRequest(url, method, body) {
           },
         };
         if (body) {
-          req.body = JSON.stringify(body);
+          req.body = isFormData ? body : JSON.stringify(body);
         }
         const response = await fetch(url, req);
-        if (response.ok) {
+        if (response.ok || response.status === 304) {
           data = await response.json();
         } else if (response.status === 409) {
           data.msg = "overlap";
