@@ -1,5 +1,6 @@
 import { UserImageLog } from "../../libraries/models/userImageLog.js";
 import { Chat } from "../../libraries/models/chat.js";
+import mongoose from "mongoose";
 
 export const saveNewChat = (userId, name, userMessage, assistantMessage) => {
   const newChat = new Chat({
@@ -11,6 +12,10 @@ export const saveNewChat = (userId, name, userMessage, assistantMessage) => {
 };
 
 export const appendMessagesToChat = (chatId, userMessage, assistantMessage) => {
+  if (!mongoose.Types.ObjectId.isValid(chatId)) {
+    throw new Error("Invalid chatId");
+  }
+
   return Chat.findByIdAndUpdate(
     chatId,
     { $push: { messages: { $each: [userMessage, assistantMessage] } } },

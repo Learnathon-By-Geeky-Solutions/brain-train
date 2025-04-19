@@ -1,6 +1,7 @@
 import express from "express";
 import { upload, handleMulterErrors } from "../middleware/multerUpload.js";
 import { validateImageUpload } from "../middleware/validateUpload.js";
+import { validateObjectId } from "../middleware/dbQueryValidator.js";
 import {
   analyzeImageIngredients,
   analyzeImageRecipe,
@@ -34,8 +35,8 @@ router.post(
 );
 
 router.get("/chat/list", getUserAllChatsList);
-router.get("/chat/:chatId", getChatDetailsById);
-router.patch("/chat/:chatId/rename", renameChatById);
-router.delete("/chat/:chatId", deleteChat);
+router.get("/chat/:chatId", validateObjectId, getChatDetailsById);
+router.patch("/chat/:chatId/rename", validateObjectId, renameChatById);
+router.delete("/chat/:chatId", validateObjectId, deleteChat);
 
 export default router;
