@@ -18,7 +18,7 @@ export const recipesByIngredientsHelper = (query) => {
     .map((f) => f.trim())
     .filter(Boolean);
 
-  return getRecipesByIngredients(ingredients, fieldsArray, number, filters)
+  return getRecipesByIngredients(ingredients, fieldsArray, number)
     .then((dbResults) => {
       console.log("🔍 DB Results Before Filtering:", dbResults.length);
       return filterRecipes(dbResults, filters);
@@ -29,7 +29,7 @@ export const recipesByIngredientsHelper = (query) => {
       const threshold = Math.ceil(number * 0.5);
 
       if (filteredDbResults.length >= threshold) {
-        return filteredDbResults;
+        return Promise.resolve(filteredDbResults);
       }
 
       return fetchByIngredientSaveFilter(ingredients, number, filters).then(
@@ -60,7 +60,7 @@ export const recipesByTitleHelper = (query) => {
 
         if (filteredDbResults.length >= threshold) {
           console.log("DB results are sufficient:", filteredDbResults.length);
-          return filteredDbResults;
+          return Promise.resolve(filteredDbResults);
         }
 
         return fetchByTitleSaveFilter(titleQuery, number, filters).then(

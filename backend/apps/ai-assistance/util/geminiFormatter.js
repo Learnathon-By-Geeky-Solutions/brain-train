@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 /**
  * Convert internal message format to Gemini-compatible format.
@@ -6,7 +6,6 @@ import axios from 'axios';
  * @returns {Promise<Array>} Gemini-compatible content array
  */
 export const convertToGeminiFormat = async (messages) => {
-    
   return Promise.all(
     messages.map(async ({ role, text, files }) => {
       const parts = [];
@@ -18,7 +17,7 @@ export const convertToGeminiFormat = async (messages) => {
           const base64 = await fetchImageAsBase64(url);
           parts.push({
             inlineData: {
-              mimeType: 'image/png', // Optional: auto detect later
+              mimeType: "image/png", // Optional: auto detect later
               data: base64,
             },
           });
@@ -26,7 +25,7 @@ export const convertToGeminiFormat = async (messages) => {
       }
 
       return { role, parts };
-    })
+    }),
   );
 };
 
@@ -37,10 +36,9 @@ export const convertToGeminiFormat = async (messages) => {
  */
 export const fetchImageAsBase64 = async (url) => {
   try {
-    const response = await axios.get(url, { responseType: 'arraybuffer' });
-    return Buffer.from(response.data).toString('base64');
+    const response = await axios.get(url, { responseType: "arraybuffer" });
+    return Buffer.from(response.data).toString("base64");
   } catch (error) {
-    console.error(' Error fetching image:', error.message);
-    throw new Error('Image fetch failed');
+    throw new Error("Image fetch failed{" + error.message + "}");
   }
 };
