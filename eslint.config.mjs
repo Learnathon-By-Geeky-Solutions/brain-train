@@ -14,11 +14,11 @@ export default defineConfig([
         ...globals.browser,
         ...globals.node,
         global: "readonly",
-        process: "readonly"
+        process: "readonly",
       },
       parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'module',
+        ecmaVersion: "latest",
+        sourceType: "module",
         ecmaFeatures: {
           jsx: true,
         },
@@ -41,53 +41,57 @@ export default defineConfig([
       react: {
         version: "detect",
       },
-      'import/resolver': {
+      "import/resolver": {
         alias: {
-          map: [
-            ['@', './src']
-          ],
-          extensions: ['.js', '.jsx', '.json']
-        }
-      }
+          map: [["@", "./src"]],
+          extensions: [".js", ".jsx", ".json"],
+        },
+      },
     },
     rules: {
       ...pluginReact.configs.recommended.rules,
-      "react/jsx-uses-vars": "error",  // This is crucial - ensures JSX components are recognized as used
+      "react/jsx-uses-vars": "error", // This is crucial - ensures JSX components are recognized as used
       "react/jsx-uses-react": "error", // Ensures React is recognized as used when JSX is used
     },
   },
   {
-    files: ["**/*.test.js", "**/*.spec.js", "**/testSetup.js", "**/jest.setup.js", "**/test/**/*.js"],
+    files: [
+      "**/*.test.js",
+      "**/*.spec.js",
+      "**/testSetup.js",
+      "**/jest.setup.js",
+      "**/test/**/*.js",
+    ],
     plugins: {
-      jest: pluginJest
+      jest: pluginJest,
     },
     languageOptions: {
       globals: {
         ...pluginJest.environments.globals.globals,
-        global: "writable"
-      }
+        global: "writable",
+      },
     },
     rules: {
-      ...pluginJest.configs.recommended.rules
-    }
+      ...pluginJest.configs.recommended.rules,
+    },
   },
   js.configs.recommended,
   {
     plugins: {
       react: pluginReact,
       prettier: prettier,
-      jest: pluginJest
+      jest: pluginJest,
     },
     rules: {
       ...prettierConfig.rules,
       "no-unused-vars": "warn",
       "no-console": "warn",
       "react/react-in-jsx-scope": "off",
-      'jest/no-disabled-tests': 'warn',
-      'jest/no-focused-tests': 'error',
-      'jest/no-identical-title': 'error',
-      'jest/prefer-to-have-length': 'warn',
-      'jest/valid-expect': 'error',
+      "jest/no-disabled-tests": "warn",
+      "jest/no-focused-tests": "error",
+      "jest/no-identical-title": "error",
+      "jest/prefer-to-have-length": "warn",
+      "jest/valid-expect": "error",
     },
     settings: {
       react: {
@@ -96,14 +100,12 @@ export default defineConfig([
       jest: {
         version: "detect",
       },
-      'import/resolver': {
+      "import/resolver": {
         alias: {
-          map: [
-            ['@', './src']
-          ],
-          extensions: ['.js', '.jsx', '.json']
-        }
-      }
+          map: [["@", "./src"]],
+          extensions: [".js", ".jsx", ".json"],
+        },
+      },
     },
-  }
+  },
 ]);
