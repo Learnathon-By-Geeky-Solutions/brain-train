@@ -37,3 +37,30 @@ it("should return 200 and valid shopping list for a dynamic recipe", async () =>
   expect(ingredient).toHaveProperty("amount");
   expect(typeof ingredient.amount).toBe("number");
 });
+
+it("should return 500 for invalid id", async () => {
+  const recipeId = 1234567890; // Invalid recipe ID
+
+  // Step 2: Call shopping list endpoint using that recipeId
+  const serving = 10;
+  const shoppingListResponse = await request(app)
+    .get(`/search/recipes/${recipeId}/shoppingList`)
+    .query({ requestedServing: serving })
+    .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`);
+
+  expect(shoppingListResponse.status).toBe(500);
+  expect(shoppingListResponse.body).toHaveProperty("error");
+});
+
+it("should return 500 for no serving size", async () => {
+  const recipeId = 1234567890; // Invalid recipe ID
+
+  // Step 2: Call shopping list endpoint using that recipeId
+  const shoppingListResponse = await request(app)
+    .get(`/search/recipes/${recipeId}/shoppingList`)
+    .query({})
+    .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`);
+
+  expect(shoppingListResponse.status).toBe(400);
+  expect(shoppingListResponse.body).toHaveProperty("error");
+});
