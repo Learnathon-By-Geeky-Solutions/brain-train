@@ -33,7 +33,10 @@ export const analyzeImageIngredients = (req, res) => {
       const base64 = req.file.buffer
         .toString("base64")
         .replace(/^data:image\/\w+;base64,/, "");
-      const aiService = VisionFactory.create("clarifai");
+
+      const type = req.query.type || "clarifai"; // default to "clarifai"
+
+      const aiService = VisionFactory.create(type);
       return aiService
         .analyzeImage(base64)
         .then((ingredients) => ({ uid, imageUrl, ingredients }));
