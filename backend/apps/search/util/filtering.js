@@ -1,4 +1,4 @@
-import { getRecipeBySourceId, getRecipeInfoById } from "../db.js";
+import { getRecipeInfoById } from "../db.js";
 
 import {
   normalizeFilters,
@@ -50,15 +50,6 @@ export const ensureFullRecipe = async (recipe) => {
     return recipe;
   }
 
-  if (recipe._id || recipe.id) {
-    const full = await getRecipeInfoById(recipe._id || recipe.id);
-    if (full) return full;
-  }
-
-  if (recipe.sourceId) {
-    const matches = await getRecipeBySourceId([recipe.sourceId]);
-    if (matches.length > 0) return matches[0];
-  }
-
-  return recipe;
+  const full = await getRecipeInfoById(recipe._id || recipe.id);
+  return full;
 };

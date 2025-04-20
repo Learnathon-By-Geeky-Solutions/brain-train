@@ -59,7 +59,6 @@ export const recipesByTitleHelper = (query) => {
         const threshold = Math.ceil(number * 0.5);
 
         if (filteredDbResults.length >= threshold) {
-          console.log("DB results are sufficient:", filteredDbResults.length);
           return Promise.resolve(filteredDbResults);
         }
 
