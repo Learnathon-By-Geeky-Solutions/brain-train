@@ -65,13 +65,6 @@ describe("Search By Ingredients Endpoint Test", () => {
     const recipes = response.body.results;
 
     expect(recipes.length).toBeGreaterThanOrEqual(0);
-    // if(recipes.length > 0) {
-    //     expect(recipes[0]).toHaveProperty("id");
-    //     expect(recipes[0]).toHaveProperty("image");
-    //     expect(recipes[0]).toHaveProperty("title");
-    //     expect(recipes[0]).toHaveProperty("likes");
-    //     expect(recipes[0]).toHaveProperty("summary");
-    // }
   });
 
   it("should return 500 with recipes for an authenticated user, ingr fields not given", async () => {
