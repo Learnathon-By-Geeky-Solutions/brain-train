@@ -9,6 +9,8 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+jest.setTimeout(50000); // top of the test file
+
 import { BaseChatService } from "../../../libraries/services/chat-service/baseChatService.js";
 
 describe("BaseChatService", () => {
@@ -79,7 +81,7 @@ describe("POST /ai/chat", () => {
     expect(lastMsg).toHaveProperty("role");
     expect(lastMsg).toHaveProperty("text");
     expect(typeof lastMsg.text).toBe("string");
-  }, 50000);
+  });
 
   it("should return 400", async () => {
     const testImagePath = path.join(__dirname, "./files/grocery.jpg");
@@ -91,5 +93,22 @@ describe("POST /ai/chat", () => {
 
     expect(res.status).toBeGreaterThanOrEqual(400);
     expect(res.body).toHaveProperty("error");
+  });
+});
+
+describe("GET /ai/chat/list", () => {
+  it("should return 200 and list of chat sessions", async () => {
+    const res = await request(app)
+      .get("/ai/chat/list")
+      .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`); // if auth is required
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("chats");
+    expect(Array.isArray(res.body.chats)).toBe(true);
+
+    for (const chat of res.body.chats) {
+      expect(chat).toHaveProperty("_id");
+      expect(chat).toHaveProperty("name");
+    }
   });
 });
