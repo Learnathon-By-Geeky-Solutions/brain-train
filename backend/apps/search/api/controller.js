@@ -114,9 +114,10 @@ export const getSimilarRecipes = (req, res) => {
   getRecipeInfoById(id, "_id sourceId")
     .then((recipe) => {
       if (!recipe?.sourceId) {
-        return res
+        res
           .status(404)
           .json({ error: "Recipe not found or missing sourceId." });
+        return Promise.resolve();
       }
 
       return spoonacularRequest(`/recipes/${recipe.sourceId}/similar`, {
@@ -125,16 +126,22 @@ export const getSimilarRecipes = (req, res) => {
     })
     .then((similarRecipes) => {
       if (!similarRecipes || similarRecipes.length === 0) {
-        return res.status(404).json({ results: [], totalResults: 0 });
+        res.status(200).json({ results: [], totalResults: 0 });
+        return Promise.resolve();
       }
 
       const ids = similarRecipes.map((r) => r.id);
-
       return fetchSaveFilterRecipes(ids, {});
     })
-    .then((recipes) => respondWithResults(res, recipes))
+    .then((recipes) => {
+      if (recipes) {
+        respondWithResults(res, recipes);
+      }
+    })
     .catch((error) => {
-      return res.status(500).json({ error: error.message });
+      if (!res.headersSent) {
+        res.status(500).json({ error: error.message });
+      }
     });
 };
 
