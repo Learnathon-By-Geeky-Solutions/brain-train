@@ -57,18 +57,6 @@ describe("POST /ai/analyze/ingredients", () => {
     expect(res.body).toHaveProperty("error");
   });
 
-  it("should return 400 with pdf", async () => {
-    const testImagePath = path.join(__dirname, "./files/shoppingList.pdf");
-
-    const res = await request(app)
-      .post("/ai/analyze/ingredients")
-      .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
-      .attach("image", testImagePath);
-
-    expect([400, 413]).toContain(res.status); // 413 if too large
-    expect(res.body).toHaveProperty("error");
-  });
-
   it("should return 400 error for no images", async () => {
     const res = await request(app)
       .post("/ai/analyze/ingredients")
@@ -78,7 +66,7 @@ describe("POST /ai/analyze/ingredients", () => {
     expect(res.body).toHaveProperty("error");
   });
 
-  it("should return 413 error for large images", async () => {
+  it("should return 400 error for large images", async () => {
     const testImagePath = path.join(__dirname, "./files/largeFile.jpg");
 
     const res = await request(app)
@@ -86,7 +74,19 @@ describe("POST /ai/analyze/ingredients", () => {
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
       .attach("image", testImagePath);
 
-    expect(res.status).toBe(413);
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("error");
+  });
+
+  it("should return 400 error for unsupported type", async () => {
+    const testImagePath = path.join(__dirname, "./files/shoppingList.pdf");
+
+    const res = await request(app)
+      .post("/ai/analyze/ingredients")
+      .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
+      .attach("image", testImagePath);
+
+    expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error");
   });
 });
