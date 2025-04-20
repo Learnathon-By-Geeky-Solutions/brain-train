@@ -82,6 +82,7 @@ export const getRecipeInformation = (req, res) => {
     .then(({ uid }) => updateUserSearchHistory(uid, id))
     .then(() => res.status(200).json(fetchedRecipe))
     .catch((error) => {
+      console.log("Error in getRecipeInformation:", error);
       const status = error.status || 500;
       const message = error.message || "Internal server error";
       res.status(status).json({ error: message });
