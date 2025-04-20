@@ -64,32 +64,34 @@ export const searchRecipesByIngredients = (req, res) => {
 // Controller: Get Recipe Information
 export const getRecipeInformation = (req, res) => {
   const id = req.params.id.toString();
+
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "Invalid recipe" });
+    return res.status(400).json({ error: "Invalid recipe." });
   }
+
+  let recipeData;
 
   getRecipeInfoById(id)
     .then((data) => {
       if (!data) {
-        return res.status(404).json({ error: "Recipe not found." });
+        return Promise.reject(
+          Object.assign(new Error("Recipe not found."), { code: 404 }),
+        );
       }
-
-      decodeFirebaseIdToken(req.headers.authorization)
-        .then(({ uid }) => {
-          updateUserSearchHistory(uid, id)
-            .then(() => {
-              return res.status(200).json(data);
-            })
-            .catch((error) => {
-              return res.status(500).json({ error: error.message });
-            });
-        })
-        .catch((error) => {
-          return res.status(500).json({ error: error.message });
-        });
+      recipeData = data;
+      return decodeFirebaseIdToken(req.headers.authorization);
     })
-    .catch((error) => {
-      return res.status(500).json({ error: error.message });
+    .then(({ uid }) => {
+      return updateUserSearchHistory(uid, id);
+    })
+    .then(() => {
+      res.status(200).json(recipeData);
+    })
+    .catch((err) => {
+      const status =
+        err.code && [400, 401, 403, 404].includes(err.code) ? err.code : 500;
+      const message = err.message || "Internal server error.";
+      res.status(status).json({ error: message });
     });
 };
 

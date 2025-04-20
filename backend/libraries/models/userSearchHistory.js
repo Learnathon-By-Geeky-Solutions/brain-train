@@ -15,3 +15,7 @@ const UserSearchHistory = mongoose.model(
 );
 
 export default UserSearchHistory;
+
+export const deleteSearchHistory = async (uid) => {
+  await UserSearchHistory.deleteOne({ firebaseUid: uid });
+};
