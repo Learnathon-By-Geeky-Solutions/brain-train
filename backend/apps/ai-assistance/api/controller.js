@@ -124,8 +124,8 @@ export const analyzeImageRecipe = (req, res) => {
 export const sendChatMessage = (req, res) => {
   decodeFirebaseIdToken(req.headers.authorization)
     .then(({ uid }) => handleUserMessage(req, uid))
-    .then(({ chatId, userMessage, uid }) =>
-      generateAssistantResponse(chatId, userMessage).then(
+    .then(({ chatId, userMessage, uid, type }) =>
+      generateAssistantResponse(chatId, userMessage, type).then(
         ({ assistantMessage }) =>
           saveChatAndRespond(res, chatId, uid, userMessage, assistantMessage),
       ),
