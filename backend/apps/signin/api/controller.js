@@ -7,10 +7,6 @@ import {
 export const signinController = (req, res) => {
   decodeFirebaseIdToken(req.headers.authorization)
     .then((userInfo) => {
-      if (!userInfo) {
-        return res.status(401).json({ error: "Unauthorized: Invalid token" });
-      }
-
       return findUserByEmail(userInfo.email).then((user) => ({
         user,
         userInfo,
@@ -26,13 +22,12 @@ export const signinController = (req, res) => {
       return createUser(userInfo).then(() =>
         findUserByEmail(userInfo.email).then((newUser) =>
           res
-            .status(200)
+            .status(201)
             .json({ message: "Login successful", username: newUser.username }),
         ),
       );
     })
     .catch((error) => {
-      console.error("Login error:", error.message);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(401).json({ error: error.message });
     });
 };
