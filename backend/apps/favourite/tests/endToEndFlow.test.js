@@ -27,6 +27,7 @@ describe("Favourites End-to-End Flow", () => {
         expect(recipe).toHaveProperty("title");
         expect(recipe).toHaveProperty("image");
         expect(recipe).toHaveProperty("likes");
+        expect(recipe).toHaveProperty("summary");
       });
     });
 
