@@ -1,5 +1,7 @@
 import request from "supertest";
 import app from "../../../app.js";
+import { deleteSearchHistory } from "../../../libraries/models/userSearchHistory.js";
+import { decodeFirebaseIdToken } from "../../../libraries/services/firebase.js";
 
 describe("Search History Endpoint Test", () => {
   const endpoint = "/search/history";
@@ -24,7 +26,7 @@ describe("Search History Endpoint Test", () => {
     expect(response.body).toHaveProperty("error", "Invalid history query.");
   });
 
-  it("should return 500 when accessed with authentification", async () => {
+  it("should return 500 when accessed without authentification", async () => {
     const n = 6;
     const response = await request(app).get(`${endpoint}/${n}`);
     expect(response.status).toBe(500);
@@ -33,6 +35,11 @@ describe("Search History Endpoint Test", () => {
 
   it("should return 200 with empty history for a new user", async () => {
     const n = 4;
+    const { uid } = await decodeFirebaseIdToken(
+      `Bearer ${global.__DISPOSABLE_USER_TOKEN__}`,
+    );
+
+    await deleteSearchHistory(uid);
     const response = await request(app)
       .get(`${endpoint}/${n}`)
       .set("Authorization", `Bearer ${global.__DISPOSABLE_USER_TOKEN__}`);
