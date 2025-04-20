@@ -9,7 +9,6 @@ export const getDbSuggestions = (query, number) =>
         id: r.id,
         title: r.title,
       }));
-      console.log("🔍 DB Suggestions:", suggestions);
       return suggestions;
     },
   );
@@ -22,7 +21,6 @@ export const getApiSuggestions = (query, number, existingSuggestions) => {
   return spoonacularRequest("/recipes/autocomplete", { query, number }).then(
     (apiResults) => {
       const apiIds = apiResults.map((r) => r.id);
-      console.log("🌐 API Recipe IDs:", apiIds);
 
       const newRecipes = apiResults.filter(
         (r) => !seenTitles.has(r.title.toLowerCase()),
