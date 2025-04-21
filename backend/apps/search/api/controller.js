@@ -42,8 +42,7 @@ export const searchRecipes = (req, res) => {
       return respondWithResults(res, results);
     })
     .catch((error) => {
-      const status = error.message.includes("authorization") ? 401 : 500;
-      return res.status(status).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     });
 };
 
@@ -58,40 +57,41 @@ export const searchRecipesByIngredients = (req, res) => {
       return respondWithResults(res, results);
     })
     .catch((error) => {
-      const status = error.message.includes("authorization") ? 401 : 500;
-      return res.status(status).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     });
 };
 
 // Controller: Get Recipe Information
 export const getRecipeInformation = (req, res) => {
   const id = req.params.id.toString();
+
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "Invalid recipe" });
+    return res.status(400).json({ error: "Invalid recipe." });
   }
+
+  let recipeData;
 
   getRecipeInfoById(id)
     .then((data) => {
       if (!data) {
-        return res.status(404).json({ error: "Recipe not found." });
+        return Promise.reject(
+          Object.assign(new Error("Recipe not found."), { code: 404 }),
+        );
       }
-
-      decodeFirebaseIdToken(req.headers.authorization)
-        .then(({ uid }) => {
-          updateUserSearchHistory(uid, id)
-            .then(() => {
-              return res.status(200).json(data);
-            })
-            .catch((error) => {
-              return res.status(500).json({ error: error.message });
-            });
-        })
-        .catch((error) => {
-          return res.status(500).json({ error: error.message });
-        });
+      recipeData = data;
+      return decodeFirebaseIdToken(req.headers.authorization);
     })
-    .catch((error) => {
-      return res.status(500).json({ error: error.message });
+    .then(({ uid }) => {
+      return updateUserSearchHistory(uid, id);
+    })
+    .then(() => {
+      res.status(200).json(recipeData);
+    })
+    .catch((err) => {
+      const status =
+        err.code && [400, 401, 403, 404].includes(err.code) ? err.code : 500;
+      const message = err.message || "Internal server error.";
+      res.status(status).json({ error: message });
     });
 };
 
@@ -120,9 +120,10 @@ export const getSimilarRecipes = (req, res) => {
   getRecipeInfoById(id, "_id sourceId")
     .then((recipe) => {
       if (!recipe?.sourceId) {
-        return res
+        res
           .status(404)
           .json({ error: "Recipe not found or missing sourceId." });
+        return Promise.resolve();
       }
 
       return spoonacularRequest(`/recipes/${recipe.sourceId}/similar`, {
@@ -131,16 +132,22 @@ export const getSimilarRecipes = (req, res) => {
     })
     .then((similarRecipes) => {
       if (!similarRecipes || similarRecipes.length === 0) {
-        return res.status(404).json({ results: [], totalResults: 0 });
+        res.status(200).json({ results: [], totalResults: 0 });
+        return Promise.resolve();
       }
 
       const ids = similarRecipes.map((r) => r.id);
-
       return fetchSaveFilterRecipes(ids, {});
     })
-    .then((recipes) => respondWithResults(res, recipes))
+    .then((recipes) => {
+      if (recipes) {
+        respondWithResults(res, recipes);
+      }
+    })
     .catch((error) => {
-      return res.status(500).json({ error: error.message });
+      if (!res.headersSent) {
+        res.status(500).json({ error: error.message });
+      }
     });
 };
 

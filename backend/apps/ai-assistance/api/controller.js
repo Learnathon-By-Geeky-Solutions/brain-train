@@ -10,6 +10,7 @@ import {
   getChatById,
   renameChatInDb,
   deleteChatById,
+  getUserImageUploads,
 } from "../db.js";
 
 import {
@@ -33,7 +34,10 @@ export const analyzeImageIngredients = (req, res) => {
       const base64 = req.file.buffer
         .toString("base64")
         .replace(/^data:image\/\w+;base64,/, "");
-      const aiService = VisionFactory.create("clarifai");
+
+      const type = req.query.type || "clarifai"; // default to "clarifai"
+
+      const aiService = VisionFactory.create(type);
       return aiService
         .analyzeImage(base64)
         .then((ingredients) => ({ uid, imageUrl, ingredients }));
@@ -121,8 +125,8 @@ export const analyzeImageRecipe = (req, res) => {
 export const sendChatMessage = (req, res) => {
   decodeFirebaseIdToken(req.headers.authorization)
     .then(({ uid }) => handleUserMessage(req, uid))
-    .then(({ chatId, userMessage, uid }) =>
-      generateAssistantResponse(chatId, userMessage).then(
+    .then(({ chatId, userMessage, uid, type }) =>
+      generateAssistantResponse(chatId, userMessage, type).then(
         ({ assistantMessage }) =>
           saveChatAndRespond(res, chatId, uid, userMessage, assistantMessage),
       ),
@@ -206,5 +210,18 @@ export const deleteChat = (req, res) => {
     .catch((err) => {
       console.error("Delete chat error:", err.message);
       res.status(500).json({ error: "Failed to delete chat" });
+    });
+};
+
+export const getUserUploads = (req, res) => {
+  decodeFirebaseIdToken(req.headers.authorization)
+    .then(({ uid }) => getUserImageUploads(uid))
+    .then((uploads) => {
+      res.status(200).json({ uploads });
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ error: "Could not fetch user uploads: " + err.message });
     });
 };

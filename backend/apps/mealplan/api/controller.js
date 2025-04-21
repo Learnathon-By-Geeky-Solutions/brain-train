@@ -128,6 +128,8 @@ export const deleteMealPlanById = (req, res) => {
       return deleteFn(planId, uid);
     })
     .then((result) => {
+      if (res.headersSent) return; // ✅ prevent double response
+
       if (!result || result.deletedCount === 0) {
         return res.status(404).json({
           success: false,
@@ -139,6 +141,8 @@ export const deleteMealPlanById = (req, res) => {
         .json({ success: true, message: "Meal plan deleted." });
     })
     .catch((err) => {
+      if (res.headersSent) return; // ✅ prevent double response
+
       console.error("[MealPlans] Delete Single Error:", err);
       return res
         .status(500)
@@ -152,19 +156,23 @@ export const searchMealPlanByDate = (req, res) => {
       const { date, type } = req.query;
 
       if (!date || !type || !["day", "week"].includes(type)) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           message:
             'Invalid or missing parameters. "date" and "type" (day|week) are required.',
         });
+        throw new Error("BadRequest"); // 🚫 prevent next .then() from running
       }
 
       return searchPlansByDateOrRange(uid, date, type);
     })
     .then((plans) => {
-      res.status(200).json({ success: true, plans });
+      if (!res.headersSent) {
+        res.status(200).json({ success: true, plans });
+      }
     })
     .catch((error) => {
+      if (res.headersSent) return;
       console.error("[SearchMealPlan] Error:", error.message);
       res.status(500).json({
         success: false,

@@ -27,8 +27,7 @@ export const usernameValidator = (req, res) => {
       res.status(200).json({ message: "Username available", available: true });
     })
     .catch((error) => {
-      console.error("Username validation error:", error.message);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     });
 };
 
@@ -48,7 +47,6 @@ export const recipeRecommender = async (req, res) => {
     );
     return res.status(200).json({ results: recommendations });
   } catch (error) {
-    console.error("Error in recipeRecommender:", error.message);
     return res.status(500).json({ error: error.message });
   }
 };
@@ -152,8 +150,7 @@ const handleSpoonacularFallback = (recipeId, count, selectedRecipeIds) => {
         })
         .slice(0, count);
     })
-    .catch((error) => {
-      console.error("Error in handleSpoonacularFallback:", error);
+    .catch(() => {
       return []; // Return empty array on error
     });
 };

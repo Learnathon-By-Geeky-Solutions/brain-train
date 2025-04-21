@@ -51,10 +51,14 @@ jobs:
           echo "SPOONACULAR_API_KEY=${{ secrets.SPOONACULAR_API_KEY }}" >> .env
           echo "TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }}" >> .env
           echo "TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }}" >> .env
+          echo "TEST_USER_NAME=${{ secrets.TEST_USER_NAME }}" >> .env
           echo "CLARIFAI_API_KEY=${{ secrets.CLARIFAI_API_KEY }}" >> .env
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
           echo "FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> .env
           echo "GEMINI_MODEL=${{ secrets.GEMINI_MODEL }}" >> .env
+          echo "DISPOSABLE_USER_EMAIL=${{ secrets.DISPOSABLE_USER_EMAIL }}" >> .env
+          echo "DISPOSABLE_USER_PASSWORD=${{ secrets.DISPOSABLE_USER_PASSWORD }}" >> .env
+          echo "DISPOSABLE_USER_NAME=${{ secrets.DISPOSABLE_USER_NAME }}" >> .env
           echo "PORT=8000" >> .env
           echo ""
         shell: bash

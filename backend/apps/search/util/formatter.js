@@ -34,10 +34,11 @@ export const formatRecipes = (data) => {
 
 export const mergeAndLimitResults = (dbResults, apiResults, limit) => {
   const combined = [...dbResults, ...apiResults];
+
   const unique = combined.filter((item, index, self) => {
     return (
       self.findIndex(
-        (r) => String(r._id || r.id) === String(item._id || item.id),
+        (r) => String(r._id || r.id) === String(item.id || item._id),
       ) === index
     );
   });
