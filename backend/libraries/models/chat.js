@@ -1,3 +1,30 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Chat:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: The name of the chat.
+ *         userId:
+ *           type: string
+ *           description: The Firebase UID of the user.
+ *         messages:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Message'
+ *           description: List of messages in the chat.
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: The timestamp when the chat was created.
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: The timestamp when the chat was last updated.
+ */
 import mongoose from "mongoose";
 import MessageSchema from "./message.js";
 
