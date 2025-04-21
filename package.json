@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
-    "@google/genai": "^0.8.0",
+    "@google/genai": "^0.9.0",
     "clarifai-nodejs-grpc": "^11.3.1",
     "concurrently": "^7.6.0",
     "cross-env": "^7.0.3",
