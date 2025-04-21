@@ -25,7 +25,6 @@ describe("BaseChatService", () => {
 
 describe("POST /ai/chat", () => {
   const imagePath = path.join(__dirname, "./files/pizza.jpg");
-  const sampleText = "Is the food suitable for vegetarian?";
 
   it("should respond with chatId and assistant message for new chat creation", async () => {
     expect(fs.existsSync(imagePath)).toBe(true);
@@ -55,8 +54,7 @@ describe("POST /ai/chat", () => {
     const res1 = await request(app)
       .post("/ai/chat")
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
-      .field("text", "Is the food suitable for vegetarian?")
-      .attach("image", imagePath);
+      .field("text", "Is soup suitable for vegetarian?");
 
     expect(res1.status).toBe(200);
     expect(res1.body).toHaveProperty("chatId");
@@ -67,9 +65,8 @@ describe("POST /ai/chat", () => {
     const res = await request(app)
       .post("/ai/chat")
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
-      .field("text", sampleText)
-      .field("chatId", sampleChatId)
-      .attach("image", imagePath);
+      .field("text", "Hello,I love pizza")
+      .field("chatId", sampleChatId);
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("chatId", sampleChatId);

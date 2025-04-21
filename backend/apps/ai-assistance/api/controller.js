@@ -222,6 +222,6 @@ export const getUserUploads = (req, res) => {
     .catch((err) => {
       res
         .status(500)
-        .json({ error: "Could not fetch user uploads" + err.message });
+        .json({ error: "Could not fetch user uploads: " + err.message });
     });
 };
