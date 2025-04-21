@@ -82,6 +82,19 @@ describe("POST /ai/chat", () => {
     expect(lastMsg).toHaveProperty("text");
     expect(typeof lastMsg.text).toBe("string");
   });
+  it("should respond againt non mongoose chatId", async () => {
+    const sampleChatId = "invalid-id-1234567890";
+
+    const res = await request(app)
+      .post("/ai/chat")
+      .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
+      .field("text", "Is milk suitable for vegetarian?")
+      .field("chatId", sampleChatId);
+
+    console.log("Response status:", res.status); // Log the response for debugging
+    expect(res.status).toBe(500);
+    expect(res.body).toHaveProperty("error");
+  });
 
   it("should return 400", async () => {
     const testImagePath = path.join(__dirname, "./files/grocery.jpg");
