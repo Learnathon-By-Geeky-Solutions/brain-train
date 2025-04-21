@@ -29,7 +29,9 @@ describe("Recommendation Test", () => {
   });
 
   it("should return 200 with an empty list for an user with empty search history", async () => {
-    const { uid } = decodeFirebaseIdToken(global.__DISPOSABLE_USER_TOKEN__);
+    const { uid } = decodeFirebaseIdToken(
+      `Bearer ${global.__DISPOSABLE_USER_TOKEN__}`,
+    );
     await deleteSearchHistory(uid);
     const response = await request(app)
       .get(`${endpoint}`)
