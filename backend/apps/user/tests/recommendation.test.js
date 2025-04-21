@@ -1,6 +1,8 @@
 import request from "supertest";
 import app from "../../../app.js";
 import SimilarRecipe from "../../../libraries/models/similarRecipes.js";
+import { deleteSearchHistory } from "../../../libraries/models/userSearchHistory.js";
+import { decodeFirebaseIdToken } from "../../../libraries/services/firebase.js";
 
 describe("Recommendation Test", () => {
   const endpoint = "/user/recommended";
@@ -27,6 +29,8 @@ describe("Recommendation Test", () => {
   });
 
   it("should return 200 with an empty list for an user with empty search history", async () => {
+    const { uid } = decodeFirebaseIdToken(global.__DISPOSABLE_USER_TOKEN__);
+    await deleteSearchHistory(uid);
     const response = await request(app)
       .get(`${endpoint}`)
       .set("Authorization", `Bearer ${global.__DISPOSABLE_USER_TOKEN__}`);
