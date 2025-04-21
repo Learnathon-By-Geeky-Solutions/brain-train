@@ -1,10 +1,10 @@
-import { Field as ChakraField } from '@chakra-ui/react'
-import * as React from 'react'
-import PropTypes from 'prop-types'
+import { Field as ChakraField } from "@chakra-ui/react";
+import * as React from "react";
+import PropTypes from "prop-types";
 
 export const Field = React.forwardRef(function Field(props, ref) {
   const { label, children, helperText, errorText, optionalText, ...rest } =
-    props
+    props;
   return (
     <ChakraField.Root ref={ref} {...rest}>
       {label && (
@@ -19,7 +19,7 @@ export const Field = React.forwardRef(function Field(props, ref) {
       )}
       {errorText && <ChakraField.ErrorText>{errorText}</ChakraField.ErrorText>}
     </ChakraField.Root>
-  )
+  );
 });
 
 Field.propTypes = {
@@ -28,4 +28,4 @@ Field.propTypes = {
   helperText: PropTypes.string,
   errorText: PropTypes.string,
   optionalText: PropTypes.string,
-}
+};

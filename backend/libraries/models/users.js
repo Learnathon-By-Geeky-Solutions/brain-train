@@ -1,30 +1,28 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
-  {
-    username: { 
-      type: String, 
-      required: true, 
-      unique: true 
-    },
-    email: { 
-      type: String, 
-      required: true, 
-      unique: true 
-    },
-    picture: { 
-      type: String, 
-      default: '' 
-    },
-    firebaseUid: {
-      type: String,
-      required: true,
-      unique: true
-    }
-  }
-);
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  picture: {
+    type: String,
+    default: "",
+  },
+  firebaseUid: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+});
 
-const User = mongoose.model('User', userSchema);
+export const User = mongoose.model("User", userSchema);
 
 /**
  * Finds a user by email.
@@ -41,8 +39,10 @@ export const findUserByEmail = async (email) => {
  * @returns {Object} The user object.
  */
 export const findUserByUsername = async (username) => {
-  return await User.findOne({ username: { $eq: username.toString() } }, null, { sanitizeFilter: true });
-}
+  return await User.findOne({ username: { $eq: username.toString() } }, null, {
+    sanitizeFilter: true,
+  });
+};
 
 /**
  * Creates a new user
@@ -54,7 +54,7 @@ export const createUser = async (userInfo) => {
     email: email,
     username: name,
     picture: picture,
-    firebaseUid: uid
+    firebaseUid: uid,
   });
   await user.save();
 };

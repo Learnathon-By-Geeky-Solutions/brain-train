@@ -3,46 +3,42 @@ import mongoose from "mongoose";
 const nutrientSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   amount: {
     type: Number,
     required: true,
-    default: 0.0
+    default: 0.0,
   },
   unit: {
     type: String,
-    default: ""
+    default: "",
   },
   percentOfDailyNeeds: {
     type: Number,
-    default: 0.0
-  }
+    default: 0.0,
+  },
 });
 
 const nutritionPropertySchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   amount: {
     type: Number,
     required: true,
-    default: 0.0
+    default: 0.0,
   },
   unit: {
     type: String,
-    default: ""
-  }
+    default: "",
+  },
 });
 
 const nutritionSchema = new mongoose.Schema({
   nutrients: [nutrientSchema],
-  properties: [nutritionPropertySchema]
+  properties: [nutritionPropertySchema],
 });
 
-export { 
-  nutritionPropertySchema,
-  nutrientSchema,
-  nutritionSchema
-}; 
+export { nutritionPropertySchema, nutrientSchema, nutritionSchema };

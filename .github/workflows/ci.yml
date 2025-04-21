@@ -1,0 +1,75 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+    types: [reopened, synchronize, opened]
+
+jobs:
+  sonarqube:
+    runs-on: ubuntu-latest # OS to run the CI pipeline
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Ensure full history is available
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+
+      - name: Root dependencies
+        run: npm install
+
+      - name: Backend dependencies
+        run: cd backend && npm install
+
+      - name: Frontend dependencies
+        run: cd frontend && npm install
+
+      - name: Run Snyk security test
+        run: npm run test:security
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Create backend/.env file
+        run: |
+          cd backend
+          touch .env
+          echo "FIREBASE_ADMIN_CLIENT_EMAIL=${{ secrets.FIREBASE_ADMIN_CLIENT_EMAIL }}" >> .env
+          echo "FIREBASE_ADMIN_PRIVATE_KEY=${{ secrets.FIREBASE_ADMIN_PRIVATE_KEY }}" >> .env
+          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
+          echo "FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> .env
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
+          echo "SPOONACULAR_API_KEY=${{ secrets.SPOONACULAR_API_KEY }}" >> .env
+          echo "TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }}" >> .env
+          echo "TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }}" >> .env
+          echo "TEST_USER_NAME=${{ secrets.TEST_USER_NAME }}" >> .env
+          echo "CLARIFAI_API_KEY=${{ secrets.CLARIFAI_API_KEY }}" >> .env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+          echo "FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> .env
+          echo "GEMINI_MODEL=${{ secrets.GEMINI_MODEL }}" >> .env
+          echo "DISPOSABLE_USER_EMAIL=${{ secrets.DISPOSABLE_USER_EMAIL }}" >> .env
+          echo "DISPOSABLE_USER_PASSWORD=${{ secrets.DISPOSABLE_USER_PASSWORD }}" >> .env
+          echo "DISPOSABLE_USER_NAME=${{ secrets.DISPOSABLE_USER_NAME }}" >> .env
+          echo "PORT=8000" >> .env
+          echo ""
+        shell: bash
+
+      - name: Run Prettier check
+        run: npx prettier --check "**/*.{js,jsx,ts,tsx}"
+
+      - name: Run unit tests with Jest
+        run: npm test
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

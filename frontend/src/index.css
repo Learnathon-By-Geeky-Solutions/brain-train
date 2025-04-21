@@ -29,10 +29,10 @@ body {
 
 @font-face {
   font-family: "Mustard Medium";
-  src: url('/src/assets/fonts/Mustard Medium.otf') format('opentype');
+  src: url("/src/assets/fonts/Mustard Medium.otf") format("opentype");
 }
 
 @font-face {
   font-family: "Mustard Strong";
-  src: url('/src/assets/fonts/Mustard Bold.otf') format('opentype');
+  src: url("/src/assets/fonts/Mustard Bold.otf") format("opentype");
 }
