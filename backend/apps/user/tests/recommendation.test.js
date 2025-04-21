@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../../../app.js";
+import SimilarRecipe from "../../../libraries/models/similarRecipes.js";
 
 describe("Recommendation Test", () => {
   const endpoint = "/user/recommended";
@@ -34,5 +35,53 @@ describe("Recommendation Test", () => {
     expect(response.body).toHaveProperty("results");
     expect(Array.isArray(response.body.results)).toBe(true);
     expect(response.body.results).toHaveLength(0);
+  });
+
+  it("should return 500 for unauthenticated users", async () => {
+    const response = await request(app).get(`${endpoint}`);
+
+    expect(response.status).toBe(500);
+    expect(response.body).toHaveProperty("error");
+  });
+
+  it("should return 200 with spoonacular fallback for recipe recommendations not in db", async () => {
+    let response = await request(app)
+      .get(`/search/history/10`)
+      .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("results");
+    expect(Array.isArray(response.body.results)).toBe(true);
+
+    const history = response.body.results;
+
+    expect(history.length).toBeGreaterThan(0);
+
+    const latestSearch = history[0];
+
+    expect(latestSearch).toHaveProperty("id");
+
+    const latestSearchId = latestSearch.id;
+
+    await SimilarRecipe.deleteOne({ recipeId: latestSearchId });
+
+    response = await request(app)
+      .get(`${endpoint}`)
+      .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("results");
+    expect(Array.isArray(response.body.results)).toBe(true);
+
+    const recommendations = response.body.results;
+    expect(recommendations).toHaveLength(10); // RECOMMENDATION_LIMIT
+
+    recommendations.forEach((recipe) => {
+      expect(recipe).toHaveProperty("id");
+      expect(recipe).toHaveProperty("title");
+      expect(recipe).toHaveProperty("image");
+      expect(recipe).toHaveProperty("likes");
+      expect(recipe).toHaveProperty("summary");
+    });
   });
 });
