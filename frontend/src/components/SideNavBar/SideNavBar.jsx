@@ -1,6 +1,6 @@
-import { Box, VStack, IconButton, Tooltip } from '@chakra-ui/react';
+import { Box, VStack, IconButton, Tooltip } from "@chakra-ui/react";
 import "./SideNavBar.css";
-import { LuMenu } from 'react-icons/lu';
+import { LuMenu } from "react-icons/lu";
 
 export default function SideNavBar() {
   return (
@@ -48,4 +48,4 @@ export default function SideNavBar() {
       </VStack>
     </Box>
   );
-};
+}

@@ -1,5 +1,5 @@
-import { decodeFirebaseIdToken } from '../../../libraries/services/firebase.js';
-import { createUser } from '../../../libraries/models/users.js';
+import { decodeFirebaseIdToken } from "../../../libraries/services/firebase.js";
+import { createUser } from "../../../libraries/models/users.js";
 
 export const signupController = async (req, res) => {
   try {
@@ -8,13 +8,12 @@ export const signupController = async (req, res) => {
     const userInfo = {
       email: email,
       name: name,
-      picture: '',
-      uid: uid
-    }
+      picture: "",
+      uid: uid,
+    };
     await createUser(userInfo);
-    return res.status(201).json({ message: 'User created' });
+    return res.status(201).json({ message: "User created" });
   } catch (error) {
-    console.error('Signup error:', error.message);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: error.message });
   }
-}
+};

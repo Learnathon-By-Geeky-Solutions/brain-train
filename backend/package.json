@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" jest"
   },
   "keywords": [],
   "author": "",
@@ -25,8 +26,27 @@
     "string-strip-html": "^13.4.8"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-node": "^29.7.0",
     "nodemon": "^3.1.9",
+    "supertest": "^7.1.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
+  },
+  "jest": {
+    "transform": {},
+    "globalSetup": "<rootDir>/config/jest/jest.global-setup.js",
+    "globalTeardown": "<rootDir>/config/jest/jest.global-teardown.js",
+    "setupFilesAfterEnv": [
+      "<rootDir>/config/jest/jest.setup.js"
+    ],
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "testTimeout": 20000,
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "text",
+      "lcov"
+    ]
   }
 }

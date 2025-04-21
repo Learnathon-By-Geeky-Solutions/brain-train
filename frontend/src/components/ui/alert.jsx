@@ -1,7 +1,7 @@
-import { Alert as ChakraAlert } from '@chakra-ui/react'
-import { CloseButton } from './close-button'
-import * as React from 'react'
-import PropTypes from 'prop-types'
+import { Alert as ChakraAlert } from "@chakra-ui/react";
+import { CloseButton } from "./close-button";
+import * as React from "react";
+import PropTypes from "prop-types";
 
 export const Alert = React.forwardRef(function Alert(props, ref) {
   const {
@@ -13,7 +13,7 @@ export const Alert = React.forwardRef(function Alert(props, ref) {
     startElement,
     endElement,
     ...rest
-  } = props
+  } = props;
   return (
     <ChakraAlert.Root ref={ref} {...rest}>
       {startElement || <ChakraAlert.Indicator>{icon}</ChakraAlert.Indicator>}
@@ -23,21 +23,21 @@ export const Alert = React.forwardRef(function Alert(props, ref) {
           <ChakraAlert.Description>{children}</ChakraAlert.Description>
         </ChakraAlert.Content>
       ) : (
-        <ChakraAlert.Title flex='1'>{title}</ChakraAlert.Title>
+        <ChakraAlert.Title flex="1">{title}</ChakraAlert.Title>
       )}
       {endElement}
       {closable && (
         <CloseButton
-          size='sm'
-          pos='relative'
-          top='-2'
-          insetEnd='-2'
-          alignSelf='flex-start'
+          size="sm"
+          pos="relative"
+          top="-2"
+          insetEnd="-2"
+          alignSelf="flex-start"
           onClick={onClose}
         />
       )}
     </ChakraAlert.Root>
-  )
+  );
 });
 
 Alert.propTypes = {

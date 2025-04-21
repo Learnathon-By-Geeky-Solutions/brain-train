@@ -1,114 +1,21 @@
-import { getAuth,onAuthStateChanged } from "firebase/auth";
+import makeRequest from "@/services/APIcall";
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+const API_BASE_URL =
+  import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
 
-const getRecentRecipes = async(noOfRecipes)=>{
-  const auth = getAuth();
-  let data = {status: "error", msg: ""};
+const getRecentRecipes = async (noOfRecipes) => {
   const url = `${API_BASE_URL}/search/history/${noOfRecipes}`;
-  
-  // Return a promise that resolves when auth state is ready
-  return new Promise((resolve) => {
-    // This listener fires once when auth state is first determined
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      unsubscribe(); // Stop listening immediately after first auth state is determined
-      
-      if (user) {
-        const idToken = await user.getIdToken();
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
-        
-        if (response.ok) {
-          data = await response.json();
-          console.log("Data: from recent recipes");
-          console.log(data);
-        } else {
-          data.msg = "Failed to get recent recipes";
-          console.log("Data: from recent recipes when failed");
-          console.log(data);
-        }
-      } else {
-        data.msg = "User not logged in";
-      }
-      resolve(data);
-    });
-  });
-}
+  return makeRequest(url, "GET", null);
+};
 
-const getRecommendedRecipes = async()=>{
-    console.log("Getting recommended recipes");
-  const auth = getAuth();
-  let data = {status: "error", msg: ""};
+const getRecommendedRecipes = async () => {
   const url = `${API_BASE_URL}/user/recommended`;
-  
-  // Return a promise that resolves when auth state is ready
-  return new Promise((resolve) => {
-    // This listener fires once when auth state is first determined
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      unsubscribe(); // Stop listening immediately after first auth state is determined
-      
-      if (user) {
-        const idToken = await user.getIdToken();
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
-        
-        if (response.ok) {
-          data = await response.json();
-        } else {
-          data.msg = "Failed to get recommended recipes";
-        }
-      } else {
-        data.msg = "User not logged in";
-      }
-      console.log("Data: ", data);
-      resolve(data);
-    });
-  });
-}
+  return makeRequest(url, "GET", null);
+};
 
-const getTrendingRecipes = async(noOfRecipes)=>{
-  const auth = getAuth();
-  let data = {status: "error", msg: ""};
+const getTrendingRecipes = async (noOfRecipes) => {
   const url = `${API_BASE_URL}/trending/${noOfRecipes}`;
-  
-  // Return a promise that resolves when auth state is ready
-  return new Promise((resolve) => {
-    // This listener fires once when auth state is first determined
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      unsubscribe(); // Stop listening immediately after first auth state is determined
-      
-      if (user) {
-        const idToken = await user.getIdToken();
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
-        
-        if (response.ok) {
-          data = await response.json();
-        } else {
-          data.msg = "Failed to get trending recipes";
-        }
-      } else {
-        data.msg = "User not logged in";
-      }
-      resolve(data);
-    });
-  });
-}
-
+  return makeRequest(url, "GET", null);
+};
 
 export { getRecentRecipes, getRecommendedRecipes, getTrendingRecipes };
