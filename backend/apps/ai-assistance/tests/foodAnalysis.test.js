@@ -76,7 +76,7 @@ describe("POST /ai/analyze/food", () => {
     expect(res.status).toBe(200);
 
     const uploadsRes = await request(app)
-      .get("/ai//uploads")
+      .get("/ai/uploads")
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`);
 
     expect(uploadsRes.status).toBe(200);
