@@ -22,8 +22,7 @@ const ChatBot = ({ photoURL }) => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [fileBlob, setFileBlob] = useState([]);
-  const imagePreviewState = useState([]);
-  const [imagePreview, setImagePreview] = imagePreviewState;
+  const [imagePreview, setImagePreview] = useState([]);
   const [chatList, setChatList] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
@@ -217,7 +216,8 @@ const ChatBot = ({ photoURL }) => {
           isLoading={isLoading}
           clearChat={clearChat}
           setFileBlob={setFileBlob}
-          imagePreviewState={imagePreviewState}
+          imagePreview={imagePreview}
+          setImagePreview={setImagePreview}
         />
         <Toaster />
       </Flex>

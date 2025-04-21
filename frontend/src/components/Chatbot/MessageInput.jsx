@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Input, IconButton, Flex } from "@chakra-ui/react";
-import { LuImageUp, LuSend } from "react-icons/lu";
-import { LuRefreshCcw } from "react-icons/lu";
+import { LuImageUp, LuSend, LuRefreshCcw } from "react-icons/lu";
 import { toaster } from "../ui/toaster";
 import { handleFileChange, readRawFile } from "@/services/fileHandler";
 import ImagePreviewWithProgress from "./ImagePreviewWithProgress";
@@ -14,17 +13,15 @@ const MessageInput = ({
   isLoading,
   clearChat,
   setFileBlob,
-  imagePreviewState,
+  imagePreview,
+  setImagePreview,
 }) => {
-  const setFile = useState([])[1];
   const [progress, setProgress] = useState([]);
-  const [imagePreview, setImagePreview] = imagePreviewState;
   const [showImagePreview, setShowImagePreview] = useState([]);
   const fileInputRef = React.useRef(null);
 
   const cancelImageUpload = (index) => {
     if (index !== undefined) {
-      setFile((prev) => prev.filter((_, i) => i !== index));
       setImagePreview((prev) => prev.filter((_, i) => i !== index));
       setProgress((prev) => prev.filter((_, i) => i !== index));
       setShowImagePreview((prev) => prev.filter((_, i) => i !== index));
@@ -59,7 +56,7 @@ const MessageInput = ({
           const selectedFiles = e.target.files;
           setProgress(Array(selectedFiles.length).fill(0));
           setShowImagePreview(Array(selectedFiles.length).fill(false));
-          handleFileChange(e, setFile, setImagePreview, toaster);
+          handleFileChange(e, setImagePreview, toaster);
           for (let i = 0; i < selectedFiles.length; i++) {
             setShowImagePreview((prev) => {
               const newShowImagePreview = [...prev];
@@ -171,7 +168,8 @@ MessageInput.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   clearChat: PropTypes.func.isRequired,
   setFileBlob: PropTypes.func.isRequired,
-  imagePreviewState: PropTypes.array.isRequired,
+  imagePreview: PropTypes.array.isRequired,
+  setImagePreview: PropTypes.func.isRequired,
 };
 
 export default MessageInput;
