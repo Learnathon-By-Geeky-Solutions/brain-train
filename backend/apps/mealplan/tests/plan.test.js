@@ -54,6 +54,24 @@ describe("POST /plan/generate with deleteOverlap variations", () => {
     expect(res.body).toHaveProperty("success", false);
     expect(res.body).toHaveProperty("existing", true);
   });
+  it("should return 400 for past startDate", async () => {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 3); // yesterday
+
+    const res = await request(app)
+      .post("/plan/generate")
+      .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
+      .send({
+        timeFrame: "day",
+        startDate: formatDate(startDate),
+        targetCalories: 2200,
+        exclude: "Chicken,pork",
+        title: "Past Start Date Plan",
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("errors");
+  });
 });
 
 describe("summarizePlans", () => {
