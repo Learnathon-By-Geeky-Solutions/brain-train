@@ -21,6 +21,7 @@ export const getDefaultChatName = () => {
 // Helper to create and upload user message
 export const handleUserMessage = (req, uid) => {
   const { text, chatId } = req.body;
+  const type = req.query.type || "gemini"; // default to "gemini"
   const filePromise = req.file
     ? uploadToFirebase(req.file).then((url) => [url])
     : Promise.resolve([]);
@@ -29,12 +30,13 @@ export const handleUserMessage = (req, uid) => {
     chatId,
     userMessage: { role: "user", text, files: fileUrls },
     uid,
+    type,
   }));
 };
 
 // Helper to call Gemini and get assistant response
-export const generateAssistantResponse = async (chatId, userMessage) => {
-  const llm = ChatFactory.create("gemini");
+export const generateAssistantResponse = async (chatId, userMessage, type) => {
+  const llm = ChatFactory.create(type);
   const recentMessages = await loadRecentMessagesForContext(chatId, 20);
 
   const content = await convertToGeminiFormat([...recentMessages, userMessage]);

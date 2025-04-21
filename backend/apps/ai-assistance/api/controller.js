@@ -33,7 +33,10 @@ export const analyzeImageIngredients = (req, res) => {
       const base64 = req.file.buffer
         .toString("base64")
         .replace(/^data:image\/\w+;base64,/, "");
-      const aiService = VisionFactory.create("clarifai");
+
+      const type = req.query.type || "clarifai"; // default to "clarifai"
+
+      const aiService = VisionFactory.create(type);
       return aiService
         .analyzeImage(base64)
         .then((ingredients) => ({ uid, imageUrl, ingredients }));
@@ -121,8 +124,8 @@ export const analyzeImageRecipe = (req, res) => {
 export const sendChatMessage = (req, res) => {
   decodeFirebaseIdToken(req.headers.authorization)
     .then(({ uid }) => handleUserMessage(req, uid))
-    .then(({ chatId, userMessage, uid }) =>
-      generateAssistantResponse(chatId, userMessage).then(
+    .then(({ chatId, userMessage, uid, type }) =>
+      generateAssistantResponse(chatId, userMessage, type).then(
         ({ assistantMessage }) =>
           saveChatAndRespond(res, chatId, uid, userMessage, assistantMessage),
       ),
