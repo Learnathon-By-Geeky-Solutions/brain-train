@@ -64,12 +64,6 @@ export const saveChatAndRespond = (
   });
 };
 
-/**
- * Loads and formats recent messages for Gemini context.
- * @param {string} chatId - Chat document ID.
- * @param {number} limit - Number of past messages to retrieve.
- * @returns {Promise<Array<{ role: string, parts: Array }>>}
- */
 export const loadRecentMessagesForContext = async (chatId, limit = 10) => {
   if (!chatId) return [];
 

@@ -10,6 +10,7 @@ import {
   getChatDetailsById,
   renameChatById,
   deleteChat,
+  getUserUploads,
 } from "./controller.js";
 
 const router = express.Router();
@@ -33,6 +34,8 @@ router.post(
   handleMulterErrors(upload.single("image")),
   sendChatMessage,
 );
+
+router.get("/uploads", getUserUploads);
 
 router.get("/chat/list", getUserAllChatsList);
 router.get("/chat/:chatId", validateObjectId, getChatDetailsById);
