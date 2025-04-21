@@ -66,25 +66,31 @@ export const getRecipeInformation = (req, res) => {
   const id = req.params.id.toString();
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "Invalid recipe" });
+    return res.status(400).json({ error: "Invalid recipe." });
   }
 
-  let fetchedRecipe;
+  let recipeData;
 
   getRecipeInfoById(id)
     .then((data) => {
       if (!data) {
-        return Promise.reject({ status: 404, message: "Recipe not found." });
+        return Promise.reject(
+          Object.assign(new Error("Recipe not found."), { code: 404 }),
+        );
       }
-      fetchedRecipe = data;
+      recipeData = data;
       return decodeFirebaseIdToken(req.headers.authorization);
     })
-    .then(({ uid }) => updateUserSearchHistory(uid, id))
-    .then(() => res.status(200).json(fetchedRecipe))
-    .catch((error) => {
-      console.log("Error in getRecipeInformation:", error);
-      const status = error.status || 500;
-      const message = error.message || "Internal server error";
+    .then(({ uid }) => {
+      return updateUserSearchHistory(uid, id);
+    })
+    .then(() => {
+      res.status(200).json(recipeData);
+    })
+    .catch((err) => {
+      const status =
+        err.code && [400, 401, 403, 404].includes(err.code) ? err.code : 500;
+      const message = err.message || "Internal server error.";
       res.status(status).json({ error: message });
     });
 };

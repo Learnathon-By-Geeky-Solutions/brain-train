@@ -21,8 +21,7 @@ export const favouriteRecipesFinder = (req, res) => {
       });
     })
     .catch((error) => {
-      console.error("Get favourite recipes error:", error.message);
-      return res.status(500).json({ error: "Internal server error" });
+      return res.status(500).json({ error: error.message });
     });
 };
 
@@ -71,9 +70,8 @@ const handleFavourites = (uid, id, userFavourites, res) => {
 
 const handleError = (error, res) => {
   if (error.message.startsWith("Handled:")) return;
-  console.error("Add favourite recipe error:", error.message);
   if (!res.headersSent) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -108,7 +106,6 @@ export const favouriteRecipesRemover = (req, res) => {
         );
     })
     .catch((error) => {
-      console.error("Remove favourite recipe error:", error.message);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: error.message });
     });
 };
