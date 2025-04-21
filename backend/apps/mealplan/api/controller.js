@@ -128,6 +128,8 @@ export const deleteMealPlanById = (req, res) => {
       return deleteFn(planId, uid);
     })
     .then((result) => {
+      if (res.headersSent) return; // ✅ prevent double response
+
       if (!result || result.deletedCount === 0) {
         return res.status(404).json({
           success: false,
@@ -139,6 +141,8 @@ export const deleteMealPlanById = (req, res) => {
         .json({ success: true, message: "Meal plan deleted." });
     })
     .catch((err) => {
+      if (res.headersSent) return; // ✅ prevent double response
+
       console.error("[MealPlans] Delete Single Error:", err);
       return res
         .status(500)
