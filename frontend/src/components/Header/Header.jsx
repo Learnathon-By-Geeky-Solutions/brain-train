@@ -28,6 +28,7 @@ import {
 import { LuMenu } from "react-icons/lu";
 import { useState, useEffect } from "react";
 import FilterController from "../RecipeSearchUtility/filter";
+import { throttle } from "lodash";
 
 const StickyHeader = ({
   photoUrl,
@@ -38,6 +39,7 @@ const StickyHeader = ({
   pageLocation,
   setPageState,
   showResults,
+  scrollRef,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -49,49 +51,59 @@ const StickyHeader = ({
   const [showSecondBar, setShowSecondBar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [containerClosed, setContainerClosed] = useState(true);
+  const scrollDownEventExclusion = [
+    "/dashboard/mealPlan",
+    "/dashboard/chat",
+    "/dashboard/recipe",
+  ];
+  const scrollUpEventExclusion = ["/dashboard/chat"];
 
-  const controlSecondBar = () => {
-    // Get current scroll position
-    const currentScrollY = window.scrollY;
-
+  const controlSecondBar = throttle((pathname, scrollYLatest) => {
+    const currentScrollY = scrollRef?.current?.scrollTop || 0;
     // If we're at the top (or very close to it), always show the second bar
-    if (
-      currentScrollY < 5 &&
-      Math.abs(currentScrollY - lastScrollY) > 5 &&
-      location.pathname !== "/dashboard/mealPlan" &&
-      location.pathname !== "/dashboard/chat"
-    ) {
+    if (currentScrollY < 5 && !scrollDownEventExclusion.includes(pathname)) {
       setShowSecondBar(true);
     }
     // Otherwise hide it when scrolling down
     else if (
-      currentScrollY > lastScrollY &&
+      currentScrollY > scrollYLatest &&
+      currentScrollY >= 80 &&
       containerClosed &&
-      Math.abs(currentScrollY - lastScrollY) > 5
+      !scrollUpEventExclusion.includes(pathname)
     ) {
       setShowSecondBar(false);
     }
     // Update the last scroll position
     setLastScrollY(currentScrollY);
+  }, 100);
+
+  const handleScroll = () => {
+    // use the latest location.pathname here
+    controlSecondBar(location.pathname, lastScrollY);
   };
 
   useEffect(() => {
-    if (
-      location.pathname === "/dashboard/mealPlan" ||
-      location.pathname === "/dashboard/chat"
-    ) {
+    if (scrollDownEventExclusion.includes(location.pathname)) {
       setShowSecondBar(false);
+    } else {
+      setShowSecondBar(true);
     }
   }, [location.pathname]);
 
   useEffect(() => {
-    if (containerClosed) window.addEventListener("scroll", controlSecondBar);
-    else setShowSecondBar(true);
-    // Cleanup function to remove the event listener
+    const scrollableElement = scrollRef?.current;
+
+    if (!scrollableElement || !containerClosed) {
+      setShowSecondBar(true);
+      return;
+    }
+
+    scrollableElement.addEventListener("scroll", handleScroll);
+
     return () => {
-      window.removeEventListener("scroll", controlSecondBar);
+      scrollableElement.removeEventListener("scroll", handleScroll);
     };
-  }, [lastScrollY, containerClosed]); // Only re-run the effect if lastScrollY changes
+  }, [containerClosed, lastScrollY]); // Only re-run the effect if lastScrollY changes
 
   const showFavouriteRecipes = () => {
     showResults(null, true);
@@ -107,11 +119,6 @@ const StickyHeader = ({
       setSearchParams({ type: "favourites" });
     }
   };
-
-  function changePageState(newState) {
-    setSearchParams({});
-    setPageState(newState);
-  }
 
   function addFilter(filter) {
     const newFilters = [...filters];
@@ -133,7 +140,6 @@ const StickyHeader = ({
       top="0"
       left="0"
       width="100%"
-      h="100%"
       zIndex="1000"
       bg="rgba(20, 20, 20, 0.8)"
       backdropFilter="blur(10px)"
@@ -167,7 +173,7 @@ const StickyHeader = ({
                 borderRadius="3xl"
                 onClick={() => {
                   setShowSecondBar(true);
-                  changePageState("init");
+                  setPageState("init");
                 }}
               >
                 Recipe Search
@@ -177,7 +183,7 @@ const StickyHeader = ({
                 borderRadius="3xl"
                 onClick={() => {
                   setShowSecondBar(true);
-                  changePageState("ingSearch");
+                  setPageState("ingSearch");
                 }}
               >
                 Pantry Match
@@ -231,14 +237,12 @@ const StickyHeader = ({
                       gap={1}
                     >
                       <LuMenu />
-                      {/* <Image src={photoUrl} alt="DP" borderRadius="full" h="8" w="auto" ml="auto"/> */}
                       <Avatar.Root size="xs" variant="outline">
                         <Avatar.Fallback name={userName} />
                         <Avatar.Image src={photoUrl} />
                       </Avatar.Root>
                     </Flex>
                   </IconButton>
-                  {/* <Image src={photoUrl} alt="User Profile" borderRadius="full"/> */}
                 </DrawerTrigger>
                 <DrawerContent offset="8" rounded="md" height="sm">
                   <DrawerHeader>
@@ -282,7 +286,6 @@ const StickyHeader = ({
             setPageState={setPageState}
             pageLocation={pageLocation}
             showResults={showResults}
-            setSearchParams={setSearchParams}
             filters={filters}
             setShowSecondBar={setShowSecondBar}
             showSecondBar={showSecondBar}
@@ -304,6 +307,7 @@ StickyHeader.propTypes = {
   pageLocation: PropTypes.string.isRequired,
   setPageState: PropTypes.func.isRequired,
   showResults: PropTypes.bool.isRequired,
+  scrollRef: PropTypes.object.isRequired,
 };
 
 export default StickyHeader;

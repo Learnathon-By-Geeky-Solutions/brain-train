@@ -1,5 +1,5 @@
 import { Flex, IconButton } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Dashboard.css";
 import {
   Route,
@@ -27,6 +27,7 @@ export default function Dashboard() {
   const [cardData, setCardData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const scrollRef = useRef(null);
 
   // Auth part
   const [user, setUser] = useState(undefined);
@@ -110,8 +111,6 @@ export default function Dashboard() {
     }
 
     data = JSON.parse(decodeURIComponent(searchParams.get("q")));
-    console.log("Printing data from loadcards of dashboard");
-    console.log(data);
     fetchData(data).then((result) => {
       setCardData(result);
     });
@@ -137,9 +136,11 @@ export default function Dashboard() {
     <Flex
       direction="column"
       width="100%"
-      height="100%"
-      minHeight="100vh"
+      h="100vh"
       className="dashboard"
+      position="fixed"
+      overflowY="auto"
+      ref={scrollRef}
       gap={0}
     >
       <Header
@@ -151,6 +152,7 @@ export default function Dashboard() {
         pageLocation={pageLocation}
         setPageState={setPageState}
         showResults={loadCards}
+        scrollRef={scrollRef}
       />
       {!searchParams.get("type") && pageLocation === "dashboard" && (
         <Flex direction="column" width="100%" h="100%" className="dashboard">
@@ -161,7 +163,11 @@ export default function Dashboard() {
         </Flex>
       )}
       {searchParams.get("type") && pageLocation === "dashboard" && (
-        <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} />
+        <RecipeCardContainer
+          recipe_prop={cardData}
+          removeCard={removeCard}
+          scrollable={false}
+        />
       )}
       {location.pathname !== "/dashboard/chat" && (
         <IconButton
@@ -181,7 +187,7 @@ export default function Dashboard() {
       <Routes>
         <Route path="mealPlan" element={<MealPlanningCalendar />} />
         <Route path="recipe/*" element={<RecipeDetails />} />
-        <Route path="recipe/shoppingList" element={<ShoppingList />} />
+        <Route path="shoppingList" element={<ShoppingList />} />
         <Route path="chat" element={<ChatBot photoURL={photoURL} />} />
         <Route path="imageAnalysis" element={<FoodImageAnalysis />} />
       </Routes>

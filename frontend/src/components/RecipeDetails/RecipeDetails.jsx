@@ -61,9 +61,6 @@ const RecipeDetails = () => {
       <Separator size="lg" mb={4} />
 
       {/* Recipe Description */}
-      {/* <Text fontSize="lg" mb={4} lineHeight="tall">
-        {recipe.summary}
-      </Text> */}
       <div dangerouslySetInnerHTML={{ __html: recipe.summary }}></div>
       <Separator size="lg" mb={4} />
 
@@ -113,7 +110,7 @@ const RecipeDetails = () => {
         </Button>
         <DialogForShoppingList
           handleDone={() => {
-            navigate("/dashboard/recipe/shoppingList", {
+            navigate("/dashboard/shoppingList", {
               state: { id: id, servingSize: servingSize },
             });
           }}

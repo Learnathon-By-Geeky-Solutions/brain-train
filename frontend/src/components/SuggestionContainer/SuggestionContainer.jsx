@@ -3,7 +3,6 @@ import { Box, VStack, Spinner, Text, List } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { fetchSuggestions } from "./api";
-import { set } from "react-hook-form";
 
 const SuggestionContainer = ({
   type,
@@ -28,7 +27,6 @@ const SuggestionContainer = ({
   }
 
   useEffect(() => {
-    // setComplete(false);
     if (query.trim() === "") {
       setSuggestions([]);
       setContainerClosed(true);
@@ -55,32 +53,45 @@ const SuggestionContainer = ({
 
   useEffect(() => {
     if (complete) return;
-    if (keyHandler === null) return;
     if (suggestions.length === 0) return;
+    if (keyHandler === null) return;
     if (keyHandler.key === "ArrowDown") {
       setSelectedIndex((prev) =>
         prev < suggestions.length - 1 ? prev + 1 : prev,
       );
-    } else if (keyHandler.key === "ArrowUp") {
+      return;
+    }
+    if (keyHandler.key === "ArrowUp") {
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-    } else if (keyHandler.key === "Enter") {
+      return;
+    }
+    if (keyHandler.key === "Enter") {
+      const suggestion =
+        selectedIndex !== -1
+          ? suggestions[selectedIndex][`${property}`]
+          : query;
+      handleSuggestionRendering(suggestion);
+      return;
+    }
+    if (keyHandler.key === "Escape") {
       setLoading(false);
-      setForceStopSuggestionContainer(true);
-      if (selectedIndex !== -1)
-        handleClick(suggestions[selectedIndex][`${property}`]);
-      else handleClick(query);
-      setSelectedIndex(-1);
-      setContainerClosed(true);
-      setComplete(true);
-    } else if (keyHandler.key === "Escape") {
-      setLoading(false);
       setContainerClosed(true);
       setSelectedIndex(-1);
       setComplete(true);
+      return;
     }
   }, [keyHandler]);
 
   const property = type === "title" ? "title" : "name";
+
+  const handleSuggestionRendering = (suggestion) => {
+    setLoading(false);
+    setForceStopSuggestionContainer(true);
+    handleClick(suggestion);
+    setSelectedIndex(-1);
+    setContainerClosed(true);
+    setComplete(true);
+  };
 
   return (
     <Box width="full" mx="auto">
@@ -111,12 +122,7 @@ const SuggestionContainer = ({
                 bg={selectedIndex === index ? "gray.400" : "none"}
                 _hover={{ bg: "gray.400", cursor: "pointer" }}
                 onClick={() => {
-                  setLoading(false);
-                  setForceStopSuggestionContainer(true);
-                  handleClick(suggestion[`${property}`]);
-                  setSelectedIndex(-1);
-                  setContainerClosed(true);
-                  setComplete(true);
+                  handleSuggestionRendering(suggestion[`${property}`]);
                 }}
               >
                 {suggestion[`${property}`]}

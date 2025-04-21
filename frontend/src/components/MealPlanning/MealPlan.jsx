@@ -32,6 +32,8 @@ const MealPlanningCalendar = () => {
   const [days, setDays] = useState(getDaysOfWeek(startDate));
   const [mealData, setMealData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const activeIdxState = useState(0);
+  const activePlanIdxState = useState(-1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -76,6 +78,8 @@ const MealPlanningCalendar = () => {
         reload={reload}
         setSearchParams={setSearchParams}
         setReload={setReload}
+        activeIdxState={activeIdxState}
+        activePlanIdxState={activePlanIdxState}
       />
       {!searchParams.get("time") ? (
         <Box maxW="100%" overflowX="auto" pt={0}>
@@ -276,7 +280,12 @@ const MealPlanningCalendar = () => {
           </Grid>
         </Box>
       ) : (
-        <DailyMealPlan searchParams={searchParams} reload={reload} />
+        <DailyMealPlan
+          searchParams={searchParams}
+          reload={reload}
+          setIsActiveIdx={activeIdxState[1]}
+          setIsActivePlanIdx={activePlanIdxState[1]}
+        />
       )}
       <Toaster />
     </Flex>

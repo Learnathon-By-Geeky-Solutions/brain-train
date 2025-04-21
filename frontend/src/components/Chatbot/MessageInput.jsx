@@ -131,7 +131,7 @@ const MessageInput = ({
               });
             }}
             isLoading={isLoading}
-            disabled={!input.trim() || isLoading}
+            disabled={(!input.trim() && imagePreview.length == 0) || isLoading}
             variant="subtle"
             borderRadius="xl"
             mr="1"

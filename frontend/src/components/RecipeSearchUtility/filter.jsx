@@ -30,7 +30,11 @@ const FilterController = ({ addFilter, clearFilters }) => {
   ]);
   const [dietFilters, setDietFilters] = useState([]);
   const [rangeFilters, setRangeFilters] = useState(
-    rangeFilterTypes.map((type) => ({ type: type, min: 0, max: 100 })),
+    rangeFilterTypes.map((type) => ({
+      type: type,
+      min: 0,
+      max: type === "Calories" ? 10000 : 100,
+    })),
   );
   const [isRangeFiltersActive, setIsRangeFiltersActive] = useState([
     false,
@@ -45,7 +49,11 @@ const FilterController = ({ addFilter, clearFilters }) => {
     setDietFiltersToggled([false, false, false, false]);
     setDietFilters([]);
     setRangeFilters(
-      rangeFilterTypes.map((type) => ({ type: type, min: 0, max: 100 })),
+      rangeFilterTypes.map((type) => ({
+        type: type,
+        min: 0,
+        max: type === "Calories" ? 10000 : 100,
+      })),
     );
     setIsRangeFiltersActive([false, false, false, false]);
     setFiltersApplied(false);
@@ -118,7 +126,12 @@ const FilterController = ({ addFilter, clearFilters }) => {
             <Dialog.Content>
               <Dialog.Header>
                 <HStack placeContent="center">
-                  <Dialog.Title textAlign="center">Filters</Dialog.Title>
+                  <Dialog.Title>
+                    {" "}
+                    <Flex w="100%" textAlign="center">
+                      Filters
+                    </Flex>
+                  </Dialog.Title>
                   <Dialog.CloseTrigger
                     asChild
                     position="absolute"

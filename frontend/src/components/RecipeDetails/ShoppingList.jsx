@@ -13,6 +13,7 @@ import {
   IconButton,
   List,
   Separator,
+  Spinner,
 } from "@chakra-ui/react";
 import { getShoppingList } from "./api";
 import { useLocation } from "react-router-dom";
@@ -35,7 +36,14 @@ const ShoppingList = () => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
   if (!data || data.status === "error") {
-    return <Text>Loading...</Text>;
+    return (
+      <VStack justify="center" align="center">
+        <Spinner size="xl" colorPalette="teal" />
+        <Text fontSize="lg" color="gray.500">
+          {data?.message || "Loading..."}
+        </Text>
+      </VStack>
+    );
   }
 
   // Group items by title to avoid duplicates with different units

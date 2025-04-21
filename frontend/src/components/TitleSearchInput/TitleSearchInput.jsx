@@ -7,6 +7,7 @@ import SuggestionContainer from "../SuggestionContainer/SuggestionContainer";
 const TitleSearchInput = ({
   controller,
   handleSuggestionClick,
+  showSecondBar,
   containerClosed,
   setContainerClosed,
 }) => {
@@ -24,15 +25,18 @@ const TitleSearchInput = ({
       <Input
         width="65vw"
         h="1"
-        color="white"
-        placeholder="Search..."
+        color={showSecondBar ? "white" : "teal.500"}
+        textAlign={showSecondBar ? "left" : "center"}
+        placeholder={showSecondBar ? "Search for a recipe" : "Search"}
         background="none"
         border="none"
         _focus={{ border: "none", boxShadow: "none" }}
         variant="flushed"
         value={query}
-        fontSize="md"
+        fontSize={showSecondBar ? "md" : "2xl"}
+        cursor={showSecondBar ? "text" : "pointer"}
         fontWeight="medium"
+        readOnly={!showSecondBar}
         onChange={(e) => {
           handleChange(e.target.value);
         }}
@@ -60,6 +64,7 @@ TitleSearchInput.propTypes = {
   handleSuggestionClick: PropTypes.func.isRequired,
   containerClosed: PropTypes.bool.isRequired,
   setContainerClosed: PropTypes.func.isRequired,
+  showSecondBar: PropTypes.bool.isRequired,
 };
 
 export default TitleSearchInput;
