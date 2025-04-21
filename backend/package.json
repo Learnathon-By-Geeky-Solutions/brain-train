@@ -34,7 +34,6 @@
   "jest": {
     "transform": {},
     "globalSetup": "<rootDir>/config/jest/jest.global-setup.js",
-    "globalTeardown": "<rootDir>/config/jest/jest.global-teardown.js",
     "setupFilesAfterEnv": [
       "<rootDir>/config/jest/jest.setup.js"
     ],
