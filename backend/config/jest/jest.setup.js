@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import mongoose from "mongoose";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const globalDataPath = path.resolve(__dirname, "globalSetupData.json");
@@ -14,3 +15,7 @@ if (fs.existsSync(globalDataPath)) {
     "❌ globalSetupData.json not found. Make sure globalSetup ran.",
   );
 }
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
