@@ -10,6 +10,7 @@ import {
   getChatById,
   renameChatInDb,
   deleteChatById,
+  getUserImageUploads,
 } from "../db.js";
 
 import {
@@ -209,5 +210,18 @@ export const deleteChat = (req, res) => {
     .catch((err) => {
       console.error("Delete chat error:", err.message);
       res.status(500).json({ error: "Failed to delete chat" });
+    });
+};
+
+export const getUserUploads = (req, res) => {
+  decodeFirebaseIdToken(req.headers.authorization)
+    .then(({ uid }) => getUserImageUploads(uid))
+    .then((uploads) => {
+      res.status(200).json({ uploads });
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ error: "Could not fetch user uploads: " + err.message });
     });
 };

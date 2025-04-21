@@ -25,7 +25,6 @@ describe("BaseChatService", () => {
 
 describe("POST /ai/chat", () => {
   const imagePath = path.join(__dirname, "./files/pizza.jpg");
-  const sampleText = "Is the food suitable for vegetarian?";
 
   it("should respond with chatId and assistant message for new chat creation", async () => {
     expect(fs.existsSync(imagePath)).toBe(true);
@@ -55,8 +54,7 @@ describe("POST /ai/chat", () => {
     const res1 = await request(app)
       .post("/ai/chat")
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
-      .field("text", "Is the food suitable for vegetarian?")
-      .attach("image", imagePath);
+      .field("text", "Is soup suitable for vegetarian?");
 
     expect(res1.status).toBe(200);
     expect(res1.body).toHaveProperty("chatId");
@@ -67,9 +65,8 @@ describe("POST /ai/chat", () => {
     const res = await request(app)
       .post("/ai/chat")
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
-      .field("text", sampleText)
-      .field("chatId", sampleChatId)
-      .attach("image", imagePath);
+      .field("text", "Hello,I love pizza")
+      .field("chatId", sampleChatId);
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("chatId", sampleChatId);
@@ -81,6 +78,19 @@ describe("POST /ai/chat", () => {
     expect(lastMsg).toHaveProperty("role");
     expect(lastMsg).toHaveProperty("text");
     expect(typeof lastMsg.text).toBe("string");
+  });
+  it("should respond againt non mongoose chatId", async () => {
+    const sampleChatId = "invalid-id-1234567890";
+
+    const res = await request(app)
+      .post("/ai/chat")
+      .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
+      .field("text", "Is milk suitable for vegetarian?")
+      .field("chatId", sampleChatId);
+
+    console.log("Response status:", res.status); // Log the response for debugging
+    expect(res.status).toBe(500);
+    expect(res.body).toHaveProperty("error");
   });
 
   it("should return 400", async () => {

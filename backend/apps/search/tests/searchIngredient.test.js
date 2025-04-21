@@ -90,7 +90,7 @@ describe("Search By Ingredients Endpoint Test", () => {
     expect(Array.isArray(recipes)).toBe(true);
     expect(recipes.length).toBeGreaterThan(0);
 
-    const deletedId = recipes[0].id;
+    const deletedId = recipes[recipes.length - 1].id;
 
     // Step 2: Delete the recipe by _id
     await RecipeModel.findByIdAndDelete(deletedId);
