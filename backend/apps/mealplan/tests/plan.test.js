@@ -72,6 +72,23 @@ describe("POST /plan/generate with deleteOverlap variations", () => {
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("errors");
   });
+  it("should not generate for unauthenticated user", async () => {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() + 3); // future date
+
+    const res = await request(app)
+      .post("/plan/generate")
+      .send({
+        timeFrame: "day",
+        startDate: formatDate(startDate),
+        targetCalories: 2200,
+        exclude: "Chicken,pork",
+        title: "Unauthenticated Plan",
+      });
+
+    expect(res.status).toBe(500);
+    expect(res.body).toHaveProperty("success", false);
+  });
 });
 
 describe("summarizePlans", () => {

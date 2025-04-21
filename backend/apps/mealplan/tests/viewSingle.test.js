@@ -1,4 +1,5 @@
 import request from "supertest";
+import mongoose from "mongoose";
 
 import app from "../../../app.js";
 
@@ -78,5 +79,66 @@ describe("Create & View Specific Daily Plan", () => {
     const meals = res.body.plan.dailyMealPlans[0].mealPlan.meals;
     expect(Array.isArray(meals)).toBe(true);
     expect(meals.length).toBeGreaterThan(0);
+  });
+  it("unauthenticated user should not be able to view a plan", async () => {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() + 300);
+    const futureDate = formatDate(startDate);
+
+    const res1 = await request(app)
+      .post("/plan/generate")
+      .set(authHeader)
+      .send({
+        timeFrame: "day",
+        startDate: futureDate,
+        targetCalories: 1800,
+        exclude: "pork",
+        title: "Test Plan with deleteOverlap",
+        deleteOverlap: true,
+      });
+
+    expect([200, 201]).toContain(res1.status);
+    expect(res1.body).toHaveProperty("success", true);
+    expect(res1.body).toHaveProperty("plan._id");
+    createdPlanId = res1.body.plan._id;
+    const res = await request(app).get(`/plan/view/${createdPlanId}?type=day`);
+    expect(res.status).toBe(500);
+  });
+  it("should not retrieve for invalid type: the created plan using /plan/view/:id?type=month", async () => {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() + 3);
+    const futureDate = formatDate(startDate);
+    const res1 = await request(app)
+      .post("/plan/generate")
+      .set(authHeader)
+      .send({
+        timeFrame: "day",
+        startDate: futureDate,
+        targetCalories: 1800,
+        exclude: "pork",
+        title: "Test Plan with deleteOverlap",
+        deleteOverlap: true,
+      });
+
+    expect([200, 201]).toContain(res1.status);
+    expect(res1.body).toHaveProperty("success", true);
+    expect(res1.body).toHaveProperty("plan._id");
+    createdPlanId = res1.body.plan._id;
+    const res = await request(app)
+      .get(`/plan/view/${createdPlanId}?type=month`)
+      .set(authHeader);
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("success", false);
+  });
+  it("random mongoose id should not retrieve a plan", async () => {
+    const randomId = new mongoose.Types.ObjectId();
+    const res = await request(app)
+      .get(`/plan/view/${randomId}?type=day`)
+      .set(authHeader);
+
+    expect(res.status).toBe(404);
+    expect(res.body).toHaveProperty("success", false);
+    expect(res.body).toHaveProperty("message", "Meal plan not found.");
   });
 });
