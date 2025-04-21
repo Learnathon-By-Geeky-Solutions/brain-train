@@ -18,7 +18,6 @@ const firebaseBucket = admin.storage().bucket();
  */
 export const decodeFirebaseIdToken = async (authorizationHeader) => {
   const idToken = extractBearerToken(authorizationHeader);
-
   return verifyToken(idToken);
 };
 
