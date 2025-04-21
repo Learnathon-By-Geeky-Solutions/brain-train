@@ -22,7 +22,6 @@ describe("POST /plan/generate with deleteOverlap variations", () => {
       .post("/plan/generate")
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`) // if auth is required
       .send({
-        timeFrame: "day",
         startDate: formatDate(startDate),
         targetCalories: 2200,
         exclude: "Chicken,pork",
@@ -47,7 +46,6 @@ describe("POST /plan/generate with deleteOverlap variations", () => {
         targetCalories: 2200,
         exclude: "Chicken,pork",
         title: "Conflict Weekly Plan",
-        deleteOverlap: false,
       });
 
     expect(res.status).toBe(409);
