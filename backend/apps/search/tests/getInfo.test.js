@@ -85,7 +85,7 @@ describe("Get Summary Endpoint Test", () => {
 
   it("should return 200 with recipes for an authenticated user", async () => {
     const firstResponse = await request(app)
-      .get(`${endpoint}?ingredients=caviar&fields=title,image,summary,likes`)
+      .get(`${endpoint}?ingredients=rice&fields=title,image,summary,likes`)
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`);
 
     expect(firstResponse.status).toBe(200);
