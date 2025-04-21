@@ -24,10 +24,13 @@ const MealPlanningSidebar = ({
   reload,
   setSearchParams,
   setReload,
+  activeIdxState,
+  activePlanIdxState,
 }) => {
   const [dailyPlanList, setDailyPlanList] = useState([]);
   const [weeklyPlanList, setweeklyPlanList] = useState([]);
-  const [isActiveIdx, setIsActiveIdx] = useState(0);
+  const [isActiveIdx, setIsActiveIdx] = activeIdxState;
+  const [isActivePlanIdx, setIsActivePlanIdx] = activePlanIdxState;
 
   useEffect(() => {
     getMyPlans().then((data) => {
@@ -79,6 +82,7 @@ const MealPlanningSidebar = ({
             setSearchParams({});
             setStartDate(getCurrentDateFormatted());
           }}
+          setIsActivePlanIdx={setIsActivePlanIdx}
         >
           <Flex gap={1}>
             <LuCalendar />
@@ -90,8 +94,14 @@ const MealPlanningSidebar = ({
           isActiveIdx={isActiveIdx}
           setIsActiveIdx={setIsActiveIdx}
           clickFn={() => {
-            setSearchParams({ time: "day", date: getCurrentDateFormatted() });
+            setSearchParams({
+              time: "day",
+              date: getCurrentDateFormatted(),
+              idx: 1,
+              sIdx: -1,
+            });
           }}
+          setIsActivePlanIdx={setIsActivePlanIdx}
         >
           <Flex gap={1}>
             <MdDateRange />
@@ -105,6 +115,7 @@ const MealPlanningSidebar = ({
               idx={2}
               isActiveIdx={isActiveIdx}
               setIsActiveIdx={setIsActiveIdx}
+              setIsActivePlanIdx={setIsActivePlanIdx}
             >
               <Flex gap={1}>
                 <LuClipboard />
@@ -124,18 +135,22 @@ const MealPlanningSidebar = ({
               {renderPlanList(
                 dailyPlanList,
                 setIsActiveIdx,
-                isActiveIdx,
                 setReload,
                 reload,
                 "day",
+                isActivePlanIdx,
+                setIsActivePlanIdx,
+                0,
               )}
               {renderPlanList(
                 weeklyPlanList,
                 setIsActiveIdx,
-                isActiveIdx,
                 setReload,
                 reload,
                 "week",
+                isActivePlanIdx,
+                setIsActivePlanIdx,
+                dailyPlanList.length,
                 setStartDate,
               )}
             </List.Root>
@@ -150,6 +165,8 @@ MealPlanningSidebar.propTypes = {
   reload: PropTypes.bool.isRequired,
   setSearchParams: PropTypes.func.isRequired,
   setReload: PropTypes.func.isRequired,
+  activeIdxState: PropTypes.array.isRequired,
+  activePlanIdxState: PropTypes.array.isRequired,
 };
 
 export default MealPlanningSidebar;

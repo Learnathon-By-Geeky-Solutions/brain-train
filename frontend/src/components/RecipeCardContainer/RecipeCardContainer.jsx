@@ -19,6 +19,7 @@ import zero_results from "../../assets/zero_results.png";
 const RecipeCardContainer = ({
   recipe_prop,
   removeCard,
+  scrollable = true,
   containerType = "default",
 }) => {
   const location = useLocation();
@@ -87,7 +88,7 @@ const RecipeCardContainer = ({
   return (
     <Box
       maxH="100%"
-      overflowY="auto"
+      overflowY={scrollable ? "auto" : null}
       maxW="100%"
       p={2}
       m={2}
@@ -137,8 +138,7 @@ const RecipeCardContainer = ({
                 <Image
                   src={zero_results}
                   alt="No results found"
-                  w="initial"
-                  h="initial"
+                  objectFit="cover"
                 />
                 <Heading size="2xl" color="gray.500" textAlign="center" p="4">
                   No Recipes Found
@@ -156,6 +156,7 @@ RecipeCardContainer.propTypes = {
   recipe_prop: PropTypes.array,
   removeCard: PropTypes.func,
   containerType: PropTypes.string,
+  scrollable: PropTypes.bool,
 };
 
 export default RecipeCardContainer;

@@ -13,6 +13,8 @@ const MessageList = ({ messages, isLoading, photoURL }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const bgColor = useColorModeValue("gray.50", "gray.700");
+
   return (
     <Flex
       direction="column"
@@ -46,13 +48,7 @@ const MessageList = ({ messages, isLoading, photoURL }) => {
               <Avatar.Fallback name="AI Assistant" />
               <Avatar.Image src={logo} />
             </Avatar.Root>
-            <Box
-              maxW="70%"
-              bg={useColorModeValue("gray.50", "gray.700")}
-              p={3}
-              borderRadius="lg"
-              boxShadow="md"
-            >
+            <Box maxW="70%" bg={bgColor} p={3} borderRadius="lg" boxShadow="md">
               <Spinner size="sm" color="purple.500" mr={2} />
               <Text as="span">Thinking...</Text>
             </Box>

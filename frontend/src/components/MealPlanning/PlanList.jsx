@@ -8,32 +8,39 @@ import { useSearchParams } from "react-router-dom";
 const renderPlanList = (
   planList,
   setIsActiveIdx,
-  isActiveIdx,
   setReload,
   reload,
   type,
+  isActivePlanIdx,
+  setIsActivePlanIdx,
+  planIdxOffset,
   setStartDate = null,
 ) => {
   const setSearchParams = useSearchParams()[1];
-  const hoverBg = useColorModeValue("gray.100", "gray.700");
-  const activeBg = useColorModeValue("green.50", "green.900");
-  const activeColor = useColorModeValue("green.700", "green.200");
+  const activeColor = useColorModeValue("green.700", "teal.700");
 
   return planList.map((plan, index) => (
     <Menu.Root key={plan.startDate}>
       <Menu.ContextTrigger>
         <List.Item
-          bg={isActiveIdx === 20 + index ? activeBg : "transparent"}
-          color={isActiveIdx === 20 + index ? activeColor : undefined}
-          _hover={{ bg: hoverBg, cursor: "pointer" }}
+          color={
+            isActivePlanIdx === planIdxOffset + index ? activeColor : undefined
+          }
+          _hover={{ cursor: "pointer" }}
           onClick={() => {
             if (type === "day") {
-              setSearchParams({ time: "day", date: plan.startDate });
+              setSearchParams({
+                time: "day",
+                date: plan.startDate,
+                idx: -1,
+                sIdx: planIdxOffset + index,
+              });
             } else {
               setSearchParams({});
               setStartDate(plan.startDate);
             }
-            setIsActiveIdx(20 + index);
+            setIsActivePlanIdx(planIdxOffset + index);
+            setIsActiveIdx(2);
           }}
         >
           {plan.title}

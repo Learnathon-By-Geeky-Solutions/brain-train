@@ -4,14 +4,17 @@ import PropTypes from "prop-types";
 // Component for displaying ingredients with confidence score
 const IngredientItem = ({ name, confidence }) => {
   const confidencePercent = Math.round(confidence * 100);
-  const confidenceColor =
-    confidencePercent > 90
-      ? "green.500"
-      : confidencePercent > 70
-        ? "blue.500"
-        : confidencePercent > 50
-          ? "orange.500"
-          : "red.500";
+  let confidenceColor;
+
+  if (confidencePercent > 90) {
+    confidenceColor = "green.500";
+  } else if (confidencePercent > 70) {
+    confidenceColor = "blue.500";
+  } else if (confidencePercent > 50) {
+    confidenceColor = "orange.500";
+  } else {
+    confidenceColor = "red.500";
+  }
 
   return (
     <Flex

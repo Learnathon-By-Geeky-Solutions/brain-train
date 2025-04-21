@@ -22,9 +22,11 @@ const MessageItem = ({ message, isUser, photoURL }) => {
         </Avatar.Root>
       )}
       <Flex direction="column" alignItems={isUser ? "flex-end" : "flex-start"}>
-        <Box w="90%" bg={bgColor} p={4} borderRadius="lg" boxShadow="md">
-          <ChatMarkdown content={message.text} />
-        </Box>
+        {message?.text && (
+          <Box w="90%" bg={bgColor} p={4} borderRadius="lg" boxShadow="md">
+            <ChatMarkdown content={message.text} />
+          </Box>
+        )}
         {message.imagePreview.map((image) => (
           <Box
             position="relative"

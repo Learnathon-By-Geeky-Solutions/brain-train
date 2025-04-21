@@ -11,7 +11,6 @@ export default function RecipeSearchUtility({
   pageState,
   setPageState,
   showResults,
-  setSearchParams,
   filters,
   setShowSecondBar,
   showSecondBar,
@@ -19,11 +18,6 @@ export default function RecipeSearchUtility({
   setContainerClosed,
 }) {
   const location = useLocation();
-
-  function changePageState(newState) {
-    setSearchParams({});
-    setPageState(newState);
-  }
 
   return (
     <Flex
@@ -34,7 +28,6 @@ export default function RecipeSearchUtility({
       mb="6"
     >
       {(pageState === "init" || !showSecondBar) &&
-        location.pathname !== "/dashboard/mealPlan" &&
         location.pathname !== "/dashboard/chat" && (
           <Flex
             direction="row"
@@ -46,7 +39,10 @@ export default function RecipeSearchUtility({
           >
             <CentralSearchFrame
               feature={TitleSearchInput}
-              featureProps={{ handleSuggestionClick: null }}
+              featureProps={{
+                handleSuggestionClick: null,
+                showSecondBar: showSecondBar,
+              }}
               filters={filters}
               showResults={showResults}
               containerClosed={containerClosed}
@@ -60,7 +56,7 @@ export default function RecipeSearchUtility({
           feature={IngredientSearchForm}
           featureProps={{
             prevState: () => {
-              changePageState("init");
+              setPageState("init");
             },
             ref: null,
           }}
@@ -78,7 +74,6 @@ RecipeSearchUtility.propTypes = {
   pageState: PropTypes.string.isRequired,
   setPageState: PropTypes.func.isRequired,
   showResults: PropTypes.func.isRequired,
-  setSearchParams: PropTypes.func.isRequired,
   filters: PropTypes.array.isRequired,
   showSecondBar: PropTypes.bool.isRequired,
   setShowSecondBar: PropTypes.func.isRequired,

@@ -8,6 +8,7 @@ const fetchSuggestions = async (
   type,
   query,
   setContainerClosed,
+  setForceStopSuggestionContainer,
 ) => {
   setLoading(true);
   setError(null);
@@ -21,11 +22,8 @@ const fetchSuggestions = async (
     }
 
     const data = await response.json();
-    if (query.trim() === "") {
-      setContainerClosed(true);
-      return;
-    }
     if (data.length > 0) setSuggestions(data || []);
+    setForceStopSuggestionContainer(false);
   } catch (err) {
     setError(err.message);
   } finally {

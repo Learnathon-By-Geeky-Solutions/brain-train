@@ -19,7 +19,12 @@ import { formatDate, getCurrentDateFormatted, getDay } from "./dateFormatter";
 import { useNavigate } from "react-router-dom";
 import handleRecipeDetail from "../RecipeCard/api";
 
-const DailyMealPlan = ({ searchParams, reload }) => {
+const DailyMealPlan = ({
+  searchParams,
+  reload,
+  setIsActiveIdx,
+  setIsActivePlanIdx,
+}) => {
   let day = getDay(searchParams.get("date"));
   const [meals, setMeals] = useState([]);
   const [nutrients, setNutrients] = useState({});
@@ -32,6 +37,13 @@ const DailyMealPlan = ({ searchParams, reload }) => {
         setMeals([]);
         setNutrients({ protein: "", carbohydrates: "", fat: "", calories: "" });
       } else {
+        if (searchParams.get("idx") === -1) {
+          setIsActiveIdx(2);
+          setIsActivePlanIdx(searchParams.get("sIdx"));
+        } else if (searchParams.get("sIdx") === -1) {
+          setIsActiveIdx(1);
+        }
+
         const plan = data.plans?.[0]?.mealPlan;
         setMeals(plan?.meals || []);
         let newNutrients = {
@@ -196,6 +208,8 @@ DailyMealPlan.propTypes = {
     get: PropTypes.func.isRequired,
   }).isRequired,
   reload: PropTypes.bool.isRequired,
+  setIsActiveIdx: PropTypes.func.isRequired,
+  setIsActivePlanIdx: PropTypes.func.isRequired,
 };
 
 export default DailyMealPlan;

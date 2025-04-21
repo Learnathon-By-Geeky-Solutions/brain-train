@@ -22,6 +22,8 @@ async function makeRequest(url, method, body) {
           req.body = isFormData ? body : JSON.stringify(body);
         }
         const response = await fetch(url, req);
+        console.log("printing response from api call");
+        console.log(response);
         if (response.ok || response.status === 304) {
           data = await response.json();
         } else if (response.status === 409) {

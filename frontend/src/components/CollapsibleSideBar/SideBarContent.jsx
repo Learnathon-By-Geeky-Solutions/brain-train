@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Box, IconButton, Text, Flex } from "@chakra-ui/react";
+import { Box, IconButton, Flex } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { MdChat } from "react-icons/md";
 import PropTypes from "prop-types";
+import { ChatHistoryItem } from "../Chatbot/ChatHistoryItem";
+import { deleteChat, renameChat } from "./api";
+import { toaster } from "../ui/toaster";
 
 const MotionBox = motion(Box);
 
@@ -17,6 +20,54 @@ const SideBarContent = ({
 }) => {
   const [selectedNavItemIdx, setSelectedNavItemIdx] = useState(0);
   const newNavItems = [{ _id: null, name: "New Chat" }, ...navItems];
+
+  function handleDeleteChat(id) {
+    deleteChat(id).then((response) => {
+      if (response.status !== "error") {
+        toaster.create({
+          title: "Success",
+          description: "Chat deleted successfully.",
+          type: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        toggleRefresh();
+      } else {
+        toaster.create({
+          title: "Error",
+          description: response.message,
+          type: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    });
+  }
+
+  function handleRenameChat(id, newName) {
+    // Implement rename functionality here
+    renameChat(id, newName).then((response) => {
+      if (response.status !== "error") {
+        toaster.create({
+          title: "Success",
+          description: "Chat renamed successfully.",
+          type: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toaster.create({
+          title: "Error",
+          description: response.message,
+          type: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+      toggleRefresh();
+    });
+  }
+
   return (
     <MotionBox
       w={isOpen ? "25vw" : "5vw"}
@@ -101,7 +152,11 @@ const SideBarContent = ({
                 }
               }}
             >
-              <Text ml={3}>{item.name}</Text>
+              <ChatHistoryItem
+                name={item.name}
+                onRename={(newName) => handleRenameChat(item._id, newName)}
+                onDelete={() => handleDeleteChat(item._id)}
+              />
             </Box>
           ))}
         </Flex>

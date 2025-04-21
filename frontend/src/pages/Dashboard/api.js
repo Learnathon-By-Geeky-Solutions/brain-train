@@ -142,7 +142,8 @@ const fetchData = async (searchData) => {
     const data = await response.json();
 
     if (response.ok) return data.results;
-    if (response.status === 404) return [{ id: -1 }];
+    if (response.status === 404 || response?.result?.length === 0)
+      return [{ id: -1 }];
     // eslint-disable-next-line no-console
     console.error("Failed to fetch recipes. Error code:", response.status);
   } catch (error) {
