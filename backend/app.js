@@ -21,10 +21,7 @@ const app = express();
 setupMiddlewares(app);
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(process.env.MONGODB_URI);
 
 app.use("/signin", signinRoute);
 app.use("/signup", signupRoute);
