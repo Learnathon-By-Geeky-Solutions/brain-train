@@ -1,4 +1,7 @@
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://brain-train.vercel.app",
+];
 
 const isOriginAllowed = (origin) => !origin || allowedOrigins.includes(origin);
 
