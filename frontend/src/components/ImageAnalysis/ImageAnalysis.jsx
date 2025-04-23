@@ -33,7 +33,7 @@ const FoodImageAnalysis = () => {
           </Text>
         </Box>
 
-        <Separator size="lg" />
+        <Separator />
 
         <PreAnalysis
           show={analysisResult === null}

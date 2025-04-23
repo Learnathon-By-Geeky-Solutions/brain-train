@@ -85,6 +85,7 @@ const DailyMealPlan = ({
       borderWidth="1px"
       borderColor={isToday ? "blue.400" : borderColor}
       width="100%"
+      h="100%"
     >
       <Card.Header bg={headerBg} py={3} px={4}>
         <HStack justifyContent="space-between" alignItems="center">

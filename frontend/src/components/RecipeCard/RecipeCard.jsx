@@ -4,9 +4,11 @@ import PropTypes from "prop-types";
 import recipe_default from "../../assets/recipe_default.jpg";
 import { FaHeart } from "react-icons/fa";
 import handleRecipeDetail from "./api";
+import { useColorModeValue } from "../ui/color-mode";
 
 const RecipeCard = ({ recipe, changeVisibility, type }) => {
   const navigate = useNavigate();
+  const shadow = useColorModeValue("md", "none");
 
   return (
     <Card.Root
@@ -17,6 +19,7 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
       onClick={() => {
         handleRecipeDetail(recipe.id, navigate);
       }}
+      shadow={shadow}
     >
       <Image
         w="100%"

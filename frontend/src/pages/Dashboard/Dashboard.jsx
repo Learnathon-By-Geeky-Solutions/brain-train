@@ -1,4 +1,4 @@
-import { Flex, IconButton } from "@chakra-ui/react";
+import { Flex, IconButton, Separator } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import "./Dashboard.css";
 import {
@@ -20,6 +20,7 @@ import MealPlanningCalendar from "@/components/MealPlanning/MealPlan";
 import { LuMessageCircle } from "react-icons/lu";
 import ChatBot from "@/components/Chatbot/ChatBot";
 import FoodImageAnalysis from "@/components/ImageAnalysis/ImageAnalysis";
+import { useColorModeValue } from "@/components/ui/color-mode";
 
 export default function Dashboard() {
   const [pageLocation, setPageLocation] = useState("dashboard");
@@ -32,6 +33,7 @@ export default function Dashboard() {
   // Auth part
   const [user, setUser] = useState(undefined);
   const [photoURL, setPhotoURL] = useState(undefined);
+  const bgColor = useColorModeValue("white", "var(--dark-bg)");
   const navigate = useNavigate();
   let unsubscribe;
 
@@ -137,11 +139,11 @@ export default function Dashboard() {
       direction="column"
       width="100%"
       h="100vh"
-      className="dashboard"
       position="fixed"
       overflowY="auto"
       ref={scrollRef}
       gap={0}
+      bg={bgColor}
     >
       <Header
         photoUrl={photoURL}
@@ -154,8 +156,9 @@ export default function Dashboard() {
         showResults={loadCards}
         scrollRef={scrollRef}
       />
+      <Separator />
       {!searchParams.get("type") && pageLocation === "dashboard" && (
-        <Flex direction="column" width="100%" h="100%" className="dashboard">
+        <Flex direction="column" width="100%" h="100%">
           <PreloadedCards txt="Recently Searched" />
           <PreloadedCards txt="Trending Recipes" />
           <PreloadedCards txt="Explore a cuisine" showResults={loadCards} />

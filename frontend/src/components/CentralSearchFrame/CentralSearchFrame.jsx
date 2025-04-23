@@ -2,6 +2,7 @@ import { IconButton, Flex } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { LuSearch } from "react-icons/lu";
 import PropTypes from "prop-types";
+import { useColorModeValue } from "../ui/color-mode";
 
 const CentralSearchFrame = ({
   feature,
@@ -13,6 +14,7 @@ const CentralSearchFrame = ({
 }) => {
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({ type: "", data: {} });
+  const bgColor = useColorModeValue("white", "var(--text-input)");
 
   const handleSearch = () => {
     if (ref.current) ref.current.requestSubmit(); // Trigger form submission
@@ -40,13 +42,13 @@ const CentralSearchFrame = ({
   return (
     <Flex
       direction="row"
-      background="var(--text-input)"
+      background={bgColor}
       borderRadius="4xl"
       padding="2"
       ml={6}
       mr={6}
       alignItems="center"
-      shadow="lg"
+      shadow="md"
       shadowColor="bg.panel"
     >
       <Feature

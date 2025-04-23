@@ -5,6 +5,7 @@ import { toaster } from "../ui/toaster";
 import { handleFileChange, readRawFile } from "@/services/fileHandler";
 import ImagePreviewWithProgress from "./ImagePreviewWithProgress";
 import PropTypes from "prop-types";
+import { useColorModeValue } from "../ui/color-mode";
 
 const MessageInput = ({
   input,
@@ -19,6 +20,9 @@ const MessageInput = ({
   const [progress, setProgress] = useState([]);
   const [showImagePreview, setShowImagePreview] = useState([]);
   const fileInputRef = React.useRef(null);
+  const inputBg = useColorModeValue("white", "var(--dark-bg)");
+  const inputBgColor = useColorModeValue("gray.400", "var(--text-input)");
+  const textColor = useColorModeValue("black", "white");
 
   const cancelImageUpload = (index) => {
     if (index !== undefined) {
@@ -45,7 +49,7 @@ const MessageInput = ({
       direction="column"
       position="absolute"
       bottom="0"
-      bg="var(--dark-bg)"
+      bg={inputBg}
       h="20vh"
     >
       <input
@@ -82,7 +86,7 @@ const MessageInput = ({
         style={{ display: "none" }}
       />
       <Flex
-        background="var(--text-input)"
+        background={inputBgColor}
         alignItems="center"
         justifyContent="space-between"
         borderRadius="2xl"
@@ -116,7 +120,7 @@ const MessageInput = ({
             border="none"
             _focus={{ border: "none", boxShadow: "none" }}
             variant="flushed"
-            color="white"
+            color={textColor}
           />
         </Flex>
         <Flex alignSelf="flex-end" mb="2.5">
