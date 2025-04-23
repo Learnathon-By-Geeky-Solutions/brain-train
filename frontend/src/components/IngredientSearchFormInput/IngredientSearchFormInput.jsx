@@ -37,9 +37,12 @@ const IngredientSearchFormInput = forwardRef(
       useState(null);
     const bg1 = useColorModeValue(
       "var(--light-ing-input-bg)",
+      "var(--text-input)",
+    );
+    const bg2 = useColorModeValue(
+      "whiteAlpha.800",
       "var(--dark-light-text-input1)",
     );
-    const bg2 = useColorModeValue("whiteAlpha.800", "var(--text-input)");
     const textColor = useColorModeValue("black", "white");
 
     const handleIngredientChange = (index, value) => {
@@ -59,11 +62,12 @@ const IngredientSearchFormInput = forwardRef(
         <form
           ref={ref}
           onSubmit={handleSubmit(onSubmit)}
-          // style={{
-          //   padding: "5px",
-          //   "border-radius": "15px",
-          //   "background-color": "var(--light-ing-input-bg)",
-          // }}
+          style={{
+            "border-radius": "15px",
+            "background-color": "none",
+            background: "none",
+            padding: "3px",
+          }}
         >
           <VStack
             alignItems="center"
@@ -79,7 +83,7 @@ const IngredientSearchFormInput = forwardRef(
                 minWidth="70%"
                 direction="row"
                 alignItems="center"
-                backgroundColor="whiteAlpha.800"
+                backgroundColor={bg2}
                 borderRadius="2xl"
               >
                 <Flex direction="row" alignItems="center">
@@ -146,12 +150,7 @@ const IngredientSearchFormInput = forwardRef(
               </Flex>
             ))}
           </VStack>
-          <Flex
-            direction="row"
-            alignItems="center"
-            width="100%"
-            marginTop="10px"
-          >
+          <Flex direction="row" alignItems="center" width="100%" marginTop="1">
             <IconButton
               size="lg"
               w="50%"
