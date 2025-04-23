@@ -150,7 +150,7 @@ const StickyHeader = ({
       <Flex direction="column" gap={4} pt={showSecondBar ? 5 : 2} pb={2} px={7}>
         <Flex alignItems="center" justifyContent="space-between" color="white">
           {/* Logo and Title */}
-          <Flex alignItems="center">
+          <Flex alignItems="center" _hover={{ cursor: "pointer" }}>
             <Box
               w="10"
               h="auto"
@@ -170,7 +170,7 @@ const StickyHeader = ({
           </Flex>
 
           {showSecondBar && (
-            <Flex gap={2} hideBelow={"md"}>
+            <Flex gap={2}>
               <Button
                 variant="subtle"
                 borderRadius="3xl"
