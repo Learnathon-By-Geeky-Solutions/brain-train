@@ -1,7 +1,8 @@
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://brain-train.vercel.app",
-];
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const allowedOrigins = [process.env.FRONTEND_URL];
 
 const isOriginAllowed = (origin) => !origin || allowedOrigins.includes(origin);
 
