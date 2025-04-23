@@ -30,7 +30,7 @@ import { useState, useEffect } from "react";
 import FilterController from "../RecipeSearchUtility/filter";
 import { throttle } from "lodash";
 import { useColorModeValue } from "../ui/color-mode";
-import ModeSwitchingButton from "@/pages/Dashboard/ModeSwiitchingButton";
+import ModeSwitchingButton from "@/pages/Dashboard/ModeSwitchingButton";
 
 const StickyHeader = ({
   photoUrl,

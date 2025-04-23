@@ -15,9 +15,6 @@ import { Toaster, toaster } from "../ui/toaster";
 import removeFavoriteRecipe from "./api";
 import { useEffect, useState } from "react";
 import zero_results from "../../assets/zero_results.png";
-import { useColorModeValue } from "../ui/color-mode";
-
-// const skeletonColor = useColorModeValue("black", "gray.950");
 
 const RecipeCardContainer = ({
   recipe_prop,
