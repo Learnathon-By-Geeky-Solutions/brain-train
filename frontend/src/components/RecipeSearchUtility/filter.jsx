@@ -17,6 +17,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { FaSliders } from "react-icons/fa6";
 import { MdClose } from "react-icons/md";
+import { useColorModeValue } from "../ui/color-mode";
 
 const FilterController = ({ addFilter, clearFilters }) => {
   const rangeFilterTypes = ["Carbs", "Protein", "Fat", "Calories"];
@@ -43,6 +44,8 @@ const FilterController = ({ addFilter, clearFilters }) => {
     false,
   ]);
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const inputBgColor = useColorModeValue("gray.300", "var(--text-input)");
+  const textColor = useColorModeValue("black", "white");
 
   function clearFiltersWithState() {
     setCuisine("");
@@ -156,9 +159,9 @@ const FilterController = ({ addFilter, clearFilters }) => {
                       onChange={(e) => {
                         setCuisine(e.target.value);
                       }}
-                      bgColor={"var(--text-input)"}
+                      bgColor={inputBgColor}
                       borderRadius="3xl"
-                      color="var(--text)"
+                      color={textColor}
                     />
                   </div>
                   <div>
@@ -277,9 +280,9 @@ const FilterController = ({ addFilter, clearFilters }) => {
                                                 value[1],
                                               );
                                             }}
-                                            bgColor={"var(--text-input)"}
+                                            bgColor={inputBgColor}
                                             borderRadius="3xl"
-                                            color="var(--text)"
+                                            color={textColor}
                                             w="90%"
                                             textAlign="center"
                                           />

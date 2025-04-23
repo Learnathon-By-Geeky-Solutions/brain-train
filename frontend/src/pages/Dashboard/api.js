@@ -141,7 +141,7 @@ const fetchData = async (searchData) => {
     });
     const data = await response.json();
 
-    if (response.ok) return data.results;
+    if (response.ok && response?.result?.length !== 0) return data.results;
     if (response.status === 404 || response?.result?.length === 0)
       return [{ id: -1 }];
     // eslint-disable-next-line no-console

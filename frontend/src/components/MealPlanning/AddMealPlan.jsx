@@ -20,6 +20,7 @@ import { LuCirclePlus } from "react-icons/lu";
 import { saveMealPlan } from "./api";
 import { toaster } from "../ui/toaster";
 import Demo from "./OverlapDialogBox";
+import { useColorModeValue } from "../ui/color-mode";
 
 const PlanController = ({ startDate, currentDate, toggleReload }) => {
   const rangeFilterTypes = ["Target Calories"];
@@ -50,6 +51,8 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
   const [planName, setPlanName] = useState("");
   const [isRangeFiltersActive, setIsRangeFiltersActive] = useState([false]);
   const [filtersApplied, setFiltersApplied] = useState(false);
+  const inputBgColor = useColorModeValue("gray.300", "var(--text-input)");
+  const textColor = useColorModeValue("black", "white");
 
   let plan = {
     name: "",
@@ -233,9 +236,9 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
                             ? setPlanName(e.target.value)
                             : setExclude(e.target.value.toLowerCase());
                         }}
-                        bgColor={"var(--text-input)"}
+                        bgColor={inputBgColor}
                         borderRadius="3xl"
-                        color="var(--text)"
+                        color={textColor}
                       />
                     </div>
                   ))}
@@ -339,9 +342,9 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
                                       onChange={(e) => {
                                         addRangeFilter(type, e.target.value);
                                       }}
-                                      bgColor={"var(--text-input)"}
+                                      bgColor={inputBgColor}
                                       borderRadius="3xl"
-                                      color="var(--text)"
+                                      color={textColor}
                                       w="20"
                                       textAlign="center"
                                       mr="2"

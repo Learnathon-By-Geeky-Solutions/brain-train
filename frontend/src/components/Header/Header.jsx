@@ -30,6 +30,7 @@ import { useState, useEffect } from "react";
 import FilterController from "../RecipeSearchUtility/filter";
 import { throttle } from "lodash";
 import { useColorModeValue } from "../ui/color-mode";
+import ModeSwitchingButton from "@/pages/Dashboard/ModeSwiitchingButton";
 
 const StickyHeader = ({
   photoUrl,
@@ -145,12 +146,17 @@ const StickyHeader = ({
       zIndex="1000"
       bg={bgColor}
       backdropFilter="blur(10px)"
-      shadow="md"
     >
       <Flex direction="column" gap={4} pt={showSecondBar ? 5 : 2} pb={2} px={7}>
         <Flex alignItems="center" justifyContent="space-between" color="white">
           {/* Logo and Title */}
-          <Flex alignItems="center">
+          <Flex
+            alignItems="center"
+            _hover={{ cursor: "pointer" }}
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+          >
             <Box
               w="10"
               h="auto"
@@ -170,7 +176,7 @@ const StickyHeader = ({
           </Flex>
 
           {showSecondBar && (
-            <Flex gap={2} hideBelow={"md"}>
+            <Flex gap={2}>
               <Button
                 variant="subtle"
                 borderRadius="3xl"
@@ -214,13 +220,13 @@ const StickyHeader = ({
 
           {/* Icon Buttons */}
           <Flex gap={2}>
+            <ModeSwitchingButton />
             {showSecondBar && (
               <FilterController
                 addFilter={addFilter}
                 clearFilters={clearFilters}
               />
             )}
-            {/* <IconButton aria-label="User Profile" variant="ghost" h="auto"> */}
             <DrawerRoot>
               <DrawerBackdrop />
               <DrawerTrigger asChild>
@@ -256,7 +262,6 @@ const StickyHeader = ({
                         Favourite Recipes
                       </Button>
                     </DrawerActionTrigger>
-                    <Button variant="ghost">Dummy</Button>
                   </Flex>
                 </DrawerBody>
                 <DrawerFooter>

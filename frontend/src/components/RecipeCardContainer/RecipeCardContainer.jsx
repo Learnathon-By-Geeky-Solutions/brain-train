@@ -15,6 +15,9 @@ import { Toaster, toaster } from "../ui/toaster";
 import removeFavoriteRecipe from "./api";
 import { useEffect, useState } from "react";
 import zero_results from "../../assets/zero_results.png";
+import { useColorModeValue } from "../ui/color-mode";
+
+// const skeletonColor = useColorModeValue("black", "gray.950");
 
 const RecipeCardContainer = ({
   recipe_prop,
@@ -101,17 +104,14 @@ const RecipeCardContainer = ({
         "scrollbar-width": "none",
       }}
     >
-      <Grid
-        templateColumns={`repeat(${cardsPerRow == 0 ? 7 : cardsPerRow}, 1fr)`}
-        gap={4}
-      >
+      <Grid templateColumns={`repeat(7, 1fr)`} gap={4}>
         {!recipe_prop || recipe_prop.length === 0 ? (
           <For each={Array.from({ length: 7 })}>
             {
               // eslint-disable-next-line no-unused-vars
               (_, index) => (
                 <GridItem w="fit-content">
-                  <Skeleton height="72" width="72" bgColor="gray.950" />
+                  <Skeleton height="72" width="72" />
                 </GridItem>
               )
             }
