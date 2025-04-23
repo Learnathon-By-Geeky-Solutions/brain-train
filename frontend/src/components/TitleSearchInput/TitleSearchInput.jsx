@@ -3,6 +3,7 @@ import { Input } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import SuggestionContainer from "../SuggestionContainer/SuggestionContainer";
+import { useColorModeValue } from "../ui/color-mode";
 
 const TitleSearchInput = ({
   controller,
@@ -13,6 +14,7 @@ const TitleSearchInput = ({
 }) => {
   const [query, setQuery] = useState("");
   const [keyHandlerForSuggestion, setKeyHandlerForSuggestion] = useState(null);
+  const textColor = useColorModeValue("black", "white");
 
   function handleChange(title) {
     setQuery(title);
@@ -25,7 +27,7 @@ const TitleSearchInput = ({
       <Input
         width="65vw"
         h="1"
-        color={showSecondBar ? "white" : "teal.500"}
+        color={showSecondBar ? textColor : "teal.500"}
         textAlign={showSecondBar ? "left" : "center"}
         placeholder={showSecondBar ? "Search for a recipe" : "Search"}
         background="none"

@@ -82,7 +82,7 @@ const MealPlanningCalendar = () => {
         activePlanIdxState={activePlanIdxState}
       />
       {!searchParams.get("time") ? (
-        <Box maxW="100%" overflowX="auto" pt={0}>
+        <Box w="100%" overflowX="auto" pt={0}>
           {/* Calendar Header with Navigation */}
           <Flex
             justify="space-between"

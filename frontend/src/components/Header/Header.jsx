@@ -29,6 +29,7 @@ import { LuMenu } from "react-icons/lu";
 import { useState, useEffect } from "react";
 import FilterController from "../RecipeSearchUtility/filter";
 import { throttle } from "lodash";
+import { useColorModeValue } from "../ui/color-mode";
 
 const StickyHeader = ({
   photoUrl,
@@ -57,6 +58,7 @@ const StickyHeader = ({
     "/dashboard/recipe",
   ];
   const scrollUpEventExclusion = ["/dashboard/chat"];
+  const bgColor = useColorModeValue("white", "var(--header-bg)");
 
   const controlSecondBar = throttle((pathname, scrollYLatest) => {
     const currentScrollY = scrollRef?.current?.scrollTop || 0;
@@ -67,7 +69,7 @@ const StickyHeader = ({
     // Otherwise hide it when scrolling down
     else if (
       currentScrollY > scrollYLatest &&
-      currentScrollY >= 80 &&
+      currentScrollY >= 50 &&
       containerClosed &&
       !scrollUpEventExclusion.includes(pathname)
     ) {
@@ -141,8 +143,9 @@ const StickyHeader = ({
       left="0"
       width="100%"
       zIndex="1000"
-      bg="rgba(20, 20, 20, 0.8)"
+      bg={bgColor}
       backdropFilter="blur(10px)"
+      shadow="md"
     >
       <Flex direction="column" gap={4} pt={showSecondBar ? 5 : 2} pb={2} px={7}>
         <Flex alignItems="center" justifyContent="space-between" color="white">
@@ -167,7 +170,7 @@ const StickyHeader = ({
           </Flex>
 
           {showSecondBar && (
-            <Flex gap={2}>
+            <Flex gap={2} hideBelow={"md"}>
               <Button
                 variant="subtle"
                 borderRadius="3xl"
@@ -217,60 +220,58 @@ const StickyHeader = ({
                 clearFilters={clearFilters}
               />
             )}
-            <IconButton aria-label="User Profile" variant="ghost" h="auto">
-              <DrawerRoot>
-                <DrawerBackdrop />
-                <DrawerTrigger asChild>
-                  <IconButton
-                    borderRadius="3xl"
-                    variant="outline"
-                    p={1}
-                    borderColor="whiteAlpha.300"
-                    bgColor="var(--text-input)"
-                    _hover={{ shadow: "md" }}
+            {/* <IconButton aria-label="User Profile" variant="ghost" h="auto"> */}
+            <DrawerRoot>
+              <DrawerBackdrop />
+              <DrawerTrigger asChild>
+                <IconButton
+                  borderRadius="3xl"
+                  variant="outline"
+                  p={1}
+                  _hover={{ shadow: "md" }}
+                >
+                  <Flex
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-around"
+                    h="12"
+                    gap={1}
                   >
-                    <Flex
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="space-around"
-                      h="12"
-                      gap={1}
-                    >
-                      <LuMenu />
-                      <Avatar.Root size="xs" variant="outline">
-                        <Avatar.Fallback name={userName} />
-                        <Avatar.Image src={photoUrl} />
-                      </Avatar.Root>
-                    </Flex>
-                  </IconButton>
-                </DrawerTrigger>
-                <DrawerContent offset="8" rounded="md" height="sm">
-                  <DrawerHeader>
-                    <DrawerTitle>Hello {userName}</DrawerTitle>
-                  </DrawerHeader>
-                  <DrawerBody>
-                    <Flex direction="column" mt={2}>
-                      <DrawerActionTrigger asChild>
-                        <Button onClick={showFavouriteRecipes} variant="ghost">
-                          Favourite Recipes
-                        </Button>
-                      </DrawerActionTrigger>
-                      <Button variant="ghost">Dummy</Button>
-                    </Flex>
-                  </DrawerBody>
-                  <DrawerFooter>
+                    <LuMenu />
+                    <Avatar.Root size="xs" variant="outline">
+                      <Avatar.Fallback name={userName} />
+                      <Avatar.Image src={photoUrl} />
+                    </Avatar.Root>
+                  </Flex>
+                </IconButton>
+              </DrawerTrigger>
+              <DrawerContent offset="8" rounded="md" height="sm">
+                <DrawerHeader>
+                  <DrawerTitle>Hello {userName}</DrawerTitle>
+                </DrawerHeader>
+                <DrawerBody>
+                  <Flex direction="column" mt={2}>
                     <DrawerActionTrigger asChild>
-                      <Button variant="outline">Cancel</Button>
+                      <Button onClick={showFavouriteRecipes} variant="ghost">
+                        Favourite Recipes
+                      </Button>
                     </DrawerActionTrigger>
-                    <IconButton variant="outline" p={2} onClick={handleLogout}>
-                      <MdLogout />
-                      Sign Out
-                    </IconButton>
-                  </DrawerFooter>
-                  <DrawerCloseTrigger />
-                </DrawerContent>
-              </DrawerRoot>
-            </IconButton>
+                    <Button variant="ghost">Dummy</Button>
+                  </Flex>
+                </DrawerBody>
+                <DrawerFooter>
+                  <DrawerActionTrigger asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DrawerActionTrigger>
+                  <IconButton variant="outline" p={2} onClick={handleLogout}>
+                    <MdLogout />
+                    Sign Out
+                  </IconButton>
+                </DrawerFooter>
+                <DrawerCloseTrigger />
+              </DrawerContent>
+            </DrawerRoot>
+            {/* </IconButton> */}
           </Flex>
         </Flex>
         <Box

@@ -26,6 +26,10 @@ const PreloadedCards = ({ txt, showResults = null }) => {
     });
   }, []);
 
+  if (newCards.length === 0 && txt !== "Explore a cuisine") {
+    return null;
+  }
+
   return (
     <Flex direction="column" width="100%" height="100%" p="4" px="2">
       <Text fontSize="2xl" fontWeight="medium" marginBottom={2} p={2} px="4">
