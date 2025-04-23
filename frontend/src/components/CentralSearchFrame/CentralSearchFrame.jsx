@@ -15,6 +15,7 @@ const CentralSearchFrame = ({
   const [shouldFetch, setShouldFetch] = useState(false);
   const [searchData, setSearchData] = useState({ type: "", data: {} });
   const bgColor = useColorModeValue("white", "var(--text-input)");
+  const searchButtonColor = useColorModeValue("green", "primary");
 
   const handleSearch = () => {
     if (ref.current) ref.current.requestSubmit(); // Trigger form submission
@@ -63,6 +64,7 @@ const CentralSearchFrame = ({
         size="lg"
         marginLeft="auto"
         alignSelf="start"
+        colorPalette={searchButtonColor}
         onClick={() => {
           handleSearch();
           setContainerClosed(true);

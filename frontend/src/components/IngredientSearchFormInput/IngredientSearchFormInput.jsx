@@ -6,6 +6,7 @@ import { MdAdd, MdArrowBack } from "react-icons/md";
 import { Field } from "../ui/field";
 import { LuDelete } from "react-icons/lu";
 import SuggestionContainer from "../SuggestionContainer/SuggestionContainer";
+import { useColorModeValue } from "../ui/color-mode";
 
 const IngredientSearchFormInput = forwardRef(
   ({ prevState, controller, containerClosed, setContainerClosed }, ref) => {
@@ -34,6 +35,12 @@ const IngredientSearchFormInput = forwardRef(
     const [ingredients, setIngredients] = useState([""]);
     const [keyHandlerForSuggestion, setKeyHandlerForSuggestion] =
       useState(null);
+    const bg1 = useColorModeValue(
+      "var(--light-ing-input-bg)",
+      "var(--dark-light-text-input1)",
+    );
+    const bg2 = useColorModeValue("whiteAlpha.800", "var(--text-input)");
+    const textColor = useColorModeValue("black", "white");
 
     const handleIngredientChange = (index, value) => {
       if (value === "default" && index === "default") {
@@ -52,13 +59,19 @@ const IngredientSearchFormInput = forwardRef(
         <form
           ref={ref}
           onSubmit={handleSubmit(onSubmit)}
-          style={{
-            padding: "5px",
-            "border-radius": "15px",
-            "background-color": "var(--text-input)",
-          }}
+          // style={{
+          //   padding: "5px",
+          //   "border-radius": "15px",
+          //   "background-color": "var(--light-ing-input-bg)",
+          // }}
         >
-          <VStack alignItems="center" margin="none">
+          <VStack
+            alignItems="center"
+            margin="none"
+            p="2"
+            borderRadius="15px"
+            bgColor={bg1}
+          >
             {fields.map((field, index) => (
               <Flex
                 key={field.id}
@@ -66,7 +79,7 @@ const IngredientSearchFormInput = forwardRef(
                 minWidth="70%"
                 direction="row"
                 alignItems="center"
-                backgroundColor="var(--dark-light-text-input1)"
+                backgroundColor="whiteAlpha.800"
                 borderRadius="2xl"
               >
                 <Flex direction="row" alignItems="center">
@@ -88,7 +101,7 @@ const IngredientSearchFormInput = forwardRef(
                           placeholder="Ingredient name"
                           background="none"
                           variant="flushed"
-                          color="white"
+                          color={textColor}
                           fontSize="md"
                           fontWeight="medium"
                           defaultValue={ingredients[index]}

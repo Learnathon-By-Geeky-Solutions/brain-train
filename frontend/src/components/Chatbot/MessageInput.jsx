@@ -21,7 +21,7 @@ const MessageInput = ({
   const [showImagePreview, setShowImagePreview] = useState([]);
   const fileInputRef = React.useRef(null);
   const inputBg = useColorModeValue("white", "var(--dark-bg)");
-  const inputBgColor = useColorModeValue("gray.400", "var(--text-input)");
+  const inputBgColor = useColorModeValue("gray.300", "var(--text-input)");
   const textColor = useColorModeValue("black", "white");
 
   const cancelImageUpload = (index) => {
