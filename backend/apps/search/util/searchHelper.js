@@ -20,12 +20,9 @@ export const recipesByIngredientsHelper = (query) => {
 
   return getRecipesByIngredients(ingredients, fieldsArray, number)
     .then((dbResults) => {
-      console.log("🔍 DB Results Before Filtering:", dbResults.length);
       return filterRecipes(dbResults, filters);
     })
     .then((filteredDbResults) => {
-      console.log("🔎 DB Results After Filtering:", filteredDbResults.length);
-
       const threshold = Math.ceil(number * 0.5);
 
       if (filteredDbResults.length >= threshold) {

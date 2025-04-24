@@ -13,7 +13,6 @@ describe("DELETE /ai/chat/:chatId", () => {
 
       .field("text", "Is dosa suitable for vegetarian?");
     chatId = res.body.chatId;
-    console.log("Chat ID created:", chatId); // Log the chat ID for debugging
   });
   it("should  return 500 for unauthenticated user", async () => {
     const res = await request(app).delete(`/ai/chat/${chatId}`);
