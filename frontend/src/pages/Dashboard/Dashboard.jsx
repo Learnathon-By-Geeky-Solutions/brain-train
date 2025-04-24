@@ -1,6 +1,5 @@
 import { Flex, IconButton, Separator } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import "./Dashboard.css";
 import {
   Route,
   Routes,
@@ -21,6 +20,7 @@ import { LuMessageCircle } from "react-icons/lu";
 import ChatBot from "@/components/Chatbot/ChatBot";
 import FoodImageAnalysis from "@/components/ImageAnalysis/ImageAnalysis";
 import { useColorModeValue } from "@/components/ui/color-mode";
+import NotFoundPage from "../NotFoundPage/NotFoundPage";
 
 export default function Dashboard() {
   const [pageLocation, setPageLocation] = useState("dashboard");
@@ -193,6 +193,7 @@ export default function Dashboard() {
         <Route path="shoppingList" element={<ShoppingList />} />
         <Route path="chat" element={<ChatBot photoURL={photoURL} />} />
         <Route path="imageAnalysis" element={<FoodImageAnalysis />} />
+        <Route path="*" element={<NotFoundPage route="/dashboard" />} />
       </Routes>
     </Flex>
   );

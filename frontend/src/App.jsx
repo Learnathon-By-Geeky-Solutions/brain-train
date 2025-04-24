@@ -3,13 +3,11 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Button, IconButton, Theme } from "@chakra-ui/react";
-import logo from "./assets/logo.png";
-import VideoPlayer from "./components/VideoPlayer/VideoPlayer";
+import { Theme } from "@chakra-ui/react";
 import AuthModal from "./components/AuthModal/Modal";
-import { LuMenu } from "react-icons/lu";
 import { auth } from "./services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import GeekyChefLanding from "./pages/LandingPage/LandingPage";
 
 export default function App() {
   const navigate = useNavigate();
@@ -35,30 +33,8 @@ export default function App() {
 
   return (
     <Theme appearance="light">
-      <div className="app">
-        <nav className="nav-bar">
-          <div className="logo">
-            <img src={logo} alt="logo" />
-          </div>
-          <div className="title">
-            Geeky <span className="title-second-part">Chef</span>
-          </div>
-          <IconButton aria-label="menu" color="white" className="menu-button">
-            <LuMenu />
-          </IconButton>
-        </nav>
-        <div className="bg-video">
-          <VideoPlayer />
-          <div className="bg-cover">
-            <div className="main-motto">Lorem Ipsum Lorem Ipsum</div>
-            <div className="sub-motto">Dolor simit dlor simit</div>
-            <Button onClick={openModal} className="login-button">
-              Login
-            </Button>
-          </div>
-        </div>
-        <AuthModal isOpen={isAuthModalOpen} onClose={closeModal} />
-      </div>
+      <GeekyChefLanding openAuthModal={openModal} />
+      <AuthModal isOpen={isAuthModalOpen} onClose={closeModal} />
     </Theme>
   );
 }
