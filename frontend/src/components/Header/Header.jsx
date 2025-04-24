@@ -43,13 +43,17 @@ const StickyHeader = ({
   const controlSecondBar = throttle((pathname, scrollYLatest) => {
     const currentScrollY = scrollRef?.current?.scrollTop || 0;
     // If we're at the top (or very close to it), always show the second bar
-    if (currentScrollY < 5 && !scrollDownEventExclusion.includes(pathname)) {
+    if (
+      currentScrollY < scrollYLatest &&
+      currentScrollY < 5 &&
+      !scrollDownEventExclusion.includes(pathname)
+    ) {
       setShowSecondBar(true);
     }
     // Otherwise hide it when scrolling down
     else if (
       currentScrollY > scrollYLatest &&
-      currentScrollY >= 50 &&
+      currentScrollY >= 100 &&
       containerClosed &&
       !scrollUpEventExclusion.includes(pathname)
     ) {
@@ -163,6 +167,7 @@ const StickyHeader = ({
               navButtonsForVerticalDrawer,
               utilitiesForVerticalDrawer,
             ]}
+            showSecondBar={showSecondBar}
           />
           {/* Logo and Title */}
           <Flex

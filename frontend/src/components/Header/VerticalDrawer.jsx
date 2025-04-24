@@ -2,14 +2,14 @@ import { Drawer, IconButton, Portal } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { LuMenu, LuX } from "react-icons/lu";
 
-const VerticalDrawer = ({ components }) => {
+const VerticalDrawer = ({ components, showSecondBar }) => {
   return (
     <Drawer.Root placement="start" hideFrom="md">
       <Drawer.Trigger asChild>
         <IconButton
           position={"absolute"}
-          top={4}
-          left={4}
+          top={showSecondBar ? 4 : 2}
+          left={showSecondBar ? 4 : 2}
           variant="ghost"
           hideFrom="md"
         >
@@ -40,4 +40,5 @@ export default VerticalDrawer;
 
 VerticalDrawer.propTypes = {
   components: PropTypes.arrayOf(PropTypes.elementType).isRequired,
+  showSecondBar: PropTypes.bool.isRequired,
 };
