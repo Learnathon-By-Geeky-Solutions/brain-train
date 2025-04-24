@@ -86,7 +86,7 @@ export const viewMealPlanById = (req, res) => {
       });
     })
     .catch((err) => {
-      console.error("[MealPlans] Single View Error:", err);
+      console.error("[MealPlans] Single View Error:", err.message);
       return res
         .status(500)
         .json({ success: false, message: "Failed to fetch meal plan." });
@@ -142,7 +142,7 @@ export const deleteMealPlanById = (req, res) => {
     .catch((err) => {
       if (res.headersSent) return; // ✅ prevent double response
 
-      console.error("[MealPlans] Delete Single Error:", err);
+      console.error("[MealPlans] Delete Single Error:", err.message);
       return res
         .status(500)
         .json({ success: false, message: "Failed to delete meal plan." });
