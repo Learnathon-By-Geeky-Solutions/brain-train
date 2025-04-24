@@ -24,13 +24,13 @@ const MealPlanningSidebar = ({
   reload,
   setSearchParams,
   setReload,
-  activeIdxState,
-  activePlanIdxState,
+  isActiveIdx,
+  setIsActiveIdx,
+  isActivePlanIdx,
+  setIsActivePlanIdx,
 }) => {
   const [dailyPlanList, setDailyPlanList] = useState([]);
   const [weeklyPlanList, setweeklyPlanList] = useState([]);
-  const [isActiveIdx, setIsActiveIdx] = activeIdxState;
-  const [isActivePlanIdx, setIsActivePlanIdx] = activePlanIdxState;
 
   useEffect(() => {
     getMyPlans().then((data) => {
@@ -165,8 +165,10 @@ MealPlanningSidebar.propTypes = {
   reload: PropTypes.bool.isRequired,
   setSearchParams: PropTypes.func.isRequired,
   setReload: PropTypes.func.isRequired,
-  activeIdxState: PropTypes.array.isRequired,
-  activePlanIdxState: PropTypes.array.isRequired,
+  isActiveIdx: PropTypes.number.isRequired,
+  setIsActiveIdx: PropTypes.func.isRequired,
+  isActivePlanIdx: PropTypes.number.isRequired,
+  setIsActivePlanIdx: PropTypes.func.isRequired,
 };
 
 export default MealPlanningSidebar;

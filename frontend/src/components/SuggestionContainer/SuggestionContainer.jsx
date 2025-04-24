@@ -78,7 +78,6 @@ const SuggestionContainer = ({
       setContainerClosed(true);
       setSelectedIndex(-1);
       setComplete(true);
-      return;
     }
   }, [keyHandler]);
 

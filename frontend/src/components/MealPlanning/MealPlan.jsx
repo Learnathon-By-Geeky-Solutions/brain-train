@@ -32,8 +32,8 @@ const MealPlanningCalendar = () => {
   const [days, setDays] = useState(getDaysOfWeek(startDate));
   const [mealData, setMealData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeIdxState = useState(0);
-  const activePlanIdxState = useState(-1);
+  const [isActiveIdx, setIsActiveIdx] = useState(0);
+  const [isActivePlanIdx, setIsActivePlanIdx] = useState(-1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -78,8 +78,10 @@ const MealPlanningCalendar = () => {
         reload={reload}
         setSearchParams={setSearchParams}
         setReload={setReload}
-        activeIdxState={activeIdxState}
-        activePlanIdxState={activePlanIdxState}
+        isActiveIdx={isActiveIdx}
+        setIsActiveIdx={setIsActiveIdx}
+        isActivePlanIdx={isActivePlanIdx}
+        setIsActivePlanIdx={setIsActivePlanIdx}
       />
       {!searchParams.get("time") ? (
         <Box w="100%" overflowX="auto" pt={0}>
@@ -283,8 +285,8 @@ const MealPlanningCalendar = () => {
         <DailyMealPlan
           searchParams={searchParams}
           reload={reload}
-          setIsActiveIdx={activeIdxState[1]}
-          setIsActivePlanIdx={activePlanIdxState[1]}
+          setIsActiveIdx={setIsActiveIdx}
+          setIsActivePlanIdx={setIsActivePlanIdx}
         />
       )}
       <Toaster />
