@@ -12,7 +12,6 @@ describe("PATCH /ai/chat/:chatId/rename", () => {
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
       .field("text", "Is dosa suitable for vegetarian?");
     chatId = res.body.chatId;
-    console.log("Chat ID created:", chatId); // Log the chat ID for debugging
   });
 
   it("should rename a chat successfully", async () => {
@@ -21,8 +20,6 @@ describe("PATCH /ai/chat/:chatId/rename", () => {
       .patch(`/ai/chat/${chatId}/rename`)
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
       .send({ name: newName }); // Use send instead of field for JSON body
-    console.log("status:", res.status); // Log the status for debugging
-    console.log("Response:", res.body); // Log the response for debugging
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("_id", chatId);
     expect(res.body).toHaveProperty("name", newName);
@@ -41,9 +38,6 @@ describe("PATCH /ai/chat/:chatId/rename", () => {
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
       .send({ name: "Invalid Test" }); // Use send instead of field for JSON body
 
-    console.log("status:", res.status); // Log the status for debugging
-    console.log("Response:", res.body); // Log the response for debugging
-
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error");
   });
@@ -55,9 +49,6 @@ describe("PATCH /ai/chat/:chatId/rename", () => {
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
       .send({ name: "Ghost Test" }); // Use send instead of field for JSON body
 
-    console.log("status:", res.status); // Log the status for debugging
-    console.log("Response:", res.body); // Log the response for debugging
-
     expect(res.status).toBe(404);
     expect(res.body).toHaveProperty("error");
   });
@@ -67,9 +58,6 @@ describe("PATCH /ai/chat/:chatId/rename", () => {
       .patch(`/ai/chat/${chatId}/rename`)
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
       .send({}); // no name
-
-    console.log("status:", res.status); // Log the status for debugging
-    console.log("Response:", res.body); // Log the response for debugging
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error");

@@ -88,7 +88,6 @@ describe("POST /ai/chat", () => {
       .field("text", "Is milk suitable for vegetarian?")
       .field("chatId", sampleChatId);
 
-    console.log("Response status:", res.status); // Log the response for debugging
     expect(res.status).toBe(500);
     expect(res.body).toHaveProperty("error");
   });

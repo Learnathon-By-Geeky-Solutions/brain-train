@@ -14,18 +14,15 @@ export const fetchRecipeDetailsBulk = (recipeIds) => {
   }
 
   const recipeIdsString = recipeIds.join(",");
-  console.log("Fetching full recipes for IDs:", recipeIdsString);
 
   return spoonacularRequest("/recipes/informationBulk", {
     ids: recipeIdsString,
     includeNutrition: true,
   })
     .then((fullRecipes) => {
-      console.log("Fetched full recipes:", fullRecipes.length);
       return fullRecipes;
     })
     .catch((error) => {
-      console.error("Error fetching recipe details:", error);
       return [];
     });
 };
@@ -58,8 +55,6 @@ export const fetchSaveFilterRecipes = (recipeIds, filters = {}) => {
 const enrichMissingRecipes = (recipeIds, existing) => {
   const existingIds = new Set(existing.map((r) => String(r.sourceId)));
   const missingIds = recipeIds.filter((id) => !existingIds.has(String(id)));
-
-  console.log("Missing IDs:", missingIds.length);
 
   if (missingIds.length === 0) {
     return Promise.resolve({ all: normalizeIds(existing) });

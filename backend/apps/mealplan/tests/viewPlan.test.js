@@ -38,8 +38,6 @@ describe("GET /plan/view", () => {
   it("should return 500 if no auth token is provided", async () => {
     const res = await request(app).get("/plan/view");
     expect(res.status).toBe(500);
-    console.log("Response status:", res.status); // Log the response for debugging
-    console.log("Response body:", res.body); // Log the response body for debugging
     expect(res.body).toHaveProperty("success", false);
   });
 });
