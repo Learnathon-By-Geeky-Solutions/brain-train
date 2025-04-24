@@ -1,36 +1,15 @@
-import {
-  Box,
-  Flex,
-  IconButton,
-  Image,
-  Text,
-  Button,
-  Avatar,
-} from "@chakra-ui/react";
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import logo from "../../assets/logo.png";
-import { MdLogout } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import RecipeSearchUtility from "../RecipeSearchUtility/RecipeSearchUtility";
 
-import {
-  DrawerActionTrigger,
-  DrawerBackdrop,
-  DrawerBody,
-  DrawerCloseTrigger,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerRoot,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { LuMenu } from "react-icons/lu";
 import { useState, useEffect } from "react";
-import FilterController from "../RecipeSearchUtility/filter";
 import { throttle } from "lodash";
 import { useColorModeValue } from "../ui/color-mode";
-import ModeSwitchingButton from "@/pages/Dashboard/ModeSwitchingButton";
+import Utilities from "./Utilities";
+import NavButtons from "./NavButtons";
+import VerticalDrawer from "./VerticalDrawer";
 
 const StickyHeader = ({
   photoUrl,
@@ -136,6 +115,27 @@ const StickyHeader = ({
     setFilters([]);
   }
 
+  const utilitiesForVerticalDrawer = (
+    <Utilities
+      setPageState={setPageState}
+      setShowSecondBar={setShowSecondBar}
+      hideFrom="md"
+    />
+  );
+
+  const navButtonsForVerticalDrawer = (
+    <NavButtons
+      showSecondBar={showSecondBar}
+      addFilter={addFilter}
+      clearFilters={clearFilters}
+      userName={userName}
+      photoUrl={photoUrl}
+      showFavouriteRecipes={showFavouriteRecipes}
+      handleLogout={handleLogout}
+      hideFrom="md"
+    />
+  );
+
   return (
     <Box
       as="header"
@@ -148,7 +148,22 @@ const StickyHeader = ({
       backdropFilter="blur(10px)"
     >
       <Flex direction="column" gap={4} pt={showSecondBar ? 5 : 2} pb={2} px={7}>
-        <Flex alignItems="center" justifyContent="space-between" color="white">
+        <Flex
+          alignItems="center"
+          justifyContent={{
+            base: "center",
+            smToMd: "center",
+            mdTo2xl: "space-between",
+          }}
+          color="white"
+        >
+          {/* Hamburger Menu for Mobile */}
+          <VerticalDrawer
+            components={[
+              navButtonsForVerticalDrawer,
+              utilitiesForVerticalDrawer,
+            ]}
+          />
           {/* Logo and Title */}
           <Flex
             alignItems="center"
@@ -174,114 +189,29 @@ const StickyHeader = ({
               Geeky Chef
             </Text>
           </Flex>
-
           {showSecondBar && (
-            <Flex gap={2}>
-              <Button
-                variant="subtle"
-                borderRadius="3xl"
-                onClick={() => {
-                  setShowSecondBar(true);
-                  setPageState("init");
-                }}
-              >
-                Recipe Search
-              </Button>
-              <Button
-                variant="subtle"
-                borderRadius="3xl"
-                onClick={() => {
-                  setShowSecondBar(true);
-                  setPageState("ingSearch");
-                }}
-              >
-                Pantry Match
-              </Button>
-              <Button
-                variant="subtle"
-                borderRadius="3xl"
-                onClick={() => {
-                  navigate("/dashboard/mealPlan");
-                }}
-              >
-                Meal Plan
-              </Button>
-              <Button
-                variant="subtle"
-                borderRadius="3xl"
-                onClick={() => {
-                  navigate("/dashboard/imageAnalysis");
-                }}
-              >
-                Food Image Analysis
-              </Button>
-            </Flex>
+            <Utilities
+              setPageState={setPageState}
+              setShowSecondBar={setShowSecondBar}
+              hideBelow="md"
+            />
           )}
 
           {/* Icon Buttons */}
-          <Flex gap={2}>
-            <ModeSwitchingButton />
-            {showSecondBar && (
-              <FilterController
-                addFilter={addFilter}
-                clearFilters={clearFilters}
-              />
-            )}
-            <DrawerRoot>
-              <DrawerBackdrop />
-              <DrawerTrigger asChild>
-                <IconButton
-                  borderRadius="3xl"
-                  variant="outline"
-                  p={1}
-                  _hover={{ shadow: "md" }}
-                >
-                  <Flex
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-around"
-                    h="12"
-                    gap={1}
-                  >
-                    <LuMenu />
-                    <Avatar.Root size="xs" variant="outline">
-                      <Avatar.Fallback name={userName} />
-                      <Avatar.Image src={photoUrl} />
-                    </Avatar.Root>
-                  </Flex>
-                </IconButton>
-              </DrawerTrigger>
-              <DrawerContent offset="8" rounded="md" height="sm">
-                <DrawerHeader>
-                  <DrawerTitle>Hello {userName}</DrawerTitle>
-                </DrawerHeader>
-                <DrawerBody>
-                  <Flex direction="column" mt={2}>
-                    <DrawerActionTrigger asChild>
-                      <Button onClick={showFavouriteRecipes} variant="ghost">
-                        Favourite Recipes
-                      </Button>
-                    </DrawerActionTrigger>
-                  </Flex>
-                </DrawerBody>
-                <DrawerFooter>
-                  <DrawerActionTrigger asChild>
-                    <Button variant="outline">Cancel</Button>
-                  </DrawerActionTrigger>
-                  <IconButton variant="outline" p={2} onClick={handleLogout}>
-                    <MdLogout />
-                    Sign Out
-                  </IconButton>
-                </DrawerFooter>
-                <DrawerCloseTrigger />
-              </DrawerContent>
-            </DrawerRoot>
-            {/* </IconButton> */}
-          </Flex>
+          <NavButtons
+            showSecondBar={showSecondBar}
+            addFilter={addFilter}
+            clearFilters={clearFilters}
+            userName={userName}
+            photoUrl={photoUrl}
+            showFavouriteRecipes={showFavouriteRecipes}
+            handleLogout={handleLogout}
+            hideBelow="md"
+          />
         </Flex>
         <Box
           transform={
-            showSecondBar ? "translateY(0) " : "translateY(-20%) scale(0.5)"
+            showSecondBar ? "translateY(0) " : "translateY(-20%) scale(0.6)"
           }
           transition="transform 0.3s, opacity 0.3s "
           position={!showSecondBar ? "absolute" : "relative"}
