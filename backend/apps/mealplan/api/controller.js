@@ -116,7 +116,6 @@ export const deleteMealPlanById = (req, res) => {
       const { planId } = req.params;
       const { type } = req.query;
 
-      console.log("Deleting meal plan:", { planId, type });
       if (!planId || !type || !["day", "week"].includes(type)) {
         return res
           .status(400)
