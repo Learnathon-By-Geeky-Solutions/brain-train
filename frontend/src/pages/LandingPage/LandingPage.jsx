@@ -29,6 +29,10 @@ import {
 import { LuFacebook, LuInstagram, LuLinkedin, LuTwitter } from "react-icons/lu";
 import video from "../../assets/bg-video.mp4";
 import app from "../../assets/app.png";
+import cvAnalysis from "../../assets/cv.png";
+import ingDetect from "../../assets/ing_detect.png";
+import chatBot from "../../assets/chat_bot.png";
+import mealPlan from "../../assets/meal_plan.png";
 import AIFeatureCard from "./AIFeatureCard";
 import SectionTitle from "./SectionTitle";
 import TestimonialCard from "./TestimonialCard";
@@ -327,7 +331,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
               icon={Camera}
               title="Computer Vision Food Analysis"
               description="Upload a photo of any food item and instantly receive accurate nutritional information. Our advanced computer vision technology analyzes the image to identify ingredients and estimate nutritional content."
-              image="/api/placeholder/800/600"
+              image={cvAnalysis}
               isReversed={false}
               delay={0.1}
             />
@@ -336,7 +340,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
               icon={Search}
               title="Ingredient Detection"
               description="Never wonder what's in your meal again. Our ingredient detection feature uses machine learning to identify all components in a dish, helping with dietary restrictions, allergies, and precise nutritional tracking."
-              image="/api/placeholder/800/600"
+              image={ingDetect}
               isReversed={true}
               delay={0.2}
             />
@@ -345,7 +349,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
               icon={Heart}
               title="AI Chatbot Assistant"
               description="Get personalized cooking advice, recipe modifications, and meal planning help from our AI assistant. Upload images, ask complex questions, and receive tailored guidance for your culinary needs."
-              image="/api/placeholder/800/600"
+              image={chatBot}
               isReversed={false}
               delay={0.3}
             />
@@ -443,7 +447,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <Image
-                src="/api/placeholder/800/600"
+                src={mealPlan}
                 alt="Meal Planning"
                 borderRadius="xl"
                 shadow="2xl"

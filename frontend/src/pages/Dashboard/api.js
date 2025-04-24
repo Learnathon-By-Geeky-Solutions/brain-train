@@ -140,10 +140,14 @@ const fetchData = async (searchData) => {
       },
     });
     const data = await response.json();
+    console.log("printing response from fetch data of dashboard");
+    console.log(data);
 
-    if (response.ok && response?.result?.length !== 0) return data.results;
-    if (response.status === 404 || response?.result?.length === 0)
+    if (response.ok && data.results.length !== 0) return data.results;
+    if (response.status === 404 || data.results.length === 0) {
+      console.log("returning -1");
       return [{ id: -1 }];
+    }
     // eslint-disable-next-line no-console
     console.error("Failed to fetch recipes. Error code:", response.status);
   } catch (error) {

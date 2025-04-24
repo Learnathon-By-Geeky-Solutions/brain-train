@@ -193,7 +193,7 @@ export default function Dashboard() {
         <Route path="shoppingList" element={<ShoppingList />} />
         <Route path="chat" element={<ChatBot photoURL={photoURL} />} />
         <Route path="imageAnalysis" element={<FoodImageAnalysis />} />
-        <Route path="*" element={<NotFoundPage route="/dashboard" />} />
+        <Route path=":unknownRoute" element={<NotFoundPage />} />
       </Routes>
     </Flex>
   );

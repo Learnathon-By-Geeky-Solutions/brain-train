@@ -12,8 +12,16 @@ import {
 } from "@chakra-ui/react";
 import { ChefHat, Home } from "lucide-react";
 import PropTypes from "prop-types";
+import { useLocation } from "react-router-dom";
 
 const NotFoundPage = ({ route }) => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  // Check if there are any search parameters
+  const hasSearchParams = searchParams.toString().length > 0;
+  if (hasSearchParams) return null;
+
   return (
     <Box minH="100vh" bg="none">
       {/* Main Content */}

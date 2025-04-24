@@ -106,7 +106,11 @@ const RecipeCardContainer = ({
         justifyContent={{ base: "center", sm: "center", mdTo2xl: "flex-start" }}
       >
         <Grid
-          templateColumns={["1fr", "repeat(3, 1fr)", "repeat(7, 1fr)"]}
+          templateColumns={[
+            "1fr",
+            "repeat(3, 1fr)",
+            `repeat(${Math.max(cardsPerRow, 7)}, 1fr)`,
+          ]}
           gap={4}
         >
           {!recipe_prop || recipe_prop.length === 0 ? (
