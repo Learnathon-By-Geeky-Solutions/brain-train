@@ -44,19 +44,19 @@ const MealPlanningSidebar = ({
     });
   }, [reload]);
 
-  const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
   return (
     <Box
-      w="96"
-      h="100vh"
-      bg={bgColor}
+      w={{ base: "100vw", sm: "100vw", mdTo2xl: "96" }}
+      minH={{ base: "20vh", sm: "20vh", mdTo2xl: "100vh" }}
+      bg="none"
       borderRight="1px"
       borderColor={borderColor}
       p={4}
-      position="sticky"
-      top="0"
+      position={{ base: "fixed", sm: "fixed", mdTo2xl: "sticky" }}
+      top={{ base: "5vh", sm: "5vh", mdTo2xl: "0" }}
+      left="0"
       overflowY="auto"
     >
       {/* Header/Logo */}
@@ -125,34 +125,44 @@ const MealPlanningSidebar = ({
           </Collapsible.Trigger>
           <Collapsible.Content>
             <List.Root
-              py="2"
+              py="1"
               px="5"
               variant="plain"
               fontSize="sm"
               gap={2}
               alignItems="start"
             >
-              {renderPlanList(
-                dailyPlanList,
-                setIsActiveIdx,
-                setReload,
-                reload,
-                "day",
-                isActivePlanIdx,
-                setIsActivePlanIdx,
-                0,
-              )}
-              {renderPlanList(
-                weeklyPlanList,
-                setIsActiveIdx,
-                setReload,
-                reload,
-                "week",
-                isActivePlanIdx,
-                setIsActivePlanIdx,
-                dailyPlanList.length,
-                setStartDate,
-              )}
+              <Flex
+                direction="column"
+                overflowY={{ base: "auto", sm: "auto", mdTo2xl: "hidden" }}
+                h={{ base: "8", sm: "8", mdTo2xl: "100%" }}
+                w="100%"
+                position={{ base: "fixed", sm: "fixed", mdTo2xl: "sticky" }}
+                gap={2}
+                alignItems="start"
+              >
+                {renderPlanList(
+                  dailyPlanList,
+                  setIsActiveIdx,
+                  setReload,
+                  reload,
+                  "day",
+                  isActivePlanIdx,
+                  setIsActivePlanIdx,
+                  0,
+                )}
+                {renderPlanList(
+                  weeklyPlanList,
+                  setIsActiveIdx,
+                  setReload,
+                  reload,
+                  "week",
+                  isActivePlanIdx,
+                  setIsActivePlanIdx,
+                  dailyPlanList.length,
+                  setStartDate,
+                )}
+              </Flex>
             </List.Root>
           </Collapsible.Content>
         </Collapsible.Root>

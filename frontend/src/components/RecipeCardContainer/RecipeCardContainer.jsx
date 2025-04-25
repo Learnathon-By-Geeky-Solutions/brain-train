@@ -101,50 +101,67 @@ const RecipeCardContainer = ({
         "scrollbar-width": "none",
       }}
     >
-      <Grid templateColumns={`repeat(7, 1fr)`} gap={4}>
-        {!recipe_prop || recipe_prop.length === 0 ? (
-          <For each={Array.from({ length: 7 })}>
-            {
-              // eslint-disable-next-line no-unused-vars
-              (_, index) => (
-                <GridItem w="fit-content">
-                  <Skeleton height="72" width="72" />
+      <Flex
+        alignItems="center"
+        justifyContent={{ base: "center", sm: "center", mdTo2xl: "flex-start" }}
+      >
+        <Grid
+          templateColumns={[
+            "1fr",
+            "repeat(3, 1fr)",
+            `repeat(${Math.max(cardsPerRow, 7)}, 1fr)`,
+          ]}
+          gap={4}
+        >
+          {!recipe_prop || recipe_prop.length === 0 ? (
+            <For each={Array.from({ length: 7 })}>
+              {
+                // eslint-disable-next-line no-unused-vars
+                (_, index) => (
+                  <GridItem w="fit-content">
+                    <Skeleton height="72" width="72" />
+                  </GridItem>
+                )
+              }
+            </For>
+          ) : (
+            visibleRecipes.map((recipe, index) => {
+              // Only display items that fit within the grid dimensions
+              return recipe.id !== -1 ? (
+                <GridItem
+                  key={recipe.id}
+                  w="fit-content"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <RecipeCard
+                    recipe={recipe}
+                    changeVisibility={() => toggleVisibility(index)}
+                    type={type}
+                  />
                 </GridItem>
-              )
-            }
-          </For>
-        ) : (
-          visibleRecipes.map((recipe, index) => {
-            // Only display items that fit within the grid dimensions
-            return recipe.id !== -1 ? (
-              <GridItem key={recipe.id} w="fit-content">
-                <RecipeCard
-                  recipe={recipe}
-                  changeVisibility={() => toggleVisibility(index)}
-                  type={type}
-                />
-              </GridItem>
-            ) : (
-              <Flex
-                w="100vw"
-                h="lg"
-                alignItems="center"
-                justifyContent="center"
-                direction="column"
-              >
-                <Image
-                  src={zero_results}
-                  alt="No results found"
-                  objectFit="cover"
-                />
-                <Heading size="2xl" color="gray.500" textAlign="center" p="4">
-                  No Recipes Found
-                </Heading>
-              </Flex>
-            );
-          })
-        )}
-      </Grid>
+              ) : (
+                <Flex
+                  w="100vw"
+                  h="lg"
+                  alignItems="center"
+                  justifyContent="center"
+                  direction="column"
+                >
+                  <Image
+                    src={zero_results}
+                    alt="No results found"
+                    objectFit="cover"
+                  />
+                  <Heading size="2xl" color="gray.500" textAlign="center" p="4">
+                    No Recipes Found
+                  </Heading>
+                </Flex>
+              );
+            })
+          )}
+        </Grid>
+      </Flex>
       <Toaster />
     </Box>
   );

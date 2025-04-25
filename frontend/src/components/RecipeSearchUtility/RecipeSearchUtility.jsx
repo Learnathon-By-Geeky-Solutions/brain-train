@@ -2,7 +2,6 @@ import { Flex } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import IngredientSearchForm from "@/components/IngredientSearchFormInput/IngredientSearchFormInput";
 
-import "./RecipeSearchUtility.css";
 import CentralSearchFrame from "@/components/CentralSearchFrame/CentralSearchFrame";
 import TitleSearchInput from "@/components/TitleSearchInput/TitleSearchInput";
 import { useLocation } from "react-router-dom";

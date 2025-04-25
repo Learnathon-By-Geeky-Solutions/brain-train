@@ -80,7 +80,8 @@ const DailyMealPlan = ({
     <Card.Root
       boxShadow="md"
       borderRadius="lg"
-      overflow="hidden"
+      overflowX="hidden"
+      overflowY="auto"
       bg={cardBg}
       borderWidth="1px"
       borderColor={isToday ? "blue.400" : borderColor}
