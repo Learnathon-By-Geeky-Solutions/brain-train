@@ -79,8 +79,51 @@ const router = express.Router();
  *                   type: string
  *                   example: Internal server error
  */
-
 router.post("/checkUsername", usernameValidator);
+
+/**
+ * @swagger
+ * /user/recommended:
+ *   get:
+ *     summary: Get recommended recipes for the user
+ *     description: Returns a list of recommended recipes based on the user's search history.
+ *     tags:
+ *       - User
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of recommended recipes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       title:
+ *                         type: string
+ *                       image:
+ *                         type: string
+ *                       likes:
+ *                         type: integer
+ *                       summary:
+ *                         type: string
+ *       500:
+ *         description: Internal server error (likely due to missing or invalid authentication)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.get("/recommended", recipeRecommender);
 
 export default router;
