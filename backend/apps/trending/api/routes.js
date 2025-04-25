@@ -5,7 +5,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /recipes/trending/{n}:
+ * /trending/{n}:
  *   get:
  *     summary: Get top liked (trending) recipes
  *     description: Returns a list of the top `n` most liked recipes.
