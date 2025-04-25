@@ -4,7 +4,7 @@ import { Toaster, toaster } from "../ui/toaster";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import { fetchAIResponse, fetchChatDetails, fetchChatList } from "./api";
-import CollapsibleSideBar from "../CollapsibleSideBar/CollapsibleSideBar";
+import SideBarContent from "../CollapsibleSideBar/SideBarContent";
 import PropTypes from "prop-types";
 
 const ChatBot = ({ photoURL }) => {
@@ -186,8 +186,8 @@ const ChatBot = ({ photoURL }) => {
 
   return (
     <Flex w="100vw">
-      <CollapsibleSideBar
-        open={open}
+      <SideBarContent
+        isOpen={open}
         onToggle={onToggle}
         navItems={chatList}
         loadChat={loadChat}
@@ -198,7 +198,7 @@ const ChatBot = ({ photoURL }) => {
         direction="column"
         bg="none"
         position="fixed"
-        left={open ? "25vw" : "5vw"}
+        left={open ? { base: "5vw", sm: "5vw", mdTo2xl: "25vw" } : "5vw"}
         h="100%"
         alignItems="center"
         justifyContent="center"
