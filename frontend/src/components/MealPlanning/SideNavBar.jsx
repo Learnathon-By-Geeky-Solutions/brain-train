@@ -24,10 +24,13 @@ const MealPlanningSidebar = ({
   reload,
   setSearchParams,
   setReload,
+  isActiveIdx,
+  setIsActiveIdx,
+  isActivePlanIdx,
+  setIsActivePlanIdx,
 }) => {
   const [dailyPlanList, setDailyPlanList] = useState([]);
   const [weeklyPlanList, setweeklyPlanList] = useState([]);
-  const [isActiveIdx, setIsActiveIdx] = useState(0);
 
   useEffect(() => {
     getMyPlans().then((data) => {
@@ -41,19 +44,19 @@ const MealPlanningSidebar = ({
     });
   }, [reload]);
 
-  const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
   return (
     <Box
-      w="96"
-      h="100vh"
-      bg={bgColor}
+      w={{ base: "100vw", sm: "100vw", mdTo2xl: "96" }}
+      minH={{ base: "20vh", sm: "20vh", mdTo2xl: "100vh" }}
+      bg="none"
       borderRight="1px"
       borderColor={borderColor}
       p={4}
-      position="sticky"
-      top="0"
+      position={{ base: "fixed", sm: "fixed", mdTo2xl: "sticky" }}
+      top={{ base: "5vh", sm: "5vh", mdTo2xl: "0" }}
+      left="0"
       overflowY="auto"
     >
       {/* Header/Logo */}
@@ -79,6 +82,7 @@ const MealPlanningSidebar = ({
             setSearchParams({});
             setStartDate(getCurrentDateFormatted());
           }}
+          setIsActivePlanIdx={setIsActivePlanIdx}
         >
           <Flex gap={1}>
             <LuCalendar />
@@ -90,8 +94,14 @@ const MealPlanningSidebar = ({
           isActiveIdx={isActiveIdx}
           setIsActiveIdx={setIsActiveIdx}
           clickFn={() => {
-            setSearchParams({ time: "day", date: getCurrentDateFormatted() });
+            setSearchParams({
+              time: "day",
+              date: getCurrentDateFormatted(),
+              idx: 1,
+              sIdx: -1,
+            });
           }}
+          setIsActivePlanIdx={setIsActivePlanIdx}
         >
           <Flex gap={1}>
             <MdDateRange />
@@ -105,6 +115,7 @@ const MealPlanningSidebar = ({
               idx={2}
               isActiveIdx={isActiveIdx}
               setIsActiveIdx={setIsActiveIdx}
+              setIsActivePlanIdx={setIsActivePlanIdx}
             >
               <Flex gap={1}>
                 <LuClipboard />
@@ -114,30 +125,44 @@ const MealPlanningSidebar = ({
           </Collapsible.Trigger>
           <Collapsible.Content>
             <List.Root
-              py="2"
+              py="1"
               px="5"
               variant="plain"
               fontSize="sm"
               gap={2}
               alignItems="start"
             >
-              {renderPlanList(
-                dailyPlanList,
-                setIsActiveIdx,
-                isActiveIdx,
-                setReload,
-                reload,
-                "day",
-              )}
-              {renderPlanList(
-                weeklyPlanList,
-                setIsActiveIdx,
-                isActiveIdx,
-                setReload,
-                reload,
-                "week",
-                setStartDate,
-              )}
+              <Flex
+                direction="column"
+                overflowY={{ base: "auto", sm: "auto", mdTo2xl: "hidden" }}
+                h={{ base: "8", sm: "8", mdTo2xl: "100%" }}
+                w="100%"
+                position={{ base: "fixed", sm: "fixed", mdTo2xl: "sticky" }}
+                gap={2}
+                alignItems="start"
+              >
+                {renderPlanList(
+                  dailyPlanList,
+                  setIsActiveIdx,
+                  setReload,
+                  reload,
+                  "day",
+                  isActivePlanIdx,
+                  setIsActivePlanIdx,
+                  0,
+                )}
+                {renderPlanList(
+                  weeklyPlanList,
+                  setIsActiveIdx,
+                  setReload,
+                  reload,
+                  "week",
+                  isActivePlanIdx,
+                  setIsActivePlanIdx,
+                  dailyPlanList.length,
+                  setStartDate,
+                )}
+              </Flex>
             </List.Root>
           </Collapsible.Content>
         </Collapsible.Root>
@@ -150,6 +175,10 @@ MealPlanningSidebar.propTypes = {
   reload: PropTypes.bool.isRequired,
   setSearchParams: PropTypes.func.isRequired,
   setReload: PropTypes.func.isRequired,
+  isActiveIdx: PropTypes.number.isRequired,
+  setIsActiveIdx: PropTypes.func.isRequired,
+  isActivePlanIdx: PropTypes.number.isRequired,
+  setIsActivePlanIdx: PropTypes.func.isRequired,
 };
 
 export default MealPlanningSidebar;

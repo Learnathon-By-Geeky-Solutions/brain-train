@@ -1,73 +1,67 @@
-const handleFileChange = (
+const isImageFile = (file) => file.type.match("image.*");
+
+const isFileSizeValid = (file, maxSizeMB = 5) =>
+  file.size <= maxSizeMB * 1024 * 1024;
+
+const showToast = (toaster, title, description) => {
+  if (!toaster) return;
+  toaster.create({
+    title,
+    description,
+    type: "error",
+    duration: 3000,
+    isClosable: true,
+  });
+};
+
+const handleFileChange = async (
   e,
-  setFile,
   setImagePreview,
   toaster = null,
   allowMultiple = true,
 ) => {
-  if (e.target.files) {
-    let selectedFileArray = [];
-    let imagePreviewArray = [];
-    for (let i = 0; i < e.target.files.length; i++) {
-      const selectedFile = e.target.files[i];
-      if (selectedFile) {
-        let returnFlag = false;
-        // Check if the file is an image
-        if (!selectedFile.type.match("image.*")) {
-          if (toaster) {
-            toaster.create({
-              title: "Invalid file type",
-              description: "Please upload an image file (JPEG, PNG, etc.)",
-              type: "error",
-              duration: 3000,
-              isClosable: true,
-            });
-          }
-          returnFlag = true;
-        }
+  const files = e.target.files;
+  if (!files || files.length === 0) return -1;
 
-        // Check if the file size is below 5MB
-        if (selectedFile.size > 5 * 1024 * 1024) {
-          if (toaster) {
-            toaster.create({
-              title: "File too large",
-              description: "Please upload an image smaller than 5MB",
-              type: "error",
-              duration: 3000,
-              isClosable: true,
-            });
-          }
-          returnFlag = true;
-        }
+  const imagePreviewArray = [];
 
-        if (!returnFlag) {
-          selectedFileArray.push(selectedFile);
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            imagePreviewArray.push(e.target.result);
-          };
-          reader.readAsDataURL(selectedFile);
-        }
-      }
+  for (const file of files) {
+    if (!file) continue;
+
+    if (!isImageFile(file)) {
+      showToast(
+        toaster,
+        "Invalid file type",
+        "Please upload an image file (JPEG, PNG, etc.)",
+      );
+      continue;
     }
-    if (selectedFileArray.length > 0) {
-      if (allowMultiple) {
-        setFile(selectedFileArray);
-        setImagePreview(imagePreviewArray);
-      } else {
-        setFile(selectedFileArray[0]);
-        setImagePreview(imagePreviewArray[0]);
-      }
-      return;
+
+    if (!isFileSizeValid(file)) {
+      showToast(
+        toaster,
+        "File too large",
+        "Please upload an image smaller than 5MB",
+      );
+      continue;
     }
-    return -1;
-    // // Create image preview
-    // const reader = new FileReader();
-    // reader.onload = (e) => {
-    // setImagePreview(e.target.result);
-    // };
-    // reader.readAsDataURL(selectedFile);
+
+    // Wrap FileReader in a Promise for sequential async processing
+    const preview = await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => resolve(event.target.result);
+      reader.readAsDataURL(file);
+    });
+
+    imagePreviewArray.push(preview);
   }
+
+  if (imagePreviewArray.length > 0) {
+    setImagePreview(allowMultiple ? imagePreviewArray : imagePreviewArray[0]);
+    return;
+  }
+
+  return -1;
 };
 
 const readRawFile = (file, onProgress, onComplete) => {

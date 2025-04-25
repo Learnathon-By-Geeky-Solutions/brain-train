@@ -5,7 +5,14 @@ import { Button, Text, Flex } from "@chakra-ui/react";
 import { useColorModeValue } from "../ui/color-mode";
 
 // Navigation Item component
-const NavItem = ({ children, clickFn, idx, isActiveIdx, setIsActiveIdx }) => {
+const NavItem = ({
+  children,
+  clickFn,
+  idx,
+  isActiveIdx,
+  setIsActiveIdx,
+  setIsActivePlanIdx,
+}) => {
   const activeBg = useColorModeValue("green.50", "green.900");
   const activeColor = useColorModeValue("green.700", "green.200");
   const hoverBg = useColorModeValue("gray.100", "gray.700");
@@ -25,7 +32,10 @@ const NavItem = ({ children, clickFn, idx, isActiveIdx, setIsActiveIdx }) => {
       w="100%"
       onClick={() => {
         if (clickFn) clickFn();
-        if (idx != 2) setIsActiveIdx(idx);
+        if (idx !== 2) {
+          setIsActiveIdx(idx);
+          setIsActivePlanIdx(-1);
+        }
       }}
     >
       <Flex justify="space-between" w="100%" align="center">
@@ -40,6 +50,7 @@ NavItem.propTypes = {
   idx: PropTypes.number.isRequired,
   isActiveIdx: PropTypes.number.isRequired,
   setIsActiveIdx: PropTypes.func.isRequired,
+  setIsActivePlanIdx: PropTypes.func.isRequired,
 };
 
 export default NavItem;

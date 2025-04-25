@@ -16,15 +16,13 @@ const PreAnalysis = ({
   resetComponent,
   setImagePreview,
   setAnalysisResult,
-  setIsAnalyzing,
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const setFileBlob = useState(null)[1];
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
   const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       const selectedFile = e.target.files[0];
 
       // Check if the file is an image
@@ -65,50 +63,45 @@ const PreAnalysis = ({
   const handleUpload = async (type) => {
     if (!file) return;
     setIsUploading(true);
-    readRawFile(
-      file,
-      (progress) => setUploadProgress(progress),
-      (fileBlob) => setFileBlob(fileBlob),
-    ).then((completeFile) => {
-      try {
-        const Fn =
-          type === "ingredient"
-            ? uploadImageWithProgressIngredients
-            : uploadImageWithProgressNutrition;
-        console.log("completeFile");
-        console.log(completeFile);
-        Fn(completeFile).then((response) => {
-          if (response?.status == "error") {
-            console.log("error in response");
-          } else {
-            response.type = type;
-            console.log(response);
-            setIsAnalyzing(true);
-            setIsUploading(false);
-            setAnalysisResult(response);
+    readRawFile(file, (progress) => setUploadProgress(progress), null).then(
+      (completeFile) => {
+        try {
+          const Fn =
+            type === "ingredient"
+              ? uploadImageWithProgressIngredients
+              : uploadImageWithProgressNutrition;
+          console.log("completeFile");
+          console.log(completeFile);
+          Fn(completeFile).then((response) => {
+            if (response?.status == "error") {
+              console.log("error in response");
+            } else {
+              response.type = type;
+              console.log(response);
+              setIsUploading(false);
+              setAnalysisResult(response);
 
-            toaster.create({
-              title: "Analysis complete",
-              description: "Your food image has been successfully analyzed!",
-              status: "success",
-              duration: 3000,
-              isClosable: true,
-            });
-          }
-        });
-      } catch (error) {
-        toaster.create({
-          title: "Upload failed",
-          description:
-            error.message || "There was an error uploading your image",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-      } finally {
-        setIsAnalyzing(false);
-      }
-    });
+              toaster.create({
+                title: "Analysis complete",
+                description: "Your food image has been successfully analyzed!",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+              });
+            }
+          });
+        } catch (error) {
+          toaster.create({
+            title: "Upload failed",
+            description:
+              error.message || "There was an error uploading your image",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      },
+    );
   };
 
   const triggerFileInput = () => {
@@ -180,11 +173,11 @@ const PreAnalysis = ({
         style={{ display: "none" }}
       />
       <UploadPhoto
-        show={imagePreview ? false : true}
+        show={imagePreview === null}
         triggerFileInput={triggerFileInput}
       />
       <ImagePreview
-        show={imagePreview ? true : false}
+        show={imagePreview !== null}
         imagePreview={imagePreview}
         isUploading={isUploading}
         uploadProgress={uploadProgress}
@@ -207,7 +200,6 @@ PreAnalysis.propTypes = {
   resetComponent: PropType.func.isRequired,
   setImagePreview: PropType.func.isRequired,
   setAnalysisResult: PropType.func.isRequired,
-  setIsAnalyzing: PropType.func.isRequired,
 };
 
 export default PreAnalysis;

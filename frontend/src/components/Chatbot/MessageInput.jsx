@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Input, IconButton, Flex } from "@chakra-ui/react";
-import { LuImageUp, LuSend } from "react-icons/lu";
-import { LuRefreshCcw } from "react-icons/lu";
+import { LuImageUp, LuSend, LuRefreshCcw } from "react-icons/lu";
 import { toaster } from "../ui/toaster";
 import { handleFileChange, readRawFile } from "@/services/fileHandler";
 import ImagePreviewWithProgress from "./ImagePreviewWithProgress";
 import PropTypes from "prop-types";
+import { useColorModeValue } from "../ui/color-mode";
 
 const MessageInput = ({
   input,
@@ -14,17 +14,18 @@ const MessageInput = ({
   isLoading,
   clearChat,
   setFileBlob,
-  imagePreviewState,
+  imagePreview,
+  setImagePreview,
 }) => {
-  const setFile = useState([])[1];
   const [progress, setProgress] = useState([]);
-  const [imagePreview, setImagePreview] = imagePreviewState;
   const [showImagePreview, setShowImagePreview] = useState([]);
   const fileInputRef = React.useRef(null);
+  const inputBg = useColorModeValue("white", "var(--dark-bg)");
+  const inputBgColor = useColorModeValue("gray.300", "var(--text-input)");
+  const textColor = useColorModeValue("black", "white");
 
   const cancelImageUpload = (index) => {
     if (index !== undefined) {
-      setFile((prev) => prev.filter((_, i) => i !== index));
       setImagePreview((prev) => prev.filter((_, i) => i !== index));
       setProgress((prev) => prev.filter((_, i) => i !== index));
       setShowImagePreview((prev) => prev.filter((_, i) => i !== index));
@@ -48,7 +49,7 @@ const MessageInput = ({
       direction="column"
       position="absolute"
       bottom="0"
-      bg="var(--dark-bg)"
+      bg={inputBg}
       h="20vh"
     >
       <input
@@ -59,7 +60,7 @@ const MessageInput = ({
           const selectedFiles = e.target.files;
           setProgress(Array(selectedFiles.length).fill(0));
           setShowImagePreview(Array(selectedFiles.length).fill(false));
-          handleFileChange(e, setFile, setImagePreview, toaster);
+          handleFileChange(e, setImagePreview, toaster);
           for (let i = 0; i < selectedFiles.length; i++) {
             setShowImagePreview((prev) => {
               const newShowImagePreview = [...prev];
@@ -85,7 +86,7 @@ const MessageInput = ({
         style={{ display: "none" }}
       />
       <Flex
-        background="var(--text-input)"
+        background={inputBgColor}
         alignItems="center"
         justifyContent="space-between"
         borderRadius="2xl"
@@ -119,7 +120,7 @@ const MessageInput = ({
             border="none"
             _focus={{ border: "none", boxShadow: "none" }}
             variant="flushed"
-            color="white"
+            color={textColor}
           />
         </Flex>
         <Flex alignSelf="flex-end" mb="2.5">
@@ -131,7 +132,7 @@ const MessageInput = ({
               });
             }}
             isLoading={isLoading}
-            disabled={!input.trim() || isLoading}
+            disabled={(!input.trim() && imagePreview.length == 0) || isLoading}
             variant="subtle"
             borderRadius="xl"
             mr="1"
@@ -171,7 +172,8 @@ MessageInput.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   clearChat: PropTypes.func.isRequired,
   setFileBlob: PropTypes.func.isRequired,
-  imagePreviewState: PropTypes.array.isRequired,
+  imagePreview: PropTypes.array.isRequired,
+  setImagePreview: PropTypes.func.isRequired,
 };
 
 export default MessageInput;

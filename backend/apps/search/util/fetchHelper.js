@@ -14,18 +14,15 @@ export const fetchRecipeDetailsBulk = (recipeIds) => {
   }
 
   const recipeIdsString = recipeIds.join(",");
-  console.log("Fetching full recipes for IDs:", recipeIdsString);
 
   return spoonacularRequest("/recipes/informationBulk", {
     ids: recipeIdsString,
     includeNutrition: true,
   })
     .then((fullRecipes) => {
-      console.log("Fetched full recipes:", fullRecipes.length);
       return fullRecipes;
     })
     .catch((error) => {
-      console.error("Error fetching recipe details:", error);
       return [];
     });
 };
@@ -59,8 +56,6 @@ const enrichMissingRecipes = (recipeIds, existing) => {
   const existingIds = new Set(existing.map((r) => String(r.sourceId)));
   const missingIds = recipeIds.filter((id) => !existingIds.has(String(id)));
 
-  console.log("Missing IDs:", missingIds.length);
-
   if (missingIds.length === 0) {
     return Promise.resolve({ all: normalizeIds(existing) });
   }
@@ -91,7 +86,7 @@ const saveAndEnrich = (recipes) =>
           sourceId: String(saved.sourceId),
         }))
         .catch((err) => {
-          console.error("⚠️ Failed to save recipe:", r.id, err);
+          console.error("⚠️ Failed to save recipe:", r.id, err.message);
           return null;
         }),
     ),
@@ -109,7 +104,7 @@ export const fetchByTitleSaveFilter = (query, number, filters) => {
       return fetchSaveFilterRecipes(ids, filters);
     })
     .catch((err) => {
-      console.error("Error from Spoonacular API:", err);
+      console.error("Error from Spoonacular API:", err.message);
       return [];
     });
 };
@@ -122,6 +117,6 @@ export const fetchByIngredientSaveFilter = (ingredients, number, filters) =>
       return fetchSaveFilterRecipes(recipeIds, filters);
     })
     .catch((err) => {
-      console.error("Error from Spoonacular API:", err);
+      console.error("Error from Spoonacular API:", err.message);
       return [];
     });

@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Box, IconButton, Text, Flex } from "@chakra-ui/react";
+import { Box, IconButton, Flex } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { MdChat } from "react-icons/md";
 import PropTypes from "prop-types";
+import { ChatHistoryItem } from "../Chatbot/ChatHistoryItem";
+import { deleteChat, renameChat } from "./api";
+import { toaster } from "../ui/toaster";
 
 const MotionBox = motion(Box);
 
@@ -17,22 +20,75 @@ const SideBarContent = ({
 }) => {
   const [selectedNavItemIdx, setSelectedNavItemIdx] = useState(0);
   const newNavItems = [{ _id: null, name: "New Chat" }, ...navItems];
+
+  function handleDeleteChat(id) {
+    deleteChat(id).then((response) => {
+      if (response.status !== "error") {
+        toaster.create({
+          title: "Success",
+          description: "Chat deleted successfully.",
+          type: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        toggleRefresh();
+      } else {
+        toaster.create({
+          title: "Error",
+          description: response.message,
+          type: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    });
+  }
+
+  function handleRenameChat(id, newName) {
+    // Implement rename functionality here
+    renameChat(id, newName).then((response) => {
+      if (response.status !== "error") {
+        toaster.create({
+          title: "Success",
+          description: "Chat renamed successfully.",
+          type: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toaster.create({
+          title: "Error",
+          description: response.message,
+          type: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+      toggleRefresh();
+    });
+  }
+
   return (
     <MotionBox
-      w={isOpen ? "25vw" : "5vw"}
+      w={
+        isOpen
+          ? { base: "50vw", sm: "50vw", mdTo2xl: "25vw" }
+          : { base: "12vw", sm: "12vw", mdTo2xl: "5vw" }
+      }
       bg="green.600"
       color="white"
       transition="width 0.3s"
       overflow="hidden"
-      h="90vh"
+      h={{ base: "94.5vh", sm: "94.5vh", mdTo2xl: "90vh" }}
       position="fixed"
-      top="10vh"
+      top={{ base: "5.5vh", sm: "5.5vh", mdTo2xl: "10vh" }}
       p={3}
       overflowY="auto"
+      zIndex="999"
     >
       <Flex
         position="fixed"
-        top="10vh"
+        top={{ base: "5.5vh", sm: "5.5vh", mdTo2xl: "10vh" }}
         left="0"
         w={isOpen ? "25vw" : "5vw"}
         bg="green.600"
@@ -101,7 +157,11 @@ const SideBarContent = ({
                 }
               }}
             >
-              <Text ml={3}>{item.name}</Text>
+              <ChatHistoryItem
+                name={item.name}
+                onRename={(newName) => handleRenameChat(item._id, newName)}
+                onDelete={() => handleDeleteChat(item._id)}
+              />
             </Box>
           ))}
         </Flex>

@@ -32,6 +32,8 @@ const MealPlanningCalendar = () => {
   const [days, setDays] = useState(getDaysOfWeek(startDate));
   const [mealData, setMealData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isActiveIdx, setIsActiveIdx] = useState(0);
+  const [isActivePlanIdx, setIsActivePlanIdx] = useState(-1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,6 +51,7 @@ const MealPlanningCalendar = () => {
   const borderColor = useColorModeValue("gray.200", "gray.600");
   const bgColor = useColorModeValue("white", "gray.800");
   const highlightColor = useColorModeValue("orange.400", "orange.500");
+  const bgColor1 = useColorModeValue("white", "var(--dark-bg)");
 
   function changeStartDate(date) {
     setStartDate(date);
@@ -70,15 +73,29 @@ const MealPlanningCalendar = () => {
   }
 
   return (
-    <Flex>
+    <Flex
+      direction={{ base: "column", smToMd: "column", mdTo2xl: "row" }}
+      w="100%"
+      h="100%"
+    >
       <MealPlanningSidebar
         setStartDate={changeStartDate}
         reload={reload}
         setSearchParams={setSearchParams}
         setReload={setReload}
+        isActiveIdx={isActiveIdx}
+        setIsActiveIdx={setIsActiveIdx}
+        isActivePlanIdx={isActivePlanIdx}
+        setIsActivePlanIdx={setIsActivePlanIdx}
       />
       {!searchParams.get("time") ? (
-        <Box maxW="100%" overflowX="auto" pt={0}>
+        <Box
+          w={{ base: "fit-content", sm: "fit-content", mdTo2xl: "100%" }}
+          position={{ base: "absolute", sm: "absolute", mdTo2xl: "relative" }}
+          left={{ base: 0, sm: 0, mdTo2xl: undefined }}
+          top={{ base: "35vh", sm: "35vh", mdTo2xl: "0" }}
+          bg={bgColor1}
+        >
           {/* Calendar Header with Navigation */}
           <Flex
             justify="space-between"
@@ -86,6 +103,7 @@ const MealPlanningCalendar = () => {
             py={2}
             px={4}
             bg="gray.400"
+            w="100%"
           >
             <IconButton
               aria-label="Previous week"
@@ -105,7 +123,7 @@ const MealPlanningCalendar = () => {
           </Flex>
 
           {/* Calendar Grid */}
-          <Grid templateColumns="80px repeat(7, 1fr)">
+          <Grid templateColumns="repeat(8, 1fr)">
             {/* Day Headers */}
             <Box p={4} borderWidth="1px" borderColor={borderColor}></Box>
             {days.map((day, dayIndex) => {
@@ -276,7 +294,12 @@ const MealPlanningCalendar = () => {
           </Grid>
         </Box>
       ) : (
-        <DailyMealPlan searchParams={searchParams} reload={reload} />
+        <DailyMealPlan
+          searchParams={searchParams}
+          reload={reload}
+          setIsActiveIdx={setIsActiveIdx}
+          setIsActivePlanIdx={setIsActivePlanIdx}
+        />
       )}
       <Toaster />
     </Flex>

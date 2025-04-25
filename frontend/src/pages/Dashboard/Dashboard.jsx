@@ -1,6 +1,5 @@
-import { Flex, IconButton } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import "./Dashboard.css";
+import { ChakraProvider, Flex, IconButton, Separator } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 import {
   Route,
   Routes,
@@ -20,6 +19,9 @@ import MealPlanningCalendar from "@/components/MealPlanning/MealPlan";
 import { LuMessageCircle } from "react-icons/lu";
 import ChatBot from "@/components/Chatbot/ChatBot";
 import FoodImageAnalysis from "@/components/ImageAnalysis/ImageAnalysis";
+import { useColorModeValue } from "@/components/ui/color-mode";
+import NotFoundPage from "../NotFoundPage/NotFoundPage";
+import system from "@/theme";
 
 export default function Dashboard() {
   const [pageLocation, setPageLocation] = useState("dashboard");
@@ -27,10 +29,12 @@ export default function Dashboard() {
   const [cardData, setCardData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const scrollRef = useRef(null);
 
   // Auth part
   const [user, setUser] = useState(undefined);
   const [photoURL, setPhotoURL] = useState(undefined);
+  const bgColor = useColorModeValue("white", "var(--dark-bg)");
   const navigate = useNavigate();
   let unsubscribe;
 
@@ -132,57 +136,68 @@ export default function Dashboard() {
   };
 
   return (
-    <Flex
-      direction="column"
-      width="100%"
-      height="100%"
-      minHeight="100vh"
-      className="dashboard"
-      gap={0}
-    >
-      <Header
-        photoUrl={photoURL}
-        userName={user?.displayName}
-        handleLogout={handleLogout}
-        setSearchParams={setSearchParams}
-        pageState={pageState}
-        pageLocation={pageLocation}
-        setPageState={setPageState}
-        showResults={loadCards}
-      />
-      {!searchParams.get("type") && pageLocation === "dashboard" && (
-        <Flex direction="column" width="100%" h="100%" className="dashboard">
-          <PreloadedCards txt="Recently Searched" />
-          <PreloadedCards txt="Trending Recipes" />
-          <PreloadedCards txt="Explore a cuisine" showResults={loadCards} />
-          <PreloadedCards txt="Recommended for You" />
-        </Flex>
-      )}
-      {searchParams.get("type") && pageLocation === "dashboard" && (
-        <RecipeCardContainer recipe_prop={cardData} removeCard={removeCard} />
-      )}
-      {location.pathname !== "/dashboard/chat" && (
-        <IconButton
-          borderRadius="full"
-          position="fixed"
-          bottom="4"
-          right="4"
-          size="xl"
-          zIndex="1010"
-          onClick={() => {
-            navigate("/dashboard/chat");
-          }}
-        >
-          <LuMessageCircle />
-        </IconButton>
-      )}
-      <Routes>
-        <Route path="mealPlan" element={<MealPlanningCalendar />} />
-        <Route path="recipe/*" element={<RecipeDetails />} />
-        <Route path="recipe/shoppingList" element={<ShoppingList />} />
-        <Route path="chat" element={<ChatBot photoURL={photoURL} />} />
-        <Route path="imageAnalysis" element={<FoodImageAnalysis />} />
-      </Routes>
-    </Flex>
+    <ChakraProvider value={system}>
+      <Flex
+        direction="column"
+        width="100%"
+        h="100vh"
+        position="fixed"
+        overflowY="auto"
+        ref={scrollRef}
+        gap={0}
+        bg={bgColor}
+      >
+        <Header
+          photoUrl={photoURL}
+          userName={user?.displayName}
+          handleLogout={handleLogout}
+          setSearchParams={setSearchParams}
+          pageState={pageState}
+          pageLocation={pageLocation}
+          setPageState={setPageState}
+          showResults={loadCards}
+          scrollRef={scrollRef}
+        />
+        <Separator />
+        {!searchParams.get("type") && pageLocation === "dashboard" && (
+          <Flex direction="column" width="100%" h="100%">
+            <PreloadedCards txt="Recently Searched" />
+            <PreloadedCards txt="Trending Recipes" />
+            <PreloadedCards txt="Explore a cuisine" showResults={loadCards} />
+            <PreloadedCards txt="Recommended for You" />
+          </Flex>
+        )}
+        {searchParams.get("type") && pageLocation === "dashboard" && (
+          <RecipeCardContainer
+            recipe_prop={cardData}
+            removeCard={removeCard}
+            scrollable={false}
+          />
+        )}
+        {location.pathname !== "/dashboard/chat" && (
+          <IconButton
+            borderRadius="full"
+            position="fixed"
+            bottom="4"
+            right="4"
+            size="xl"
+            zIndex="1010"
+            onClick={() => {
+              navigate("/dashboard/chat");
+            }}
+          >
+            <LuMessageCircle />
+          </IconButton>
+        )}
+        <Routes>
+          <Route path="mealPlan" element={<MealPlanningCalendar />} />
+          <Route path="recipe/*" element={<RecipeDetails />} />
+          <Route path="shoppingList" element={<ShoppingList />} />
+          <Route path="chat" element={<ChatBot photoURL={photoURL} />} />
+          <Route path="imageAnalysis" element={<FoodImageAnalysis />} />
+          <Route path=":unknownRoute" element={<NotFoundPage />} />
+        </Routes>
+      </Flex>
+    </ChakraProvider>
   );
 }

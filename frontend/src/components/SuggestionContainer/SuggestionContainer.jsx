@@ -17,6 +17,9 @@ const SuggestionContainer = ({
   const [error, setError] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [ingContainerClosed, setIngContainerClosed] = useState(false);
+  const [forceStopSuggestionContainer, setForceStopSuggestionContainer] =
+    useState(false);
+  const [complete, setComplete] = useState(false);
 
   if (type === "ingredients") {
     containerClosed = ingContainerClosed;
@@ -29,7 +32,10 @@ const SuggestionContainer = ({
       setContainerClosed(true);
       return;
     }
-    setContainerClosed(false);
+    if (!forceStopSuggestionContainer) {
+      setContainerClosed(false);
+      setComplete(false);
+    }
     const debounceFetch = setTimeout(() => {
       fetchSuggestions(
         setLoading,
@@ -38,6 +44,7 @@ const SuggestionContainer = ({
         type,
         query,
         setContainerClosed,
+        setForceStopSuggestionContainer,
       );
     }, 300); // Debounce API call
 
@@ -45,27 +52,45 @@ const SuggestionContainer = ({
   }, [query]);
 
   useEffect(() => {
+    if (complete) return;
     if (keyHandler === null) return;
+    if (keyHandler.key === "Enter") {
+      const suggestion =
+        selectedIndex !== -1
+          ? suggestions[selectedIndex][`${property}`]
+          : query;
+      handleSuggestionRendering(suggestion);
+      return;
+    }
+    if (keyHandler.key === "Escape") {
+      setLoading(false);
+      setContainerClosed(true);
+      setSelectedIndex(-1);
+      setComplete(true);
+      return;
+    }
     if (suggestions.length === 0) return;
-    if (selectedIndex === -2) return;
     if (keyHandler.key === "ArrowDown") {
       setSelectedIndex((prev) =>
         prev < suggestions.length - 1 ? prev + 1 : prev,
       );
-    } else if (keyHandler.key === "ArrowUp") {
+      return;
+    }
+    if (keyHandler.key === "ArrowUp") {
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-    } else if (keyHandler.key === "Enter") {
-      if (selectedIndex !== -1)
-        handleClick(suggestions[selectedIndex][`${property}`]);
-      else handleClick(query);
-      setSelectedIndex(-2);
-      setContainerClosed(true);
-    } else if (keyHandler.key === "Escape") {
-      setContainerClosed(true);
     }
   }, [keyHandler]);
 
   const property = type === "title" ? "title" : "name";
+
+  const handleSuggestionRendering = (suggestion) => {
+    setLoading(false);
+    setForceStopSuggestionContainer(true);
+    handleClick(suggestion);
+    setSelectedIndex(-1);
+    setContainerClosed(true);
+    setComplete(true);
+  };
 
   return (
     <Box width="full" mx="auto">
@@ -96,9 +121,7 @@ const SuggestionContainer = ({
                 bg={selectedIndex === index ? "gray.400" : "none"}
                 _hover={{ bg: "gray.400", cursor: "pointer" }}
                 onClick={() => {
-                  handleClick(suggestion[`${property}`]);
-                  setContainerClosed(true);
-                  setSelectedIndex(-2);
+                  handleSuggestionRendering(suggestion[`${property}`]);
                 }}
               >
                 {suggestion[`${property}`]}

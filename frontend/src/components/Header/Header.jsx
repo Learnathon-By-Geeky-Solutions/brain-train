@@ -1,33 +1,15 @@
-import {
-  Box,
-  Flex,
-  IconButton,
-  Image,
-  Text,
-  Button,
-  Avatar,
-} from "@chakra-ui/react";
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import logo from "../../assets/logo.png";
-import { MdLogout } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 import RecipeSearchUtility from "../RecipeSearchUtility/RecipeSearchUtility";
 
-import {
-  DrawerActionTrigger,
-  DrawerBackdrop,
-  DrawerBody,
-  DrawerCloseTrigger,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerRoot,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { LuMenu } from "react-icons/lu";
 import { useState, useEffect } from "react";
-import FilterController from "../RecipeSearchUtility/filter";
+import { throttle } from "lodash";
+import { useColorModeValue } from "../ui/color-mode";
+import Utilities from "./Utilities";
+import NavButtons from "./NavButtons";
+import VerticalDrawer from "./VerticalDrawer";
 
 const StickyHeader = ({
   photoUrl,
@@ -38,6 +20,7 @@ const StickyHeader = ({
   pageLocation,
   setPageState,
   showResults,
+  scrollRef,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -49,49 +32,64 @@ const StickyHeader = ({
   const [showSecondBar, setShowSecondBar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [containerClosed, setContainerClosed] = useState(true);
+  const scrollDownEventExclusion = [
+    "/dashboard/mealPlan",
+    "/dashboard/chat",
+    "/dashboard/recipe",
+  ];
+  const scrollUpEventExclusion = ["/dashboard/chat"];
+  const bgColor = useColorModeValue("white", "var(--header-bg)");
 
-  const controlSecondBar = () => {
-    // Get current scroll position
-    const currentScrollY = window.scrollY;
-
+  const controlSecondBar = throttle((pathname, scrollYLatest) => {
+    const currentScrollY = scrollRef?.current?.scrollTop || 0;
     // If we're at the top (or very close to it), always show the second bar
     if (
+      currentScrollY < scrollYLatest &&
       currentScrollY < 5 &&
-      Math.abs(currentScrollY - lastScrollY) > 5 &&
-      location.pathname !== "/dashboard/mealPlan" &&
-      location.pathname !== "/dashboard/chat"
+      !scrollDownEventExclusion.includes(pathname)
     ) {
       setShowSecondBar(true);
     }
     // Otherwise hide it when scrolling down
     else if (
-      currentScrollY > lastScrollY &&
+      currentScrollY > scrollYLatest &&
+      currentScrollY >= 100 &&
       containerClosed &&
-      Math.abs(currentScrollY - lastScrollY) > 5
+      !scrollUpEventExclusion.includes(pathname)
     ) {
       setShowSecondBar(false);
     }
     // Update the last scroll position
     setLastScrollY(currentScrollY);
+  }, 100);
+
+  const handleScroll = () => {
+    // use the latest location.pathname here
+    controlSecondBar(location.pathname, lastScrollY);
   };
 
   useEffect(() => {
-    if (
-      location.pathname === "/dashboard/mealPlan" ||
-      location.pathname === "/dashboard/chat"
-    ) {
+    if (scrollDownEventExclusion.includes(location.pathname)) {
       setShowSecondBar(false);
+    } else {
+      setShowSecondBar(true);
     }
   }, [location.pathname]);
 
   useEffect(() => {
-    if (containerClosed) window.addEventListener("scroll", controlSecondBar);
-    else setShowSecondBar(true);
-    // Cleanup function to remove the event listener
+    const scrollableElement = scrollRef?.current;
+
+    if (!scrollableElement || !containerClosed) {
+      setShowSecondBar(true);
+      return;
+    }
+
+    scrollableElement.addEventListener("scroll", handleScroll);
+
     return () => {
-      window.removeEventListener("scroll", controlSecondBar);
+      scrollableElement.removeEventListener("scroll", handleScroll);
     };
-  }, [lastScrollY, containerClosed]); // Only re-run the effect if lastScrollY changes
+  }, [containerClosed, lastScrollY]); // Only re-run the effect if lastScrollY changes
 
   const showFavouriteRecipes = () => {
     showResults(null, true);
@@ -108,11 +106,6 @@ const StickyHeader = ({
     }
   };
 
-  function changePageState(newState) {
-    setSearchParams({});
-    setPageState(newState);
-  }
-
   function addFilter(filter) {
     const newFilters = [...filters];
     let i;
@@ -126,6 +119,27 @@ const StickyHeader = ({
     setFilters([]);
   }
 
+  const utilitiesForVerticalDrawer = (
+    <Utilities
+      setPageState={setPageState}
+      setShowSecondBar={setShowSecondBar}
+      hideFrom="md"
+    />
+  );
+
+  const navButtonsForVerticalDrawer = (
+    <NavButtons
+      showSecondBar={showSecondBar}
+      addFilter={addFilter}
+      clearFilters={clearFilters}
+      userName={userName}
+      photoUrl={photoUrl}
+      showFavouriteRecipes={showFavouriteRecipes}
+      handleLogout={handleLogout}
+      hideFrom="md"
+    />
+  );
+
   return (
     <Box
       as="header"
@@ -133,15 +147,36 @@ const StickyHeader = ({
       top="0"
       left="0"
       width="100%"
-      h="100%"
       zIndex="1000"
-      bg="rgba(20, 20, 20, 0.8)"
+      bg={bgColor}
       backdropFilter="blur(10px)"
     >
       <Flex direction="column" gap={4} pt={showSecondBar ? 5 : 2} pb={2} px={7}>
-        <Flex alignItems="center" justifyContent="space-between" color="white">
+        <Flex
+          alignItems="center"
+          justifyContent={{
+            base: "center",
+            smToMd: "center",
+            mdTo2xl: "space-between",
+          }}
+          color="white"
+        >
+          {/* Hamburger Menu for Mobile */}
+          <VerticalDrawer
+            components={[
+              navButtonsForVerticalDrawer,
+              utilitiesForVerticalDrawer,
+            ]}
+            showSecondBar={showSecondBar}
+          />
           {/* Logo and Title */}
-          <Flex alignItems="center">
+          <Flex
+            alignItems="center"
+            _hover={{ cursor: "pointer" }}
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+          >
             <Box
               w="10"
               h="auto"
@@ -159,119 +194,29 @@ const StickyHeader = ({
               Geeky Chef
             </Text>
           </Flex>
-
           {showSecondBar && (
-            <Flex gap={2}>
-              <Button
-                variant="subtle"
-                borderRadius="3xl"
-                onClick={() => {
-                  setShowSecondBar(true);
-                  changePageState("init");
-                }}
-              >
-                Recipe Search
-              </Button>
-              <Button
-                variant="subtle"
-                borderRadius="3xl"
-                onClick={() => {
-                  setShowSecondBar(true);
-                  changePageState("ingSearch");
-                }}
-              >
-                Pantry Match
-              </Button>
-              <Button
-                variant="subtle"
-                borderRadius="3xl"
-                onClick={() => {
-                  navigate("/dashboard/mealPlan");
-                }}
-              >
-                Meal Plan
-              </Button>
-              <Button
-                variant="subtle"
-                borderRadius="3xl"
-                onClick={() => {
-                  navigate("/dashboard/imageAnalysis");
-                }}
-              >
-                Food Image Analysis
-              </Button>
-            </Flex>
+            <Utilities
+              setPageState={setPageState}
+              setShowSecondBar={setShowSecondBar}
+              hideBelow="md"
+            />
           )}
 
           {/* Icon Buttons */}
-          <Flex gap={2}>
-            {showSecondBar && (
-              <FilterController
-                addFilter={addFilter}
-                clearFilters={clearFilters}
-              />
-            )}
-            <IconButton aria-label="User Profile" variant="ghost" h="auto">
-              <DrawerRoot>
-                <DrawerBackdrop />
-                <DrawerTrigger asChild>
-                  <IconButton
-                    borderRadius="3xl"
-                    variant="outline"
-                    p={1}
-                    borderColor="whiteAlpha.300"
-                    bgColor="var(--text-input)"
-                    _hover={{ shadow: "md" }}
-                  >
-                    <Flex
-                      direction="row"
-                      alignItems="center"
-                      justifyContent="space-around"
-                      h="12"
-                      gap={1}
-                    >
-                      <LuMenu />
-                      {/* <Image src={photoUrl} alt="DP" borderRadius="full" h="8" w="auto" ml="auto"/> */}
-                      <Avatar.Root size="xs" variant="outline">
-                        <Avatar.Fallback name={userName} />
-                        <Avatar.Image src={photoUrl} />
-                      </Avatar.Root>
-                    </Flex>
-                  </IconButton>
-                  {/* <Image src={photoUrl} alt="User Profile" borderRadius="full"/> */}
-                </DrawerTrigger>
-                <DrawerContent offset="8" rounded="md" height="sm">
-                  <DrawerHeader>
-                    <DrawerTitle>Hello {userName}</DrawerTitle>
-                  </DrawerHeader>
-                  <DrawerBody>
-                    <Flex direction="column" mt={2}>
-                      <DrawerActionTrigger asChild>
-                        <Button onClick={showFavouriteRecipes} variant="ghost">
-                          Favourite Recipes
-                        </Button>
-                      </DrawerActionTrigger>
-                      <Button variant="ghost">Dummy</Button>
-                    </Flex>
-                  </DrawerBody>
-                  <DrawerFooter>
-                    <DrawerActionTrigger asChild>
-                      <Button variant="outline">Cancel</Button>
-                    </DrawerActionTrigger>
-                    <IconButton variant="outline" p={2} onClick={handleLogout}>
-                      <MdLogout />
-                      Sign Out
-                    </IconButton>
-                  </DrawerFooter>
-                  <DrawerCloseTrigger />
-                </DrawerContent>
-              </DrawerRoot>
-            </IconButton>
-          </Flex>
+          <NavButtons
+            showSecondBar={showSecondBar}
+            addFilter={addFilter}
+            clearFilters={clearFilters}
+            userName={userName}
+            photoUrl={photoUrl}
+            showFavouriteRecipes={showFavouriteRecipes}
+            handleLogout={handleLogout}
+            hideBelow="md"
+          />
         </Flex>
         <Box
           transform={
-            showSecondBar ? "translateY(0) " : "translateY(-20%) scale(0.5)"
+            showSecondBar ? "translateY(0) " : "translateY(-20%) scale(0.6)"
           }
           transition="transform 0.3s, opacity 0.3s "
           position={!showSecondBar ? "absolute" : "relative"}
@@ -282,7 +227,6 @@ const StickyHeader = ({
             setPageState={setPageState}
             pageLocation={pageLocation}
             showResults={showResults}
-            setSearchParams={setSearchParams}
             filters={filters}
             setShowSecondBar={setShowSecondBar}
             showSecondBar={showSecondBar}
@@ -304,6 +248,7 @@ StickyHeader.propTypes = {
   pageLocation: PropTypes.string.isRequired,
   setPageState: PropTypes.func.isRequired,
   showResults: PropTypes.bool.isRequired,
+  scrollRef: PropTypes.object.isRequired,
 };
 
 export default StickyHeader;

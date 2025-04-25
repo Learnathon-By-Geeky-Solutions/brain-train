@@ -19,7 +19,12 @@ import { formatDate, getCurrentDateFormatted, getDay } from "./dateFormatter";
 import { useNavigate } from "react-router-dom";
 import handleRecipeDetail from "../RecipeCard/api";
 
-const DailyMealPlan = ({ searchParams, reload }) => {
+const DailyMealPlan = ({
+  searchParams,
+  reload,
+  setIsActiveIdx,
+  setIsActivePlanIdx,
+}) => {
   let day = getDay(searchParams.get("date"));
   const [meals, setMeals] = useState([]);
   const [nutrients, setNutrients] = useState({});
@@ -32,6 +37,13 @@ const DailyMealPlan = ({ searchParams, reload }) => {
         setMeals([]);
         setNutrients({ protein: "", carbohydrates: "", fat: "", calories: "" });
       } else {
+        if (searchParams.get("idx") === -1) {
+          setIsActiveIdx(2);
+          setIsActivePlanIdx(searchParams.get("sIdx"));
+        } else if (searchParams.get("sIdx") === -1) {
+          setIsActiveIdx(1);
+        }
+
         const plan = data.plans?.[0]?.mealPlan;
         setMeals(plan?.meals || []);
         let newNutrients = {
@@ -68,11 +80,13 @@ const DailyMealPlan = ({ searchParams, reload }) => {
     <Card.Root
       boxShadow="md"
       borderRadius="lg"
-      overflow="hidden"
+      overflowX="hidden"
+      overflowY="auto"
       bg={cardBg}
       borderWidth="1px"
       borderColor={isToday ? "blue.400" : borderColor}
       width="100%"
+      h="100%"
     >
       <Card.Header bg={headerBg} py={3} px={4}>
         <HStack justifyContent="space-between" alignItems="center">
@@ -196,6 +210,8 @@ DailyMealPlan.propTypes = {
     get: PropTypes.func.isRequired,
   }).isRequired,
   reload: PropTypes.bool.isRequired,
+  setIsActiveIdx: PropTypes.func.isRequired,
+  setIsActivePlanIdx: PropTypes.func.isRequired,
 };
 
 export default DailyMealPlan;

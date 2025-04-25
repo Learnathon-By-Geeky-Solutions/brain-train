@@ -14,7 +14,6 @@ import Analysis from "./Analysis";
 const FoodImageAnalysis = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [analysisResult, setAnalysisResult] = useState(null);
-  const setIsAnalyzing = useState(false)[1];
 
   const resetComponent = () => {
     setImagePreview(null);
@@ -34,18 +33,17 @@ const FoodImageAnalysis = () => {
           </Text>
         </Box>
 
-        <Separator size="lg" />
+        <Separator />
 
         <PreAnalysis
-          show={analysisResult ? false : true}
+          show={analysisResult === null}
           imagePreview={imagePreview}
           resetComponent={resetComponent}
           setImagePreview={setImagePreview}
           setAnalysisResult={setAnalysisResult}
-          setIsAnalyzing={setIsAnalyzing}
         />
         <Analysis
-          show={analysisResult ? true : false}
+          show={analysisResult !== null}
           imagePreview={imagePreview}
           analysisResult={analysisResult}
           resetComponent={resetComponent}

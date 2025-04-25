@@ -99,9 +99,7 @@ export const searchPlansByDateOrRange = async (firebaseUid, dateStr, type) => {
   const weeklyMap = groupPlansByDate(weeklyPlans);
 
   const combinedMap = { ...weeklyMap, ...dailyMap }; // daily takes priority
-  console.log("combinedMap", combinedMap);
   if (type === "day") {
-    console.log("day", start.toDateString(), combinedMap[start.toDateString()]);
     return combinedMap[start.toDateString()]
       ? [combinedMap[start.toDateString()]]
       : [];

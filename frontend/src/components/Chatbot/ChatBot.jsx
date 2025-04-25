@@ -4,7 +4,7 @@ import { Toaster, toaster } from "../ui/toaster";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import { fetchAIResponse, fetchChatDetails, fetchChatList } from "./api";
-import CollapsibleSideBar from "../CollapsibleSideBar/CollapsibleSideBar";
+import SideBarContent from "../CollapsibleSideBar/SideBarContent";
 import PropTypes from "prop-types";
 
 const ChatBot = ({ photoURL }) => {
@@ -22,8 +22,7 @@ const ChatBot = ({ photoURL }) => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [fileBlob, setFileBlob] = useState([]);
-  const imagePreviewState = useState([]);
-  const [imagePreview, setImagePreview] = imagePreviewState;
+  const [imagePreview, setImagePreview] = useState([]);
   const [chatList, setChatList] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
@@ -187,8 +186,8 @@ const ChatBot = ({ photoURL }) => {
 
   return (
     <Flex w="100vw">
-      <CollapsibleSideBar
-        open={open}
+      <SideBarContent
+        isOpen={open}
         onToggle={onToggle}
         navItems={chatList}
         loadChat={loadChat}
@@ -199,7 +198,7 @@ const ChatBot = ({ photoURL }) => {
         direction="column"
         bg="none"
         position="fixed"
-        left={open ? "25vw" : "5vw"}
+        left={open ? { base: "5vw", sm: "5vw", mdTo2xl: "25vw" } : "5vw"}
         h="100%"
         alignItems="center"
         justifyContent="center"
@@ -217,7 +216,8 @@ const ChatBot = ({ photoURL }) => {
           isLoading={isLoading}
           clearChat={clearChat}
           setFileBlob={setFileBlob}
-          imagePreviewState={imagePreviewState}
+          imagePreview={imagePreview}
+          setImagePreview={setImagePreview}
         />
         <Toaster />
       </Flex>

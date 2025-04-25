@@ -65,4 +65,21 @@ describe("POST /ai/analyze/food", () => {
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("error");
   });
+  it("checking uploads folder", async () => {
+    const testImagePath = path.join(__dirname, "./files/burger.jpg");
+
+    const res = await request(app)
+      .post("/ai/analyze/food")
+      .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`)
+      .attach("image", testImagePath);
+
+    expect(res.status).toBe(200);
+
+    const uploadsRes = await request(app)
+      .get("/ai/uploads")
+      .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`);
+
+    expect(uploadsRes.status).toBe(200);
+    expect(Array.isArray(uploadsRes.body.uploads)).toBe(true);
+  });
 });

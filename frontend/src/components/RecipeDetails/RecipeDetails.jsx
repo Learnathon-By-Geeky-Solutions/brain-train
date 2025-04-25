@@ -14,6 +14,7 @@ import addToFavourites from "./api";
 import { Toaster, toaster } from "../ui/toaster";
 import DialogForShoppingList from "./DialogForShoppingList";
 import { useState } from "react";
+import { useColorMode } from "../ui/color-mode";
 
 const RecipeDetails = () => {
   const location = useLocation();
@@ -21,6 +22,8 @@ const RecipeDetails = () => {
   const recipe = location.state?.recipe;
   const id = recipe._id;
   const navigate = useNavigate();
+
+  const iconColor = useColorMode("gray.800", "gray.300");
 
   return (
     <Box
@@ -44,7 +47,7 @@ const RecipeDetails = () => {
       <Heading as="h1" size="xl" mb={2}>
         {recipe.title}
       </Heading>
-      <HStack spacing={4} color="gray.300" mb={4}>
+      <HStack spacing={4} color={iconColor} mb={4}>
         <HStack>
           <LuClock />
           <Text>{recipe.readyInMinutes} mins</Text>
@@ -58,14 +61,11 @@ const RecipeDetails = () => {
           <Text>{recipe.likes} likes</Text>
         </HStack>
       </HStack>
-      <Separator size="lg" mb={4} />
+      <Separator mb={4} />
 
       {/* Recipe Description */}
-      {/* <Text fontSize="lg" mb={4} lineHeight="tall">
-        {recipe.summary}
-      </Text> */}
       <div dangerouslySetInnerHTML={{ __html: recipe.summary }}></div>
-      <Separator size="lg" mb={4} />
+      <Separator mb={4} />
 
       {/* Ingredients Section */}
       <Heading as="h2" size="md" mb={2}>
@@ -76,7 +76,7 @@ const RecipeDetails = () => {
           <Text key={ingredient._id}>• {ingredient.title}</Text>
         ))}
       </VStack>
-      <Separator size="lg" mb={4} />
+      <Separator mb={4} />
 
       {/* Steps Section */}
       <Heading as="h2" size="md" mb={2}>
@@ -87,7 +87,7 @@ const RecipeDetails = () => {
           <strong>{recipe.instructions}</strong>
         </Text>
       </VStack>
-      <Separator size="lg" mb="4" />
+      <Separator mb="4" />
 
       {/* Footer */}
       <HStack justify="space-between" mt={4}>
@@ -113,7 +113,7 @@ const RecipeDetails = () => {
         </Button>
         <DialogForShoppingList
           handleDone={() => {
-            navigate("/dashboard/recipe/shoppingList", {
+            navigate("/dashboard/shoppingList", {
               state: { id: id, servingSize: servingSize },
             });
           }}

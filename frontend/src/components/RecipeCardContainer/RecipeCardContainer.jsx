@@ -19,6 +19,7 @@ import zero_results from "../../assets/zero_results.png";
 const RecipeCardContainer = ({
   recipe_prop,
   removeCard,
+  scrollable = true,
   containerType = "default",
 }) => {
   const location = useLocation();
@@ -87,7 +88,7 @@ const RecipeCardContainer = ({
   return (
     <Box
       maxH="100%"
-      overflowY="auto"
+      overflowY={scrollable ? "auto" : null}
       maxW="100%"
       p={2}
       m={2}
@@ -100,54 +101,67 @@ const RecipeCardContainer = ({
         "scrollbar-width": "none",
       }}
     >
-      <Grid
-        templateColumns={`repeat(${cardsPerRow == 0 ? 7 : cardsPerRow}, 1fr)`}
-        gap={4}
+      <Flex
+        alignItems="center"
+        justifyContent={{ base: "center", sm: "center", mdTo2xl: "flex-start" }}
       >
-        {!recipe_prop || recipe_prop.length === 0 ? (
-          <For each={Array.from({ length: 7 })}>
-            {
-              // eslint-disable-next-line no-unused-vars
-              (_, index) => (
-                <GridItem w="fit-content">
-                  <Skeleton height="72" width="72" bgColor="gray.950" />
+        <Grid
+          templateColumns={[
+            "1fr",
+            "repeat(3, 1fr)",
+            `repeat(${Math.max(cardsPerRow, 7)}, 1fr)`,
+          ]}
+          gap={4}
+        >
+          {!recipe_prop || recipe_prop.length === 0 ? (
+            <For each={Array.from({ length: 7 })}>
+              {
+                // eslint-disable-next-line no-unused-vars
+                (_, index) => (
+                  <GridItem w="fit-content">
+                    <Skeleton height="72" width="72" />
+                  </GridItem>
+                )
+              }
+            </For>
+          ) : (
+            visibleRecipes.map((recipe, index) => {
+              // Only display items that fit within the grid dimensions
+              return recipe.id !== -1 ? (
+                <GridItem
+                  key={recipe.id}
+                  w="fit-content"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <RecipeCard
+                    recipe={recipe}
+                    changeVisibility={() => toggleVisibility(index)}
+                    type={type}
+                  />
                 </GridItem>
-              )
-            }
-          </For>
-        ) : (
-          visibleRecipes.map((recipe, index) => {
-            // Only display items that fit within the grid dimensions
-            return recipe.id !== -1 ? (
-              <GridItem key={recipe.id} w="fit-content">
-                <RecipeCard
-                  recipe={recipe}
-                  changeVisibility={() => toggleVisibility(index)}
-                  type={type}
-                />
-              </GridItem>
-            ) : (
-              <Flex
-                w="100vw"
-                h="lg"
-                alignItems="center"
-                justifyContent="center"
-                direction="column"
-              >
-                <Image
-                  src={zero_results}
-                  alt="No results found"
-                  w="initial"
-                  h="initial"
-                />
-                <Heading size="2xl" color="gray.500" textAlign="center" p="4">
-                  No Recipes Found
-                </Heading>
-              </Flex>
-            );
-          })
-        )}
-      </Grid>
+              ) : (
+                <Flex
+                  w="100vw"
+                  h="lg"
+                  alignItems="center"
+                  justifyContent="center"
+                  direction="column"
+                >
+                  <Image
+                    src={zero_results}
+                    alt="No results found"
+                    objectFit="cover"
+                  />
+                  <Heading size="2xl" color="gray.500" textAlign="center" p="4">
+                    No Recipes Found
+                  </Heading>
+                </Flex>
+              );
+            })
+          )}
+        </Grid>
+      </Flex>
       <Toaster />
     </Box>
   );
@@ -156,6 +170,7 @@ RecipeCardContainer.propTypes = {
   recipe_prop: PropTypes.array,
   removeCard: PropTypes.func,
   containerType: PropTypes.string,
+  scrollable: PropTypes.bool,
 };
 
 export default RecipeCardContainer;
