@@ -12,8 +12,8 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
 
   return (
     <Card.Root
-      w="72"
-      h="72"
+      w={{ base: "80", smToMd: "80", mdTo2xl: "72" }}
+      h={{ base: "96", smToMd: "80", mdTo2xl: "72" }}
       overflow="hidden"
       _hover={{ transform: "scale(1.05)", transition: "all 0.3s ease-in-out" }}
       onClick={() => {
@@ -54,7 +54,7 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
           </Flex>
         </Flex>
         <Card.Description
-          h="80%"
+          h={{ base: "65%", smToMd: "70%", mdTo2xl: "80%" }}
           mt={1}
           overflow="hidden"
           dangerouslySetInnerHTML={{ __html: recipe.summary }}

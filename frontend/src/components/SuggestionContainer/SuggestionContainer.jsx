@@ -53,18 +53,7 @@ const SuggestionContainer = ({
 
   useEffect(() => {
     if (complete) return;
-    if (suggestions.length === 0) return;
     if (keyHandler === null) return;
-    if (keyHandler.key === "ArrowDown") {
-      setSelectedIndex((prev) =>
-        prev < suggestions.length - 1 ? prev + 1 : prev,
-      );
-      return;
-    }
-    if (keyHandler.key === "ArrowUp") {
-      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-      return;
-    }
     if (keyHandler.key === "Enter") {
       const suggestion =
         selectedIndex !== -1
@@ -78,6 +67,17 @@ const SuggestionContainer = ({
       setContainerClosed(true);
       setSelectedIndex(-1);
       setComplete(true);
+      return;
+    }
+    if (suggestions.length === 0) return;
+    if (keyHandler.key === "ArrowDown") {
+      setSelectedIndex((prev) =>
+        prev < suggestions.length - 1 ? prev + 1 : prev,
+      );
+      return;
+    }
+    if (keyHandler.key === "ArrowUp") {
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
     }
   }, [keyHandler]);
 
