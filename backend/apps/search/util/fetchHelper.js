@@ -86,7 +86,7 @@ const saveAndEnrich = (recipes) =>
           sourceId: String(saved.sourceId),
         }))
         .catch((err) => {
-          console.error("⚠️ Failed to save recipe:", r.id, err);
+          console.error("⚠️ Failed to save recipe:", r.id, err.message);
           return null;
         }),
     ),
@@ -104,7 +104,7 @@ export const fetchByTitleSaveFilter = (query, number, filters) => {
       return fetchSaveFilterRecipes(ids, filters);
     })
     .catch((err) => {
-      console.error("Error from Spoonacular API:", err);
+      console.error("Error from Spoonacular API:", err.message);
       return [];
     });
 };
@@ -117,6 +117,6 @@ export const fetchByIngredientSaveFilter = (ingredients, number, filters) =>
       return fetchSaveFilterRecipes(recipeIds, filters);
     })
     .catch((err) => {
-      console.error("Error from Spoonacular API:", err);
+      console.error("Error from Spoonacular API:", err.message);
       return [];
     });

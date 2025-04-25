@@ -7,23 +7,17 @@ import Recipe from "../../libraries/models/recipes.js";
  * @returns {Array} The recipes.
  */
 export const findRecipesByIds = async (recipeIds) => {
-  try {
-    const recipes = await Recipe.find(
-      { _id: { $in: recipeIds } },
-      "_id title image summary likes",
-    );
-    const formattedRecipes = recipes.map((recipe) => ({
-      id: recipe._id.toString(), // id
-      title: recipe.title,
-      image: recipe.image,
-      likes: recipe.likes,
-      summary: recipe.summary,
-    }));
-    return formattedRecipes;
-  } catch (error) {
-    console.error("Find recipes by ids error:", error.message);
-    return [];
-  }
+  const recipes = await Recipe.find(
+    { _id: { $in: recipeIds } },
+    "_id title image summary likes",
+  );
+  return recipes.map((recipe) => ({
+    id: recipe._id.toString(),
+    title: recipe.title,
+    image: recipe.image,
+    likes: recipe.likes,
+    summary: recipe.summary,
+  }));
 };
 
 /**
@@ -32,12 +26,7 @@ export const findRecipesByIds = async (recipeIds) => {
  * @returns {Object|null} The user document containing favourite recipe ids or null.
  */
 export const findFavouriteRecipeIdsByUid = async (uid) => {
-  try {
-    return await UserFavourites.findOne({ firebaseUid: uid });
-  } catch (error) {
-    console.error("Find favourite recipe ids error:", error.message);
-    return null;
-  }
+  return await UserFavourites.findOne({ firebaseUid: uid });
 };
 
 /**

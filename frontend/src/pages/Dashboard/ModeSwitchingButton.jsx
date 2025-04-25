@@ -3,7 +3,7 @@ import { Icon, Switch } from "@chakra-ui/react";
 import { FaMoon, FaSun } from "react-icons/fa";
 
 const ModeSwitchingButton = () => {
-  const { toggleColorMode, _ } = useColorMode();
+  const { toggleColorMode } = useColorMode();
   return (
     <Switch.Root
       colorPalette="gray"

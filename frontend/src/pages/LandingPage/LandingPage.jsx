@@ -410,7 +410,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
                   "Time-saving meal prep suggestions",
                 ].map((feature, index) => (
                   <MotionBox
-                    key={index}
+                    key={feature}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
@@ -515,25 +515,28 @@ export default function GeekyChefLanding({ openAuthModal }) {
                 discovery, meal planning, and intelligent food analysis.
               </Text>
               <Stack direction="row" spacing={4}>
-                {[LuTwitter, LuFacebook, LuInstagram, LuLinkedin].map(
-                  (SocialIcon, index) => (
-                    <Link key={index} href="#" isExternal>
-                      <Box
-                        w="36px"
-                        h="36px"
-                        borderRadius="full"
-                        bg="whiteAlpha.200"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        _hover={{ bg: "orange.400" }}
-                        transition="all 0.3s ease"
-                      >
-                        <Icon as={SocialIcon} w={5} h={5} color="gray.400" />
-                      </Box>
-                    </Link>
-                  ),
-                )}
+                {[
+                  { icon: LuTwitter, name: "Twitter" },
+                  { icon: LuFacebook, name: "Facebook" },
+                  { icon: LuInstagram, name: "Instagram" },
+                  { icon: LuLinkedin, name: "LinkedIn" },
+                ].map(({ icon: SocialIcon, name }) => (
+                  <Link key={name} href="#" isExternal>
+                    <Box
+                      w="36px"
+                      h="36px"
+                      borderRadius="full"
+                      bg="whiteAlpha.200"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      _hover={{ bg: "orange.400" }}
+                      transition="all 0.3s ease"
+                    >
+                      <Icon as={SocialIcon} w={5} h={5} color="gray.400" />
+                    </Box>
+                  </Link>
+                ))}
               </Stack>
             </Box>
 
@@ -549,9 +552,9 @@ export default function GeekyChefLanding({ openAuthModal }) {
                   "Ingredient Detection",
                   "Favorites Collection",
                   "AI Chatbot",
-                ].map((item, index) => (
+                ].map((item) => (
                   <Link
-                    key={index}
+                    key={item}
                     href="#"
                     fontSize="sm"
                     color="gray.400"
@@ -576,9 +579,9 @@ export default function GeekyChefLanding({ openAuthModal }) {
                   "Partners",
                   "Privacy Policy",
                   "Terms of Service",
-                ].map((item, index) => (
+                ].map((item) => (
                   <Link
-                    key={index}
+                    key={item}
                     href="#"
                     fontSize="sm"
                     color="gray.400"
@@ -642,9 +645,9 @@ export default function GeekyChefLanding({ openAuthModal }) {
               © {new Date().getFullYear()} Geeky Chef. All rights reserved.
             </Text>
             <Stack direction="row" spacing={6} mt={{ base: 4, md: 0 }}>
-              {["Privacy", "Terms", "Cookies", "Contact"].map((item, index) => (
+              {["Privacy", "Terms", "Cookies", "Contact"].map((item) => (
                 <Link
-                  key={index}
+                  key={item}
                   href="#"
                   fontSize="sm"
                   color="gray.500"

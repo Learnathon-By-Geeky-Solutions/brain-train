@@ -35,16 +35,11 @@ export const createNewSimilarRecipeEntry = async (
   recipeId,
   similarRecipeIds,
 ) => {
-  try {
-    validateObjectId(recipeId);
-    validateObjectIds(similarRecipeIds);
-    const newSimilarRecipe = new SimilarRecipe({
-      recipeId: recipeId.toString(),
-      similarIds: similarRecipeIds.map((id) => ({ recipeId: id })),
-    });
-    await newSimilarRecipe.save();
-  } catch (error) {
-    console.error("Error adding similar recipe entry:", error.message);
-    throw new Error("Failed to add similar recipes");
-  }
+  validateObjectId(recipeId);
+  validateObjectIds(similarRecipeIds);
+  const newSimilarRecipe = new SimilarRecipe({
+    recipeId: recipeId.toString(),
+    similarIds: similarRecipeIds.map((id) => ({ recipeId: id })),
+  });
+  await newSimilarRecipe.save();
 };
