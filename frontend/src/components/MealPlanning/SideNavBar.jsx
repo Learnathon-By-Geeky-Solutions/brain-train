@@ -38,13 +38,25 @@ const MealPlanningSidebar = ({
         setDailyPlanList([]);
         setweeklyPlanList([]);
       } else {
-        setDailyPlanList(data.dailyPlans);
-        setweeklyPlanList(data.weeklyPlans);
+        setDailyPlanList(
+          data.dailyPlans.map((plan) => {
+            return { ...plan, type: "day" };
+          }),
+        );
+        setweeklyPlanList(
+          data.weeklyPlans.map((plan) => {
+            return { ...plan, type: "week" };
+          }),
+        );
       }
     });
   }, [reload]);
 
   const borderColor = useColorModeValue("gray.200", "gray.700");
+
+  const toggleReload = () => {
+    setReload((prev) => !prev);
+  };
 
   return (
     <Box
@@ -144,9 +156,7 @@ const MealPlanningSidebar = ({
                 {renderPlanList(
                   dailyPlanList,
                   setIsActiveIdx,
-                  setReload,
-                  reload,
-                  "day",
+                  toggleReload,
                   isActivePlanIdx,
                   setIsActivePlanIdx,
                   0,
@@ -154,9 +164,7 @@ const MealPlanningSidebar = ({
                 {renderPlanList(
                   weeklyPlanList,
                   setIsActiveIdx,
-                  setReload,
-                  reload,
-                  "week",
+                  toggleReload,
                   isActivePlanIdx,
                   setIsActivePlanIdx,
                   dailyPlanList.length,
