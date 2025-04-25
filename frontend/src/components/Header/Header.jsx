@@ -37,7 +37,6 @@ const StickyHeader = ({
     "/dashboard/chat",
     "/dashboard/recipe",
   ];
-  const scrollUpEventExclusion = ["/dashboard/chat"];
   const bgColor = useColorModeValue("white", "var(--header-bg)");
 
   const controlSecondBar = throttle((pathname, scrollYLatest) => {
@@ -54,8 +53,7 @@ const StickyHeader = ({
     else if (
       currentScrollY > scrollYLatest &&
       currentScrollY >= 100 &&
-      containerClosed &&
-      !scrollUpEventExclusion.includes(pathname)
+      containerClosed
     ) {
       setShowSecondBar(false);
     }
