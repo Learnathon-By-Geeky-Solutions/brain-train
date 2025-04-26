@@ -1,3 +1,28 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - username
+ *         - email
+ *         - firebaseUid
+ *       properties:
+ *         username:
+ *           type: string
+ *           description: The username of the user.
+ *         email:
+ *           type: string
+ *           description: The email of the user.
+ *         picture:
+ *           type: string
+ *           description: The profile picture URL of the user.
+ *         firebaseUid:
+ *           type: string
+ *           description: The Firebase UID of the user.
+ */
+
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
