@@ -10,6 +10,10 @@ on:
       - main
     types: [reopened, synchronize, opened]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   sonarqube:
     runs-on: ubuntu-latest # OS to run the CI pipeline

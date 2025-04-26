@@ -11,5 +11,25 @@
       "src": "/(.*)",
       "dest": "/server.js"
     }
+  ],
+  "headers": [
+    {
+      "source": "/api-docs/(.*\\.js)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript"
+        }
+      ]
+    },
+    {
+      "source": "/api-docs/(.*\\.css)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/css"
+        }
+      ]
+    }
   ]
 }
