@@ -10,7 +10,7 @@ const router = express.Router();
  *     summary: Get top liked (trending) recipes
  *     description: Returns a list of the top `n` most liked recipes.
  *     tags:
- *       - Recipes
+ *       - Trending
  *     parameters:
  *       - in: path
  *         name: n

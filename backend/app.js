@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import { swaggerUi, swaggerSpec } from "./config/swagger.js";
+import { swaggerUi, getSwaggerSpec } from "./config/swagger.js";
 
 import setupMiddlewares from "./config/middleware.js";
 
@@ -24,7 +24,7 @@ setupMiddlewares(app);
 // Database connection
 mongoose.connect(process.env.MONGODB_URI);
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(getSwaggerSpec()));
 app.use("/signin", signinRoute);
 app.use("/signup", signupRoute);
 app.use("/search", searchRoutes);

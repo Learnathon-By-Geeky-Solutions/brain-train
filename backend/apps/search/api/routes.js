@@ -21,7 +21,7 @@ const router = express.Router();
  *     summary: Search for recipes by title
  *     description: Searches for recipes based on the title, ingredients, cuisine, and other optional filters.
  *     tags:
- *       - Recipes
+ *       - Search
  *     parameters:
  *       - in: query
  *         name: query
@@ -109,7 +109,7 @@ router.get("/recipes", searchRecipes);
  *     summary: Search for recipes by ingredients
  *     description: Searches for recipes based on the provided ingredients, with optional filters for cuisine, gluten-free, and other fields.
  *     tags:
- *       - Recipes
+ *       - Search
  *     parameters:
  *       - in: query
  *         name: ingredients
@@ -396,6 +396,8 @@ router.get("/recipes/:id", getRecipeInformation);
  *   get:
  *     summary: Get the summary of a specific recipe.
  *     description: Retrieve only the summary information of a specific recipe.
+ *     tags:
+ *       - Search
  *     parameters:
  *       - name: id
  *         in: path
@@ -428,6 +430,8 @@ router.get("/recipes/:id/summary", getRecipeSummary);
  *   get:
  *     summary: Get similar recipes to a specific recipe.
  *     description: Retrieve a list of recipes similar to the one specified by the given ID.
+ *     tags:
+ *       - Search
  *     parameters:
  *       - name: id
  *         in: path
@@ -474,7 +478,7 @@ router.get("/recipes/:id/similar", getSimilarRecipes);
  *     summary: Get shopping list for a specific recipe
  *     description: Fetches the shopping list of ingredients required for a recipe, adjusted to the specified serving size.
  *     tags:
- *       - Recipes
+ *       - Shopping List
  *     parameters:
  *       - in: path
  *         name: recipeId
@@ -543,6 +547,8 @@ router.get("/recipes/:id/shoppingList", getShoppingList);
  *   get:
  *     summary: Autocomplete recipe title search based on a query.
  *     description: Fetch recipe title suggestions based on the query string, triggering both the database and API.
+ *     tags:
+ *       - Autocomplete
  *     parameters:
  *       - name: query
  *         in: query
@@ -577,6 +583,8 @@ router.get("/title/autocomplete", autoCompleteRecipes);
  *   get:
  *     summary: Autocomplete ingredient search based on a query.
  *     description: Fetch ingredient suggestions based on the query string, triggering the API for results.
+ *     tags:
+ *       - Autocomplete
  *     parameters:
  *       - name: query
  *         in: query
