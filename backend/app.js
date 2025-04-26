@@ -24,7 +24,16 @@ setupMiddlewares(app);
 // Database connection
 mongoose.connect(process.env.MONGODB_URI);
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(getSwaggerSpec()));
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(getSwaggerSpec(), {
+    customCssUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.18.3/swagger-ui.css",
+    customJs:
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.18.3/swagger-ui-bundle.js",
+  }),
+);
 app.use("/signin", signinRoute);
 app.use("/signup", signupRoute);
 app.use("/search", searchRoutes);

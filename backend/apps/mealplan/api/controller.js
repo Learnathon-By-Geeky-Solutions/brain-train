@@ -54,7 +54,7 @@ export const viewMealPlans = (req, res) => {
       );
     })
     .catch((error) => {
-      console.error("[MealPlans] View Error:", error);
+      console.error("[MealPlans] View Error:", error.message);
       res
         .status(500)
         .json({ success: false, message: "Failed to fetch meal plans." });
