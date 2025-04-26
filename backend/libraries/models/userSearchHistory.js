@@ -1,3 +1,21 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     UserSearchHistory:
+ *       type: object
+ *       properties:
+ *         firebaseUid:
+ *           type: string
+ *           description: The Firebase UID of the user.
+ *         history:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Search'
+ *           description: The search history of the user.
+ *       required:
+ *         - firebaseUid
+ */
 import mongoose from "mongoose";
 import searchSchema from "./searches.js";
 

@@ -16,7 +16,7 @@ describe("GET /ai/chat/:chatId", () => {
   });
 
   it("should return a chat object with messages", async () => {
-    const res = await await request(app)
+    const res = await request(app)
       .get(`/ai/chat/${chatId}`)
       .set("Authorization", `Bearer ${global.__TEST_TOKEN__}`);
 

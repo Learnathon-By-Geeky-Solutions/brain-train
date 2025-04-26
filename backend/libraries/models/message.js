@@ -1,3 +1,36 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Message:
+ *       type: object
+ *       properties:
+ *         role:
+ *           type: string
+ *           enum:
+ *             - user
+ *             - assistant
+ *           description: The role of the message sender.
+ *         text:
+ *           type: string
+ *           description: The text content of the message.
+ *         files:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Array of file URLs (e.g., Firebase Storage links).
+ *         status:
+ *           type: string
+ *           enum:
+ *             - complete
+ *             - streaming
+ *             - failed
+ *           description: The status of the message.
+ *         timestamp:
+ *           type: string
+ *           format: date-time
+ *           description: The timestamp of the message.
+ */
 import mongoose from "mongoose";
 
 const MessageSchema = new mongoose.Schema(
