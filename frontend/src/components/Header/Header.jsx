@@ -154,8 +154,8 @@ const StickyHeader = ({
           alignItems="center"
           justifyContent={{
             base: "center",
-            smToMd: "center",
-            mdTo2xl: "space-between",
+            sm: "center",
+            md: "space-between",
           }}
           color="white"
         >

@@ -74,7 +74,7 @@ const MealPlanningCalendar = () => {
 
   return (
     <Flex
-      direction={{ base: "column", smToMd: "column", mdTo2xl: "row" }}
+      direction={{ base: "column", sm: "column", md: "row" }}
       w="100%"
       h="100%"
     >
@@ -90,10 +90,10 @@ const MealPlanningCalendar = () => {
       />
       {!searchParams.get("time") ? (
         <Box
-          w={{ base: "fit-content", sm: "fit-content", mdTo2xl: "100%" }}
-          position={{ base: "absolute", sm: "absolute", mdTo2xl: "relative" }}
-          left={{ base: 0, sm: 0, mdTo2xl: undefined }}
-          top={{ base: "35vh", sm: "35vh", mdTo2xl: "0" }}
+          w={{ base: "fit-content", sm: "fit-content", md: "100%" }}
+          position={{ base: "absolute", sm: "absolute", md: "relative" }}
+          left={{ base: 0, sm: 0, md: undefined }}
+          top={{ base: "35vh", sm: "35vh", md: "0" }}
           bg={bgColor1}
         >
           {/* Calendar Header with Navigation */}
