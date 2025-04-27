@@ -62,7 +62,7 @@ Mohammad Anik Islam Shojib
 </div>
 
 ## 📘 API Documentation
-Backend API documentation is available at <br/>
+Backend API documentation is available at: <br/>
 [![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://app.swaggerhub.com/apis-docs/icarus77-7ef/geeky-chef_api_documentation/2.0.0)
 
 ## 💻 Tech Stack
@@ -97,11 +97,11 @@ Backend API documentation is available at <br/>
   </tr>
   <tr>
     <td><strong>Gemini</strong></td>
-    <td>API for image recognition and analysis</td>
+    <td>AI for food image recognition and similar food query</td>
   </tr>
   <tr>
     <td><strong>Clarifai</strong></td>
-    <td>AI-powered platform for image recognition</td>
+    <td>AI for food image recognition and ingredient detection</td>
   </tr>
 
   <tr>
@@ -163,6 +163,7 @@ Backend API documentation is available at <br/>
     <td><strong>GitGuardian</strong></td>
     <td>Security tool to monitor code repositories for sensitive data leaks</td>
   </tr>
+
 </table>
 
 
