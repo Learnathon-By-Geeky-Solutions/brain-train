@@ -38,24 +38,36 @@ const MealPlanningSidebar = ({
         setDailyPlanList([]);
         setweeklyPlanList([]);
       } else {
-        setDailyPlanList(data.dailyPlans);
-        setweeklyPlanList(data.weeklyPlans);
+        setDailyPlanList(
+          data.dailyPlans.map((plan) => {
+            return { ...plan, type: "day" };
+          }),
+        );
+        setweeklyPlanList(
+          data.weeklyPlans.map((plan) => {
+            return { ...plan, type: "week" };
+          }),
+        );
       }
     });
   }, [reload]);
 
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
+  const toggleReload = () => {
+    setReload((prev) => !prev);
+  };
+
   return (
     <Box
-      w={{ base: "100vw", sm: "100vw", mdTo2xl: "96" }}
-      minH={{ base: "20vh", sm: "20vh", mdTo2xl: "100vh" }}
+      w={{ base: "100vw", sm: "100vw", md: "96" }}
+      minH={{ base: "20vh", sm: "20vh", md: "100vh" }}
       bg="none"
       borderRight="1px"
       borderColor={borderColor}
       p={4}
-      position={{ base: "fixed", sm: "fixed", mdTo2xl: "sticky" }}
-      top={{ base: "5vh", sm: "5vh", mdTo2xl: "0" }}
+      position={{ base: "fixed", sm: "fixed", md: "sticky" }}
+      top={{ base: "5vh", sm: "5vh", md: "0" }}
       left="0"
       overflowY="auto"
     >
@@ -134,19 +146,17 @@ const MealPlanningSidebar = ({
             >
               <Flex
                 direction="column"
-                overflowY={{ base: "auto", sm: "auto", mdTo2xl: "hidden" }}
-                h={{ base: "8", sm: "8", mdTo2xl: "100%" }}
+                overflowY={{ base: "auto", sm: "auto", md: "hidden" }}
+                h={{ base: "8", sm: "8", md: "100%" }}
                 w="100%"
-                position={{ base: "fixed", sm: "fixed", mdTo2xl: "sticky" }}
+                position={{ base: "fixed", sm: "fixed", md: "sticky" }}
                 gap={2}
                 alignItems="start"
               >
                 {renderPlanList(
                   dailyPlanList,
                   setIsActiveIdx,
-                  setReload,
-                  reload,
-                  "day",
+                  toggleReload,
                   isActivePlanIdx,
                   setIsActivePlanIdx,
                   0,
@@ -154,9 +164,7 @@ const MealPlanningSidebar = ({
                 {renderPlanList(
                   weeklyPlanList,
                   setIsActiveIdx,
-                  setReload,
-                  reload,
-                  "week",
+                  toggleReload,
                   isActivePlanIdx,
                   setIsActivePlanIdx,
                   dailyPlanList.length,

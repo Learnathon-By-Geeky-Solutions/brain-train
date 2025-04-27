@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { LuFacebook, LuInstagram, LuLinkedin, LuTwitter } from "react-icons/lu";
 import video from "../../assets/bg-video.mp4";
+import heroImage from "../../assets/hero.jpg";
 import app from "../../assets/app.png";
 import cvAnalysis from "../../assets/cv.png";
 import ingDetect from "../../assets/ing_detect.png";
@@ -77,7 +78,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
         transition="all 0.3s ease"
       >
         <Container maxW="container.xl">
-          <Flex py={3} align="center" justify="space-between">
+          <Flex py={3} align="center" justify="space-between" w="100%">
             <Flex align="center">
               <MotionBox
                 initial={{ opacity: 0 }}
@@ -116,7 +117,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
       <Box
         pt={{ base: "100px", md: "0" }}
         h={{ base: "auto", md: "100vh" }}
-        bgImage="linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1920/1080')"
+        bgImage={`linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)), url(${heroImage})`}
         bgSize="cover"
         bgPosition="center"
       >
@@ -625,17 +626,6 @@ export default function GeekyChefLanding({ openAuthModal }) {
                     borderColor: "orange.400",
                   }}
                 />
-                {/* <InputRightElement width="4.5rem">
-                  <Button
-                    h="1.75rem"
-                    size="sm"
-                    bg="orange.400"
-                    _hover={{ bg: "orange.500" }}
-                    borderRadius="md"
-                  >
-                    <Icon as={ChevronRight} />
-                  </Button>
-                </InputRightElement> */}
               </InputGroup>
               <Text fontSize="xs" color="gray.500">
                 By subscribing, you agree to our Terms of Service and Privacy

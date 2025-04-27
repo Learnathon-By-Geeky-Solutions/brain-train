@@ -103,7 +103,7 @@ const RecipeCardContainer = ({
     >
       <Flex
         alignItems="center"
-        justifyContent={{ base: "center", sm: "center", mdTo2xl: "flex-start" }}
+        justifyContent={{ base: "center", sm: "center", md: "flex-start" }}
       >
         <Grid
           templateColumns={[

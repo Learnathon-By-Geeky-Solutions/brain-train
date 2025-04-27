@@ -8,9 +8,7 @@ import { useSearchParams } from "react-router-dom";
 const renderPlanList = (
   planList,
   setIsActiveIdx,
-  setReload,
-  reload,
-  type,
+  toggleReload,
   isActivePlanIdx,
   setIsActivePlanIdx,
   planIdxOffset,
@@ -18,6 +16,11 @@ const renderPlanList = (
 ) => {
   const setSearchParams = useSearchParams()[1];
   const activeColor = useColorModeValue("green.700", "teal.700");
+
+  let type = "day";
+  if (planList.length > 0) {
+    type = planList[0].type;
+  }
 
   return planList.map((plan, index) => (
     <Menu.Root key={plan.startDate}>
@@ -60,7 +63,7 @@ const renderPlanList = (
                     toaster.dismiss();
                     toaster.create({ title: data.msg, type: "error" });
                   } else {
-                    setReload(!reload);
+                    toggleReload();
                     toaster.dismiss();
                     toaster.create({
                       title: "Plan deleted successfully",
