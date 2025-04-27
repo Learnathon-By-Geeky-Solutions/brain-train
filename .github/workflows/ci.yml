@@ -59,6 +59,8 @@ jobs:
           echo "DISPOSABLE_USER_EMAIL=${{ secrets.DISPOSABLE_USER_EMAIL }}" >> .env
           echo "DISPOSABLE_USER_PASSWORD=${{ secrets.DISPOSABLE_USER_PASSWORD }}" >> .env
           echo "DISPOSABLE_USER_NAME=${{ secrets.DISPOSABLE_USER_NAME }}" >> .env
+          echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
+          echo "BACKEND_URL=${{ secrets.BACKEND_URL }}" >> .env
           echo "PORT=8000" >> .env
           echo ""
         shell: bash
