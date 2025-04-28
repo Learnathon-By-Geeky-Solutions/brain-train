@@ -1,6 +1,6 @@
 export const generateShoppingList = (recipe, requestedServings) => {
   const originalServings = recipe.servings || 1;
-  const scaleFactor = requestedServings / originalServings;
+  const scaleFactor = Math.abs(requestedServings / originalServings);
 
   const discreteUnits = [
     "clove",
