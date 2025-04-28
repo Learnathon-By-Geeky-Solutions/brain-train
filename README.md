@@ -1,23 +1,23 @@
-# Geeky Chef
+# 👨‍🍳 Geeky Chef
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/b54819eb-38e2-4313-9488-0aa38cab3d19" alt="Geeky-chef Banner" width="100%">
 </div>
 
 <br/>
-Geeky Chef is your ultimate cooking companion, designed to make meal preparation easier by helping you
+Geeky Chef is your ultimate nutrition companion, designed to make meal preparation easier by helping you
 discover personalized recipes, plan meals, and analyze nutrition with AI-driven recommendations.
 
 ## 📑 Table of Contents
 
 - [🚀 Tools & Technologies](#-tools--technologies)
+- [🌐 Live Demo](https://brain-train-geeky-chef.vercel.app/)
 - [👥 Team Members & Mentor](#-team-members--mentor)
 - [📘 API Documentation](#-api-documentation)
 - [💻 Tech Stack](#-tech-stack)
 - [📜 Project Description](#project-description)
 - [🛠️ Getting Started](#️-getting-started)
-- [ERD](#erd)
-- [Getting Started](#getting-started)
+- [🗺️ ERD](#erd)
 - [Development Guidelines](#development-guidelines)
 - [Resources](#resources)
 
@@ -261,17 +261,11 @@ Follow these steps to set up the project locally:
 
 Your application should now be running locally. Open your browser and navigate to the specified URL to access the application.
 
-## ERD
+## 🗺️ ERD
 
 <a href="https://app.gleek.io/diagrams/1hurlKdEwlu_A8UrxRwwKg" target="_blank">
   <img src="https://sketchertest.blob.core.windows.net/previewimages/1hurlKdEwlu_A8UrxRwwKg.png" alt="Geeky Chef" title="Geeky Chef" />
 </a>
-
-## Getting Started
-
-1. Clone the repository
-2. Install dependencies
-3. Start development
 
 ## Development Guidelines
 
