@@ -14,7 +14,7 @@ discover personalized recipes, plan meals, and analyze nutrition with AI-driven 
 - [👥 Team Members & Mentor](#-team-members--mentor)
 - [📘 API Documentation](#-api-documentation)
 - [💻 Tech Stack](#-tech-stack)
-- [Project Description](#project-description)
+- [📜 Project Description](#project-description)
 - [🛠️ Getting Started](#️-getting-started)
 - [ERD](#erd)
 - [Getting Started](#getting-started)
@@ -188,16 +188,35 @@ Backend API documentation is available at: <br/>
 </table>
 
 
-## Project Description
+## 📜 Project Description
 
-Geeky Chef is a web application that helps users discover recipes based on customizable preferences and dietary restrictions. Key features include:
+Geeky Chef is an innovative platform that leverages cutting-edge technologies to simplify meal preparation and enhance the cooking experience. With features like personalized recipe recommendations, meal planning, and nutritional analysis powered by AI, Geeky Chef is designed to cater to diverse dietary preferences and lifestyles. Whether you're a seasoned chef or a beginner, Geeky Chef is your go-to solution for smarter and healthier cooking. 🍳✨
 
-- AI-powered recipe recommendation engine
-- Detailed nutrition analysis and insights
-- Personalized meal planning system
-- Computer vision-based calorie estimation from food images
+- 🍴 **Recipe Discovery Module**  
+  - Personalized recipe recommendations based on user preferences and dietary restrictions.  
+  - User search history based recipe suggestions. 
+  - Recipe filtering based on ingredients, cuisine, and dietary needs.
 
-The application features an intuitive user interface optimized for both desktop and mobile devices, ensuring accessibility across different user expertise levels.
+- 🗓️ **Meal Planning Module**  
+  - Weekly meal planning with customizable options.  
+  - Integration with shopping lists for efficient grocery management.  
+
+- 🧪 **Nutritional Analysis Module**  
+  - Detailed nutritional breakdown of recipes and meals.  
+  - AI-driven nutrition analysis.  
+
+- 📸 **Food Recognition Module**  
+  - Image-based food recognition for identifying ingredients and dishes.  
+  - AI-powered similar food query for exploring related recipes.  
+
+- 🔒 **User Management Module**  
+  - Secure user authentication and profile management.  
+  - Personalized dashboards for tracking meal plans and favourite recipes.  
+
+- 📊 **Analytics & Insights Module**  
+  - Insights into dietary habits and nutritional goals.  
+  - Visual reports for tracking progress over time.  
+
 
 ## 🛠️ Getting Started
 
@@ -244,7 +263,9 @@ Your application should now be running locally. Open your browser and navigate t
 
 ## ERD
 
-- Project [ERD](/erd/ERD.md)
+<a href="https://app.gleek.io/diagrams/1hurlKdEwlu_A8UrxRwwKg" target="_blank">
+  <img src="https://sketchertest.blob.core.windows.net/previewimages/1hurlKdEwlu_A8UrxRwwKg.png" alt="Geeky Chef" title="Geeky Chef" />
+</a>
 
 ## Getting Started
 
