@@ -13,12 +13,13 @@ discover personalized recipes, plan meals, and analyze nutrition with AI-driven 
 - [🚀 Tools & Technologies](#-tools--technologies)
 - [🩺 Project Status](#-project-status)
 - [🌐 Live Demo](https://brain-train-geeky-chef.vercel.app/)
-- [👥 Team Members & Mentor](#-team-members--mentor)
+- [👥 Team Members & Mentor](#-team-members-mentor)
 - [📘 API Documentation](#-api-documentation)
 - [💻 Tech Stack](#-tech-stack)
-- [📜 Project Description](#project-description)
+- [📜 Project Description](#-project-description)
 - [🛠️ Getting Started](#️-getting-started)
-- [🗺️ ERD](#erd)
+- [🗺️ ERD](#-erd)
+- [🧪 Testing](#-testing)
 
 ## Project Status
   [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
@@ -96,7 +97,7 @@ Mohammad Anik Islam Shojib
 </div>
 
 ## 📘 API Documentation
-Backend API documentation is available at: <br/>
+Backend API documentation is available at: \
 [![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://app.swaggerhub.com/apis-docs/icarus77-7ef/geeky-chef_api_documentation/2.0.0)
 
 ## 💻 Tech Stack
@@ -280,10 +281,18 @@ Your application should now be running locally. Open your browser and navigate t
   <img src="https://sketchertest.blob.core.windows.net/previewimages/1hurlKdEwlu_A8UrxRwwKg.png" alt="Geeky Chef" title="Geeky Chef" />
 </a>
 
-## Development Guidelines
+## 🧪 Testing
+Backend tests done using jest
 
-1. Create feature branches
-2. Make small, focused commits
-3. Write descriptive commit messages
-4. Create pull requests for review
-5. Write and update necessary documentations
+- Run all tests
+```sh
+npm test
+```
+
+- Run a specific test
+```sh
+npm test -- <relative path to test>
+
+# Example
+npm test -- apps/signin/tests/controller.test.js
+```
