@@ -6,7 +6,20 @@
 
 <br/>
 Geeky Chef is your ultimate cooking companion, designed to make meal preparation easier by helping you
-discover personalized recipes, plan meals, and analyze nutrition with AI-driven recommendations. 
+discover personalized recipes, plan meals, and analyze nutrition with AI-driven recommendations.
+
+## 📑 Table of Contents
+
+- [🚀 Tools & Technologies](#-tools--technologies)
+- [👥 Team Members & Mentor](#-team-members--mentor)
+- [📘 API Documentation](#-api-documentation)
+- [💻 Tech Stack](#-tech-stack)
+- [Project Description](#project-description)
+- [🛠️ Getting Started](#️-getting-started)
+- [ERD](#erd)
+- [Getting Started](#getting-started)
+- [Development Guidelines](#development-guidelines)
+- [Resources](#resources)
 
 ## 🚀 Tools & Technologies
 
@@ -215,7 +228,13 @@ Follow these steps to set up the project locally:
   cd .. && npm install
   ```
 
-4. **Start the Application**  
+4. **Set Up Environment Variables**
+  Create a `.env` file in the backend directory and add the necessary environment variables. You can refer to the [`.env.example`](backend/.env.example) file for the required variables.
+
+  Similarly, create a `.env` file in the frontend directory and add the necessary environment variables. You can refer to the [`.env.example`](frontend/.env.example) file for the required variables.
+
+
+5. **Start the Application**  
   Use `concurrently` to start both the backend and frontend:
   ```sh
   npm start
