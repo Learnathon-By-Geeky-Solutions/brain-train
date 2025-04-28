@@ -11,6 +11,7 @@ discover personalized recipes, plan meals, and analyze nutrition with AI-driven 
 ## 📑 Table of Contents
 
 - [🚀 Tools & Technologies](#-tools--technologies)
+- [🩺 Project Status](#-project-status)
 - [🌐 Live Demo](https://brain-train-geeky-chef.vercel.app/)
 - [👥 Team Members & Mentor](#-team-members--mentor)
 - [📘 API Documentation](#-api-documentation)
@@ -18,8 +19,20 @@ discover personalized recipes, plan meals, and analyze nutrition with AI-driven 
 - [📜 Project Description](#project-description)
 - [🛠️ Getting Started](#️-getting-started)
 - [🗺️ ERD](#erd)
-- [Development Guidelines](#development-guidelines)
-- [Resources](#resources)
+
+## Project Status
+  [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+  [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+  [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+  [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+  [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+  [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+  [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+  [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+  [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+  [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+  [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
+
 
 ## 🚀 Tools & Technologies
 
@@ -274,9 +287,3 @@ Your application should now be running locally. Open your browser and navigate t
 3. Write descriptive commit messages
 4. Create pull requests for review
 5. Write and update necessary documentations
-
-## Resources
-
-- [Project Documentation](docs/)
-- [Development Setup](docs/setup.md)
-- [Contributing Guidelines](CONTRIBUTING.md)
