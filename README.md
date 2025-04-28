@@ -1,5 +1,13 @@
 # Geeky Chef
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/b54819eb-38e2-4313-9488-0aa38cab3d19" alt="Geeky-chef Banner" width="100%">
+</div>
+
+<br/>
+Geeky Chef is your ultimate cooking companion, designed to make meal preparation easier by helping you
+discover personalized recipes, plan meals, and analyze nutrition with AI-driven recommendations. 
+
 ## 🚀 Tools & Technologies
 
 <p align="center">
