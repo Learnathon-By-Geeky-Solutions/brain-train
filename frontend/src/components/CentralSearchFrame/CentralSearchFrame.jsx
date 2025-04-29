@@ -27,8 +27,8 @@ const CentralSearchFrame = ({
 
     searchData.filters = filters;
     showResults(searchData);
-    setShouldFetch(false); // Reset fetch trigger
-  }, [searchData, shouldFetch]); // Watch for changes in searchData
+    setShouldFetch(false);
+  }, [searchData, shouldFetch]);
 
   const Feature = feature;
   const ref = useRef(null);
@@ -37,7 +37,7 @@ const CentralSearchFrame = ({
   if (featureProps?.handleSuggestionClick == null)
     featureProps.handleSuggestionClick = () => {
       handleSearch();
-      setContainerClosed(true); // newly added
+      setContainerClosed(true);
     };
 
   return (
@@ -84,7 +84,7 @@ CentralSearchFrame.propTypes = {
   feature: PropTypes.elementType.isRequired,
   featureProps: PropTypes.object,
   showResults: PropTypes.func.isRequired,
-  filters: PropTypes.object.isRequired,
+  filters: PropTypes.array,
   containerClosed: PropTypes.bool.isRequired,
   setContainerClosed: PropTypes.func.isRequired,
 };

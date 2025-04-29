@@ -1,4 +1,3 @@
-// EditableChatName.jsx
 import { Editable } from "@chakra-ui/react";
 import { useRef } from "react";
 import PropTypes from "prop-types";

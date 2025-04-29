@@ -1,7 +1,7 @@
 import { Box, VStack, Spinner, Text, List } from "@chakra-ui/react";
 
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, createRef } from "react";
 import { fetchSuggestions } from "./api";
 
 const SuggestionContainer = ({
@@ -20,6 +20,9 @@ const SuggestionContainer = ({
   const [forceStopSuggestionContainer, setForceStopSuggestionContainer] =
     useState(false);
   const [complete, setComplete] = useState(false);
+  const refs = useRef([]);
+
+  refs.current = suggestions.map((_, i) => refs.current[i] ?? createRef());
 
   if (type === "ingredients") {
     containerClosed = ingContainerClosed;
@@ -43,10 +46,9 @@ const SuggestionContainer = ({
         setSuggestions,
         type,
         query,
-        setContainerClosed,
         setForceStopSuggestionContainer,
       );
-    }, 300); // Debounce API call
+    }, 300);
 
     return () => clearTimeout(debounceFetch);
   }, [query]);
@@ -80,6 +82,15 @@ const SuggestionContainer = ({
       setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
     }
   }, [keyHandler]);
+
+  useEffect(() => {
+    if (selectedIndex >= 0 && refs.current[selectedIndex]) {
+      refs.current[selectedIndex].current?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [selectedIndex]);
 
   const property = type === "title" ? "title" : "name";
 
@@ -118,6 +129,7 @@ const SuggestionContainer = ({
                 key={suggestion.id}
                 p={2}
                 borderRadius="md"
+                ref={refs.current[index]}
                 bg={selectedIndex === index ? "gray.400" : "none"}
                 _hover={{ bg: "gray.400", cursor: "pointer" }}
                 onClick={() => {

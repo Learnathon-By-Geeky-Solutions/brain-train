@@ -1,4 +1,3 @@
-// components/markdown/MarkdownComponents.js
 import React from "react";
 import { Box, Code, Heading, Link, List, Text } from "@chakra-ui/react";
 import { useColorModeValue } from "../ui/color-mode";

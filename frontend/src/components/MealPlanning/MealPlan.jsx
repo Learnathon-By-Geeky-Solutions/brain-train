@@ -175,7 +175,6 @@ const MealPlanningCalendar = () => {
                   </Text>
                 </Box>
 
-                {/* Meal Cells for Each Day */}
                 {days.map((day) => {
                   const dayKey = day.toLowerCase();
                   const meal = mealData[dayKey]?.mealPlan?.meals?.[index] || {
@@ -198,6 +197,9 @@ const MealPlanningCalendar = () => {
                           h="full"
                           onClick={() => {
                             handleRecipeDetail(meal.recipeId, navigate);
+                          }}
+                          _hover={{
+                            cursor: "pointer",
                           }}
                         >
                           {meal.image && (

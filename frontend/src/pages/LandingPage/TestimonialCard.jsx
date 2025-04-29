@@ -2,7 +2,6 @@ import { Box, Flex, Text, Avatar } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 
-// Motion components
 const MotionBox = motion(Box);
 
 function TestimonialCard({ name, role, quote, avatar, delay = 0 }) {

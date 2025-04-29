@@ -63,11 +63,9 @@ const RecipeDetails = () => {
       </HStack>
       <Separator mb={4} />
 
-      {/* Recipe Description */}
       <div dangerouslySetInnerHTML={{ __html: recipe.summary }}></div>
       <Separator mb={4} />
 
-      {/* Ingredients Section */}
       <Heading as="h2" size="md" mb={2}>
         Ingredients
       </Heading>
@@ -78,7 +76,6 @@ const RecipeDetails = () => {
       </VStack>
       <Separator mb={4} />
 
-      {/* Steps Section */}
       <Heading as="h2" size="md" mb={2}>
         Preparation Steps
       </Heading>
@@ -89,7 +86,6 @@ const RecipeDetails = () => {
       </VStack>
       <Separator mb="4" />
 
-      {/* Footer */}
       <HStack justify="space-between" mt={4}>
         <Button
           colorScheme="teal"

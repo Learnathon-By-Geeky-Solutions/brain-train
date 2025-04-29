@@ -50,10 +50,10 @@ function Modal({ isOpen, onClose }) {
       <IconButton
         borderRadius="full"
         variant="outline"
-        position="relative"
+        position={{ base: "absolute", sm: "absolute", md: "relative" }}
         zIndex="1002"
-        right="8"
-        top="8"
+        right={{ base: "4", sm: "4", md: "8" }}
+        top={{ base: "2", sm: "2", md: "8" }}
         marginBottom="auto"
       >
         <LuX onClick={onClose} />

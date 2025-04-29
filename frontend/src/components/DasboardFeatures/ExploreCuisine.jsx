@@ -7,7 +7,6 @@ import mexican_cuisine from "@/assets/mexican_cuisine.jpg";
 import indian_cuisine from "@/assets/indian_cuisine.jpg";
 import { useColorModeValue } from "../ui/color-mode";
 
-// Usage example:
 const cuisines = [
   { name: "italian", imageUrl: italian_cuisine },
   { name: "french", imageUrl: french_cuisine },
@@ -17,7 +16,6 @@ const cuisines = [
 ];
 
 const ExploreCuisine = ({ showResults }) => {
-  // Responsive settings
   const imageSize = useBreakpointValue({
     base: "150px",
     md: "200px",
@@ -26,7 +24,6 @@ const ExploreCuisine = ({ showResults }) => {
   const spacing = useBreakpointValue({ base: 2, md: 4, lg: 6 });
   const shadow = useColorModeValue("md", "none");
 
-  // Function to capitalize the first letter of each word
   const capitalizeWords = (str) => {
     return str
       .split(" ")

@@ -1,4 +1,3 @@
-// ChatHistoryItem.jsx
 import { HStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { ChatActions } from "./ChatActions";

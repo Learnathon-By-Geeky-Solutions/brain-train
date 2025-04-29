@@ -7,14 +7,13 @@ const fetchSuggestions = async (
   setSuggestions,
   type,
   query,
-  setContainerClosed,
   setForceStopSuggestionContainer,
 ) => {
   setLoading(true);
   setError(null);
   try {
     const response = await fetch(
-      `${API_BASE_URL}/search/${type}/autocomplete?query=${query}`,
+      `${API_BASE_URL}/search/${type}/autocomplete?query=${query}&number=100`,
     );
 
     if (!response.ok) {

@@ -1,4 +1,3 @@
-// components/MessageList.jsx
 import React, { useRef, useEffect } from "react";
 import { Box, Flex, Text, Spinner, Avatar } from "@chakra-ui/react";
 import MessageItem from "./MessageItem";

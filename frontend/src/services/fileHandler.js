@@ -19,6 +19,7 @@ const handleFileChange = async (
   setImagePreview,
   toaster = null,
   allowMultiple = true,
+  setFile = null,
 ) => {
   const files = e.target.files;
   if (!files || files.length === 0) return -1;
@@ -46,7 +47,6 @@ const handleFileChange = async (
       continue;
     }
 
-    // Wrap FileReader in a Promise for sequential async processing
     const preview = await new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (event) => resolve(event.target.result);
@@ -58,6 +58,9 @@ const handleFileChange = async (
 
   if (imagePreviewArray.length > 0) {
     setImagePreview(allowMultiple ? imagePreviewArray : imagePreviewArray[0]);
+    if (setFile) {
+      setFile(allowMultiple ? files : files[0]);
+    }
     return;
   }
 

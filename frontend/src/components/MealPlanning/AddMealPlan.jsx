@@ -384,8 +384,8 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
   );
 };
 PlanController.propTypes = {
-  startDate: PropTypes.instanceOf(Date).isRequired,
-  currentDate: PropTypes.instanceOf(Date).isRequired,
+  startDate: PropTypes.string,
+  currentDate: PropTypes.string,
   toggleReload: PropTypes.func.isRequired,
 };
 
