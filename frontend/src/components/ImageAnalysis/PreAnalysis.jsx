@@ -9,7 +9,7 @@ import {
 import { useState, useRef } from "react";
 import { toaster } from "../ui/toaster";
 import PropType from "prop-types";
-import { readRawFile } from "@/services/fileHandler";
+import { readRawFile, handleFileChange } from "@/services/fileHandler";
 
 const PreAnalysis = ({
   show,
@@ -22,43 +22,9 @@ const PreAnalysis = ({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
-  const handleFileChange = (e) => {
-    if (e.target.files?.[0]) {
-      const selectedFile = e.target.files[0];
 
-      // Check if the file is an image
-      if (!selectedFile.type.match("image.*")) {
-        toaster.create({
-          title: "Invalid file type",
-          description: "Please upload an image file (JPEG, PNG, etc.)",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-        return;
-      }
-
-      // Check if the file size is below 5MB
-      if (selectedFile.size > 5 * 1024 * 1024) {
-        toaster.create({
-          title: "File too large",
-          description: "Please upload an image smaller than 5MB",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-        return;
-      }
-
-      setFile(selectedFile);
-
-      // Create image preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target.result);
-      };
-      reader.readAsDataURL(selectedFile);
-    }
+  const handleFileSelect = (e) => {
+    handleFileChange(e, setImagePreview, toaster, false, setFile);
   };
 
   const handleUpload = async (type) => {
@@ -127,7 +93,7 @@ const PreAnalysis = ({
       <input
         type="file"
         accept="image/*"
-        onChange={handleFileChange}
+        onChange={handleFileSelect}
         ref={fileInputRef}
         style={{ display: "none" }}
       />
