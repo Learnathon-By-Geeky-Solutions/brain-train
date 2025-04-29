@@ -11,6 +11,8 @@ import ExploreCuisine from "./ExploreCuisine";
 
 const PreloadedCards = ({ txt, showResults = null }) => {
   const [newCards, setNewCards] = useState([]);
+  const ExclusionList = ["Explore a cuisine", "Trending Recipes"];
+
   useEffect(() => {
     let fn;
     if (txt === "Recently Searched") {
@@ -26,7 +28,7 @@ const PreloadedCards = ({ txt, showResults = null }) => {
     });
   }, []);
 
-  if (newCards.length === 0 && txt !== "Explore a cuisine") {
+  if (newCards.length === 0 && !ExclusionList.includes(txt)) {
     return null;
   }
 
