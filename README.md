@@ -18,7 +18,7 @@ discover personalized recipes, plan meals, and analyze nutrition with AI-driven 
 - [💻 Tech Stack](#-tech-stack)
 - [📜 Project Description](#project-description)
 - [🛠️ Getting Started](#️-getting-started)
-- [🗺️ ERD](#erd)
+- [🗺️ ERD](/erd/ERD.md)
 
 ## Project Status
   [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
@@ -42,12 +42,14 @@ discover personalized recipes, plan meals, and analyze nutrition with AI-driven 
   <img src="https://img.shields.io/badge/Spoonacular-8BC34A?style=for-the-badge&logo=spoonacular&logoColor=white" alt="Spoonacular"/>
   <img src="https://img.shields.io/badge/Gemini-00DCFA?style=for-the-badge&logo=gemini&logoColor=white" alt="Gemini"/>
   <img src="https://img.shields.io/badge/Clarifai-031FFF?style=for-the-badge&logo=clarifai&logoColor=white" alt="Clarifai"/>
-  <br/>
   <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"/>
   <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express"/>
+  <br/>
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"/>
   <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
+  <img src="https://img.shields.io/badge/Chakra%20UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" alt="Chakra UI"/>
+  <img src="https://img.shields.io/badge/Framer%20Motion-00C4CC?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion"/>
   <br/>
   <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white" alt="Jest"/>
   <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions"/>
@@ -71,14 +73,14 @@ Team Brain Train members and their respective roles are as follows:
       </td>
       <td style="min-width: 220px;"  align="center" width="30%">
           <h4 style="white-space: nowrap; font-size: 16px; padding: 0 5px;">Abdullah Muhammed Amimul Ehsan</h4>
-          <img src="https://img.shields.io/badge/Backend%20%7C%20AI%20%7C%20Computer%20Vision-21CBF3?style=for-the-badge">  
+          <img src="https://img.shields.io/badge/Backend%20%7C%20AI%20%7C%20CV%20%7C%20QA-21CBF3?style=for-the-badge">  
         <br><a href="https://github.com/amimulamim" target="_blank">
               <img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white">
              </a>
       </td>
       <td align="center" width="25%">
         <h4 style="white-space: nowrap; font-size: 16px; padding: 0 5px;">Abrar Jahin Sarker</h4>
-        <img src="https://img.shields.io/badge/Frontend-E03D30?style=for-the-badge"> 
+        <img src="https://img.shields.io/badge/Frontend%20%7C%20QA-E03D30?style=for-the-badge"> 
         <br><a href="https://github.com/3m09" target="_blank">
               <img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white">
              </a>
@@ -152,6 +154,14 @@ Backend API documentation is available at: <br/>
   <tr>
     <td><strong>Vite</strong></td>
     <td>Frontend build tool for fast and optimized development</td>
+  </tr>
+  <tr>
+    <td><strong>Chakra UI</strong></td>
+    <td>React component library for building accessible and customizable UI</td>
+  </tr>
+  <tr>
+    <td><strong>Framer Motion</strong></td>
+    <td>Animation library for React to create smooth and interactive animations</td>
   </tr>
 
   <tr>
@@ -261,9 +271,7 @@ Follow these steps to set up the project locally:
   ```
 
 4. **Set Up Environment Variables**
-  Create a `.env` file in the backend directory and add the necessary environment variables. You can refer to the [`.env.example`](backend/.env.example) file for the required variables.
-
-  Similarly, create a `.env` file in the frontend directory and add the necessary environment variables. You can refer to the [`.env.example`](frontend/.env.example) file for the required variables.
+  Create `.env` files in both `backend` and `frontend` directories. Refer to their respective [`.env.example`](backend/.env.example) and [`.env.example`](frontend/.env.example) files for required variables.
 
 
 5. **Start the Application**  
@@ -273,12 +281,6 @@ Follow these steps to set up the project locally:
   ```
 
 Your application should now be running locally. Open your browser and navigate to the specified URL to access the application.
-
-## 🗺️ ERD
-
-<a href="https://app.gleek.io/diagrams/1hurlKdEwlu_A8UrxRwwKg" target="_blank">
-  <img src="https://sketchertest.blob.core.windows.net/previewimages/1hurlKdEwlu_A8UrxRwwKg.png" alt="Geeky Chef" title="Geeky Chef" />
-</a>
 
 ## Development Guidelines
 
