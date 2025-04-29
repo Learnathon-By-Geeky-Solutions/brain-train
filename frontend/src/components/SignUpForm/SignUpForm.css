@@ -19,10 +19,7 @@
   .sign-up-container {
       width: 100%;
       left: 0;
-      height: 50%; 
-  }
-  
-  .sign-up-container {
+      height: 50%;
       z-index: 1;
       opacity: 0;
       top: 50%; 
