@@ -1,4 +1,4 @@
-import { Input, Text } from "@chakra-ui/react";
+import { Input, Text, useBreakpointValue } from "@chakra-ui/react";
 
 import PropTypes from "prop-types";
 import { useState } from "react";
@@ -16,6 +16,11 @@ const TitleSearchInput = ({
   const [query, setQuery] = useState("");
   const [keyHandlerForSuggestion, setKeyHandlerForSuggestion] = useState(null);
   const textColor = useColorModeValue("black", "white");
+  const showEnterPrompt = useBreakpointValue({
+    base: false,
+    sm: false,
+    md: true,
+  });
 
   function handleChange(title) {
     setQuery(title);
@@ -27,8 +32,9 @@ const TitleSearchInput = ({
     <div>
       <InputGroup
         endElement={
-          showSecondBar && (
-            <Text fontSize="xs" color="gray.400" mr={2}>
+          showSecondBar &&
+          showEnterPrompt && (
+            <Text fontSize="xs" color="gray.400" mr={2} mt={6}>
               Press ENTER to search
             </Text>
           )

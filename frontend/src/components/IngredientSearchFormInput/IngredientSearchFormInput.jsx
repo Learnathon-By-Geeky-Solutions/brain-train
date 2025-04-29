@@ -9,6 +9,7 @@ import {
   Separator,
   InputGroup,
   Text,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { MdAdd, MdArrowBack } from "react-icons/md";
 import { Field } from "../ui/field";
@@ -52,6 +53,11 @@ const IngredientSearchFormInput = forwardRef(
       "var(--dark-light-text-input1)",
     );
     const textColor = useColorModeValue("black", "white");
+    const showEnterPrompt = useBreakpointValue({
+      base: false,
+      sm: false,
+      md: true,
+    });
 
     const handleIngredientChange = (index, value) => {
       if (value === "default" && index === "default") {
@@ -110,9 +116,11 @@ const IngredientSearchFormInput = forwardRef(
                       render={({ field }) => (
                         <InputGroup
                           endElement={
-                            <Text fontSize="xs" color="gray.400" mt={6}>
-                              ENTER to finish
-                            </Text>
+                            showEnterPrompt && (
+                              <Text fontSize="xs" color="gray.400" mt={6}>
+                                ENTER to finish
+                              </Text>
+                            )
                           }
                         >
                           <Input
