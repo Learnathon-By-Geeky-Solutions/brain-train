@@ -11,16 +11,46 @@ discover personalized recipes, plan meals, and analyze nutrition with AI-driven 
 ## 📑 Table of Contents
 
 - [🚀 Tools & Technologies](#-tools--technologies)
+- [📋 Project Management](#-project-management)
 - [🩺 Project Status](#-project-status)
 - [🌐 Live Demo](https://brain-train-geeky-chef.vercel.app/)
 - [👥 Team Members & Mentor](#-team-members--mentor)
 - [📘 API Documentation](#-api-documentation)
 - [💻 Tech Stack](#-tech-stack)
-- [📜 Project Description](#project-description)
+- [📜 Project Description](#-project-description)
 - [🛠️ Getting Started](#️-getting-started)
 - [🗺️ ERD](/erd/ERD.md)
 
-## Project Status
+## 🚀 Tools & Technologies
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase"/>
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB"/>
+  <img src="https://img.shields.io/badge/Spoonacular-8BC34A?style=for-the-badge&logo=spoonacular&logoColor=white" alt="Spoonacular"/>
+  <img src="https://img.shields.io/badge/Gemini-00DCFA?style=for-the-badge&logo=gemini&logoColor=white" alt="Gemini"/>
+  <img src="https://img.shields.io/badge/Clarifai-031FFF?style=for-the-badge&logo=clarifai&logoColor=white" alt="Clarifai"/>
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"/>
+  <br/>
+  <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express"/>
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"/>
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
+  <img src="https://img.shields.io/badge/Chakra%20UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" alt="Chakra UI"/>
+  <img src="https://img.shields.io/badge/Framer%20Motion-00C4CC?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion"/>
+  <br/>
+  <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white" alt="Jest"/>
+  <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions"/>
+  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel"/>
+  <img src="https://img.shields.io/badge/SonarCloud-F3702A?style=for-the-badge&logo=sonarcloud&logoColor=white" alt="SonarCloud"/>
+  <img src="https://img.shields.io/badge/Snyk-4C4A73?style=for-the-badge&logo=snyk&logoColor=white" alt="Snyk"/>
+</p>
+
+
+## 📋 Project Management
+[![Trello](https://img.shields.io/badge/Trello-0052CC?style=for-the-badge&logo=trello&logoColor=white)](https://trello.com/b/UwKixa9E/geeky-chef)
+[![Google Sheet](https://img.shields.io/badge/Devlog-Google%20Sheet-34A853?style=for-the-badge&logo=googlesheets&logoColor=white)](https://docs.google.com/spreadsheets/d/1hKlBSYc5ySD8sdeonCg7w64-T7ll3uMeZYVOii6uZ-I/edit?usp=sharing)
+
+## 🩺 Project Status
   [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
   [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
   [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
@@ -34,29 +64,6 @@ discover personalized recipes, plan meals, and analyze nutrition with AI-driven 
   [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Learnathon-By-Geeky-Solutions_brain-train&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Learnathon-By-Geeky-Solutions_brain-train)
 
 
-## 🚀 Tools & Technologies
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase"/>
-  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB"/>
-  <img src="https://img.shields.io/badge/Spoonacular-8BC34A?style=for-the-badge&logo=spoonacular&logoColor=white" alt="Spoonacular"/>
-  <img src="https://img.shields.io/badge/Gemini-00DCFA?style=for-the-badge&logo=gemini&logoColor=white" alt="Gemini"/>
-  <img src="https://img.shields.io/badge/Clarifai-031FFF?style=for-the-badge&logo=clarifai&logoColor=white" alt="Clarifai"/>
-  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"/>
-  <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express"/>
-  <br/>
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
-  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"/>
-  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
-  <img src="https://img.shields.io/badge/Chakra%20UI-319795?style=for-the-badge&logo=chakraui&logoColor=white" alt="Chakra UI"/>
-  <img src="https://img.shields.io/badge/Framer%20Motion-00C4CC?style=for-the-badge&logo=framer&logoColor=white" alt="Framer Motion"/>
-  <br/>
-  <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white" alt="Jest"/>
-  <img src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions"/>
-  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel"/>
-  <img src="https://img.shields.io/badge/SonarCloud-F3702A?style=for-the-badge&logo=sonarcloud&logoColor=white" alt="SonarCloud"/>
-  <img src="https://img.shields.io/badge/Snyk-4C4A73?style=for-the-badge&logo=snyk&logoColor=white" alt="Snyk"/>
-</p>
 
 ## 👥 Team Members & Mentor
 
