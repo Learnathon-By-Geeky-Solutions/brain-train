@@ -77,13 +77,18 @@ export default function GeekyChefLanding({ openAuthModal }) {
         boxShadow={scrolled ? "md" : "none"}
         transition="all 0.3s ease"
       >
-        <Container maxW="container.xl">
-          <Flex py={3} align="center" justify="space-between" w="100%">
+        <Flex w="100vw" px="4">
+          <Flex
+            py={3}
+            alignItems="center"
+            justifyContent="space-between"
+            w="100%"
+          >
             <Flex align="center">
               <MotionBox
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.3 }}
               >
                 <Text
                   fontFamily="heading"
@@ -110,7 +115,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
               Get Started
             </Button>
           </Flex>
-        </Container>
+        </Flex>
       </Box>
 
       {/* Hero Section */}
