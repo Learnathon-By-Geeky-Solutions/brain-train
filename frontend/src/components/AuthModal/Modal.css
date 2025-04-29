@@ -218,17 +218,15 @@ input {
 @media (max-width: 768px) {
   .modal-overlay {
     position: absolute;
-    overflow-y: auto;
     top: 0px;
     width: 100vw;
-    height: 100vh;
-    align-items: start;
-    justify-content: start;
+    height: 1060px;
   }
   
   .container {
     top: 50px;
     min-height: 900px;
+    width: 90%;
   }
   
   .container.right-panel-active .sign-in-container {
