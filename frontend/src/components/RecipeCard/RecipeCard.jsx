@@ -15,7 +15,11 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
       w={{ base: "80", sm: "80", md: "72" }}
       h={{ base: "96", sm: "80", md: "72" }}
       overflow="hidden"
-      _hover={{ transform: "scale(1.05)", transition: "all 0.3s ease-in-out" }}
+      _hover={{
+        transform: "scale(1.05)",
+        transition: "all 0.3s ease-in-out",
+        cursor: "pointer",
+      }}
       onClick={() => {
         handleRecipeDetail(recipe.id, navigate);
       }}
