@@ -1,7 +1,15 @@
 import React, { forwardRef, useState } from "react";
 import PropTypes from "prop-types";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { Input, Flex, IconButton, VStack, Separator } from "@chakra-ui/react";
+import {
+  Input,
+  Flex,
+  IconButton,
+  VStack,
+  Separator,
+  InputGroup,
+  Text,
+} from "@chakra-ui/react";
 import { MdAdd, MdArrowBack } from "react-icons/md";
 import { Field } from "../ui/field";
 import { LuDelete } from "react-icons/lu";
@@ -100,22 +108,30 @@ const IngredientSearchFormInput = forwardRef(
                       name={`fields.${index}.name`}
                       control={control}
                       render={({ field }) => (
-                        <Input
-                          {...field}
-                          placeholder="Ingredient name"
-                          background="none"
-                          variant="flushed"
-                          color={textColor}
-                          fontSize="md"
-                          fontWeight="medium"
-                          defaultValue={ingredients[index]}
-                          _focus={{ border: "none", boxShadow: "none" }}
-                          onChange={(e) => {
-                            handleIngredientChange(index, e.target.value);
-                            setValue(`fields.${index}.name`, e.target.value); // update form value
-                          }}
-                          onKeyDown={(e) => setKeyHandlerForSuggestion(e)}
-                        />
+                        <InputGroup
+                          endElement={
+                            <Text fontSize="xs" color="gray.400" mt={6}>
+                              ENTER to finish
+                            </Text>
+                          }
+                        >
+                          <Input
+                            {...field}
+                            placeholder="Ingredient name"
+                            background="none"
+                            variant="flushed"
+                            color={textColor}
+                            fontSize="md"
+                            fontWeight="medium"
+                            defaultValue={ingredients[index]}
+                            _focus={{ border: "none", boxShadow: "none" }}
+                            onChange={(e) => {
+                              handleIngredientChange(index, e.target.value);
+                              setValue(`fields.${index}.name`, e.target.value); // update form value
+                            }}
+                            onKeyDown={(e) => setKeyHandlerForSuggestion(e)}
+                          />
+                        </InputGroup>
                       )}
                     />
                     <SuggestionContainer

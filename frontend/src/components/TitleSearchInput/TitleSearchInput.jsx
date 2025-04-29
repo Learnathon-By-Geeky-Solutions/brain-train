@@ -1,9 +1,10 @@
-import { Input } from "@chakra-ui/react";
+import { Input, Text } from "@chakra-ui/react";
 
 import PropTypes from "prop-types";
 import { useState } from "react";
 import SuggestionContainer from "../SuggestionContainer/SuggestionContainer";
 import { useColorModeValue } from "../ui/color-mode";
+import { InputGroup } from "../ui/input-group";
 
 const TitleSearchInput = ({
   controller,
@@ -24,28 +25,38 @@ const TitleSearchInput = ({
 
   return (
     <div>
-      <Input
-        width="65vw"
-        h="1"
-        color={showSecondBar ? textColor : "teal.500"}
-        textAlign={showSecondBar ? "left" : "center"}
-        placeholder={showSecondBar ? "Search for a recipe" : "Search"}
-        background="none"
-        border="none"
-        _focus={{ border: "none", boxShadow: "none" }}
-        variant="flushed"
-        value={query}
-        fontSize={showSecondBar ? "md" : "2xl"}
-        cursor={showSecondBar ? "text" : "pointer"}
-        fontWeight="medium"
-        readOnly={!showSecondBar}
-        onChange={(e) => {
-          handleChange(e.target.value);
-        }}
-        onKeyDown={(e) => {
-          setKeyHandlerForSuggestion(e);
-        }}
-      />
+      <InputGroup
+        endElement={
+          showSecondBar && (
+            <Text fontSize="xs" color="gray.400" mr={2}>
+              Press ENTER to search
+            </Text>
+          )
+        }
+      >
+        <Input
+          width="65vw"
+          h="1"
+          color={showSecondBar ? textColor : "teal.500"}
+          textAlign={showSecondBar ? "left" : "center"}
+          placeholder={showSecondBar ? "Search for a recipe" : "Search"}
+          background="none"
+          border="none"
+          _focus={{ border: "none", boxShadow: "none" }}
+          variant="flushed"
+          value={query}
+          fontSize={showSecondBar ? "md" : "2xl"}
+          cursor={showSecondBar ? "text" : "pointer"}
+          fontWeight="medium"
+          readOnly={!showSecondBar}
+          onChange={(e) => {
+            handleChange(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            setKeyHandlerForSuggestion(e);
+          }}
+        />
+      </InputGroup>
       <SuggestionContainer
         type="title"
         query={query}
