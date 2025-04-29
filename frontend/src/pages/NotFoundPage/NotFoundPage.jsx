@@ -18,7 +18,6 @@ const NotFoundPage = ({ route }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
-  // Check if there are any search parameters
   const hasSearchParams = searchParams.toString().length > 0;
   if (hasSearchParams) return null;
 
@@ -64,7 +63,6 @@ const NotFoundPage = ({ route }) => {
             />
           </Center>
 
-          {/* Home Button - The only interactive element */}
           <Button
             leftIcon={<Icon as={Home} />}
             colorPalette="orange"

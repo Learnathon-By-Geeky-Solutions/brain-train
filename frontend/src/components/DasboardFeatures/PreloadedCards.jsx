@@ -50,7 +50,7 @@ const PreloadedCards = ({ txt, showResults = null }) => {
 };
 PreloadedCards.propTypes = {
   txt: PropTypes.string.isRequired,
-  showResults: PropTypes.func, // Add validation for showResults
+  showResults: PropTypes.func,
 };
 
 export default PreloadedCards;

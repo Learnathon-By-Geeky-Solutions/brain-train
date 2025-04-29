@@ -66,7 +66,6 @@ export default function GeekyChefLanding({ openAuthModal }) {
 
   return (
     <Box fontFamily="body">
-      {/* Navbar */}
       <Box
         as="nav"
         position="fixed"

@@ -41,28 +41,23 @@ const StickyHeader = ({
 
   const controlSecondBar = throttle((pathname, scrollYLatest) => {
     const currentScrollY = scrollRef?.current?.scrollTop || 0;
-    // If we're at the top (or very close to it), always show the second bar
     if (
       currentScrollY < scrollYLatest &&
       currentScrollY < 5 &&
       !scrollDownEventExclusion.includes(pathname)
     ) {
       setShowSecondBar(true);
-    }
-    // Otherwise hide it when scrolling down
-    else if (
+    } else if (
       currentScrollY > scrollYLatest &&
       currentScrollY >= 120 &&
       containerClosed
     ) {
       setShowSecondBar(false);
     }
-    // Update the last scroll position
     setLastScrollY(currentScrollY);
   }, 100);
 
   const handleScroll = () => {
-    // use the latest location.pathname here
     controlSecondBar(location.pathname, lastScrollY);
   };
 
@@ -159,7 +154,6 @@ const StickyHeader = ({
           }}
           color="white"
         >
-          {/* Hamburger Menu for Mobile */}
           <VerticalDrawer
             components={[
               navButtonsForVerticalDrawer,
