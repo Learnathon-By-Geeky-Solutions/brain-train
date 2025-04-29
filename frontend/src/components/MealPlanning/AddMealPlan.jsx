@@ -45,12 +45,12 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
   ]);
   const [isWeekly, setIsWeekly] = useState(true);
   const [dietFilters, setDietFilters] = useState([]);
-  const [rangeFilters, setRangeFilters] = useState(
+  const [calorieFilters, setCalorieFilters] = useState(
     rangeFilterTypes.map((type) => ({ type: type, value: 0 })),
   );
   const [planName, setPlanName] = useState("");
-  const [isRangeFiltersActive, setIsRangeFiltersActive] = useState([false]);
-  const [filtersApplied, setFiltersApplied] = useState(false);
+  const [isCalorieFiltersActive, setIsCalorieFiltersActive] = useState([false]);
+  const [planAdded, setPlanAdded] = useState(false);
   const inputBgColor = useColorModeValue("gray.300", "var(--text-input)");
   const textColor = useColorModeValue("black", "white");
 
@@ -68,9 +68,11 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
     setDietFiltersToggled([false, false, false, false, false, false]);
     setDietFilters([]);
     setIsWeekly(true);
-    setRangeFilters(rangeFilterTypes.map((type) => ({ type: type, value: 0 })));
-    setIsRangeFiltersActive([false]);
-    setFiltersApplied(false);
+    setCalorieFilters(
+      rangeFilterTypes.map((type) => ({ type: type, value: 0 })),
+    );
+    setIsCalorieFiltersActive([false]);
+    setPlanAdded(false);
     plan = {
       name: "",
       exclude: "",
@@ -108,22 +110,22 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
     }
   }
 
-  function addRangeFilter(type, value) {
-    const newRangeFilters = [...rangeFilters];
-    const filter = newRangeFilters.find((f) => f.type === type);
+  function addCalorieFilter(type, value) {
+    const newCalorieFilters = [...calorieFilters];
+    const filter = newCalorieFilters.find((f) => f.type === type);
     filter.value = value;
-    setRangeFilters(newRangeFilters);
+    setCalorieFilters(newCalorieFilters);
   }
 
-  function getRangeFilter(type) {
-    const filter = rangeFilters.find((f) => f.type === type);
+  function getCalorieFilter(type) {
+    const filter = calorieFilters.find((f) => f.type === type);
     return [filter.value];
   }
 
-  function toggleRangeFilter(index) {
-    const newIsRangeFiltersActive = [...isRangeFiltersActive];
-    newIsRangeFiltersActive[index] = !newIsRangeFiltersActive[index];
-    setIsRangeFiltersActive(newIsRangeFiltersActive);
+  function toggleCalorieFilter(index) {
+    const newIsCalorieFiltersActive = [...isCalorieFiltersActive];
+    newIsCalorieFiltersActive[index] = !newIsCalorieFiltersActive[index];
+    setIsCalorieFiltersActive(newIsCalorieFiltersActive);
   }
 
   function handleSaveMealPlan(
@@ -136,15 +138,15 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
       title: "Meal Plan is being saved. Please wait..",
       type: "loading",
     });
-    setFiltersApplied(true);
+    setPlanAdded(true);
     let newPlan = { ...plan };
 
     if (ignoreConflict) newPlan.ignoreConflict = true;
 
     newPlan.exclude = exclude;
     newPlan.name = planName;
-    newPlan.targetCalories = isRangeFiltersActive[0]
-      ? rangeFilters[0].value
+    newPlan.targetCalories = isCalorieFiltersActive[0]
+      ? calorieFilters[0].value
       : "";
     for (const diet of dietFilters) {
       if (newPlan.diet.indexOf(diet) === -1) {
@@ -192,7 +194,7 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
             borderRadius="full"
             padding="2"
             variant="subtle"
-            borderColor={filtersApplied ? "Highlight" : "none"}
+            borderColor={planAdded ? "Highlight" : "none"}
             borderWidth="3"
           >
             <Icon size="sm">
@@ -300,8 +302,10 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
                             <Flex direction="row" mb="2">
                               <Switch.Root
                                 variant="raised"
-                                checked={isRangeFiltersActive[index]}
-                                onCheckedChange={() => toggleRangeFilter(index)}
+                                checked={isCalorieFiltersActive[index]}
+                                onCheckedChange={() =>
+                                  toggleCalorieFilter(index)
+                                }
                               >
                                 <Switch.HiddenInput />
                                 <Switch.Control>
@@ -310,16 +314,16 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
                                 <Switch.Label />
                               </Switch.Root>
                               <Text fontSize="sm">
-                                {isRangeFiltersActive[index]
+                                {isCalorieFiltersActive[index]
                                   ? "Enabled"
                                   : "Disabled"}
                               </Text>
                             </Flex>
-                            {isRangeFiltersActive[index] && (
+                            {isCalorieFiltersActive[index] && (
                               <Slider.Root
-                                value={[getRangeFilter(type)[0] / 100]}
+                                value={[getCalorieFilter(type)[0] / 100]}
                                 onValueChange={(e) => {
-                                  addRangeFilter(type, e.value[0] * 100);
+                                  addCalorieFilter(type, e.value[0] * 100);
                                 }}
                                 w="100%"
                               >
@@ -338,9 +342,9 @@ const PlanController = ({ startDate, currentDate, toggleReload }) => {
                                 >
                                   <HStack p="0" gap="0">
                                     <Input
-                                      value={getRangeFilter(type)}
+                                      value={getCalorieFilter(type)}
                                       onChange={(e) => {
-                                        addRangeFilter(type, e.target.value);
+                                        addCalorieFilter(type, e.target.value);
                                       }}
                                       bgColor={inputBgColor}
                                       borderRadius="3xl"
