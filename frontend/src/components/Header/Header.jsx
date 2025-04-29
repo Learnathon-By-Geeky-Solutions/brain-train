@@ -52,7 +52,7 @@ const StickyHeader = ({
     // Otherwise hide it when scrolling down
     else if (
       currentScrollY > scrollYLatest &&
-      currentScrollY >= 100 &&
+      currentScrollY >= 120 &&
       containerClosed
     ) {
       setShowSecondBar(false);
@@ -87,7 +87,7 @@ const StickyHeader = ({
     return () => {
       scrollableElement.removeEventListener("scroll", handleScroll);
     };
-  }, [containerClosed, lastScrollY]); // Only re-run the effect if lastScrollY changes
+  }, [containerClosed, lastScrollY]);
 
   const showFavouriteRecipes = () => {
     showResults(null, true);
