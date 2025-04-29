@@ -9,6 +9,7 @@ import {
 import { useState, useRef } from "react";
 import { toaster } from "../ui/toaster";
 import PropType from "prop-types";
+import { readRawFile } from "@/services/fileHandler";
 
 const PreAnalysis = ({
   show,
@@ -106,48 +107,6 @@ const PreAnalysis = ({
 
   const triggerFileInput = () => {
     fileInputRef.current.click();
-  };
-
-  const readRawFile = (file, onProgress, onComplete) => {
-    const CHUNK_SIZE = 1024 * 100; // 100KB
-    return new Promise((resolve, reject) => {
-      const totalSize = file.size;
-      let offset = 0;
-      const chunkList = [];
-
-      const reader = new FileReader();
-
-      const readNextChunk = () => {
-        const slice = file.slice(offset, offset + CHUNK_SIZE);
-        reader.readAsArrayBuffer(slice);
-      };
-
-      reader.onload = (e) => {
-        chunkList.push(new Uint8Array(e.target.result));
-        offset += CHUNK_SIZE;
-        const percent = Math.min((offset / totalSize) * 100, 100);
-        if (onProgress) onProgress(percent);
-
-        if (offset < totalSize) {
-          readNextChunk();
-        } else {
-          // Combine chunks into one Blob
-          const completeBlob = new Blob(chunkList, { type: file.type });
-
-          // Optionally wrap it as a File object (if filename is needed)
-          const completeFile = new File([completeBlob], file.name, {
-            type: file.type,
-          });
-
-          if (onComplete) onComplete(completeBlob);
-          resolve(completeFile);
-        }
-      };
-
-      reader.onerror = () => reject(reader.error);
-
-      readNextChunk();
-    });
   };
 
   const backgroundColor = useColorModeValue("gray.50", "gray.800");
