@@ -245,7 +245,7 @@ StickyHeader.propTypes = {
   pageState: PropTypes.string.isRequired,
   pageLocation: PropTypes.string.isRequired,
   setPageState: PropTypes.func.isRequired,
-  showResults: PropTypes.bool.isRequired,
+  showResults: PropTypes.func.isRequired,
   scrollRef: PropTypes.object.isRequired,
 };
 

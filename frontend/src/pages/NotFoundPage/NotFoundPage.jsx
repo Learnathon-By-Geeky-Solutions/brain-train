@@ -85,5 +85,5 @@ const NotFoundPage = ({ route }) => {
 export default NotFoundPage;
 
 NotFoundPage.propTypes = {
-  route: PropTypes.string.isRequired,
+  route: PropTypes.string,
 };

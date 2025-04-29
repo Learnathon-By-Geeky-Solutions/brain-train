@@ -84,7 +84,7 @@ CentralSearchFrame.propTypes = {
   feature: PropTypes.elementType.isRequired,
   featureProps: PropTypes.object,
   showResults: PropTypes.func.isRequired,
-  filters: PropTypes.object.isRequired,
+  filters: PropTypes.array,
   containerClosed: PropTypes.bool.isRequired,
   setContainerClosed: PropTypes.func.isRequired,
 };
