@@ -22,7 +22,6 @@ const handleFileChange = async (
   setFile = null,
 ) => {
   const files = e.target.files;
-  if (!files || files.length === 0) return -1;
 
   const imagePreviewArray = [];
 

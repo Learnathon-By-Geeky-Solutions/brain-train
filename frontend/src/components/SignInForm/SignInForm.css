@@ -15,11 +15,8 @@
   .sign-in-container{
       width: 100%;
       left: 0;
-      height: 50%; 
-  }
-  
-  .sign-in-container {
+      height: 50%;
       z-index: 2;
-      top: 0;
+      top: 0; 
   }
 }
