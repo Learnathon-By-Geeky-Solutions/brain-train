@@ -7,7 +7,6 @@ const fetchSuggestions = async (
   setSuggestions,
   type,
   query,
-  setContainerClosed,
   setForceStopSuggestionContainer,
 ) => {
   setLoading(true);

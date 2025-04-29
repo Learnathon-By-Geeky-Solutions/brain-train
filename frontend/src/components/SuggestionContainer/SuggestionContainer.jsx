@@ -43,10 +43,9 @@ const SuggestionContainer = ({
         setSuggestions,
         type,
         query,
-        setContainerClosed,
         setForceStopSuggestionContainer,
       );
-    }, 300); // Debounce API call
+    }, 300);
 
     return () => clearTimeout(debounceFetch);
   }, [query]);
