@@ -63,7 +63,7 @@ const StickyHeader = ({
 
   useEffect(() => {
     if (scrollDownEventExclusion.includes(location.pathname)) {
-      setShowSecondBar(false);
+      if (showSecondBar) setShowSecondBar(false);
     } else {
       setShowSecondBar(true);
     }

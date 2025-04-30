@@ -26,7 +26,6 @@ export function ChatHistoryItem({ name, onRename, onDelete }) {
   );
 }
 
-//prop validation
 ChatHistoryItem.propTypes = {
   name: PropTypes.string,
   onRename: PropTypes.func,

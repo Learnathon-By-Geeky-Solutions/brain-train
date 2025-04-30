@@ -203,6 +203,7 @@ const ChatBot = ({ photoURL }) => {
         alignItems="center"
         justifyContent="center"
         w={open ? "75vw" : "95vw"}
+        id="chatbot-body"
       >
         <MessageList
           messages={messages}

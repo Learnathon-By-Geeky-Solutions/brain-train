@@ -22,6 +22,7 @@ import FoodImageAnalysis from "@/components/ImageAnalysis/ImageAnalysis";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
 import system from "@/theme";
+import ScrollToTop from "../ScrollToTop/ScrollToTop";
 
 export default function Dashboard() {
   const [pageLocation, setPageLocation] = useState("dashboard");
@@ -128,7 +129,7 @@ export default function Dashboard() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/"); // Redirect to the home page after logging out
+      navigate("/");
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error("Error logging out:", error);
@@ -146,6 +147,7 @@ export default function Dashboard() {
         ref={scrollRef}
         gap={0}
         bg={bgColor}
+        id="dashboard-body"
       >
         <Header
           photoUrl={photoURL}
@@ -183,12 +185,16 @@ export default function Dashboard() {
             size="xl"
             zIndex="1010"
             onClick={() => {
+              document
+                .getElementById("dashboard-body")
+                .scrollTo({ top: 0, behavior: "instant" });
               navigate("/dashboard/chat");
             }}
           >
             <LuMessageCircle />
           </IconButton>
         )}
+        <ScrollToTop />
         <Routes>
           <Route path="mealPlan" element={<MealPlanningCalendar />} />
           <Route path="recipe/*" element={<RecipeDetails />} />

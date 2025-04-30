@@ -50,9 +50,16 @@ const RecipeCard = ({ recipe, changeVisibility, type }) => {
           >
             {recipe.title}
           </Card.Title>
-          <Flex alignItems="center" w="15%">
+          <Flex alignItems="center" w="15%" justifyContent="space-between">
             <FaHeart color="orange" />
-            <Text fontSize="sm" ml="1">
+            <Text
+              fontSize="sm"
+              w="40%"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              ml={0.5}
+            >
               {recipe.likes}
             </Text>
           </Flex>
