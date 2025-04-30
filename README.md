@@ -13,6 +13,7 @@ discover personalized recipes, plan meals, and analyze nutrition with AI-driven 
 - [🚀 Tools & Technologies](#-tools--technologies)
 - [🩺 Project Status](#-project-status)
 - [🌐 Live Demo](https://brain-train-geeky-chef.vercel.app/)
+- [📺 Youtube Demo](https://www.youtube.com/watch?v=G306soh35dY)
 - [👥 Team Members & Mentor](#-team-members-mentor)
 - [📘 API Documentation](#-api-documentation)
 - [💻 Tech Stack](#-tech-stack)
