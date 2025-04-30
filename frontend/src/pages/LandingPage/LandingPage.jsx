@@ -15,6 +15,7 @@ import {
   Input,
   InputGroup,
   Separator,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import {
@@ -29,6 +30,7 @@ import {
 import { LuFacebook, LuInstagram, LuLinkedin, LuTwitter } from "react-icons/lu";
 import video from "../../assets/bg-video.mp4";
 import heroImage from "../../assets/hero.jpg";
+import app_lg from "../../assets/app_lg.png";
 import app from "../../assets/app.png";
 import cvAnalysis from "../../assets/cv.png";
 import ingDetect from "../../assets/ing_detect.png";
@@ -63,6 +65,14 @@ export default function GeekyChefLanding({ openAuthModal }) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const appImage = useBreakpointValue({
+    base: app,
+    sm: app,
+    md: app,
+    lg: app,
+    xl: app_lg,
+  });
 
   return (
     <Box fontFamily="body">
@@ -125,7 +135,15 @@ export default function GeekyChefLanding({ openAuthModal }) {
         bgSize="cover"
         bgPosition="center"
       >
-        <Container maxW="container.xl" h={{ md: "100%" }}>
+        <Container
+          maxW={{
+            base: "container.xl",
+            sm: "container.xl",
+            md: "container.xl",
+            xl: "100vw",
+          }}
+          h={{ md: "100%" }}
+        >
           <Flex
             direction={{ base: "column", md: "row" }}
             align="center"
@@ -154,7 +172,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
                 </Text>
               </MotionHeading>
               <MotionText
-                fontSize={{ base: "md", md: "lg" }}
+                fontSize={{ base: "md", sm: "lg", md: "lg", lg: "xl" }}
                 color="gray.100"
                 mb={8}
               >
@@ -206,7 +224,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
               display="flex"
             >
               <MotionImage
-                src={app}
+                src={appImage}
                 alt="Geeky Chef App"
                 maxW="100%"
                 borderRadius="4xl"
@@ -221,13 +239,20 @@ export default function GeekyChefLanding({ openAuthModal }) {
 
       {/* Features Section */}
       <Box py={20} bg="gray.50">
-        <Container maxW="container.xl">
+        <Container
+          maxW={{
+            base: "container.xl",
+            sm: "container.xl",
+            md: "container.xl",
+            xl: "100vw",
+          }}
+        >
           <SectionTitle
             title="Discover the Power of Geeky Chef"
             subtitle="Our recipe platform combines powerful search capabilities with personalization features to make cooking easier and more enjoyable."
           />
 
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={8} mt={10}>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap="8" mt={10}>
             <FeatureCard
               icon={Search}
               title="Smart Recipe Search"
@@ -258,7 +283,14 @@ export default function GeekyChefLanding({ openAuthModal }) {
 
       {/* Video Section */}
       <Box py={16} bg="teal.700">
-        <Container maxW="container.xl">
+        <Container
+          maxW={{
+            base: "container.xl",
+            sm: "container.xl",
+            md: "container.xl",
+            xl: "100vw",
+          }}
+        >
           <Flex
             direction={{ base: "column", lg: "row" }}
             align="center"
@@ -278,6 +310,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
                 fontWeight="bold"
                 color="white"
                 mb={4}
+                lineHeight={1.1}
               >
                 See Geeky Chef in Action
               </Heading>
@@ -325,7 +358,14 @@ export default function GeekyChefLanding({ openAuthModal }) {
 
       {/* AI Features */}
       <Box py={20} bg="white">
-        <Container maxW="container.xl">
+        <Container
+          maxW={{
+            base: "container.xl",
+            sm: "container.xl",
+            md: "container.xl",
+            xl: "100vw",
+          }}
+        >
           <SectionTitle
             title="Cutting-Edge AI Features"
             subtitle="Experience the future of cooking with our advanced artificial intelligence and computer vision technology"
@@ -364,7 +404,14 @@ export default function GeekyChefLanding({ openAuthModal }) {
 
       {/* Meal Plan Section */}
       <Box py={20} bg="gray.50">
-        <Container maxW="container.xl">
+        <Container
+          maxW={{
+            base: "container.xl",
+            sm: "container.xl",
+            md: "container.xl",
+            xl: "100vw",
+          }}
+        >
           <SectionTitle
             title="Personalized Meal Planning"
             subtitle="Let AI create your perfect weekly meal plan based on your preferences, dietary needs, and schedule"
@@ -464,7 +511,14 @@ export default function GeekyChefLanding({ openAuthModal }) {
 
       {/* Testimonials */}
       <Box py={20} bg="white">
-        <Container maxW="container.xl">
+        <Container
+          maxW={{
+            base: "container.xl",
+            sm: "container.xl",
+            md: "container.xl",
+            xl: "100vw",
+          }}
+        >
           <SectionTitle
             title="What Our Users Say"
             subtitle="Discover how Geeky Chef is revolutionizing cooking experiences for food enthusiasts, health-conscious individuals, and busy people"
@@ -508,7 +562,15 @@ export default function GeekyChefLanding({ openAuthModal }) {
 
       {/* Footer */}
       <Box bg="gray.900" color="white">
-        <Container maxW="container.xl" py={16}>
+        <Container
+          maxW={{
+            base: "container.xl",
+            sm: "container.xl",
+            md: "container.xl",
+            xl: "100vw",
+          }}
+          py={16}
+        >
           <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={10}>
             <Box>
               <Heading fontFamily="heading" fontSize="2xl" mb={6}>
