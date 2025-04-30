@@ -310,6 +310,7 @@ export default function GeekyChefLanding({ openAuthModal }) {
                 fontWeight="bold"
                 color="white"
                 mb={4}
+                lineHeight={1.1}
               >
                 See Geeky Chef in Action
               </Heading>
