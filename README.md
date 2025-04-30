@@ -14,7 +14,8 @@ discover personalized recipes, plan meals, and analyze nutrition with AI-driven 
 - [📋 Project Management](#-project-management)
 - [🩺 Project Status](#-project-status)
 - [🌐 Live Demo](https://brain-train-geeky-chef.vercel.app/)
-- [👥 Team Members & Mentor](#-team-members--mentor)
+- [📺 Youtube Demo](https://www.youtube.com/watch?v=G306soh35dY)
+- [👥 Team Members & Mentor](#-team-members-mentor)
 - [📘 API Documentation](#-api-documentation)
 - [💻 Tech Stack](#-tech-stack)
 - [📜 Project Description](#-project-description)
@@ -105,7 +106,7 @@ Mohammad Anik Islam Shojib
 </div>
 
 ## 📘 API Documentation
-Backend API documentation is available at: <br/>
+Backend API documentation is available at: \
 [![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)](https://app.swaggerhub.com/apis-docs/icarus77-7ef/geeky-chef_api_documentation/2.0.0)
 
 ## 💻 Tech Stack
