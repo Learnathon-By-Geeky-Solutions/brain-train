@@ -72,23 +72,23 @@ const SideBarContent = ({
     <MotionBox
       w={
         isOpen
-          ? { base: "50vw", sm: "50vw", mdTo2xl: "25vw" }
-          : { base: "12vw", sm: "12vw", mdTo2xl: "5vw" }
+          ? { base: "50vw", sm: "50vw", md: "25vw" }
+          : { base: "12vw", sm: "12vw", md: "5vw" }
       }
       bg="green.600"
       color="white"
       transition="width 0.3s"
       overflow="hidden"
-      h={{ base: "94.5vh", sm: "94.5vh", mdTo2xl: "90vh" }}
+      h={{ base: "94.5vh", sm: "94.5vh", md: "90vh", xl: "95vh" }}
       position="fixed"
-      top={{ base: "5.5vh", sm: "5.5vh", mdTo2xl: "10vh" }}
+      top={{ base: "5.5vh", sm: "5.5vh", md: "10vh", xl: "5vh" }}
       p={3}
       overflowY="auto"
       zIndex="999"
     >
       <Flex
         position="fixed"
-        top={{ base: "5.5vh", sm: "5.5vh", mdTo2xl: "10vh" }}
+        top={{ base: "5.5vh", sm: "5.5vh", md: "10vh" }}
         left="0"
         w={isOpen ? "25vw" : "5vw"}
         bg="green.600"

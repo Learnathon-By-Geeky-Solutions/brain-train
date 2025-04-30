@@ -2,7 +2,6 @@ import { Box, Flex, Text, Heading } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 
-// Motion components
 const MotionBox = motion(Box);
 
 function SectionTitle({ title, subtitle, light = false }) {

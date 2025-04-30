@@ -1,7 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 
-// Component for displaying ingredients with confidence score
 const IngredientItem = ({ name, confidence }) => {
   const confidencePercent = Math.round(confidence * 100);
   let confidenceColor;

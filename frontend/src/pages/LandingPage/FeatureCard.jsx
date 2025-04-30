@@ -2,7 +2,6 @@ import { Box, Flex, Text, Heading, Icon } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 
-// Motion components
 const MotionBox = motion(Box);
 
 function FeatureCard({ icon, title, description, delay = 0 }) {
@@ -22,7 +21,6 @@ function FeatureCard({ icon, title, description, delay = 0 }) {
         borderTop: "3px solid",
         borderColor: "orange.400",
       }}
-      //   transition="all 0.3s ease"
     >
       <Flex
         w="60px"

@@ -31,15 +31,12 @@ const NavButtons = ({
 }) => {
   return (
     <Flex
-      justifyContent={{
-        base: "space-between",
-        smToMd: "space-between",
-        mdTo2xl: "space-between",
-      }}
+      justifyContent="space-between"
+      alignItems="center"
       hideBelow={hideBelow}
       hideFrom={hideFrom}
-      mb={{ base: 4, smToMd: 4, mdTo2xl: 0 }}
-      gap={{ base: undefined, smToMd: undefined, mdTo2xl: 2 }}
+      mb={{ base: 4, sm: 4, md: 0 }}
+      gap={{ base: undefined, sm: undefined, md: 2 }}
     >
       <ModeSwitchingButton />
       {showSecondBar && (
@@ -105,8 +102,8 @@ NavButtons.propTypes = {
   showSecondBar: PropTypes.bool.isRequired,
   addFilter: PropTypes.func.isRequired,
   clearFilters: PropTypes.func.isRequired,
-  userName: PropTypes.string.isRequired,
-  photoUrl: PropTypes.string.isRequired,
+  userName: PropTypes.string,
+  photoUrl: PropTypes.string,
   showFavouriteRecipes: PropTypes.func.isRequired,
   handleLogout: PropTypes.func.isRequired,
   hideFrom: PropTypes.string,

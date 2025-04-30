@@ -46,7 +46,6 @@ const ShoppingList = () => {
     );
   }
 
-  // Group items by title to avoid duplicates with different units
   const groupedItems = {};
   data.shoppingList.forEach((item) => {
     if (!groupedItems[item.title]) {

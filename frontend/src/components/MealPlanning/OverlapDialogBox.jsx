@@ -52,12 +52,10 @@ const Demo = ({ clickFn }) => {
                     alignItems="center"
                     justifyContent="center"
                   >
-                    {/* <Flex directtion="column" alignItems="center" justifyContent="center"> */}
                     <LuTriangleAlert size="60" color="red" />
                     <Text color="red.500" fontSize="2xl">
                       Oops!
                     </Text>
-                    {/* </Flex> */}
                   </Dialog.Title>
                 </Dialog.Header>
                 <Dialog.Body>

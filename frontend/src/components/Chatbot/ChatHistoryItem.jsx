@@ -1,4 +1,3 @@
-// ChatHistoryItem.jsx
 import { HStack } from "@chakra-ui/react";
 import { useState } from "react";
 import { ChatActions } from "./ChatActions";
@@ -27,7 +26,6 @@ export function ChatHistoryItem({ name, onRename, onDelete }) {
   );
 }
 
-//prop validation
 ChatHistoryItem.propTypes = {
   name: PropTypes.string,
   onRename: PropTypes.func,

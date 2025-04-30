@@ -11,3 +11,40 @@
   opacity: 0;
   z-index: 1;
 }
+
+@media (max-width: 768px) {
+  .form-container {
+      height: 50%; 
+  }
+  .sign-up-container {
+      width: 100%;
+      left: 0;
+      height: 50%;
+      z-index: 1;
+      opacity: 0;
+      top: 50%; 
+  }
+  
+  form {
+      padding: 0 20px;
+      justify-content: flex-start; 
+      padding-top: 30px; 
+  } 
+  
+  form h1 {
+      margin-bottom: 10px;
+  }
+  
+  form span, 
+  form a {
+      margin: 5px 0;
+  }
+  
+  form input {
+      margin: 6px 0;
+  }
+  
+  form button {
+      margin-top: 10px;
+  }
+}

@@ -1,4 +1,3 @@
-// ChatActions.jsx
 import { IconButton, Menu, Portal } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { ConfirmDeleteDialog } from "./ConfirmDeleteDialog";

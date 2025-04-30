@@ -37,40 +37,33 @@ const StickyHeader = ({
     "/dashboard/chat",
     "/dashboard/recipe",
   ];
-  const scrollUpEventExclusion = ["/dashboard/chat"];
   const bgColor = useColorModeValue("white", "var(--header-bg)");
 
   const controlSecondBar = throttle((pathname, scrollYLatest) => {
     const currentScrollY = scrollRef?.current?.scrollTop || 0;
-    // If we're at the top (or very close to it), always show the second bar
     if (
       currentScrollY < scrollYLatest &&
       currentScrollY < 5 &&
       !scrollDownEventExclusion.includes(pathname)
     ) {
       setShowSecondBar(true);
-    }
-    // Otherwise hide it when scrolling down
-    else if (
+    } else if (
       currentScrollY > scrollYLatest &&
-      currentScrollY >= 100 &&
-      containerClosed &&
-      !scrollUpEventExclusion.includes(pathname)
+      currentScrollY >= 120 &&
+      containerClosed
     ) {
       setShowSecondBar(false);
     }
-    // Update the last scroll position
     setLastScrollY(currentScrollY);
   }, 100);
 
   const handleScroll = () => {
-    // use the latest location.pathname here
     controlSecondBar(location.pathname, lastScrollY);
   };
 
   useEffect(() => {
     if (scrollDownEventExclusion.includes(location.pathname)) {
-      setShowSecondBar(false);
+      if (showSecondBar) setShowSecondBar(false);
     } else {
       setShowSecondBar(true);
     }
@@ -89,7 +82,7 @@ const StickyHeader = ({
     return () => {
       scrollableElement.removeEventListener("scroll", handleScroll);
     };
-  }, [containerClosed, lastScrollY]); // Only re-run the effect if lastScrollY changes
+  }, [containerClosed, lastScrollY]);
 
   const showFavouriteRecipes = () => {
     showResults(null, true);
@@ -156,12 +149,11 @@ const StickyHeader = ({
           alignItems="center"
           justifyContent={{
             base: "center",
-            smToMd: "center",
-            mdTo2xl: "space-between",
+            sm: "center",
+            md: "space-between",
           }}
           color="white"
         >
-          {/* Hamburger Menu for Mobile */}
           <VerticalDrawer
             components={[
               navButtonsForVerticalDrawer,
@@ -247,7 +239,7 @@ StickyHeader.propTypes = {
   pageState: PropTypes.string.isRequired,
   pageLocation: PropTypes.string.isRequired,
   setPageState: PropTypes.func.isRequired,
-  showResults: PropTypes.bool.isRequired,
+  showResults: PropTypes.func.isRequired,
   scrollRef: PropTypes.object.isRequired,
 };
 

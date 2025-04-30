@@ -198,11 +198,12 @@ const ChatBot = ({ photoURL }) => {
         direction="column"
         bg="none"
         position="fixed"
-        left={open ? { base: "5vw", sm: "5vw", mdTo2xl: "25vw" } : "5vw"}
+        left={open ? { base: "5vw", sm: "5vw", md: "25vw" } : "5vw"}
         h="100%"
         alignItems="center"
         justifyContent="center"
         w={open ? "75vw" : "95vw"}
+        id="chatbot-body"
       >
         <MessageList
           messages={messages}

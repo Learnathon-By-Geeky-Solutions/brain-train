@@ -61,7 +61,6 @@ const DailyMealPlan = ({
     });
   }, [searchParams, reload]);
 
-  // Colors based on light/dark mode
   const cardBg = useColorModeValue("white", "gray.800");
   const headerBg = useColorModeValue("blue.50", "blue.900");
   const todayBadgeBg = useColorModeValue("green.100", "green.800");
@@ -69,7 +68,6 @@ const DailyMealPlan = ({
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const nutritionBg = useColorModeValue("gray.50", "gray.700");
 
-  // Meal types with their corresponding labels and colors
   const mealTypes = [
     { label: "Breakfast", color: "yellow" },
     { label: "Lunch", color: "orange" },

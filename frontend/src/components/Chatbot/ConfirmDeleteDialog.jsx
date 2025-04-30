@@ -1,4 +1,3 @@
-// ConfirmDeleteDialog.jsx
 import { Dialog, Button, Portal } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 
