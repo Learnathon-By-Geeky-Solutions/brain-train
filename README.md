@@ -289,11 +289,3 @@ Follow these steps to set up the project locally:
   ```
 
 Your application should now be running locally. Open your browser and navigate to the specified URL to access the application.
-
-## Development Guidelines
-
-1. Create feature branches
-2. Make small, focused commits
-3. Write descriptive commit messages
-4. Create pull requests for review
-5. Write and update necessary documentations
