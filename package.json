@@ -9,7 +9,7 @@
     "test:security": "snyk test --all-projects"
   },
   "devDependencies": {
-    "@eslint/js": "^9.25.1",
+    "@eslint/js": "^9.33.0",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
     "eslint": "^9.25.1",
